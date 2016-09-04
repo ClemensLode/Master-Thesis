@@ -1,64 +1,89 @@
 \chapter{XCS}\label{lcs:cha}
 
-\section{Einführung}
+Jeder Agent besitzt ein unabhängiges, sogennantes \emph{eXtended Classifier System} (XCS), welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{uebersicht_classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
 
-Jeder Agent besitzt ein sogennantes \emph{XCS Classifier System} welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht (siehe Kapitel~\ref{uebersicht_classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
+Eine wesentliche Erweiterung des LCS ist das sogenannte \emph{accuracy-based} XCS, zuerst beschrieben in \cite{Wilson1995}. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum LCS gibt es vor allem in der Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
 
-Eine wesentliche Erweiterung des LCS ist das sogenannte ``accuracy-based classifier system XCS'', zuerst beschrieben in \cite{Wilson1995}. Neben neuer  Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum einfachen LCS der wesentliche Unterschied, auf welche Weise der \emph{fitness} Wert berechnet wird. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine genaue Beschreibung findet sich in~\cite{Butz2006}.\\
+Im einfachsten Fall, im sogenannten \emph{single step} Verfahren erfolgt die Bewertung einzelner \emph{classifier}, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten \emph{multi step} Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde.\\
+Ein klassisches Beispiel für den Test \emph{single step} Verfahren ist das 6-Multiplexer Problem (z.B. in ~\cite{Butz2006}), bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"', so soll das dritte Datenbit, also "`0"' zurückgeben. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden.\\
 
-Im einfachsten Fall, im sogenannten ``Single-Step''-Verfahren erfolgt die Bewertung einzelner \emph{classifier}, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten ``Multi-Step''-Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde. Ein klassisches Beispiel für den Test ``Single-Step''-Verfahren ist das 6-Multiplexer Problem (z.B. in ~\cite{Butz2006}), bei dem mit 2 Adressbits und 4 Datenbits das den Adressbits entsprechende ausgegeben werden soll. Hier ist offensichtlich, dass nach der Klassifizierung sofort bestimmbar ist, ob sie ein korrektes Ergebnis geliefert hat.\\
-Ein klassisches Beispiel für ``Multi-Step''-Verfahren ist das ``Maze~\(N\)'' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem wiederholt. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifiers}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind.\\
+Ein klassisches Beispiel für \emph{multi step} Verfahren ist das "`Maze~\(N\)"' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neugestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifiers}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind. 
 
-Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des Multistep-Verfahrens von~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in ~\cite{Butz}), eine Besonderheit stellt allerdings die Problemdefinition dar, da es kein festes Ziel gibt und somit auch keinen Neustart des Problems.\\
 
-Die meisten Implementationen und Varianten von XCS beschäftigen sich mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere relativ einfache Probleme 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006} \cite{xcs1} \cite{xcs2}), während XCS mit Problemen größerer Schrittzahl zwischen Start und Ziel Probleme hat \cite{Barry} \cite{Banzhaf}. Zwar gibt es Ansätze um auch schwierigere Probleme besser in den Griff zu bekommen (z.B. Maze5, Maze6, Woods14 in~\cite{Butz2005}), indem ein Gradientenabstieg in XCS implementiert wurde. Ein konkreter Bezug zu einem dynamischen Überwachungsszenario konnte jedoch in keiner dieser Arbeiten gefunden werden.\\
+Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} dargestellte (sehr einfache) Szenario dienen. Die zum Agenten zugehörigen \emph{classifer} sind in Abbildung~\ref{simple_scenario_multistep_classifier:fig} dargestellt, wobei die 4 angrenzenden Felder für jeden \emph{classifier} jeweils die Konfiguration der Kondition darstellt und der Pfeil die Aktion (für eine genauere Beschreibung eines \emph{classifier} siehe Kapitel~\emph{classifier:sec}). Im ersten Durchlauf werden alle \emph{classifier} in jedem Schritt zufällig gewählt, dann erhält \emph{classifier} e) eine positive Bewertung. Im zweiten Durchlauf erhält dann \emph{classifer} c) einen von \emph{classifier} e) weitergegebene positive Bewertung und \emph{classifier} e) auf Position 3 wird mit höherer Wahrscheinlichkeit als \emph{classifier} f) gewählt. Das geht so lange weiter bis sich für \emph{classifier} \(b, c, e, g\) ein ausreichend g Wert eingespielt hat und es treten keine wesentlichen Veränderungen mehr auf.
 
-Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf  auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama} basieren, also im Gegensatz zum Gegenstand dieser Arbeit auf eine übergeordnete Organisationseinheit bzw. auf globale Regeln oder globalem Regeltausch zwischen den Agenten zurückgreifen.\\
-Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll, während in dieser Arbeit alle Agenten die selbe Rolle spielen sollen.\\
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{simple_scenario_multistep.eps}
+}
+\caption[Einfaches Beispiel zum XCS \emph{multi step} Verfahren] {Einfaches Beispiel zum XCS \emph{multi step} Verfahren}
+\label{simple_scenario_multistep:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{simple_scenario_multistep_classifier.eps}
+}
+\caption[Vereinfachte Darstellung eines \emph{classifier set} für das Beispiel zum XCS \emph{multi step} Verfahren] {Vereinfachte Darstellung eines \emph{classifier set} für das Beispiel zum XCS \emph{multi step} Verfahren}
+\label{simple_scenario_multistep_classifier:fig}
+\end{figure}
+
+
+Eine nähere Beschreibung bezüglich der Implementierung von und dem Unterschied zwischen dem \emph{single step} und \emph{multi step} Verfahren findet sich in \cite{Butz}.\\
+
+Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des \emph{multi step} Verfahrens von~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in~\cite{Butz}), eine 
+
+Besonderheit stellt allerdings die Problemdefinition dar, da es kein Ziel zu erreichen gibt, sondern über die Zeit hinweg ein bestimmtes Verhalten erreicht werden soll (die Überwachung des Zielobjekts). Somit gibt es auch kein Neustart des Problems und keinen festen Start- oder Zielpunkt. Zusätzlich, durch die Bewegung der anderen Agenten und des Zielobjekts, verändert sich die Umwelt in jedem Schritt, ein Lernen durch Wiederholung gemachter Bewegungsabläufe ist deswegen deutlich schwieriger.\\
+
+
+Die meisten Implementationen und Varianten von XCS beschäftigen sich mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere relativ einfache Probleme 6-Multiplexer Problem und Maze1 (z.B. in~\cite{Butz2006} \cite{xcs1} \cite{xcs2}), während XCS mit Problemen größerer Schrittzahl zwischen Start und Ziel Probleme hat \cite{Barry} \cite{Banzhaf}. Zwar gibt es Ansätze um auch schwierigere Probleme besser in den Griff zu bekommen (z.B. Maze5, Maze6, Woods14 in~\cite{Butz2005}), indem ein Gradientenabstieg in XCS implementiert wurde. Ein konkreter Bezug zu einem dynamischen Überwachungsszenario konnte jedoch in keiner dieser Arbeiten gefunden werden.\\
+
+Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama} basieren, also im Gegensatz zum Gegenstand dieser Arbeit auf eine übergeordnete Organisationseinheit bzw. auf globale Regeln oder globalem Regeltausch zwischen den Agenten zurückgreifen.\\
+Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll, während in dieser Arbeit alle Agenten dieselbe Rolle spielen sollen.\\
 
 Vielversprechend war der Titel der Arbeit~\cite{Lujan}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels einer \emph{reward} Funktion bewertet werden, da es globale Information gab. Dies vereinfacht ein solches Problem deutlich und macht einen Vergleich schwierig.\\
 
-Eine weitere Arbeit in dieser Richtung (\cite{elfarol}) beschreibt das ``El Farol'' Bar Problem, welches dort mit Hilfe eines Multiagenten XCS System erfolgreich gelöst wurde. Die Vergleichbarkeit ist hier auch eingeschränkt, da es sich bei dem EFBP um ein ``Single-Step'' Problem handelt.\\
+Eine weitere Arbeit in dieser Richtung (\cite{elfarol}) beschreibt das ``El Farol'' Bar Problem (EFBP), welches dort mit Hilfe eines Multiagenten XCS System erfolgreich gelöst wurde. Die Vergleichbarkeit ist hier auch eingeschränkt, da es sich bei dem EFBP um ein \emph{single step} Problem handelt.\\
 
-Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{Hiroyashu} vorgestellt. Dort wurde der \emph{base reward} unter den (zwei) Agenten aufgeteilt, es fand also eine Kommunikation des \emph{reward} Werts statt. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in~\ref{communication:cha} diskutiert.\\
+Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{Hiroyashu} vorgestellt. Dort wurde der \emph{base reward} unter den (zwei) Agenten aufgeteilt, es fand also eine Kommunikation des \emph{reward} Werts statt. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in Kapitel~\ref{communication:cha} diskutiert.\\
 
 In \cite{Miyazaki} wurde gezeigt, dass bei der Weitergabe des \emph{base reward} Gruppenbildung von entscheidender Wichtigkeit ist. Nach bestimmten Kriterien werden Agenten in Gruppen zusammengefasst und der \emph{base reward} anstatt an alle, jeweils nur an die jeweiligen Gruppenmitgliedern weitergegeben.
-Dies bestätigen auch Tests in Kapitel~\ref{communication:cha} bei der sich Agenten mit ähnelnden (was das Verhalten gegenüber anderen Agenten betrifft) \emph{classifier sets} in Gruppen zusammengefasst wurden und zum Teil bessere Ergebnisse erzielt werden konnten als ohne Kommunikation.
+Dies bestätigen auch Tests in Kapitel~\ref{communication:cha}, bei der sich Agenten mit ähnelnden (was das Verhalten gegenüber anderen Agenten betrifft) \emph{classifier sets} in Gruppen zusammengefasst wurden und zum Teil bessere Ergebnisse erzielt werden konnten als ohne Kommunikation.
 
 \section{Übersicht}\label{uebersicht_classifier:sec}
+
+
 
 TODO base reward und reward unterscheiden
 
 Ein XCS ist ein regelbasiertes evolutionäres Lernsystem, das im Wesentlichen aus folgenden Elementen besteht:
 
+TODO ausfuehrlicher
+
 \begin{enumerate}
-\item Einer Menge an Regeln, sogenannte \emph{classifier} (siehe~\ref{classifier:sec})
-\item Ein Mechanismus zur Auswahl der \emph{classifier} (siehe~\ref{auswahlart:sec})
-\item Einem Mechanismus zur Evolution der \emph{classifier} (mittels genetischer Operatoren, siehe~\ref{genetische_operatoren:sec})
-\item Eine Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning}, siehe~\ref{bewertung:sec})
+
+\item Einer Menge an Regeln, sogenannte \emph{classifier} (siehe Kapitel~\ref{classifier:sec}), die zusammen ein \emph{classifier set} bilden
+
+\item Einem Mechanismus zur Auswahl einer Aktion aus dem \emph{classifier set} (siehe Kapitel~\ref{auswahlart:sec})
+
+\item Einem Mechanismus zur Zusammenfassung aller \emph{classifier} aus dem \emph{classifier set} mit gleicher Aktion zu einer \emph{action set} Liste.
+
+\item Einem Mechanismus zur Evolution der \emph{classifier} (mittels genetischer Operatoren, siehe Kapitel~\ref{genetische_operatoren:sec})
+
+\item Eine Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning}, siehe Kapitel~\ref{bewertung:sec})
+
 \end{enumerate}
 
-Während die ersten drei Punkten bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei Punkte näher betrachtet werden.
+Während die ersten drei Punkte bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei Punkte näher betrachtet werden.
 
 \section{Classifier}\label{classifier:sec}
 
-Ein \emph{classifier} besteht aus einem \emph{condition} Vektor, einem \emph{action}, einem \emph{fitness}, einem \emph{reward prediction}, einem \emph{reward prediction error}, einem \emph{experience} und einem \emph{actionSetSize} Wert. Initialisiert werden diese Teile wie in~\ref{cha:parameter} aufgelistet.
+Ein \emph{classifier} besteht aus einer Anzahl im folgenden diskutierten Variablen die anhand der in Kapitel~\ref{cha:parameter} aufgelisteten Werte initialisiert werden. Wesentliche Teile sind der \emph{condition} Vektor (Kapitel~\ref{condition_vector:sec}) und der \emph{action} Wert (Kapitel~\ref{action_wert:sec}), alle restlichen Variablen dienen zur Berechnung der Wahrscheinlichkeit mit der der \emph{classifier} ausgewählt und dessen \emph{action} Wert ausgeführt wird.
 
-\subsection{Der \emph{action} Wert}
-Wird ein \emph{classifier} ausgewählt, wird eine bestimmte Aktion ausgeführt die durch den \emph{action} Wert determiniert ist. Im Rahmen dieser Arbeit entsprechen diese Aktionsmöglichkeiten den 4 Bewegungsrichtungen, die in Kapitel~\ref{agent_abilities:sec} besprochen wurden.
-
-\subsection{Der \emph{fitness} Wert}
-Der \emph{fitness} Wert soll die allgemeine Genauigkeit des \emph{classifier}
-repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten \emph{reward} Werte angepasst. Der Wertebereich verläuft zwischen \(0.0\) und \(1.0\) (maximale Genauigkeit). Insbesondere eines der frühesten Werke zu XCS \cite{Wilson} beschäftigte sich mit diesem Aspekt der Genauigkeit.
-
-\subsection{Der \emph{reward prediction} Wert}
-Der \emph{reward prediction} Wert des \emph{classifier} stellt die Höhe des \emph{reward} Werts dar, von dem der \emph{classifier} erwartet, dass er ihn bei der nächsten Bewertung erhalten wird.
-
-\subsection{Der \emph{reward prediction error} Wert}
-Der \emph{reward prediction error} Wert soll die Genauigkeit des \emph{classifier} bzgl. des \emph{reward prediction} Werts (durchschnittliche Differenz zwischen \emph{reward prediction} und tatsächlichem \emph{reward}) repräsentieren. U.a. auf Basis dieses Werts wird der \emph{fitness} Wert des \emph{classifier} angepasst.
 
 \subsection{Der \emph{condition} Vektor}\label{condition_vector:sec}
-Der \emph{condition} Vektor gibt die Kondition an, in welcher Situation der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordaten von dem jeweiligen \emph{classifier} erkannt werden. Alle \emph{classifier} die einen Sensordatensatz erkennen bilden das sogenannte \emph{matchSet}. Der Aufbau des Vektors entspricht dem Vektor der über die Sensoren erstellt wird (siehe~\ref{sensoren:sec}).
+
+Der \emph{condition} Vektor gibt die Kondition an, in welcher Situation der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordaten von dem jeweiligen \emph{classifier} erkannt werden. Der Aufbau des Vektors entspricht dem Vektor der über die Sensoren erstellt wird (siehe Kapitel~\ref{sensoren:sec}).
 
 \[
 \underbrace{z_{s_{N}} z_{r_{N}} z_{s_{O}} z_{r_{O}} z_{s_{S}} z_{r_{S}} z_{s_{W}} z_{r_{W}}}_{Erste~Gruppe~(Zielobjekt)}
@@ -67,10 +92,14 @@ Der \emph{condition} Vektor gibt die Kondition an, in welcher Situation der zuge
 \]
 
 
-\section{Platzhalter im \emph{condition} Vektor}\label{platzhalter:sec}
+\subsection{Platzhalter im \emph{condition} Vektor}\label{platzhalter:sec}
 
-Neben den zu den Sensordaten korrespondierenden Werten 0 und 1 soll es noch einen dritten Zustand, den Platzhalter ``\#'', geben, der anzeigen soll, dass beim Vergleich zwischen Kondition und Sensordaten diese Stelle ignoriert werden soll. Eine Stelle im \emph{condition} Vektor mit Platzhalter gilt also als äquivalent zur korrespondierenden Stelle in den Sensordaten, egal ob sie mit 0 oder 1 belegt ist. Ein Vektor, der ausschließlich aus Platzhaltern besteht, würde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle möglichen Kombinationen der Sensordaten passt.\\
-Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt.
+Neben den zu den Sensordaten korrespondierenden Werten \(0\) und \(1\) soll es noch einen dritten Zustand, den Platzhalter "`\#"', geben, der anzeigen soll, dass beim Vergleich zwischen Kondition und Sensordaten diese Stelle ignoriert werden soll. Eine Stelle im \emph{condition} Vektor mit Platzhalter gilt also als äquivalent zur korrespondierenden Stelle in den Sensordaten, egal ob sie mit \(0\) oder \(1\) belegt ist. Ein Vektor, der ausschließlich aus Platzhaltern besteht, würde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle möglichen Kombinationen der Sensordaten passt. Umgekehrt können dadurch bei der Auswahl der \emph{classifier} mehrere \emph{classifier} auf einen gegebenen Sensordatenvektor passen. Diese bilden dann die sogenannte \emph{match set} Liste, aus welchem dann wie in Kapitel~\ref{auswahlart:sec} beschrieben der eigentliche \emph{classifier} ausgewählt wird.\\
+
+
+\subsection{Vergleich des \emph{condition} Vektors mit den Sensordaten}
+
+Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt. Es ergeben sich also folgende Fälle:
 
 \begin{enumerate}
 \item Sensorenpaar \((0/0)\) wird erkannt von \((0/0)\), \((\#, 0)\), \((0, \#)\), \((\#, \#)\)
@@ -91,66 +120,61 @@ Beispiele für erkennende condition Vektoren:
 #0 ## ## ## . ## ## 01 ## . ## 11 ## 11
 \end{verbatim}
 
-\section{Subsummation}\label{subsummation:sec}
 
-Die Benutzung von Platzhaltern erlaubt es dem LCS mehrere \emph{classifiers} zu subsummieren, wodurch die Gesamtzahl der \emph{classifier} sinkt und somit Erfahrungen, die ein LCS Agent sammelt, nicht unbedingt mehrfach gemacht werden müssen. Die dahinter stehende Annahme ist, dass es Situationen gibt, in denen der Gewinn der durch Unterscheidung zwischen zwei verschiedenen Sensordatensätzen geringer ist als die Ersparnis durch das Zusammenlegen beider \emph{classifiers}, d.h. dem Ignorieren der Unterschiede.\\
+\subsection{Der \emph{action} Wert}\label{action_wert:sec}
 
-Besitzt ein \emph{classifier} zum einen einen genügend großen \emph{experience} Wert und ausreichend kleinen \emph{reward prediction error} Wert, so kann er als sogenannter \emph{subsumer} auftreten. Andere \emph{classifiers} mit gleichem \emph{action} Wert werden durch den \emph{subsumer} ersetzt, sofern der von ihnen abgedeckte Sensordatenbereich eine Teilmenge des von dem \emph{subsumer} abgedeckten Bereichs ist, der \emph{subsumer} also an allen Stellen des \emph{condition} Vektors entweder den selben Wert wie der zu subsummierende \emph{classifier} oder einen Platzhalter besitzt.\\
+Wird ein \emph{classifier} ausgewählt, wird eine bestimmte Aktion ausgeführt, die durch den \emph{action} Wert determiniert ist. Im Rahmen dieser Arbeit entsprechen diese Aktionsmöglichkeiten den 4 Bewegungsrichtungen, die in Kapitel~\ref{agent_abilities:sec} besprochen wurden.\\
+
+
+\subsection{Der \emph{fitness} Wert}
+
+Der \emph{fitness} Wert soll die allgemeine Genauigkeit des \emph{classifier}
+repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten \emph{reward} Werte angepasst. Der Wertebereich verläuft zwischen \(0.0\) und \(1.0\) (maximale Genauigkeit). Insbesondere eines der frühesten Werke zu XCS \cite{Wilson} beschäftigte sich mit diesem Aspekt der Genauigkeit.\\
+
+
+\subsection{Der \emph{reward prediction} Wert}
+
+Der \emph{reward prediction} Wert des \emph{classifier} stellt die Höhe des \emph{reward} Werts dar, von dem der \emph{classifier} erwartet, dass er ihn bei der nächsten Bewertung erhalten wird.\\
+
+
+\subsection{Der \emph{reward prediction error} Wert}
+
+Der \emph{reward prediction error} Wert soll die Genauigkeit des \emph{classifier} bzgl. des \emph{reward prediction} Werts (durchschnittliche Differenz zwischen \emph{reward prediction} und tatsächlichem \emph{reward}) repräsentieren. U.a. auf Basis dieses Werts wird der \emph{fitness} Wert des \emph{classifier} angepasst.\\
+
+
+\subsection{Der \emph{experience} Wert}
+
+Der \emph{experience} Wert des \emph{classifier} repräsentiert die Anzahl, wie oft ein \emph{classifier} aktualisiert wurde, also wieviel Erfahrung er sammeln konnte. Im Wesentlichen dient dieser Wert als Entscheidungshilfe, ob auf die anderen Werte des \emph{classifier} vertraut werden kann bzw. ob der \emph{classifier} als unerfahren gilt und somit z.B. bei Löschung und Subsummation gesondert behandelt werden muss.\\
+
+
+\subsection{Der \emph{numerosity} Wert}
+
+Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und \ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden.\\
+
+
+\section{Subsummation von \emph{classifier}}\label{subsummation:sec}
+
+Die Benutzung von den oben erwähnten Platzhaltern (Kapitel~\ref{platzhalter:sec}) erlaubt es dem XCS mehrere \emph{classifiers} zu zusammenzulegen, wodurch die Gesamtzahl der \emph{classifier} sinkt und somit Erfahrungen, die ein XCS Agent sammelt, nicht unbedingt mehrfach gemacht werden müssen. Die dahinter stehende Annahme ist, dass es Situationen gibt, in denen der Gewinn der durch Unterscheidung zwischen zwei verschiedenen Sensordatensätzen geringer ist als die Ersparnis durch das Zusammenlegen beider \emph{classifiers}, d.h. dem Ignorieren der Unterschiede.\\
+
+Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wert als auch einen ausreichend kleinen \emph{reward prediction error} Wert, so kann er als sogenannter \emph{subsumer} auftreten. Andere \emph{classifiers} (in der selben \emph{action set} Liste, also mit gleichem \emph{action} Wert) werden durch den \emph{subsumer} ersetzt, sofern der von ihnen abgedeckte Sensordatenbereich eine Teilmenge des von dem \emph{subsumer} abgedeckten Bereichs ist, der \emph{subsumer} also an allen Stellen des \emph{condition} Vektors entweder den selben Wert wie der zu subsummierende \emph{classifier} oder einen Platzhalter besitzt.\\
+
 
 \section{Genetische Operatoren}\label{genetische_operatoren:sec}
 
-Es werden aus den jeweiligen \emph{actionSets} zwei \emph{classifier} (die Eltern) zufällig ausgewählt und zwei neue \emph{classifier} (die Kinder) aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt (da sie aus dem selben \emph{actionSet} stammen, ist der Wert beider Eltern identisch). Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Werden Kinder in die Population eingefügt, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifiers} ist, werden sie stattdessen subsummiert.\\
+Es werden aus der jeweiligen \emph{action set} Liste zwei \emph{classifier} (die Eltern) zufällig ausgewählt und zwei neue \emph{classifier} (die Kinder) aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt (da sie aus der selben \emph{action set} Liste stammen, ist der Wert beider Eltern identisch). Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Werden Kinder in die Population eingefügt, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifiers} ist, werden sie stattdessen subsummiert.\\
 Da die Sensoren und somit auch der \emph{condition} Vektor aus drei in sich geschlossenen Gruppen bestehen, werden im Unterschied zur Standardimplementation beim \emph{crossing over} zwei feste Stellen benutzt, die die Gruppe für das Zielobjekt, die Gruppe für Agenten und die Gruppe für feste Hindernisse voneinander trennen.\\
-Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen (siehe~\ref{condition_vector:sec}) des \emph{condition} Vektors des ersten bzw. zweiten ausgewählten Elternteils, dann können für die drei Gruppen der \emph{condition} Vektoren \((z_{1k}, a_{1k}, h_{1k})\) und \((z_{2k}, a_{2k}, h_{2k})\) der beiden Kinder folgende Kombinationen auftreten:
+
+Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen (siehe Kapitel~\ref{condition_vector:sec}) des \emph{condition} Vektors des ersten bzw. zweiten ausgewählten Elternteils, dann können für die drei Gruppen der \emph{condition} Vektoren \((z_{1k}, a_{1k}, h_{1k})\) und \((z_{2k}, a_{2k}, h_{2k})\) der beiden Kinder folgende Kombinationen auftreten:
 
 \[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_1, h_1) , (z_2, a_2, h_2)]\]
 \[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_1, h_1) , (z_1, a_2, h_2)]\]
 \[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_2, h_1) , (z_2, a_1, h_2)]\]
 \[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_2, h_1) , (z_1, a_1, h_2)]\]
 
-\section{Der \emph{numerosity} Wert}
 
-Durch Subsummation (siehe~\ref{subsummation:sec} und \ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden.\\
-Durch die Benutzung von \emph{macro classifiers} ergibt sich allerdings das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifiers} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifiers} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz2000} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einem einzelnen \emph{actionSet} optimiert, während die hier verwendete Implementierung jeweils mit bis über 100 \emph{actionSets} programmiert wurde, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{actionSets} zur Folge, in der der \emph{classifier} Mitglied ist.\\
-Wird also z.B. ein \emph{micro classifier} entfernt, dann wird lediglich die Änderungsfunktion des \emph{classifiers} aufgerufen, der dann wiederum den \emph{numerositySum} Wert der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viel Umstände, den \emph{numerositySum} der Eltern immer auf den aktuellen Stand zu halten und einzelne \emph{classifiers} zu löschen.\\
-Positiver Nebeneffekt durch die verbesserte Struktur, dass man dadurch leicht auf die Menge der \emph{actionSets} zugreifen kann, denen ein \emph{classifier} angehört, hierfür wurde aber keine Verwendung gefunden.\\
 
-Ein weiteres Problem der Standardimplementierung ist, dass der \emph{fitness} Wert eines \emph{classifiers} als Optimierung bereits den \emph{numerosity} Wert als Faktor enthält, während bei der Aktualisierung des \emph{numerosity} Werts der \emph{fitness} Wert nicht aktualisiert wurde. Das hat zur Folge, dass theoretisch \emph{fitness} Werte von \emph{classifiers} fast den \emph{max population} Wert annehmen kann, wenn ein \emph{classifier} mit \emph{numerosity} und \emph{fitness} Wert in der Höhe von \emph{max population} auf einen \emph{numerosity} Wert von 1 reduziert wird.\\
-Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die korrigierte Fassung ist in~\ref{corrected_numerosity_function:fig} gelistet, ein Vergleich der Qualität, mit und ohne Korrektur, ist in~\ref{correct_numerosity_graph:fig} dargestellt.
 
-\begin{program}
-  \begin{verbatim}
-/**
- * Adds to the numerosity of the classifier.
- * @param num The added numerosity (can be negative!).
- */
-  public void addNumerosity(int num) {
-    int old_num = numerosity;
-   
-    numerosity += num;
 
-  /**
-   * Korrektur der fitness
-   */
-    fitness = fitness * (double)numerosity / (double)old_num;
-
-  /**
-   * Aktualisierung der Eltern
-   */
-    for (ClassifierSet p : parents) {
-      p.changeNumerositySum(num);
-      if (numerosity == 0) {
-        p.removeClassifier(this);
-      }
-    }
-  }
-\end{verbatim}
-\label{corrected_numerosity_function:fig}
-  \caption{Korrigierte Version der \emph{addNumerosity()} Funktion}
-\end{program}
-
-TODO Vergleich!
-TODO wenig Unterschied sensoragent, evtl wieder raus
 
 \section{Bewertung}\label{bewertung:sec}
 

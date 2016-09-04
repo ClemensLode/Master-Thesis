@@ -1,33 +1,25 @@
 \chapter{Eigenschaften der Agenten}\label{agents:cha}
 
-Bis Kapitel~\ref{communication:cha} wird ausschließlich der Fall ohne Kommunikation betrachtet, d.h. die Agenten können untereinander keine Informationen austauschen und müssen sich alleine auf ihre Sensordaten verlassen.\\
+Ein Agent kann in jedem Schritt zwischen vier verschiedenen Aktionen wählen, die den vier Richtungen (Norden, Osten, Süden, Westen) entsprechen. Während ein Agent pro Zeiteinheit genau einen Schritt durchführen kann, kann das Zielobjekt je nach Szenarioparameter mehrere Schritte ausführen, was in Kapitel~\ref{base_properties_goal:sec} erläutert wird.\\
+
+Da wir ein Multiagentensystem auf einem diskreten Feld betrachten, werden alle Agenten werden nacheinander in der Art abgearbeitet, dass jeder Agent die aktuellen Sensordaten (siehe Kapitel~\ref{sensoren:sec}) aus der Umgebung holt und auf deren Basis die nächste Aktion bestimmt.\\
+Wurden alle Aktionen bestimmt, können die Agenten in zufälliger Reihenfolge versuchen, sie auszuführen. Ungültige Aktionen, d.h. der Versuch sich auf ein besetztes Feld zu bewegen, schlagen fehl und der Agent führt in diesem Schritt keine Aktion aus, wird aber auch nicht weiter bestraft. Eine detaillierte Beschreibung der Bewegung im Kontext anderer Agenten und Programmteile wird in Kapitel~\ref{reihenfolge:sec} gegeben.\\
+
+Weitere Fähigkeiten eines Agenten betreffen die Kommunikation, bis Kapitel~\ref{communication:cha} soll jedoch nur der Fall ohne Kommunikation betrachtet werden, d.h. die Agenten können untereinander keine Informationen austauschen und müssen sich alleine auf ihre Sensordaten verlassen.\\
 
 
-\section{Sensoren}\label{sensoren:sec}
+\section{Sensoren eines Agenten}\label{sensoren:sec}
 
-Jeder Agent besitzt 3 Gruppen mit jeweils 8 Sensoren. Alle Sensoren sind visuelle, binäre Sensoren mit begrenzter Reichweite und können nur feststellen, ob sich in ihrem Sichtbereich ein entsprechendes Objekt befindet oder nicht. Andere Objekte blockieren die Sicht, Sichtlinien werden durch einen einfachen Bresenham-Algorithmus bestimmt.\\
-Jede Gruppe von Sensoren nimmt einen anderen Typ von Objekt wahr. Die erste Gruppe nimmt das Zielobjekt, die zweite Gruppe andere Agenten und die dritte Gruppe Hindernisse wahr.\\
-Sensoren sind jeweils bestimmte Richtungen ausgerichtet (Norden, Osten, Süden und Westen, wobei auf den Abbildungen in dieser Arbeit Norden immer oben ist) und wird auf ``wahr'' (\(1\)) gesetzt, wenn sich in dem Sichtbereich des Sensors ein entsprechendes Objekt befindet.\\
-Die 8 Sensoren in einer Gruppe sind in 4 Richtungen mit jeweils einem Sensorenpaar aufgeteilt. Ein Sensorenpaar besteht aus zwei Sensoren mit unterschiedlich großer Sichtweite, mit der der Agent also rudimentär die Entfernung zu anderen Objekten feststellen kann. 
+Jeder Agent besitzt eine Anzahl visueller, binärer Sensoren mit begrenzter Reichweite. Jeder Sensor kann nur feststellen, ob sich in seinem Sichtbereich ein Objekt eines bestimmten Typs befindet (\(1\)) oder nicht (\(0\)). Jeder Sensor ist in eine bestimmte Richtung ausgerichtet, andere Objekte blockieren die Sicht und Sichtlinien werden durch einen einfachen Bresenham-Algorithmus bestimmt.\\
+Zwei Sensoren, die in die selbe Richtung ausgerichtet sind und den selben Typ von Objekt erkennen, werden in diesem Zusammenhang ein Sensordatenpaar genannt (siehe Kapitel~\ref{sensor_datenpaar:sec}). Alle Sensoren, die nur gemeinsam haben, dass sie den selben Typ von Objekt erkennen, werden in einer Gruppe zusammengefasst und der Aufbau eines ganzen, aus solchen Gruppen bestehenden Sensordatensatzes soll in Kapitel~\ref{sensordatensatz:sec} besprochen werden.
 
-\[
-\underbrace{z_{s_{N}} z_{r_{N}} z_{s_{O}} z_{r_{O}} z_{s_{S}} z_{r_{S}} z_{s_{W}} z_{r_{W}}}_{Erste~Gruppe~(Zielobjekt)}
-\underbrace{a_{s_{N}} a_{r_{N}} a_{s_{O}} a_{r_{O}} a_{s_{S}} a_{r_{S}} a_{s_{W}} a_{r_{W}}}_{Zweite~Gruppe~(Agenten)}
-\underbrace{h_{s_{N}} h_{r_{N}} h_{s_{O}} h_{r_{O}} h_{s_{S}} h_{r_{S}} h_{s_{W}} h_{r_{W}}}_{Dritte~Gruppe~(Hindernisse)}
-\]
 
-TODO darauf Bezug nehmen
+\subsection{Aufbau eines Sensordatenpaars}\label{sensor_datenpaar:sec}
 
-\begin{verbatim}
-TODO Beispiele für Sensoren
-a) 10 00 00 00 . 00 00 00 00 . 00 00 00 00
-b) 00 00 00 00 . 00 00 00 00 . 00 00 00 00
-c) 00 00 00 00 . 11 00 10 00 . 00 00 00 00
-d) 00 00 00 00 . 00 00 00 00 . 00 00 00 00
-e) 00 00 00 00 . 00 00 00 00 . 00 00 00 00
-\end{verbatim}
+Ein Datenpaar besteht aus zwei Sensoren, die den selben Typ von Objekt erkennen, in die selbe Richtung ausgerichtet sind und sich nur in ihrer Sichtweite unterscheiden, wodurch der Agent rudimentär die Entfernung zu anderen Objekten feststellen kann. Die Sichtweite des ersten Sensors eines Paares wird über den Parameter \emph{sight range} bestimmt, die Sichtweite des zweiten Sensors über den Parameter \emph{reward range} (siehe auch Kapitel~\ref{sichtbarket:sec}). Allgemein soll \emph{sight range = 5.0} und \emph{reward range = 2.0} betragen, der überwachte Bereich ist also eine Teilmenge des sichtbaren Bereichs. In Abbildung~\ref{sight_directions:fig} sind alle Sichtreichweiten (heller und dunkler Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt.\\
 
-Die Sichtweite des ersten Sensors eines Paares wird über den Parameter \emph{sight range} bestimmt, die Sichtweite des zweiten Sensors über den Parameter \emph{reward range} (siehe auch Kapitel~\ref{sichtbarket:sec}). Allgemein soll \emph{sight range = 5.0} und \emph{reward range = 2.0} betragen, der überwachte Bereich ist also eine Teilmenge des sichtbaren Bereichs. Anzumerken sei hier, dass deshalb ein Sensorenpaar (0\/1) nicht auftreten kann.\\
+Anzumerken sei hier, dass wegen der gewählten Werte für beide Reichweiten ein Sensordatenpaar (0\/1) nicht auftreten kann, da ein Objekt nicht gleichzeitig näher als \(2.0\) und weiter als \(5.0\) entfernt sein kann.\\
+
 Sei \(r(O1, O2)\) die Distanz zwischen dem Objekt, das die Sensordaten erfasst und dem nächstliegenden Objekt des Typs, den der Sensor wahrnehmen kann, dann gibt es folgende Fälle:
 
 \begin{enumerate}
@@ -37,31 +29,50 @@ Sei \(r(O1, O2)\) die Distanz zwischen dem Objekt, das die Sensordaten erfasst u
 \item (0/1) : \emph{reward range} \(\ge r(O_1, O_2) > \) \emph{sight range} (Fall kann nicht auftreten, da \emph{reward range} \( < \) \emph{sight range})
 \end{enumerate}
 
-In Abbildung~\ref{sight_directions:fig} sind alle Sichtkegel (dunkler und heller Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt. 
-
 TODO von 3-5 auf 2-5 umändern
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{sight_directions.eps}
 }
-\caption[Sicht- und Überwachungsreichweite eines Agenten]{Sicht- (2.0) und Überwachungsreichweite (5.0) eines Agenten, jeweils für die einzelnen Richtungen}
+\caption[Sicht- und Überwachungsreichweite eines Agenten]{Sicht- (5.0, dunkler Bereich) und Überwachungsreichweite (2.0, heller Bereich) eines Agenten, jeweils für die einzelnen Richtungen}
 \label{sight_directions:fig}
 \end{figure}
 
-\section{Fähigkeiten}\label{agent_abilities:sec}
 
-Jeder Agent kann in jedem Schritt zwischen vier verschiedenen Aktionen wählen, die den vier Richtungen (Norden, Osten, Süden, Westen), bei der der Agent sich nicht bewegt, entsprechen. Agenten können pro Zeiteinheit genau einen Schritt durchführen. Das Zielobjekt kann je nach Szenarioparameter mehrere Schritte ausführen.
 
-\section{Ablauf der Bewegung}
-Alle Agenten werden nacheinander in der Art abgearbeitet, dass der jeweilige Agent die aktuellen Sensordaten aus der Umgebung holt und anhand dieser die nächste Aktion bestimmt. Ungültige Aktionen, d.h. der Versuch sich auf ein besetztes Feld zu bewegen, schlagen fehl und der Agent führt in diesem Schritt keine Aktion aus, wird aber nicht weiter bestraft. Eine detaillierte Beschreibung der Bewegung im Kontext anderer Agenten und Programmteile wird in Kapitel~\ref{reihenfolge:sec} gegeben.
+\subsection{Aufbau eines Sensordatensatzes}\label{sensordatensatz:sec}
+
+In einem Sensordatensatz sind jeweils 8 Sensoren zu jeweils einer Gruppe zusammengefasst, welche wiederum in 4 Richtungen mit jeweils einem Sensorenpaar aufgeteilt ist. Gleichung~\ref{sensordatensatz:equ} stellt den allgemeinen Aufbau eines kompletten Sensordatensatzes dar, der aus den drei Gruppen der Zielobjektsensoren (z), der Agentensensoren (a) und der Hinernisssensoren (h) besteht.\\
+Seien beispielsweise im Westen und Osten sich in Überwachungsreichweite befindliche Hindernissen, im Norden außerhalb der Überwachungsreichweite aber in Sichtweite das Zielobjekt und im Süden Agenten in Überwachungsreichweite des Agenten, dann ergibt sich ein Sensordatensatz \(s_{Beispiel}\) wie in Gleichung~\ref{sensordatensatz_beispiel:equ} dargestellt.
+
+  \begin{equation}
+    \begin{split}
+\mathrm{Sensordatensatz~} s = \underbrace{(z_{s_{N}} z_{r_{N}}) (z_{s_{O}} z_{r_{O}}) (z_{s_{S}} z_{r_{S}}) (z_{s_{W}} z_{r_{W}})}_{Erste~Gruppe~(Zielobjekt)}\\
+\underbrace{(a_{s_{N}} a_{r_{N}}) (a_{s_{O}} a_{r_{O}}) (a_{s_{S}} a_{r_{S}}) (a_{s_{W}} a_{r_{W}})}_{Zweite~Gruppe~(Agenten)}\\
+\underbrace{(h_{s_{N}} h_{r_{N}}) (h_{s_{O}} h_{r_{O}}) (h_{s_{S}} h_{r_{S}}) (h_{s_{W}} h_{r_{W}})}_{Dritte~Gruppe~(Hindernisse)}
+    \end{split}
+\label{sensordatensatz:equ}
+  \end{equation}
+
+  \begin{equation}
+    \begin{split}
+\mathrm{Sensordatensatz~} s_{Beispiel} = (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1)
+    \end{split}
+\label{sensordatensatz_beispiel:equ}
+  \end{equation}
+
 
 \section{Grundsätzliche Algorithmen der Agenten}
 
-Neben denjenigen Algorithmen, die auf LCS basieren und in Kapitel~\ref{lcs:cha} besprochen werden, gibt es folgende Grundtypen, die dazu dienen, die Qualität der anderen Algorithmen einzuordnen. Wesentliches Merkmal im Vergleich zu auf LCS basierenden Algorithmen ist, dass sie statische, handgeschriebene Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren, d.h. ihre Regeln nicht anpassen. Die in Kapitel~\ref{implementierung_ablauf:sec} erwähnte, im Programm aufgerufenen Funktion \emph{calculateReward()} soll für die hier aufgelisteten Algorithmen also einer leeren Funktion entsprechen, während hier jeweils die Implementierung der \emph{calculateNextMove()} Funktion aufgeführt werden soll.
+Neben denjenigen Algorithmen, die auf XCS basieren und in Kapitel~\ref{lcs:cha} besprochen werden, sollen hier einige, auf einfachen Heuristiken basierende, Algorithmen vorgestellt werden, um die Qualität der anderen Algorithmen besser einordnen zu können. Wesentliches Merkmal im Vergleich zu auf XCS basierenden Algorithmen ist, dass sie statische, handgeschriebene Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren, d.h. ihre Regeln während eines Laufs nicht anpassen.\\
+Die in Kapitel~\ref{implementierung_ablauf:sec} erwähnte und dort aufgerufene Funktion \emph{calculateReward()} soll für die hier aufgelisteten Algorithmen also jeweils der leeren Funktion entsprechen. Im Folgenden sollen also insbesondere die Implementierungen der jeweiligen \emph{calculateNextMove()} Funktion vorgestellt werden.\\
 
-\subsection{``Zufälliger Algorithmus''}\label{randomized_movement:sec}
-Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung~(\ref{agent_random:fig}) zeigt eine Beispielsituation, bei der der Agent jegliche Sensordaten ignoriert und eine Aktion zufällig auswählen wird. Programm~\ref{calculateNextMove_RandomAlgorithm:fig} zeigt den zugehörigen Quelltext.
+
+\subsection{Algorithmus mit zufälliger Bewegung}\label{randomized_movement:sec}
+
+Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung~(\ref{agent_random:fig}) zeigt eine Beispielsituation, bei der der Agent jegliche Sensordaten (die 4 Agenten und das Zielobjekt, der als Stern dargestellt ist) ignoriert und eine Aktion zufällig auswählen wird.\\
+Programm~\ref{calculateNextMove_RandomAlgorithm:fig} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -84,11 +95,14 @@ Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgefüh
   }
 \end{verbatim}
  \label{calculateNextMove_RandomAlgorithm:fig}
-  \caption{Berechnung der nächsten Bewegung beim zufälligen Algorithmus}
+  \caption{Berechnung der nächsten Aktion bei der Benutzung des Algorithmus mit zufälliger Bewegung}
 \end{program}
 
+
 \subsection{Einfache Heuristik}\label{simple_heuristik:sec}
-Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  auf das Zielobjekt zu, ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung ~(\ref{simple_agent_to_goal:fig}) zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte. Programm~\ref{calculateNextMove_SimpleHeuristic:fig} zeigt den zugehörigen Quelltext.
+
+Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  auf das Zielobjekt zu, ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung~(\ref{simple_agent_to_goal:fig}) zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte.\\
+Programm~\ref{calculateNextMove_SimpleHeuristic:fig} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -130,11 +144,13 @@ Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  au
   }
 \end{verbatim}
  \label{calculateNextMove_SimpleHeuristic:fig}
-  \caption{Berechnung der nächsten Bewegung im Fall der einfachen Heuristik}
+  \caption{Berechnung der nächsten Aktion bei der Benutzung der einfachen Heuristik}
 \end{program}
 
+
 \subsection{Intelligente Heuristik}\label{intelligent_heuristik:sec}
-Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~(\ref{intelligent_agent:fig}) sieht der Agent das Zielobjekt nicht und wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigt, in diesem Fall Norden. Programm~\ref{calculateNextMove_IntelligentHeuristic:fig} zeigt den zugehörigen Quelltext.
+
+Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~(\ref{intelligent_agent:fig}) ist das Zielobjekt nicht im Sichtbereich des Agenten und dieser wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigt, in diesem Fall Norden.\\ Programm~\ref{calculateNextMove_IntelligentHeuristic:fig} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -191,5 +207,5 @@ private void calculateNextMove() {
   }
 \end{verbatim}
  \label{calculateNextMove_IntelligentHeuristic:fig}
-  \caption{Berechnung der nächsten Bewegung im Fall der intelligenten Heuristik}
+  \caption{Berechnung der nächsten Aktion bei der Benutzung der intelligenten Heuristik}
 \end{program}

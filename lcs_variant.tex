@@ -178,6 +178,49 @@ Als Vergleich wurde das bekannte Verfahren \cite{Butz2000} fast unverändert über
 \end{program}
 
 
+\section{Verschiedenes, Numerosity, TODO}
+
+Durch die Benutzung von \emph{macro classifiers} ergibt sich allerdings das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifiers} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifiers} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz2000} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einer einzelnen \emph{action set} Liste optimiert, während die hier verwendete Implementierung jeweils mit bis über 100 \emph{action set} Listen programmiert wurde, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{action set} Listen zur Folge, in der der \emph{classifier} Mitglied ist.\\
+Wird also z.B. ein \emph{micro classifier} entfernt, dann wird lediglich die Änderungsfunktion des \emph{classifiers} aufgerufen, der dann wiederum den \emph{numerositySum} Wert der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viel Umstände, den \emph{numerositySum} der Eltern immer auf den aktuellen Stand zu halten und einzelne \emph{classifiers} zu löschen.\\
+Positiver Nebeneffekt durch die verbesserte Struktur, dass man dadurch leicht auf die Menge der \emph{action set} Listen zugreifen kann, denen ein \emph{classifier} angehört, hierfür wurde aber keine Verwendung gefunden.\\
+
+Ein weiteres Problem der Standardimplementierung ist, dass der \emph{fitness} Wert eines \emph{classifiers} als Optimierung bereits den \emph{numerosity} Wert als Faktor enthält, während bei der Aktualisierung des \emph{numerosity} Werts der \emph{fitness} Wert nicht aktualisiert wurde. Das hat zur Folge, dass theoretisch \emph{fitness} Werte von \emph{classifiers} fast den \emph{max population} Wert annehmen kann, wenn ein \emph{classifier} mit \emph{numerosity} und \emph{fitness} Wert in der Höhe von \emph{max population} auf einen \emph{numerosity} Wert von 1 reduziert wird.\\
+Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die korrigierte Fassung ist in~\ref{corrected_numerosity_function:fig} gelistet, ein Vergleich der Qualität, mit und ohne Korrektur, ist in~\ref{correct_numerosity_graph:fig} dargestellt.
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Adds to the numerosity of the classifier.
+ * @param num The added numerosity (can be negative!).
+ */
+  public void addNumerosity(int num) {
+    int old_num = numerosity;
+   
+    numerosity += num;
+
+  /**
+   * Korrektur der fitness
+   */
+    fitness = fitness * (double)numerosity / (double)old_num;
+
+  /**
+   * Aktualisierung der Eltern
+   */
+    for (ClassifierSet p : parents) {
+      p.changeNumerositySum(num);
+      if (numerosity == 0) {
+        p.removeClassifier(this);
+      }
+    }
+  }
+\end{verbatim}
+\label{corrected_numerosity_function:fig}
+  \caption{Korrigierte Version der \emph{addNumerosity()} Funktion}
+\end{program}
+
+TODO Vergleich!
+TODO wenig Unterschied sensoragent, evtl wieder raus
+
 
 
 \section{XCS Variante für Überwachungsszenarien (SXCS)}

@@ -121,7 +121,7 @@ TODO Standardverfahren?
 \label{pillar_lcs_prediction_init_quality:fig}
 \end{figure}
 
-\section{Zufällige Initialisierung}\label{sec:random_init}
+\section{Zufällige Initialisierung der \emph{classifier set} Liste}\label{sec:random_init}
 
 Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt~(\cite{Butz2006}), bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälligen \emph{action} Werten und \emph{condition} Vektoren gefüllt wird.\\
 Tests haben gezeigt (siehe Tabelle~\ref{table:lcs_initialization}), dass dadurch minimal bessere Ergebnisse erzielt werden, allerdings nur in Szenarien mit ausreichender Schrittzahl (\(>100\)). Dies lässt sich darauf zurückführen, dass  anfänglich gefüllte \emph{classifier set} Listen die \emph{matchSet} Listen relativ groß lassen werden, somit die Auswirkungen anfänglichen Lernens geringer ausfallen und sich die Agenten eher wie sich zufällig bewegende Agenten verhalten. Da hier durchgeführten Tests über 500 bzw. 2000 Schritte laufen, sollen somit die \emph{classifier set} Listen mit zufällig generierten \emph{classifiers} gefüllt werden.
@@ -169,10 +169,10 @@ LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
 \centering
 \begin{tabular}{c c c}
 \hline\hline
-Parameter & Wert & Standardwert ~\cite{Butz}\\ [0.5ex]
+Parameter & Wert & Standardwert (siehe~\cite{Butz})\\ [0.5ex]
 \hline
-Max population \(N\) & \textbf{128} (siehe~\ref{sec:max_population_parameter})\\
-Max value \(\rho\) & \textbf{1.0} (siehe~\ref{sec:maximalwert_rho}) & [10000]\\
+Max population \(N\) & \textbf{128} (siehe Kapitel~\ref{sec:max_population_parameter})\\
+Max value \(\rho\) & \textbf{1.0} (siehe Kapitel~\ref{sec:maximalwert_rho}) & [10000]\\
 Fraction mean fitness \(\delta\) & 0.1 & [0.1]\\
 Deletion threshold \(\theta_{\mathrm{del}}\) & 20.0 & [\(\sim\) 20.0]\\
 Subsumption threshold \(\theta_{\mathrm{sub}}\) & 20.0 & [20.0+]\\
@@ -185,7 +185,7 @@ Fitness reduction & \(0.1\) & [0.1]\\
 Reward prediction init \(p_{i}\) & \textbf{0.5, 1.0} (siehe~\ref{sec:prediction_init}) & [\(\sim\) 0]\\
 Prediction error init \(\epsilon_{i}\) & 0.0 & [0.0]\\
 Fitness init \(F_{i}\) & \(0.01\) &  [0.01]\\
-Random init & \textbf{ja} & [ja oder nein]\\
+Condition vector & \textbf{zufällig} (siehe Kapitel~\ref{sec:random_init}) &  [zufällig oder leer]\\
 Numerosity & 1 & [1]\\
 Experience & 0 & [0]\\
 
