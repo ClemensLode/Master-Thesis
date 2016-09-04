@@ -1,5 +1,59 @@
 \chapter{Analyse SXCS}\label{lcs_analysis:cha}
 
+
+
+
+
+
+
+\begin{table}[ht]
+\caption{Vergleich ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
+\centering
+\begin{tabular}{c c c}
+\hline\hline
+Algorithmus & Abdeckung & Qualität \\ [1ex]
+\hline
+``Intelligent (Open)'' \\ [1ex]
+\hline
+Zufällige Bewegung     & 72.55\% & 11.58\% \\
+XCS                    & 71.35\% & 13.98\% \\
+SXCS                   & 72.10\% & 13.50\% \\ [1ex]
+\hline
+``Intelligent (Hide)'' \\ [1ex]
+\hline
+Zufällige Bewegung     & 72.56\% & 11.78\% \\
+XCS                    & 71.33\% & 14.27\% \\
+SXCS                   & 72.05\% & 13.90\% \\ [1ex]
+\hline
+\end{tabular}
+\label{table:intelligent_open_hide_pillar}
+\end{table}
+
+
+\begin{table}[ht]
+\caption{Vergleich ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
+\centering
+\begin{tabular}{c c c}
+\hline\hline
+Algorithmus & Abdeckung & Qualität \\ [1ex]
+\hline
+``Intelligent (Open)'' \\ [1ex]
+\hline
+Zufällige Bewegung     & 72.55\% & 11.58\% \\
+XCS                    & 71.35\% & 13.98\% \\
+SXCS                   & 72.10\% & 13.50\% \\ [1ex]
+\hline
+``Intelligent (Hide)'' \\ [1ex]
+\hline
+Zufällige Bewegung     & 72.56\% & 11.78\% \\
+XCS                    & 71.33\% & 14.27\% \\
+SXCS                   & 72.05\% & 13.90\% \\ [1ex]
+\hline
+\end{tabular}
+\label{table:intelligent_open_hide_pillar}
+\end{table}
+
+
 TODO auch sich langsam bewegende analysieren!
 Und auch stehenbleibende :> z.B. im Raumszenario.
 
@@ -17,6 +71,12 @@ Bezüglich der Tests konnten in den vorangegangenen Kapiteln bisher folgende Erge
 \item 
 
 \end{itemize}
+
+SXCS sehr gut bei NO DIRECTION CHANGE und speed 1!
+
+
+nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zufälliger
+
 
 \section{Standard XCS Multistepverfahren}
 

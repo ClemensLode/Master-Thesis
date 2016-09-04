@@ -185,7 +185,7 @@ TODO: Erläuterung!
 Zu beachten sei, dass im Fall von ``Intelligent Hide'' eine relativ große Nummer an Sprüngen des Zielobjekts (siehe Kapitel~\ref{base_properties_goal:sec}) stattgefunden hat, was die Ergebnisse etwas verzerrt, die Zahl hält sich aber noch in Grenzen (bis zu ca. 0.5\% im Fall der einfachen und intelligenten Heuristik im Fall mit vielen Hindernissen).
 
 \begin{table}[ht]
-\caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (12 Agenten, ohne Hindernisse)}
+\caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, ohne Hindernisse)}
 \centering
 \begin{tabular}{c c c c}
 \hline\hline
@@ -193,22 +193,22 @@ Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
 ``Intelligent Open'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 69.66\% & 25.09\% \\
-Einfache Heuristik     & 61.68\% & 83.79\% \\
-Intelligente Heuristik & 70.25\% & 86.97\% \\ [1ex]
+Zufällige Bewegung     & 74.15\% & 11.32\% \\
+Einfache Heuristik     & 60.90\% & 82.86\% \\
+Intelligente Heuristik & 69.62\% & 85.74\% \\ [1ex]
 \hline
 ``Intelligent Hide'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 69.71\% & 27.24\% \\
-Einfache Heuristik     & 64.70\% & 67.07\% \\
-Intelligente Heuristik & 71.76\% & 77.43\% \\ [1ex]
+Zufällige Bewegung     & 74.13\% & 12.26\% \\
+Einfache Heuristik     & 69.43\% & 55.31\% \\
+Intelligente Heuristik & 74.87\% & 64.41\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_no_obstacles}
 \end{table}
 
 \begin{table}[ht]
-\caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (12 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
+\caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
 \centering
 \begin{tabular}{c c c c}
 \hline\hline
@@ -216,38 +216,38 @@ Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
 ``Intelligent Open'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 57.96\% & 27.65\% \\
-Einfache Heuristik     & 51.87\% & 85.59\% \\
-Intelligente Heuristik & 56.59\% & 89.79\% \\ [1ex]
+Zufällige Bewegung     & 62.54\% & 13.37\% \\
+Einfache Heuristik     & 52.23\% & 84.33\% \\
+Intelligente Heuristik & 56.92\% & 85.12\% \\ [1ex]
 \hline
 ``Intelligent Hide'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 58.12\% & 26.30\% \\
-Einfache Heuristik     & 50.79\% & 89.91\% \\
-Intelligente Heuristik & 55.05\% & 91.14\% \\ [1ex]
+Zufällige Bewegung     & 62.52\% & 13.10\% \\
+Einfache Heuristik     & 50.17\% & 90.32\% \\
+Intelligente Heuristik & 56.94\% & 90.45\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_random}
 \end{table}
 
 \begin{table}[ht]
-\caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (12 Agenten, Säulenszenario)}
+\caption{Vergleich ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
 \centering
-\begin{tabular}{c c c c}
+\begin{tabular}{c c c}
 \hline\hline
 Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
-``Intelligent Open'' \\ [1ex]
+``Intelligent (Open)'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 67.80\% & 24.70\% \\
-Einfache Heuristik     & 60.01\% & 83.24\% \\
-Intelligente Heuristik & 68.25\% & 87.08\% \\ [1ex]
+Zufällige Bewegung     & 72.55\% & 11.58\% \\
+Einfache Heuristik     & 57.19\% & 85.58\% \\
+Intelligente Heuristik & 64.26\% & 91.18\% \\ [1ex]
 \hline
-``Intelligent Hide'' \\ [1ex]
+``Intelligent (Hide)'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 67.75\% & 25.50\% \\
-Einfache Heuristik     & 61.28\% & 75.67\% \\
-Intelligente Heuristik & 69.17\% & 82.72\% \\ [1ex]
+Zufällige Bewegung     & 72.56\% & 11.78\% \\
+Einfache Heuristik     & 58.45\% & 80.98\% \\
+Intelligente Heuristik & 65.65\% & 86.38\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_pillar}

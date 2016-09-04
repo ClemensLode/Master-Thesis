@@ -57,7 +57,7 @@ Ansonsten gibt es folgende Möglichkeiten:
 
 Bei der ersten Möglichkeit haben alle Agenten die Sensordaten vom Beginn der Zeiteinheit, während bei der zweiten Möglichkeit später verarbeitete Agenten bereits die Aktionen der bereits berechneten Agenten miteinbeziehen können. Umgekehrt können dann frühere Agenten bessere Positionen früher besetzen. Da aufgrund der primitiven Sensoren nicht davon auszugehen ist, dass Agenten beginnende Bewegungen (und somit deren jeweilige Zielposition) anderer Agenten einbeziehen können, soll jeder Agent von den Sensorinformationen zu Beginn der Zeiteinheit ausgehen.\\
 Wenn sich mehrere Agenten auf dasselbe Feld bewegen wollen, dann spielt die Reihenfolge der Ausführung der Aktionen eine Rolle. Wird die Liste der Agenten einfach linear abgearbeitet, können Agenten mit niedriger Position in der Liste die Aktion auf Basis jüngerer Sensordaten fällen. Dies kann dazu führen, dass Aktionen von Agenten mit höherer Position in der Liste eher fehlschlagen, da das als frei angenommene Feld nun bereits besetzt ist. Da es keinen Grund gibt, Agenten mit niedrigerer Position zu bevorteilen, werden die Aktionen der Agenten in zufälliger Reihenfolge abgearbeitet.\\
-Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von maximal einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann.\\
+Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von maximal einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann (siehe auch Kapitel~\ref{base_properties_goal:sec}).
 Die Entscheidung fiel hier auf eine zufällige Verteilung. Kann sich das Zielobjekt um \(n\) Schritte bewegen, so wird seine Bewegung in \(n\) Einzelschritte unterteilt, die nacheinander mit zufälligen Abständen (d.h. Bewegungen anderer Agenten) ausgeführt werden.\\
 Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingeführt werden, so dass das Zielobjekt in einer Zeiteinheit mehrmals (\(n\)-mal) neue Sensordaten erfassen und sich für eine neue Aktion entscheiden kann.
 
@@ -173,6 +173,8 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
       a.aquireNewSensorData();
       a.calculateNextMove(gaTimestep);
     }
+    BaseAgent.goalAgent.aquireNewSensorData();
+    BaseAgent.goalAgent.calculateNextMove(gaTimestep);
   }
 
 \end{verbatim}
@@ -224,7 +226,7 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
       if(a.isGoalAgent() && goal_speed > 1) {
         goal_speed--;
         a.aquireNewSensorData();
-        a.calculateNextMove(0);
+        a.calculateNextMove(gaTimestep);
         a.calculateReward(gaTimestep);
       }
     }
