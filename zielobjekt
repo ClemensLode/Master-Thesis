@@ -1,0 +1,77 @@
+\chapter{Das Zielobjekt}
+
+
+Die Typen von Zielobjekten werden zum einen über ihre Geschwindigkeit und zum anderen über ihre Bewegungsart definiert. Neben der Größe des Torus und den Hindernissen trägt der Typ des Zielobjekts wesentlich zur Schwierigkeit eines Szenarios bei, da dieser die Aufenthaltswahrscheinlichkeiten des Zielobjekts unter Einbeziehung des Zustands des letzten Zeitschritts bestimmt. Die Schwierigkeit bestimmt sich über die Summe der erwarteten Aufenthaltswahrscheinlichkeiten in nicht überwachten Feldern geteilt durch die Summe der Aufenthaltswahrscheinlichkeiten in überwachten Feldern.
+
+\subsection{Basiseigenschaften}
+
+Im wesentlichen entspricht ein Zielobjekt einem Agenten, d.h. das Zielobjekt kann sich bewegen und besitzt Sensoren. 
+
+Gemeinsam haben alle Arten von Bewegungen des Zielobjekts, dass, wenn dem Algorithmus kein freies Feld zur Verfügung steht, ein zufälliges, freies Feld in der Nähe ausgewählt und dort hingesprungen wird. Dies kommt einem Neustart gleich und ist notwendig um eine Verfälschung des Ergebnisses zu verhindern, das daher rühren kann, dass ein oder mehrere Agenten (zusammen mit eventuellen Hindernissen) alle vier Bewegungsrichtungen des Zielobjekts blockieren.\\
+Andererseits ist auch der Sprung eine Verfälschung, falls bei einem Durchlauf eine ganze Anzahl von Sprüngen durchgeführt worden sein, sollte man deshalb das Ergebnis verwerfen und andere Random-Seed Werte benutzen.
+
+TODO wie oft das aufgetreten ist
+
+TODO benachbarte Hindernisse aus Bewegung ausschliessen, Nähesensor
+
+\subsection{Typ ``Total Random''}
+Ein Zielobjekt dieses Typs springt zu einem zufälligen (freien) Feld auf dem Torus. Mit dieser Einstellung kann die Abdeckung des Algorithmus geprüft werden, d.h. inwieweit die Agenten jeweils außerhalb der Überwachungsreichweite anderer Agenten bleiben. Jegliche Anpassung an die Bewegung des Zielobjekts ist hier wenig hilfreich, ein Agent kann nicht einmal davon ausgehen, dass sich das Zielobjekt in der Nähe seiner Position der letzten Zeiteinheit befindet. Die Aufenthaltswahrscheinlichkeit für jedes freie Feld ist hierbei \(\frac{1}{n}\), wobei \(n\) die Anzahl der freien Felder entspricht.
+
+\subsection{``Random Movement''}
+Wie ``Random Movement'' bei Agenten (~\ref{randomized_movement:sec}). Sind alle möglichen Felder belegt, wird wie oben beschrieben auf ein zufälliges Feld gesprungen. Diesen Fall außen vorgelassen beträgt die Aufenthaltswahrscheinlichkeit für die 4 angrenzenden Felder jeweils \(\frac{1}{5}\) und das Zielobjekt bleibt mit Wahrscheinlichkeit \(\frac{1}{5}\) stehen.
+
+\subsection{``One direction change''}
+Mit dieser Einstellung wird die der letzten Richtung entgegengesetzten Richtung aus der Menge der Auswahlmöglichkeiten entfernt und von den verbleibenden drei Richtungen (plus der Aktion ``Stehenbleiben'') eine zufällig ausgewählt. Sind alle drei Richtungen versperrt, wird stehengeblieben.\\
+War die letzte Aktion nicht eine Bewegungsrichtung, sondern die Aktion ``Stehenbleiben'', so wird eine zufällige Richtung ausgewählt. Sind alle Richtungen versperrt, wird auch hier wieder auf ein zufälliges Feld gesprungen.
+Die Aufenthaltswahrscheinlichkeit beträgt im Fall ohne angrenzende Hindernisse für die Felder vor, links und rechts (relativ zur Bewegungsrichtung im vergangenen Zeitschritt) also \(\frac{1}{3}\). In Abbildung~\ref{goal_agent_one_direction_change:fig} ist eine Beispielsituation zu sehen, bei der der Zielagent sich zuletzt nach Norden bewegt hat und nun zwischen Norden, Westen und Osten auswählen kann.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_direction_change.eps}
+}
+\caption[Zielobjekt mit maximal einer Richtungsänderung]{Zielobjekt macht pro Schritt maximal eine Richtungsänderung}
+\label{goal_agent_one_direction_change:fig}
+\end{figure}
+
+\subsection{``Always same direction''}
+Der Zielobjekt versucht, immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, wählt er ein zufälliges, angrenzendes, freies Feld im Westen oder Osten. Anzumerken ist, dass dies zusätzliche Fähigkeiten darstellen, d.h. das Zielobjekt kann feststellen, ob sich direkt angrenzend ein Hindernis im Norden befindet, während normale Agenten, was die Distanz betrifft, keine Informationen darüber besitzen können.\\
+Sind auch die Felder im Westen und Osten belegt, springt er auf ein zufälliges freies Feld. Schafft es der Zielobjekt innerhalb von einer bestimmten Zahl (Breite des Spielfelds) von Schritten nicht, einen weiteren Schritt nach Norden zu gehen, wird ebenfalls gesprungen, um ein ``Festhängen'' an einem Hindernis zu vermeiden. Ohne Hindernisse ergibt sich also eine Aufenthaltswahscheinlichkeit von \(1.0\) im darüberliegenden Feld im Norden. In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen dargestellt, zum einen ein wiederholtes hin- und herlaufen unter den Hindernissen, der Weg links um die Hindernisse herum und der Weg rechts um die Hindernisse herum.
+
+TODO im Bild den Pfeil nach rechts bzw. links raus, wo er bereits im Norden frei ist
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_always_same_direction.eps}
+}
+\caption[Zielobjekt das sich, wenn möglich, immer nach Norden bewegt]{Zielobjekt bewegt sich, wenn möglich, immer nach Norden}
+\label{goal_agent_always_same_direction:fig}
+\end{figure}
+
+\subsection{``Intelligent (Open)''}
+Das Zielobjekt versucht bei der Auswahl der Aktion möglichst die Aktion zu wählen, bei der es außerhalb der Sichtweite der Agenten bleibt, es werden also alle Richtungen gestrichen, in denen ein anderer Agent gesichtet wird. Von den verbleibenden Richtungen werden außerdem mit 20\% Wahrscheinlichkeit alle Richtungen gestrichen, in denen sich ein Hindernis befindet. Sind alle Richtungen gestrichen worden, bewegt sich das Zielobjekt zufällig. Sind alle Richtungen blockiert, springt es wie in den anderen Varianten auch auf ein zufälliges Feld. In Abbildung~\ref{goal_agent_intelligent_open:fig} wird die Richtung Westen gestrichen, da sich dort ein Agent befindet. Im Norden und Osten befinden sich Hindernisse, diese Richtungen werden jeweils mit 20\% gestrichen, während die Richtung Süden mit Sicherheit als Auswahlmöglichkeit übrig bleibt. Die Aufenthaltswahrscheinlichkeit für Norden und Osten wären also jeweils \(\frac{8*8}{3*10*10}+\frac{2*8}{2*10*10} = \frac{88}{300}\) und \(\frac{8*8}{3*10*10}+\frac{2*2*8}{2*10*10}+\frac{2*2}{10*10}=\frac{124}{300}\) für den Süden.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_intelligent_open.eps}
+}
+\caption[Sich intelligent verhaltendes Zielobjekt der Agenten und Hindernissen ausweicht]{Zielobjekt bewegt sich mit bestimmter Wahrscheinlichkeit von Agenten und größerer Wahrscheinlichkeit von Hindernissen weg}
+\label{goal_agent_intelligent_open:fig}
+\end{figure}
+
+\subsection{``Intelligent (Hide)''}
+Das Zielobjekt vermeidet Agenten wie bei ``Intelligent (Open)'', streicht aber statt Richtungen mit Hindernissen Richtungen ohne Hindernisse mit 20\% Wahrscheinlichkeit, tendiert also eher dazu, auf Hindernisse zuzugehen. Idee ist, dass es sich dadurch möglicherweise den Blicken der Agenten entziehen kann. Betrachten wir in Abbildung~\ref{goal_agent_intelligent_hide:fig} die selbe Situation wie bei ``Intelligent (Open)'' so sind die Aufenthaltswahrscheinlichkeiten von Norden und Osten mit denen von Süden vertauscht.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_intelligent_hide.eps}
+}
+\caption[Sich intelligent verhaltendes Zielobjekt der Agenten ausweicht und Hindernisse sucht]{Zielobjekt bewegt sich von Agenten weg und mit bestimmter Wahrscheinlichkeit auf Hindernisse zu}
+\label{goal_agent_intelligent_hide:fig}
+\end{figure}
+
+\subsection{``LCS''}
+Eine LCS Implementierung, die der Implementierung eines LCS Agenten entspricht. Das Ziel des Zielobjekts ist es hier aber, es zu vermeiden, Agenten zu überwachen (bzw. umgekehrt eine Überwachung durch andere Agenten zu vermeiden). Eine genaue Beschreibung folgt im Kapitel~\ref{lcs:cha} und soll hier nur der Vollständigkeit halber erwähnt werden.
+
+TODO auch ein eigenes goal agent lcs kapitel machen
+TODO Pendelbewegung?
+TODO Fester Pfad?

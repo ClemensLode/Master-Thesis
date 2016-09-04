@@ -1,23 +1,32 @@
-
-
-
-
-
-
 \chapter{Erste Analyse der Agenten ohne LCS}
 
 In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des zufälligen Algorithmus, des Algorithmus mit einfacher Intelligenz (``Simple AI Agent'') und des Algorithmus mit komplexerer Regeln (``Intelligent AI agent'') angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.
 
+\section{``Total Random'' Zielobjekt}
 
-
-\section{Total Random Goal Agent Movement}
-
-In allen Szenarien mit dieser Form der Bewegung des Zielobjekts kommt es nur darauf an, dass die Agenten einen möglichst großen Bereich des Torus abdecken. In allen Standardszenarios zeigt sich, dass der ``Simple AI Agent'' sich wie erwartet nicht wesentlich vom zufälligen Agenten unterscheidet. 
+In allen Szenarien mit dieser Form der Bewegung des Zielobjekts kommt es nur darauf an, dass die Agenten einen möglichst großen Bereich des Torus abdecken.  Wie die folgenden Abschnitte zeigen werden, unterscheidet sich der ``Simple AI Agent'' nicht wesentlich vom zufälligen Agenten. Der intelligente Agent erreicht hier dagegen in den meisten Fällen deutlich bessere Ergebnisse.
 
 \subsection{Ohne Hindernisse}
 
 Ohne Hindernisse gibt sich ein klares Bild. Das Ergebnis der einfachen KI ist etwas schlechter als der des zufälligen Agenten, da sich immer wenn mehrere Agenten das Zielobjekt in der selben Richtung in Sichtweite haben, sich mehrere Agenten in die selbe Richtung bewegen. Dies beeinträchtigt die zufällige Verteilung der Agenten auf dem Spielfeld und führt somit auch zu einer niedrigeren Abdeckung des Torus.\\
 Der intelligente Agent liegt hier sehr deutlich vorne, ein möglichst weiträumiges Verteilen auf dem Torus führt zum Erfolg, denn genau das wird mit dem völlig zufällig springenden Agenten getestet.
+
+\begin{table}[ht]
+\caption{``Total Random'' ohne Hindernisse}
+\centering
+\begin{tabular}{c c c c}
+\hline\hline
+Algorithmus & Qualität & Abdeckung & Überhang \\ [0.5ex]
+%heading
+\hline
+Zufällige Bewegung & 75.88\% & 76.09\% & 59.54\% \\ % inserting body of the table
+Einfache Heuristik & 75.80\% & 75.09\% & 60.10\% \\
+Intelligente Heuristik & 87.53\% & 87.26\% & 53.10\% \\ [1ex] % [1ex] adds vertical space
+\hline %inserts single line
+\end{tabular}
+\label{table:nonlin} % is used to refer this table in the text
+\end{table}
+
 
 \subsection{Zufällig verteilte Hindernisse}
 
