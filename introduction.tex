@@ -15,17 +15,7 @@ Wesentliche Schlußfolgerung ist, dass sich unterschiedliche Szenarien unterschie
 Erfolgversprechende Ansatzpunkte für weitere Forschung gibt es im Bereich der mathematischen Begründung, warum die Implementierung Vorteile erbringt, im Ausbau der Untersuchung von Kommunikation zwischen den Agenten in Verbindung mit XCS und in der Anwendung der gefundenen Ergebnisse in anderen Problemstellungen ähnlicher Natur.
 
 
-\subsection{Aufbau der Arbeit}
-
-In Kapitel\ref{stand_wissenschaft:cha} soll der gegenwärtige Stand der Forschung dargestellt werden, insbesondere in Bereichen, die sich mit dem Thema dieser Arbeit schneiden. In Kapitel~\ref{scenario_description:cha} soll dann eingehend auf das verwendete Szenario, die Eigenschaften der Objekte und vor allem die Eigenschaften der Agenten und des Zielobjekts eingegangen werden. Schließlich soll erläutert werden, wie die Simulation auf dem beschriebenen Szenario ablaufen soll. In Kapitel~\ref{lcs:cha} sollen dann die wichtigsten Teile des XCS vorgestellt werden, insbesondere die sogenannten \emph{classifier}, die Verarbeitung von Sensordaten, der allgemeine Ablauf und die XCS Parameter. Darauf aufbauend schließt Kapitel~\ref{lcs_variants:cha} an, in dem Anpassungen wie auch Verbesserungen des XCS Algorithmus besprochen werden sollen. Speziell für das vorgestellte Szenario soll desweiteren eine selbstentwickelte XCS Variante vorgestellt und dann durch die Erweiterung der Möglichkeit zur Kommunikation zwischen den Agenten weiterentwickelt werden. Der wesentliche Höhepunkt folgt dann in Kapitel~\ref{lcs_analysis:cha} in dem alle vorgestellten Algorithmen in den vorgestellten Szenarien getestet und analysiert werden. Abschluss bildet die Zusammenfassung und der Ausblick in Kapitel~\ref{conclusion:cha} und im Anhang in Kapitel~\ref{implementation:cha} findet sich dann noch eine Anzahl der zentralen, implementierten Quellcodes der Algorithmen, die in dieser Arbeit vorgestellt wurden.
-
-
-
-\chapter{Stand der Wissenschaft}\label{stand_wissenschaft:cha}
-
-\section{XCS}
-
-Anwendungen XCS!
+\section{Stand der Wissenschaft}\label{stand_wissenschaft:cha}
 
 Das auf Genauigkeit der \emph{classifier} basierende XCS wurde zuerst in \cite{wilson:95} beschrieben und stellt eine wesentliche Erweiterung von LCS dar. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum LCS gibt es vor allem innerhalb der Funktion zur Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
 
@@ -93,3 +83,9 @@ TODO
 Limits in Long Path Learning with XCS
 Gamma!
 
+TODO Anwendungen XCS!
+
+
+\section{Aufbau der Arbeit}
+
+In Kapitel~\ref{stand_wissenschaft:cha} soll der gegenwärtige Stand der Forschung dargestellt werden, insbesondere in Bereichen, die sich mit dem Thema dieser Arbeit schneiden. In Kapitel~\ref{scenario_description:cha} soll dann eingehend auf das verwendete Szenario, die Eigenschaften der Objekte und vor allem die Eigenschaften der Agenten und des Zielobjekts eingegangen werden. Schließlich soll erläutert werden, wie die Simulation auf dem beschriebenen Szenario ablaufen soll. In Kapitel~\ref{lcs:cha} sollen dann die wichtigsten Teile des XCS vorgestellt werden, insbesondere die sogenannten \emph{classifier}, die Verarbeitung von Sensordaten, der allgemeine Ablauf und die XCS Parameter. Darauf aufbauend schließt Kapitel~\ref{lcs_variants:cha} an, in dem Anpassungen wie auch Verbesserungen des XCS Algorithmus besprochen werden sollen. Speziell für das vorgestellte Szenario soll desweiteren eine selbstentwickelte XCS Variante (SXCS) vorgestellt und dann durch die Erweiterung der Möglichkeit zur Kommunikation zwischen den Agenten weiterentwickelt werden. Der wesentliche Höhepunkt folgt dann in Kapitel~\ref{lcs_analysis:cha} in dem alle vorgestellten Algorithmen in den vorgestellten Szenarien getestet und analysiert werden. Abschluss bildet die Zusammenfassung und der Ausblick in Kapitel~\ref{conclusion:cha} und im Anhang~\ref{implementation:cha} findet sich dann noch eine Anzahl der zentralen, implementierten Quellcodes der Algorithmen, die in dieser Arbeit vorgestellt wurden.

@@ -38,7 +38,8 @@ Mit dieser Arbeit wurde versucht, ein neues Gebiet von Problemfeldern in Verbind
 \subsection{Ausweitung der Sensoren}
 
 In dieser Arbeit wurde ein sehr einfaches Sensorenmodell verwendet, das zwar höhere Sichtweiten liefert, dafür aber sehr ungenaue Informationen liefert. 
-Zu einem wesentlich besseren Ergebnis könnte die Verwendung von einer größeren Anzahl von Sensoren bzw. realwertigen Eingabewerten führen. Das würde beispielsweise die Möglichkeit erlauben, den Abstand zu anderen Agenten je nach Szenario genauer zu regeln. Eine einführende Arbeit bezüglich realwertigen Eingabewerten und XCS findet sich z.B. in \cite{689040}. Mehrwertige Sensoren könnte man einfach durch Hinzunahme von weiteren Binärsensoren bewerkstelligen.
+Zu einem wesentlich besseren Ergebnis könnte die Verwendung von einer größeren Anzahl von Sensoren bzw. rationale Eingabewerten führen. Das würde beispielsweise die Möglichkeit erlauben, den Abstand zu anderen Agenten je nach Szenario genauer zu regeln. Eine einführende Arbeit bezüglich rationalen Eingabewerten und XCS findet sich z.B. in \cite{689040}. Mehrwertige Sensoren könnte man einfach durch Hinzunahme von weiteren Binärsensoren bewerkstelligen.\\
+Zusammen mit der Erweiterung der Sensoren könnte auch eine bessere \emph{reward} Funktion für den \emph{base reward} entwickelt werden (siehe Kapitel~\ref{bewertung:sec}), wodurch das globale Problem womöglich besser gelernt werden könnte.
 
 
 \subsection{Untersuchung der Theorie}
@@ -95,16 +96,6 @@ Im Bereich der Kommunikation wurde neben in dieser Arbeit besprochenen "`egoisti
 \subsection{Verworfene Szenarien}
 
 Was die Szenarien selbst betrifft, wurden ebenfalls mehrere verworfen, da bei ihnen keine zusätzlichen Beobachtungen gemacht bzw. nur unbedeutende Teilaspekte betrachtet werden konnten. Unter anderem sind dies ein Labyrinth, bei denen die Agenten wahrscheinlich an den mangelnden Fähigkeiten der Sensoren scheiterten, ein vereinfachtes "`schwieriges Szenario"' mit einem "`Raum"' mit einer Öffnung in der Mitte, welches sich als zu einfach zu lösen herausstellte und ein Szenario mit einem Kreuz bestehend aus Hindernissen in der Mitte, welches keine bedeutend anderen Ergebnisse lieferte als das Szenario mit zufällig verteilten Hindernissen.\\
-
-
-\subsection{Varianten zur Bestimmung des \emph{base reward}}
-
-In Kapitel~\ref{bewertung:sec} wurde 
-
-%if((sensor_goal[2*i])) {//  && (!sensor_agent[2*i+1])) { vergleichen. Ohne Sensoragent minimal schlechter
-TODO, Bewertungskapitel
-
-
 
 
 

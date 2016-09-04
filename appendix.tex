@@ -430,7 +430,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 \section{Implementierung des SXCS Verfahrens}
 
-\newlisting{Erstes Kernstück des SXCS-Algorithmus (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten)}{sxcs_calc_reward:pro}
+\newlisting{Erstes Kernstück des SXCS-Algorithmus (\emph{calculateReward()}, Bestimmung des \emph{reward} Werts anhand der Sensordaten)}{sxcs_calc_reward:pro}
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
  * reward Wert zu bestimmen und positive, negative und neutrale 
@@ -443,7 +443,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
   public void calculateReward(final long gaTimestep) {
   /**
-   * checkRewardPoints liefert "wahr" wenn sich der Zielobjekt in
+   * checkRewardPoints() liefert "wahr" wenn sich das Zielobjekt in
    * Überwachungsreichweite befindet
    */
     boolean reward = checkRewardPoints();
@@ -604,14 +604,12 @@ action_set_size);
            calculateReward(action_set_size - i, action_set_size);
        } else {
          if(corrected_reward == 1.0 && factor == 1.0) {
-           historicActionSet.get(start_index - i).
-             rewardPrematurely(
-               historicActionSet.get(start_index - i + 1).getBestValue());
+           historicActionSet.get(start_index - i).rewardPrematurely();
          }
        }
 
   /**
-   * Füge den ermittelten reward Wert zum historicActionSet
+   * Füge den ermittelten reward Wert zur historicActionSet Liste
    */
        historicActionSet.get(start_index - i).
          addReward(corrected_reward, factor);
@@ -627,20 +625,18 @@ action_set_size);
  * Der erste Teil der Funktion ist identisch mit der calculateNextMove()
  * Funktion der SXCS Variante ohne Kommunikation. Der Zusatz ist, dass beim 
  * Überlauf die in der historicActionSet Liste gespeicherte reward Werte
- * verarbeitet werden
+ * verarbeitet werden.
  */
 
   public void calculateNextMove(long gaTimestep) {
- 
+
   // ... 
 
   /**
-   * historyActionSet voll? Dann verarbeite den dort gespeicherten 
-   * reward Wert
+   * historicActionSet voll? Dann verarbeite den dortigen reward Wert
    */
      if (historicActionSet.size() > Configuration.getMaxStackSize()) {
-      HistoryActionClassifierSet first = historicActionSet.pop();
-      last.processReward(historicActionSet.getFirst().getBestValue());
+       historicActionSet.pop().processReward();
     }
   }
 \end{lstlisting}
@@ -648,14 +644,13 @@ action_set_size);
 
 \newlisting{Viertes Kernstück des verzögerten SXCS Algorithmus DSXCS  (Verarbeitung des jeweiligen reward Werts, \emph{processReward()})}{process_reward_dsxcs1:pro}
 /**
- * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
- * eingegangenen Rewards bis zu diesem Punkt.
+ * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
+ * eingegangenen reward Werte bis zu diesem Punkt.
  */
 
-  public void processReward(double max_prediction) {
-
+  public void processReward() {
   /**
-   * Finde das größte reward / factor Paar TODO Verbessern
+   * Finde das größte reward / factor Paar
    */
     for(RewardHelper r : reward) {
     /**
@@ -665,10 +660,9 @@ action_set_size);
         continue;
       }
     /**
-     * Aktualisiere den Eintrag mit den entsprechenden Werten und dem
-     * übergebenen maxPrediction Wert
+     * Aktualisiere den Eintrag mit den entsprechenden Werten
      */
-      actionClassifierSet.updateReward(r.reward, max_prediction, r.factor);
+      actionClassifierSet.updateReward(r.reward, 0.0, r.factor);
     }
   }
 \end{lstlisting}
@@ -676,16 +670,16 @@ action_set_size);
 
 \newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
 /**
- * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
- * eingegangenen Rewards bis zu diesem Punkt.
+ * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
+ * eingegangenen reward Wert bis zu diesem Punkt.
  */
 
-  public void processReward(double max_prediction) {
+  public void processReward() {
 
     double max_value = 0.0;
     double max_reward = 0.0;
   /**
-   * Finde das größte reward / factor Paar TODO Verbessern
+   * Finde das größte reward / factor Paar
    */
     for(RewardHelper r : reward) {
     /**
@@ -701,10 +695,9 @@ action_set_size);
       }
     }
     /**
-     * Aktualisiere den Eintrag mit dem ermittelten Wert und dem
-     * übergebenen maxPrediction Wert
+     * Aktualisiere den Eintrag mit dem ermittelten Werten
      */
-    actionClassifierSet.updateReward(max_reward, max_prediction, 1.0);
+    actionClassifierSet.updateReward(max_reward, 0.0, 1.0);
   }
 \end{lstlisting}
 
