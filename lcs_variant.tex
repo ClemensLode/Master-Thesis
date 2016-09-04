@@ -1,8 +1,65 @@
-\chapter{LCS Varianten}
+\chapter{LCS Varianten}\label{lcs_variants:cha}
 
 \section{Hauptprogramm}
 
 Der Aufruf in der verwendeten Implementierung unterscheidet sich ein wenig von der originalen Implementation, weswegen er in TODO nochmal dargestellt sein soll.
+
+
+
+
+
+
+
+
+
+
+TODO Wahrscheinlichkeiten über Parameter
+
+
+
+
+
+
+\section{Implementation}
+
+Zur Durchführung und Forschung war es notwendig, den kompletten XCS Algorithmus nachvollziehen zu können. Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction bereitete 
+
+
+Das Multistepverfahren baut darauf auf, dass die Qualität der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
+
+Der hier entwickelte Algorithmus muss primär nicht einen Weg zum Ziel erkennen, sondern eine möglichst optimale (und auch an andere Agenten angepasste) Verhaltensstrategie finden.
+
+Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht zum Erfolg führen. Eine einfache Implementation mit einem simplen Agenten der auf das Ziel zugeht, wenn es in Sicht ist und sich sonst wie ein sich zufällig bewegender Agent verhält, schneidet grundsätzlich schlechter ab.
+
+
+\section{Ablauf eines LCS}\label{ablauf_lcs:sec}
+
+\begin{enumerate}
+\item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe~\ref{covering:sec})
+\item Auswahl auf die Sensordaten passender \emph{classifier} (\emph{matching}, siehe~\ref{matching:sec})
+\item Bestimmung der Auswahlart der Aktion (\emph{explore/exploit}, siehe Kapitel~\ref{auswahlart:sec})
+\item Auswahl der Aktion TODO
+\item Erstellung des zur Aktion zugehörigen Liste von \emph{classifiers} (\emph{actionSet}, siehe~\ref{actionSet:sec})
+
+, so dass es in der Liste \emph{classifiers} deren 
+
+
+Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} Vektoren gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das \emph{matchSet}.
+\item Im nächsten Schritt wählen wir einen \emph{classifier} aus diesem \emph{matchset} aus und speichern dessen Aktion.
+\item Schließlich bilden wir anhand des MatchSets und der gewählten Aktion das ActionSet
+\end{enumerate}
+
+
+\subsection{matching}\label{matching:sec}
+appliedClassifierSet
+
+\subsection{actionSet}
+
+\subsection{Covering}\label{covering:sec}
+
+Die Implementation entspricht im Wesentlichen dem Original, es wurde aber im Hinblick auf eine klare Code-Struktur eine Optimierung entfernt und Code zur Behandlung von Drehungen hinzugefügt. Im Original wird die Erstellung des MatchSets gleichzeitig mit dem Covering ausgeführt, wodurch möglicherweise Zeit gespart wird, während in dieser Implementierung es in zwei Funktionen aufgeteilt wurde. TODOBEschreibung
+
+
 
 
 
@@ -58,7 +115,7 @@ TODO
   }
 \end{verbatim}
   \label{multistep_calc_reward:fig}
-  \caption{Erstes Kernstück des Multistepverfahrens (calculateReward, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}
+  \caption{Erstes Kernstück des Standard XCS Multistepverfahrens (calculateReward, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}
 \end{program}
 
 \begin{program}
@@ -148,12 +205,43 @@ TODO
 
 
 \section{LCS Variante ohne Kommunikation}
+
+
+
+
+
+
+Im einfachsten Fall, im sogenannten ``Single-Step''-Verfahren erfolgt die Regelbewertung sofort nach Aufruf jeder einzelnen Regel, während im sogenannten ``Multi-Step''-Verfahren mehrere aufeinanderfolgende Regeln bewertet werden. Ein klassisches Beispiel für den Test ``Single-Step''-Verfahren ist das 6-Multiplexer Problem (z.B. in ~\cite{Butz2006}), bei dem mit 2 Adressbits und 4 Datenbits das den Adressbits entsprechende ausgegeben werden soll. Hier ist offensichtlich, dass nach der Klassifizierung sofort bestimmbar ist, ob sie ein korrektes Ergebnis geliefert hat.\\
+Ein klassisches Beispiel für ``Multi-Step''-Verfahren ist das ``Maze~\(N\)'' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird die zuletzt aktivierte Regel positiv bewertet und das Problem wiederholt. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung der folgenden Regel. Somit wird eine ganze Kette von Regeln bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind.\\
+
+Eine wesentliche Erweiterung des LCS ist das sogenannte ``accuracy-based classifier system XCS'', zuerst beschrieben in \cite{Wilson1995}. Neben neuer  Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich der Anwendung des GA) ist im Vergleich zum einfachen LCS der wesentliche Unterschied, auf welche Weise der \emph{fitness} Wert berechnet wird. Während  \emph{fitness} bei einfachen LCS lediglich entweder auf dem \emph{prediction error} basierten, basiert bei XCS \emph{fitness} auf der Genauigkeit der jeweiligen Regel. Eine genaue Beschreibung findet sich in~\cite{Butz2006}.\\
+
+Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des Multistep-Verfahrens von~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in ~\cite{Butz}), eine Besonderheit stellt allerdings die Problemdefinition dar, da es kein festes Ziel gibt und somit auch keinen Neustart des Problems.\\
+Keine der gefundenen Implementationen und Varianten von XCS beschäftigen sich mit dynamischen Überwachungsszenarios, sondern mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}). Insbesondere zeigen Ergebnisse aus der Literatur, dass XCS in der Standardimplementierung Schwierigkeiten mit Problemen mit größerer Schrittzahl zwischen Start und Ziel hat \cite{Barry} \cite{Banzhaf} und bisherige Arbeiten sich auf einfache Probleme konzentrierten \cite{xcs1} \cite{xcs2}.\\
+
+TODO \cite{Butz2005} gradient descent 
+
+
+Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf  auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama}, also einer übergeordneten Organisationseinheit bzw. globaler Regeln oder globalem Regeltausch zwischen den Agenten, basieren.\\
+Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll.\\
+Vielversprechend war der Titel der Arbeit~\cite{Lujan}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels Reward-Funktion bewertet werden, da es globale Information gab, was das Problem deutlich vereinfacht und es mit dem Gegenstand dieser Arbeit kaum vergleichbar macht.\\
+
+Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{Hiroyashu} vorgestellt, bei der der \emph{reward} unter den (zwei) Agenten aufgeteilt wurde. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in~\ref{communication:cha} diskutiert.\\
+
+Im XCS-Multistepverfahren läuft ein Problem so lange bis ein positiver Reward aufgetreten ist und startet dann das Szenario neu. Bei einem Überwachungsszenario mit kontinuierlichem Reward ist das Multistepverfahren nicht anwendbar, das Szenario kann nicht neu gestartet werden, da sich die Agenten während des Laufs anpassen sollen. Ziel ist hier ja nicht, einen bestimmten Weg zu einem festen Ziel zu finden (wie z.B. bei WOODS TODO), sondern eine bestimmte Regelmenge zu erlernen, mit der eine möglichst gute, dauerhafte Überwachung stattfinden kann. 
+
+In der hier verwendeten Implementierung läuft das Problem deshalb einfach weiter. Wesentlicher Unterschied zu XCS wird deshalb die Behandlung des Rewards sein.
+
+
+
+
+
+
+
+
+
 Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets}. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{prediction} Wert) für die \emph{classifier} gefunden werden.\\
 Bei der veränderten LCS Variante ist die Verbindung zwischen den \emph{actionSets} direkt durch die zeitliche Nähe zum Ziel gegeben. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
-
-
-
-
 \(r(a)\) bezeichnet den \emph{reward} Wert für das \emph{actionSet} mit Alter \(a\).
 
 Bei linearer Rewardvergabe:

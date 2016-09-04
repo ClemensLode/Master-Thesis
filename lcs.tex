@@ -6,12 +6,13 @@ Jeder Agent besitzt ein sogennantes \emph{XCS Classifier System} welches einem s
 Ein LCS ist ein regelbasiertes evolutionäres Lernsystem, das im Wesentlichen aus folgenden Elementen besteht:
 
 \begin{enumerate}
-\item Einer Menge an Regeln, sogenannte \emph{classifier}
+\item Einer Menge an Regeln, sogenannte \emph{classifier} 
+\item Ein Mechanismus zur Auswahl der Regeln 
 \item Eine Mechanismus zur Bewertung der Regeln (mittels \emph{reinforcement learning})
 \item Einem Mechanismus zur Evolution der Regeln (mittels genetischer Operatoren)
 \end{enumerate}
 
-\section{Classifier}
+\section{Classifier}\label
 
 Ein \emph{classifier} besteht aus einem \emph{condition} Vektor, einem \emph{action} Wert, einem \emph{fitness} Wert, einem \emph{prediction} Wert und einem \emph{prediction error} Wert:
 

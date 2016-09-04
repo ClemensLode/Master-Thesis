@@ -1,0 +1,67 @@
+\chapter{Die \emph{exploration} und \emph{exploitation} Phasen}\label{cha:exploration}
+
+Bei der Auswahl des \emph{classifiers} in 
+
+\section{Auswahlmethode}
+
+\subsection{Die \emph{roulette wheel} Auswahlmethode}
+
+\subsection{Die \emph{tournament selection} Auswahlmethode}
+
+
+\section{Die \emph{exploration} Phase}
+
+Für die \emph{exploration} Phase soll es bei der Implementation zwei Möglichkeiten geben:
+\begin{enumerate}
+\item ``Zufällige Auswahl'': Zufällige Auswahl eines \emph{classifier}, unabhängig von \emph{fitness} oder \emph{prediction}
+\item ``Roulette wheel Auswahl'': Zufällige Auswahl eines \emph{classifier}, mit Wahrscheinlichkeit abhängig von dessen \emph{fitness} * \emph{prediction} Produkts
+\end{enumerate}
+
+Bei einem dynamischen Überwachungsszenario ist es im Vergleich zu standardmäßigen statischen Szenarien weder nötig noch hilfreich ``zufällige Auswahl'' zu nutzen, da die Idee hierfür in einem statischen Szenario ist, dass man vermeiden möchte, dass das LCS immer wieder die selben Entscheidungen trifft und somit immer wieder den selben Umweltreizen ausgesetzt ist, was wiederum zu immer wieder gleichen Entscheidungen führt usw.\\
+Bei einem dynamischen Szenario ergibt sich das Problem aber nicht, andere Agenten und das Ziel sind in stetiger Bewegung, der eigene Startpunkt ist nicht fixiert und das Problem wird bei Erreichen des Ziels nicht neugestartet. Es ist zu erwarten, dass ``roulette wheel Auswahl'' ausreicht oder auf \emph{exploration} womöglich völlig verzichtet werden kann.\\
+
+
+\section{Die \emph{exploit} Phase}
+
+Für die \emph{exploit} Phase ergibt sich neben der Auswahl des besten (d.h. desjenigen mit höchstem Produkt aus \emph{fitness} * \emph{prediction}) \emph{classifiers} eine zweite Möglichkeit, die in \cite{Butz2003} (``tournament selection'') diskutiert wurde. Die Turnierauswahl soll sich hier aber darauf beschränken, dass die \emph{classifier} Liste sortiert und nacheinander mit der Wahrscheinlichkeit \(p\) ein \emph{classifier} gewählt wird (d.h. der erste mit \(p\), der zweite mit \((1.0-p)*p\), der dritte mit \((1.0-p)(1.0-p)*p\) usw.).
+
+Faktor p ermitteln, 0.6 scheint gut zu sein
+
+\begin{enumerate}
+\item ``Beste Auswahl'': Wahl jeweils des \emph{classifiers} mit dem größten Produkt aus \emph{fitness} und \emph{prediction}
+\item ``Turnierauswahl'': Wahl des jeweils besten \emph{classifiers} mit Wahrscheinlichkeit \(p\), Wahl des zweitbesten mit Wahrscheinlichkeit \((1.0-p)*p\) usw.
+\end{enumerate}
+
+No exploration => viele ungültige Bewegungen, nicht ``wegkommen'' von Hindernis / stehenbleiben?
+
+TODO SEHR WICHTIG BEI SICH WENIGBEWEGENDENZIELEN
+
+
+\section{Wechsel zwischen Exploration und Exploitation}\label{exploreexploit:sec}
+
+Die Wahl der Auswahlart für \emph{classifier} in Punkt (3) in Kapitel \ref{ablauf_lcs:sec} kann auf verschiedene Weise erfolgen. 
+
+
+In der Standardimplementierung von XCS wird zwischen ``exploit'' und ``explore'' nach jedem Erreichen des Ziels entweder umgeschalten oder zufällig mit einer bestimmten Wahrscheinlichkeit eine Auswahlart ermittelt. Es werden also abwechselnd ganze Probleme im ``exploit'' und ``explore'' Modus berechnet. Dies erscheint sinnvoll für die erwähnten Standardprobleme, da nach Erreichen des Ziels ein neues Problem gestartet wird und die Entscheidungen die während der Lösung eines Problems getroffen werden keine Auswirkungen auf die folgenden Probleme hat, die Probleme also nicht miteinander zusammenhängen.\\
+Bei dem hier vorgestellten Überwachungsszenario kann nicht neugestartet werden, es gibt keine ``Trockenübung'', die Qualität eines Algorithmus soll deshalb davon abhängen, wie gut sich der Algorithmus während der gesamten Berechnung, inklusive der Lernphasen, verhält. Es ist nicht möglich bei diesem Szenario zwischen ``exploit'' und ``explore'' Phasen zu differenzieren. Desweiteren greift auch die Idee einer reinen ``explore'' Phase beim Überwachungsszenario nicht, da das Szenario nicht statisch, sondern dynamisch ist. Ein zufälliges Herumlaufen kann, im Vergleich zur gewichteten Auswahl der Aktionen, dazu führen, dass der Agent mit bestimmten Situationen mit deutlich niedrigerer Wahrscheinlichkeit konfrontiert wird, da der Agent sich in Hindernissen verfängt oder das Zielobjekt ihm andauernd ausweicht. Aus diesen Gründen erscheint es sinnvoll, weitere Formen des Wechsels zwischen diesen Phasen zu untersuchen:
+
+\begin{enumerate}
+\item Abwechselnd für jedes Problem entweder ``explore'' oder ``exploit''
+\item Mit Wahrscheinlichkeit \(p_{\mathrm{explore}}\) ``explore'', sonst  ``exploit''
+\item Wechsel zwischen ``explore'' und ``exploit'' bei Änderung des \emph{reward} Werts
+\end{enumerate}
+
+
+
+Möglichkeit (3.) und (4.) entspricht dem Fall in der Standardimplementierung von XCS. Dabei wird bei jedem Erreichen eines positiven Rewards zwischen ``explore'' und ``exploit'' hin und hergeschaltet, was in der Standardimplementierung dem Beginn eines neuen Problems entspricht.
+
+
+TODO Umschalten bei reward, Code evtl.
+
+TODOTESTS
+
+TODO SWITCH EXPLORE/EXPLOIT + NEW LCS sehr gut
+
+
+
+Es ist zu erwarten, dass sich die Fitness/Prediction werte vieler Aktionen kaum Unterscheiden (Weitergabe etc.) => Turnierselection bessere Unterscheidung zwischen guten und schlechten Classifiers

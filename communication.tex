@@ -1,9 +1,11 @@
-\chapter{Verzögertes LCS}
+\chapter{Verzögertes SXCS}
 
 \section{Verzögerter Reward}
 
-Der wesentliche Unterschied zur ersten LCS Variante ist, dass jeglicher Reward und die zugehörigen Faktoren lediglich zusammen mit den ActionSets in einem HistoricActionSet gespeichert werden und in jedem Schritt immer nur das allerletzte ActionSet mit dem entsprechenden Reward aktualisiert wird.
-TODO genauer
+Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich zusammen mit den \emph{actionSets} in einer Liste (\emph{historicActionSet} TODO Bezeichnung) gespeichert werden und in jedem Schritt immer nur die \emph{classifiers} des \emph{actionSets} des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert wird. Somit haben wir also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, z.B. größere 
+
+TODO genauer... ist doch sehr ähnlich schon zu dem was wir haben... TODO... beim anderen gibts ja auch Verzögerung!
+
 
 Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calculateRewardLCS:fig}besprochenen Funktion  bei der LCS Variante ohne verzögerten Reward.
 
