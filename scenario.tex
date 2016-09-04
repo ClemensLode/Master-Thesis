@@ -11,6 +11,7 @@ Bis Kapitel~\ref{communication:cha} wird ausschließlich der Fall ohne Kommunikat
 
 Eine einzelne Probleminstanz entspricht einem Torus mit einer (abhängig vom verwendeten Random-Seed-Wert) bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. Soweit nicht anders angegeben sollen hier Prombleninstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall.\\
 Jedes Problem soll sich, sofern nicht anders angegeben, über 500 Zeitschritte ziehen. Ein einzelnes Experiment entspricht dem Test einer Anzahl von Probleminstanzen die jeweils mit einer Reihe von \emph{random seed} Werten initialisiert werden. In einem Durchlauf werden mehrere Experimente (jeweils mit unterschiedlichen Reihen an \emph{random seed} Werten) durchgeführt.
+ und über 10 Probleme, gemittelt über 10 Experimente
 
 \section{Sichtbarkeit}\label{sichtbarket:sec}
 Der Parameter \emph{sight range} bzw. \emph{reward range} einer Probleminstanz bestimmt, bis zu welcher Distanz andere Objekte von einem Objekt als ``gesehen'' bzw. ``überwacht'' gelten, sofern die Sicht durch andere Objekte nicht versperrt ist. Der Parameter \emph{reward range} ist relevant für die Bewertung der Qualität des Algorithmus (siehe~\ref{qualitaet:sec}) und wird immer kleiner als der \emph{sight range} Wert gewählt. Über die Sensoren kann ein Agent feststellen, ob sich Objekte in welcher der beiden Reichweiten befindet.

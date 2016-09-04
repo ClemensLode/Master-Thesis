@@ -1,18 +1,25 @@
 \chapter{XCS Varianten}\label{lcs_variants:cha}
 
 \section{Einführung}
+TODO!!
 
-Ziel der Arbeit war es, wie man den XCS Algorithmus auf ein Überwachungsszenario anwenden kann. Notwendig dafür war es, die XCS Implementierung vollständig nachzuvollziehen, um für jeden Bestandteil entscheiden zu können, welche Rolle er bezüglich eines solchen Szenarios spielt. Für die Tests wurde nicht auf bestehende Pakete (z.B. XCSlib~\cite{xcslib}) zurückgegriffen, wenn auch der Quelltext von \cite{Butz2000} Modell stand. Insbesondere 
-TODO
-Zur Durchführung und Forschung war es notwendig, den kompletten XCS Algorithmus nachvollziehen zu können. Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction bereitete 
+Ziel der Arbeit war es, wie man den XCS Algorithmus auf ein Überwachungsszenario anwenden kann. Notwendig dafür war es, die XCS Implementierung vollständig nachzuvollziehen, um für jeden Bestandteil entscheiden zu können, welche Rolle es bezüglich eines solchen Szenarios spielt. Für die Tests wurde nicht auf bestehende Pakete (z.B. XCSlib~\cite{xcslib}) zurückgegriffen, wenn auch der Quelltext von \cite{Butz2000} Modell stand. 
 
-Das Multistepverfahren baut darauf auf, dass die Qualität der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
+Im Vordergrund stand zum einen die grundsätzliche Frage, ob XCS in einem solchen Szenario überhaupt besser als ein Algorithmus sein kann, der sich rein zufällig verhält und wie mögliche Ansätze aussehen können, den Algorithmus zu verbessern.
 
 Der hier entwickelte Algorithmus muss primär nicht einen Weg zum Ziel erkennen, sondern eine möglichst optimale (und auch an andere Agenten angepasste) Verhaltensstrategie finden.
 
+
+In Kapitel~\ref{cha:parameter} wurden mögliche Optimierungen zu den Parametern vorgestellt, in Kapitel~\ref{ablauf_lcs:sec} wurde diskutiert, in welcher Reihenfolge bei einem Multiagentensystem auf einem diskreten Torus die einzelnen Teile ausgeführt werden sollen.
+
+Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction bereitete 
+
+Das Multistepverfahren baut darauf auf, dass die Qualität der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
+
+
 Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht zum Erfolg führen. Eine einfache Implementation mit einem simplen Agenten der auf das Ziel zugeht, wenn es in Sicht ist und sich sonst wie ein sich zufällig bewegender Agent verhält, schneidet grundsätzlich schlechter ab.
 
-
+TODO!
 
 \section{Ablauf eines XCS}\label{ablauf_lcs:sec}
 
@@ -25,7 +32,7 @@ Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht
 
 , so dass es in der Liste \emph{classifiers} deren 
 
-
+TODO
 Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} Vektoren gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das \emph{matchSet}.
 \item Im nächsten Schritt wählen wir einen \emph{classifier} aus diesem \emph{matchset} aus und speichern dessen Aktion.
 \item Schließlich bilden wir anhand des MatchSets und der gewählten Aktion das ActionSet
@@ -37,44 +44,21 @@ appliedClassifierSet
 
 \subsection{actionSet}
 
-\subsection{Covering}\label{covering:sec}
-
-Die Implementation entspricht im Wesentlichen dem Original, es wurde aber im Hinblick auf eine klare Code-Struktur eine Optimierung entfernt und Code zur Behandlung von Drehungen hinzugefügt. Im Original wird die Erstellung des MatchSets gleichzeitig mit dem Covering ausgeführt, wodurch möglicherweise Zeit gespart wird, während in dieser Implementierung es in zwei Funktionen aufgeteilt wurde. TODOBEschreibung
-
-\section{Hauptprogramm}
-
-Der Aufruf in der verwendeten Implementierung unterscheidet sich ein wenig von der originalen Implementation, weswegen er in TODO nochmal dargestellt sein soll.
-
-
-
-
-
-
-
-
-
-
 TODO Wahrscheinlichkeiten über Parameter
-
-
-
-
-\section{Multistepverfahren}
-
 TODO
-Als Vergleich wurde das bekannte Verfahren fast unverändert übernommen. Wie weiter oben erwähnt wird das Szenario bei einem positiven Reward aber nicht neugestartet.
-
-Idee ist, dass der Reward, den eine Aktion (bzw. das jeweils zugehörige ActionSet) erhält, vom erwarteten Reward der folgenden Aktion abhängt. Somit wird, rückführend vom Ziel, der Reward schrittweise an vorgehende Aktionen verteilt und somit das Ziel schneller gefunden
-
-TODO Quelle
 
 
-reward = 0 ? Gebe maxPrediction des nächsten Zugs
-reward = 1 ? Gebe maxPrediction 0, reward = 1
 
 
-In jedem Schritt wird das vorherige ActionSet durch maxPrediction bzw. reward belohnt
-TODO
+
+\section{Standard XCS Multistepverfahren}\label{standardxcs:sec}
+
+Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. das jeweils zugehörige \emph{actionSet}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängt. Somit wird, rückführend vom Zielpunkt, der \emph{reward} Wert schrittweise an vorgehende Aktionen verteilt, mit der Annahme, dass dann mit höherer Wahrscheinlichkeit das Ziel gefunden wird.
+TODO Quelle?\\
+
+Kern des Verfahrens ist die Vergabe des \emph{rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an das letzte \emph{actionSet} gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (\emph{maxPrediction}) an das letzte \emph{actionSet} gegeben.\\
+
+Als Vergleich wurde das bekannte Verfahren \cite{Butz2000} fast unverändert übernommen. Der wesentliche Unterschied ist, dass das Szenario bei einem positiven Reward nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Außerdem, wie schon in Kapitel~\ref{exploreexploit:sec} erwähnt, soll die Qualität des Algorithmus nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird. Schließlich gibt es, neben den Parametereinstellungen im Kapitel~\ref{cha:parameter}, feste Schnittpunkte für das \emph{two point crossover} beim genetischen Operator (siehe~\ref{genetische_operatoren:sec}).\\
 
 \begin{program}
   \begin{verbatim}
@@ -234,8 +218,9 @@ Es gibt desweiteren eine Arbeit über Szenarien mit kontinuierlichen Umgebungen \
 
 
 
-Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets}. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{prediction} Wert) für die \emph{classifier} gefunden werden.\\
-Bei der veränderten LCS Variante ist die Verbindung zwischen den \emph{actionSets} direkt durch die zeitliche Nähe zum Ziel gegeben. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
+Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets} über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{prediction} Wert) für die \emph{classifier} gefunden werden.\\
+TODO Quelle?
+Bei der veränderten XCS Variante SXCS soll die Verbindung zwischen den \emph{actionSets} zusätzlich direkt durch die zeitliche Nähe zum Ziel gegeben sein. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
 \(r(a)\) bezeichnet den \emph{reward} Wert für das \emph{actionSet} mit Alter \(a\).
 
 Bei linearer Vergabe des \emph{reward}:
@@ -267,6 +252,7 @@ In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal b
 
 \section{Ereignisse}\label{sec:events}
 
+TODO
 In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
 
 Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe ~(\ref{saved_rewards:fig})).
@@ -449,6 +435,8 @@ Ein Ereignis tritt auf, wenn:
   \caption{Drittes Kernstück des SXCS-Algorithmus (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}
 \end{program}
 
+
+
 \section{Zielobjekt mit SXCS}
 
 Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von SXCS für das Zielobjekt diskutiert werden. Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{bewertung:sec}) ist die Implementierung für das Zielobjekt identisch. Die abgeänderte Version ist in Programm~\ref{goal_checkRewardPoints:fig} aufgelistet.
@@ -471,5 +459,5 @@ Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier 
       return true;
     }    \end{verbatim}
   \label{goal_checkRewardPoints:fig}
-  \caption{Bestimmung des ``base rewards'' für Agenten}
+  \caption{Bestimmung des \emph{base rewards} für Agenten}
 \end{program}

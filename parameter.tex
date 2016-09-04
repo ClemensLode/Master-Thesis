@@ -2,18 +2,32 @@
 
 Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen weitgehend den Vorschlägen in~\cite{Butz} (``Commonly Used Parameter Settings''). Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. Im Folgenden sollen Parameter besprochen werden, die entweder in der Empfehlung offen gelassen sind, also klar vom jeweiligen Szenario abhängen, und solche, bei denen von der Empfehlung abgewichen wurde.\\
 Mitunter führen andere Parametereinstellungen auch zu wesentlich besseren Ergebnissen. Dies muss man aber vorsichtig bewerten, wenn die erreichte Qualität unter der des zufälligen Algorithmus liegt, da eine Auswirkung sein kann, dass der Algorithmus nicht besser lernt, sondern sich umgekehrt eher wie der zufällige Algorithmus verhält. Ein Vergleich mit der Qualität des zufälligen Algorithmus wird deswegen jeweils immer angegeben.\\
+Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurde und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Um  synchronisierte und vergleichbare Daten zu haben, wurden die Tests deshalb in mehreren Etappen durchgeführt, die angegebenen Testergebnisse entsprechen den endgültigen Ergebnissen. TODO
 
-\section{Max population \emph{N}}\label{sec:max_population_parameter}
+\section{Parameter \emph{max population N}}\label{sec:max_population_parameter}
 
 Der Wert von \emph{max population} bezeichnet die maximalen Größe der \emph{classifier set} Liste. Ein größerer Wert verlängert die Laufzeit linear (siehe~\ref{empty_grid_time_maxpop:fig}), ein kleinerer Wert erhöht die Konkurrenz zwischen den \emph{classifiers}. Größere Werte erlauben eine bessere Anpassung, da weniger \emph{classifier} während eines Laufs gelöscht werden müssen und mehr Plätze zur Speicherung der Erfahrungen zur Verfügung steht. Auf der anderen Seite werden mehr Schritte benötigt um die für die jeweiligen \emph{classifier} ausreichend Erfahrung zu sammeln (siehe~\ref{empty_grid_quality_maxpop:fig}).\\
-Für den Overhead (Benutzung des zufälligen Algorithmus ohne LCS) ergab sich eine mittlere Laufzeit von \(1.77\) Sekunden pro Experiment bei 500 Schritten (bzw. \(6.65\) Sekunden bei 2000 Schritten), was die anfängliche Stagnierung bis \(N = 32\) erklärt.\\
+Für den Overhead (Benutzung des zufälligen Algorithmus ohne LCS) ergab sich eine mittlere Laufzeit von \(1.77\) Sekunden pro Experiment bei 500 Schritten (bzw. \(6.65\) Sekunden bei 2000 Schritten), was die anfängliche Stagnierung bis \(N = 32\) erklärt. Die Tests liefen auf einem T7500, 2.2 GHz in einem einzelnen Thread.\\
 In den Tests wird \textbf{\(N = 128\)} gesetzt, was als ausreichender Kompromiss zwischen den erwähnten Faktoren erscheint.
+
+ und über 10 Probleme, gemittelt über 10 Experimente
+
+~\ref{time_map_size_correlation:fig}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{time_map_size_correlation.eps}
+}
+\caption[Auswirkung der Torusgröße auf die Laufzeit (leeres Szenario)] {Darstellung der Auswirkung der Torusgröße auf die Laufzeit im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 sich zufällig bewegenden Agenten}
+\label{time_map_size_correlation:fig}
+\end{figure}
+
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{empty_grid_time_maxpop.eps}
 }
-\caption[Auswirkung des Parameters \emph{max population N} auf Laufzeit (leeres Szenario)] {Darstellung Auswirkung des Parameters \emph{max population N} auf die Laufzeit im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus und über 10 Probleme, gemittelt über 10 Experimente}
+\caption[Auswirkung des Parameters \emph{max population N} auf Laufzeit (leeres Szenario)] {Darstellung der Auswirkung des Parameters \emph{max population N} auf die Laufzeit im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
 \label{empty_grid_time_maxpop:fig}
 \end{figure}
 
@@ -21,7 +35,7 @@ In den Tests wird \textbf{\(N = 128\)} gesetzt, was als ausreichender Kompromiss
 \centerline{	
 \includegraphics{empty_grid_quality_maxpop.eps}
 }
-\caption[Auswirkung des Parameters \emph{max population N} auf Qualität (leeres Szenario)] {Darstellung der Auswirkung des Parameters \emph{max population N} auf die Qualität im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus und über 10 Probleme, gemittelt über 10 Experimente}
+\caption[Auswirkung des Parameters \emph{max population N} auf Qualität (leeres Szenario)] {Darstellung der Auswirkung des Parameters \emph{max population N} auf die Qualität im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
 \label{empty_grid_quality_maxpop:fig}
 \end{figure}
 
@@ -31,20 +45,20 @@ Der Wert der bei der Bewertung als \emph{reward} vergeben wird hat lediglich äst
 
 In den hier vorgestellten XCS Varianten wird dagegen der \emph{reward} Wert absteigend, zusammen mit dem \emph{maxPrediction} Wert, an frühere \emph{actionSet} Listen verteilt, \(\rho\) kann also größer als \(1.0\) werden. In diesem Bereich ist noch Bedarf an theoretischer Forschung, in Tests haben sich Werte bis \(3.0\) ergeben, welche aber vom jeweiligen Szenario abhängen. Wird das Zielobjekt (z.B. wegen Hindernissen oder großen Torusdimensionen) eher selten gesehen, fällt der Wert geringer aus.\\
 
-\section{Accuracy equality}
+\section{Parameter \emph{accuracy equality} $\epsilon_{0}$}
 Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der \emph{subsummation} Funktion und der Berechnung des \emph{accuracy} Werts von Bedeutung. In der Literatur~\cite{Butz} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete Reward annehmen kann. Aufgrund der Überlegungen in~\ref{sec:maximalwert_rho} wird \(\epsilon_{0}\) für die neuen XCS Varianten auf \(0.02\) gesetzt, während es für die Standardimplementation von XCS auf \(0.01\) gesetzt wird. Ein Testdurchlauf auf dem Säulenszenario (siehe Abbildung~\ref{pillar_epsilon0:fig}) ergibt aber, dass der Parameter keine besondere Auswirkung hat, weshalb der Wert auf \(0.01\) belassen wird.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{pillar_epsilon0.eps}
 }
-\caption[Auswirkung des Parameters \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität (Säulenszenario)] {Auswirkung des Parameters  \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus, über 10 Probleme, gemittelt über 10 Experimente}
+\caption[Auswirkung des Parameters \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität (Säulenszenario)] {Auswirkung des Parameters  \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
 \label{pillar_epsilon0:fig}
 \end{figure}
 
-\section{Prediction discount $\gamma$}
+\section{Parameter \emph{reward prediction discount} $\gamma$}
 TODO Abschnitt entfernen
-Auch für den Wert \emph{prediction discount} \(\gamma\) hat sich ein etwas höherer Wert als sinnvoll erwiesen, als standardmäßig benutzt wird. Laut~\cite{Butz} hängt der Wert auch vom verwendeten Szenario ab. Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifiers} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.
+Auch für den Wert \emph{reward prediction discount} \(\gamma\) hat sich ein etwas höherer Wert als sinnvoll erwiesen, als standardmäßig benutzt wird. Laut~\cite{Butz} hängt der Wert auch vom verwendeten Szenario ab. Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifiers} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.
 
 Tabelle~\ref{table:prediction_discount} zeigt einen Vergleich der Qualität mit dem Standardwert \(\gamma = 0.71\) und dem für die in dieser Arbeit verwendeten Testszenarien gewählten Wert \(\gamma = 0.95\).\\
 
@@ -52,7 +66,7 @@ TODO 0.71 lassen
 
 TODOTabelle prediction discount
 
-\section{Lernrate $\beta$}\label{sec:learnrate_parameter}
+\section{Parameter Lernrate $\beta$}\label{sec:learnrate_parameter}
 
 Für die Lernrate \(\beta\) hat sich ein etwas niedrigerer als in der Literatur angegebener Wert (\(0.01\)) als erfolgreich erwiesen. Die Lernrate bestimmt, wie stark ein ermittelter \emph{reward} Wert den \emph{prediction}, \emph{prediction error}, \emph{fitness} und \emph{action set size} Wert pro Aktualisierung beeinflusst.TODO
 Auch dieser Parameter ist szenariospezifisch, über die konkrete Begründung kann nur spekuliert werden, die Schwierigkeit des Szenarios 
@@ -64,15 +78,15 @@ Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig} mit 
 \centerline{	
 \includegraphics{pillar_learning_rate_quality.eps}
 }
-\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Säulenszenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus, über 10 Probleme, gemittelt über 10 Experimente}
+\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Säulenszenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
 \label{pillar_learning_rate_quality:fig}
 \end{figure}
 
 
 
-\section{Prediction init $p_{i}$}\label{sec:prediction_init}
+\section{Parameter \emph{reward prediction init} $p_{i}$}\label{sec:prediction_init}
 
-In der Literatur werden Werte nahe Null bzw. 1\% von \(\rho\) als Initialisierung für den \emph{prediction} Wert eines \emph{classifiers} angegeben. Wählt man einen Wert, der näher am Durchschnitt der \emph{prediction} Werte der \emph{classifier} liegt, die sich in den besten Lösungen am Ende eines Testdurchlaufs befinden, so ist zu erwarten, dass die Anzahl der benötigten Aktualisierungen des \emph{prediction} Werts geringer ausfällt, das System also schneller konvergiert. Diese Überlegung wird bestätigt durch entsprechende Tests (siehe~\ref{pillar_lcs_prediction_init_quality:fig}).\\
+In der Literatur werden Werte nahe Null bzw. 1\% von \(\rho\) als Initialisierung für den \emph{reward prediction} Wert eines \emph{classifiers} angegeben. Wählt man einen Wert, der näher am Durchschnitt der \emph{reward prediction} Werte der \emph{classifier} liegt, die sich in den besten Lösungen am Ende eines Testdurchlaufs befinden, so ist zu erwarten, dass die Anzahl der benötigten Aktualisierungen des \emph{reward prediction} Werts geringer ausfällt, das System also schneller konvergiert. Diese Überlegung wird bestätigt durch entsprechende Tests (siehe~\ref{pillar_lcs_prediction_init_quality:fig}).\\
 Wir setzen somit für LCS den Parameter auf \(p_{i} = 0.5\).\\
 TODO Standardverfahren?
 
@@ -80,13 +94,13 @@ TODO Standardverfahren?
 \centerline{	
 \includegraphics{pillar_lcs_prediction_init_quality.eps}
 }
-\caption[Auswirkung des Parameters \emph{prediction init} $p_{i}$ auf Qualität (Säulenszenario)] {Darstellung Auswirkung des Parameters \emph{prediction init} $p_{i}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus und über 10 Probleme, gemittelt über 10 Experimente}
+\caption[Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf Qualität (Säulenszenario)] {Darstellung Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
 \label{pillar_lcs_prediction_init_quality:fig}
 \end{figure}
 
 \section{Zufällige Initialisierung}\label{sec:random_init}
 
-Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt~(\cite{Butz2006}), bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälliger \emph{action} und \emph{condition} gefüllt wird.\\
+Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt~(\cite{Butz2006}), bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälligen \emph{action} Werten und \emph{condition} Vektoren gefüllt wird.\\
 Tests haben gezeigt (siehe Tabelle~\ref{table:lcs_initialization}), dass dadurch minimal bessere Ergebnisse erzielt werden, allerdings nur in Szenarien mit ausreichender Schrittzahl (\(>100\)). Dies lässt sich darauf zurückführen, dass  anfänglich gefüllte \emph{classifier set} Listen die \emph{matchSet} Listen relativ groß lassen werden, somit die Auswirkungen anfänglichen Lernens geringer ausfallen und sich die Agenten eher wie sich zufällig bewegende Agenten verhalten. Da hier durchgeführten Tests über 500 bzw. 2000 Schritte laufen, sollen somit die \emph{classifier set} Listen mit zufällig generierten \emph{classifiers} gefüllt werden.
 
 \begin{table}[ht]
