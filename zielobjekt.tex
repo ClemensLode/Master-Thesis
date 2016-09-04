@@ -3,7 +3,7 @@
 
 Die Typen von Zielobjekten werden zum einen über ihre Geschwindigkeit und zum anderen über ihre Bewegungsart definiert. Neben der Größe des Torus und den Hindernissen trägt der Typ des Zielobjekts wesentlich zur Schwierigkeit eines Szenarios bei, da dieser die Aufenthaltswahrscheinlichkeiten des Zielobjekts unter Einbeziehung des Zustands des letzten Zeitschritts bestimmt. Die Schwierigkeit bestimmt sich über die Summe der erwarteten Aufenthaltswahrscheinlichkeiten in nicht überwachten Feldern geteilt durch die Summe der Aufenthaltswahrscheinlichkeiten in überwachten Feldern.
 
-\subsection{Basiseigenschaften}
+\section{Basiseigenschaften}
 
 Im wesentlichen entspricht ein Zielobjekt einem Agenten, d.h. das Zielobjekt kann sich bewegen und besitzt Sensoren. 
 
@@ -13,6 +13,8 @@ Andererseits ist auch der Sprung eine Verfälschung, falls bei einem Durchlauf ei
 TODO wie oft das aufgetreten ist
 
 TODO benachbarte Hindernisse aus Bewegung ausschliessen, Nähesensor
+
+\section{Typen von Zielobjekten}
 
 \subsection{Typ ``Total Random''}
 Ein Zielobjekt dieses Typs springt zu einem zufälligen (freien) Feld auf dem Torus. Mit dieser Einstellung kann die Abdeckung des Algorithmus geprüft werden, d.h. inwieweit die Agenten jeweils außerhalb der Überwachungsreichweite anderer Agenten bleiben. Jegliche Anpassung an die Bewegung des Zielobjekts ist hier wenig hilfreich, ein Agent kann nicht einmal davon ausgehen, dass sich das Zielobjekt in der Nähe seiner Position der letzten Zeiteinheit befindet. Die Aufenthaltswahrscheinlichkeit für jedes freie Feld ist hierbei \(\frac{1}{n}\), wobei \(n\) die Anzahl der freien Felder entspricht.

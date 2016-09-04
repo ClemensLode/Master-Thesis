@@ -4,7 +4,7 @@ Bei Simulationen am Computer stellt sich sofort die Frage nach der Genauigkeit. 
 Da eine Aktion auf Basis der Sensordaten ausgewählt wird, ist die erste Restriktion, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss. Und da Aktionen bewertet werden sollen, also jeweils der Zustand nach der Bewegung mit dem gewünschten Zustand verglichen werden soll, ist die zweite Restriktion, dass die Bewertung einer Aktion nach dessen Ausführung stattfinden muss.\\
 Ansonsten gibt es folgende Möglichkeiten:
 
-\section{Reihenfolge der Ausführung}
+\section{Reihenfolge der Ausführung}\label{reihenfolge:sec}
 \begin{enumerate}
 \item Für alle Agenten werden erst einmal die neuen Sensordaten erfasst und sich für eine Aktion entschieden. Sind alle Agenten abgearbeitet, werden die Aktionen ausgeführt.
 \item Die Agenten werden nacheinander abgearbeitet, es werden jeweils neue Sensordaten erfasst und sich sofort für eine neue Aktion entschieden. 
@@ -19,26 +19,22 @@ Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen sol
 
 TODO Begründung
 
+\section{Messung der Qualität}\label{qualitaet:sec}
 
-\section{Reihenfolge Rewardverteilung}
-Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Sicht ist, und wann somit der Reward verteilt wird. Da XCS in der Standardimplementation darauf ausgelegt ist, den Reward jeweils genau einer Aktion zuzuordnen, sollte der Reward nicht bei jeder einzelnen Bewegung des Zielobjekts überprüft und verteilt werden, sondern nur einmal pro Zeiteinheit. Außerdem soll der Einfachheit halber der Reward auch von binärer Natur sein (``Zielobjekt in Überwachungsreichweite'' oder ``Zielobjekt nicht in Überwachungsreichweite''), weshalb Zwischenzustände für den Reward (z.B. ``War zwei von drei Zeitschritten in der Überwachungsreichweite'' \(\Rightarrow \frac{2}{3}\) Reward) ausgeschlossen werden sollen. Für den Reward gibt es somit folgende Möglichkeiten:
-
-\begin{enumerate}
-\item Rewards werden direkt nach der Ausführung einer einzelnen Aktion vergeben.
-\item Rewards werden nach Ausführung aller Aktionen der Agenten vergeben.
-\item Rewards werden nach Ausführung aller Aktionen des Zielobjekts vergeben.
-\end{enumerate}
-
-Werden die Rewards sofort vergeben (Punkt 1), dann werden sich später noch weg-bewegende bzw. sich später noch hinbewegende Agenten nicht beachtet. Da die Agenten in zufälliger Reihenfolge abgearbeitet werden, würde das bedeuten, dass die Bewegung der restlichen (zufälligen) Anzahl von Agenten in den Reward nicht miteinbezogen wird. Selbiges gilt für Punkt 3.\\
-Auch das Zielobekt kann Reward erhalten. Hierbei gibt es ebenfalls drei Möglichkeiten:
-\begin{enumerate}
-\item Reward direkt nach Ausführung des letzten Schritts
-\item Reward nach Ausführung aller Agenten
-\end{enumerate}
-
-Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und  das Zielobjekt in einem Durchlauf gemeinsam bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
+Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und das Zielobjekt in einem Durchlauf gemeinsam bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
 Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Grids anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn wir vom realistischen Fall ausgehen, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, den Zielobjekts insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
-Was den Zeitpunkt des Rewards betrifft, lautet die Hypothese, dass wir ein besseres Ergebnis erreichen, wenn man den Reward anhand der selben Momentaufnahme verteilt, anhand der wir auch die Qualität testen, d.h. dass Punkt 2 Punkt 1 überlegen ist. Dies bestätigt sich in Tests siehe TODO.
+
+\section{Reihenfolge der Rewardermittlung}
+Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein Reward ergibt. Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der Reward jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der Reward von binärer Natur ist (``Zielobjekt in Überwachungsreichweite'' oder ``Zielobjekt nicht in Überwachungsreichweite''), weshalb Zwischenzustände für den Reward, der sich aus der mehrfachen Bewegung des Zielagenten ergeben könnte, ausgeschlossen werden soll (z.B. ``War zwei von drei Schritten in der Überwachungsreichweite'' \(\Rightarrow \frac{2}{3}\) Reward). Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.\\
+Für den Reward gibt es somit folgende Möglichkeiten:
+
+\begin{enumerate}
+\item Rewards werden direkt nach der Ausführung einer einzelnen Aktion ermittelt.
+\item Rewards werden nach Ausführung aller Aktionen der Agenten und des Zielobjekts ermittelt.
+\end{enumerate}
+
+Werden die Rewards sofort ermittelt (Punkt 1), dann bezieht sich der Reward auf die veralteten Sensordaten vor der Aktion, die Aktion selbst würde bei der Rewardvergabe also ignoriert werden. Bei Punkt 2 müssen wir bis zum neuen Zeitschritt warten, bis neue Sensordaten ermittelt wurden.
+
 
 \section{Zusammenfassung}
 Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also wie folgt aus:
@@ -47,11 +43,152 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 \setbox0\vbox{\small
 \begin{enumerate}
 \item Erfassung aller Sensordaten
+\item Bestimmung des jeweiligen Rewards für die einzelnen Objekte für den letzten Schritt
+\item Bestimmen der aktuellen Qualität
 \item Wahl der Aktion anhand der Regeln des jeweiligen Agenten
-\item Ausführung der Aktion (in zufälliger Reihenfolge, das Zielobjekt führt nach dem ersten Schritt außerdem Schritt 1. und 2. für alle weiteren Schritte nochmals durch)
-\item Bestimmung des Rewards
-\item Bestimmen der Qualität dieser Zeiteinheit
+\item Ausführung der Aktion (in zufälliger Reihenfolge, das Zielobjekt führt nach dem ersten Schritt außerdem Schritt 1 und 2 für alle weiteren Schritte nochmals durch)
 \end{enumerate}
 }
 \centerline{\fbox{\box0}}
 \end{figure}
+
+In Programm~\ref{mainExperiment:fig}
+Programm~\ref{mainProblem:fig}
+Programm~\ref{mainCalculate:fig}
+
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Führt eine Anzahl von Problemen aus
+ * @param experiment_nr Nummer des auszuführenden Experiments
+ */
+  public void doOneMultiStepExperiment(int experiment_nr) {
+    int currentTimestep = 0;
+
+  /**
+   * number of problems for the same population
+   */
+    for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
+
+    /**
+     * creates a new grid and deploys agents and goal at random positions
+     */
+      BaseAgent.grid.resetState();
+
+    /**
+     * Führe Problem aus und aktualisiere aktuellen Zeitschritt
+     */
+      currentTimestep = doOneMultiStepProblem(currentTimestep);
+
+    /**
+     * Initialisiere neuen "Random Seed" Wert
+     */
+      Misc.initSeed(Configuration.getRandomSeed() + 
+        experiment_nr * Configuration.getNumberOfProblems() + 1 + i);
+    }
+  }
+  \end{verbatim}
+ \label{mainExperiment:fig}
+  \caption{Zentrale Schleife für einzelne Experimente}
+\end{program}
+
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Führt eine Anzahl von Schritten auf dem aktuellen Torus aus
+ * @param stepCounter Aktuelle Zeitschritt
+ * @return Der Zeitschritt nach der Ausführung
+ */
+  private int doOneMultiStepProblem(int stepCounter) {
+  /**
+   * Zeitpunkt bis zu dem das Problem ausgeführt wird
+   */
+    int steps_next_problem = Configuration.getNumberOfSteps() + stepCounter;
+    
+    for (int currentTimestep = stepCounter; 
+         currentTimestep < steps_next_problem; currentTimestep++) {
+
+    /**
+     * Ermittle die Sichtbarkeit aller Felder
+     */
+      BaseAgent.grid.updateSight();
+
+    /**
+     * Ermittle die Statistiken (Abdeckung, Distanz, Qualität etc.)
+     */ 
+      BaseAgent.grid.updateStatistics(currentTimestep, findBestAgent());
+
+    /**
+     * Ermittle den Reward für alle Objekte (nach dem ersten Schritt)
+     */
+      if(currentTimestep > stepCounter) {
+        rewardAgents(currentTimestep);
+      }
+
+    /**
+     * Berechne und bewege alle Agenten
+     */
+      calculateAgents(currentTimestep);
+    }
+
+    /**
+     * Abschließende Ermittlung des Rewards
+     */
+    BaseAgent.grid.updateSight();
+    rewardAgents(steps_next_problem);
+    return steps_next_problem;
+  }
+  \end{verbatim}
+ \label{mainProblem:fig}
+  \caption{Zentrale Schleife für einzelne Probleme}
+\end{program}
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Calculate the matchings and the action set of each agent and execute the
+ * movement
+ * @param gaTimestep current time step
+ */
+  private void calculateAgents(final long gaTimestep) {
+
+  /**
+   * Erstelle Ausführungsliste für alle Objekte (Zielobjekt mehrfach)
+   */
+    int goal_speed = Configuration.getGoalAgentMovementSpeed();
+    ArrayList<BaseAgent> random_list = 
+      new ArrayList<BaseAgent>(agentList.size() + goal_speed);
+
+    random_list.addAll(agentList);
+    for(int i = 0; i < goal_speed; i++) {
+      random_list.add(BaseAgent.goalAgent);
+    }
+
+  /**
+   * Ermittle Sensordaten und bestimme nächste Bewegung
+   */
+    for(BaseAgent a : random_list) {
+      a.aquireNewSensorData();
+      a.calculateNextMove(gaTimestep);
+    }
+
+  /**
+   * Führe die ermittelten Aktionen in zufälliger Reihenfolge aus
+   *   (Zielobjekt kann mehrfach ausgeführt werden).
+   */
+    int[] array = Misc.getRandomArray(random_list.size());
+    for(int i = 0; i < array.length; i++) {
+      BaseAgent a = random_list.get(array[i]);
+      a.doNextMove();
+      if(a.isGoalAgent()) {
+        a.aquireNewSensorData();
+        a.calculateNextMove(0);
+      }
+    }
+  }
+  \end{verbatim}
+ \label{mainCalculate:fig}
+  \caption{Zentrale Bearbeitung aller Agenten innerhalb eines Problems}
+\end{program}
