@@ -4,55 +4,65 @@ Im Wesentlichen sollen die hier besprochenen Algorithmen in einem Überwachungssz
 
 Verwendetes Umfeld wird ein quadratischer Torus sein, der aus quadratischen Feldern besteht.
 Jedes bewegliche Objekt auf einem Feld kann sich nur auf eines der vier Nachbarfelder bewegen oder stehenbleiben. 
-Die Felder können entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder können nicht betreten werden. Es gibt drei verschiedene Arten von Objekten, unbewegliche Hindernisse, ein zu überwachende Zielagent und Agenten. Zielagent und Agent bewegen sich anhand eines bestimmten Algorithmus anhand bestimmter Sensordaten.
+Die Felder können entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder können nicht betreten werden. Es gibt drei verschiedene Arten von Objekten, unbewegliche Hindernisse, ein zu überwachendes Zielobjekt und Agenten. Sowohl das Zielobjekt als auch die Agenten bewegen sich anhand eines jeweils bestimmten Algorithmus und bestimmter Sensordaten.
 
-TODO Auflösen
+\section{Probleminstanzen}
 
-\section{Problem-Instanzen}
-
-Eine einzelne Probleminstanz entspricht einem Torus mit einer (abhängig vom verwendeten Random-Seed-Wert) bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. Die Parameter bestimmen, ob und wie Objekte andere Objekte die Sicht versperren und bis zu welcher Distanz der Zielagent von einem Agenten als ``überwacht'' gilt, sofern die Sicht durch andere Objekte nicht versperrt ist.
-
+Eine einzelne Probleminstanz entspricht einem Torus mit einer (abhängig vom verwendeten Random-Seed-Wert) bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. 
 Ein Experiment entspricht dem Test einer Anzahl von Probleminstanzen mit einer Reihe von Random-Seed-Werten.
 In einem Durchlauf werden mehrere Experimente (jeweils mit unterschiedlichen Random-Seed-Wert-Reihen) durchgeführt.
 
+\section{Sichtbarkeit}
+Die Parameter ``Sichtweite'' und ``Überwachungsreichweite'' einer Probleminstanz bestimmen, bis zu welcher Distanz der Zielagent von einem Agenten als ``gesehen'' bzw. ``überwacht'' gilt, sofern die Sicht durch andere Objekte nicht versperrt ist. Ob Objekte durch Agenten bzw. dem Zielobjekt gesehen werden ist relevant für die Sensordaten. Ob sie sich in Überwachungsreichweite befinden ist relevant für die Bewertung der Qualität des für die Agenten bzw. das Zielobjekt verwendeten Algorithmus.
+
 \section{Qualität}
 
-Problem-Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen konnte, relativ zur Gesamtzeit. 
-Experiment-Qualität eines Algorithmus zu einer Anzahl von Problemen (einem Experiment) wird Anhand des Gesamtanteilder Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.
-Qualität eines Algorithmus entspricht dem Durchschnitt aller Experimentqualitäten des Algorithmus.
+Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen konnte, relativ zur Gesamtzeit.\\
+Qualität eines Algorithmus zu einer Anzahl von Problemen (also einem Experiment) wird Anhand des Gesamtanteil der Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.
+Qualität eines Algorithmus entspricht dem Durchschnitt der Qualitäten des Algorithmus mehrerer Experimente.
 
-Halbzeit-Problem-Qualität eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit.
-Halbzeit-Experiment-Qualität eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit aller Probleme.
-Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeit-Experiment-Qualitäten eines Algorithmus.
+Halbzeitqualität eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit.
+Halbzeitqualität eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit aller Probleme.
+Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeitqualitäten des Algorithmus mehrerer Experimente.
 
+Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus erlaubt ermöglicht einen Einblick, wie gut sich der Algorithmus verhält, nachdem er sich auf das Problem bereits eine Weile lang einstellen konnte. 
 
+\section{Dynamik}
 
+Die Szenarien fallen alle unter die Kategorie ``dynamisch''. In diesem Zusammenhang soll darunter verstanden werden, dass es kein konkretes Ziel gibt, das erreicht werden soll oder kann. 
 
+TODO woods als Beispiel statisches Szenario
 
+\section{Kollaboration}
 
+Wesentliches Hauptaugenmerk der Gestaltung der Szenarien soll Kollaboration sein, d.h. die Aufgabe soll mit Hilfe mehrerer Agenten gemeinsam gelöst werden. Eine erfolgreiche Überwachung soll deswegen so definiert sein, dass sich ein beliebiger Agent in Überwachungsreichweite des Ziels befindet. Um sicherzustellen, dass diese Aufgabe nicht ein einzelner Agent erfüllen kann, soll sich das Zielobjekt schneller fortbewegen als die einzelnen Agenten.\\
+Könnte sich das Zielobjekt genauso langsam oder langsamer als die Agenten bewegen, dann wäre das Problem sehr simpel, da der Zielagent Schwierigkeiten hätte, Agenten abzuschütteln, deren einzige Strategie es ist, sich in Richtung des Zielagenten zu bewegen.
+
+TODO aus verschiedenen Richtungen betrachten? Mehrere Agenten notwendig?
 
 \chapter{Agenten}
 
 \section{Sensoren}
 
-Jeder Agent besitzt 3 Gruppen mit jeweils 4 Binärsensoren. Alle Sensoren sind visuelle Sensoren mit begrenzter Reichweite. Je nach Parameter des Szenarios wird die Sicht durch andere Objekten blockiert. Sichtlinien werden durch einen einfachen Bresenham-Linienalgorithmus bestimmt.
-Jede Gruppe von Sensoren nimmt einen anderen Typ von Objekt wahr. Die erste Gruppe nimmt den Zielagenten, die zweite andere Agenten und die dritte Hindernisse.
-Ein Sensor ist jeweils in eine bestimmte Richtung ausgerichtet (Norden, Osten, Süden, Westen) und wird auf ``wahr'' gesetzt, wenn sich in dem von der Sichtweite bestimmten Kegel ein entsprechendes Objekt befindet.
+Jeder Agent besitzt 3 Gruppen mit jeweils 4 Binärsensoren. Alle Sensoren sind visuelle Sensoren mit begrenzter Reichweite. Andere Objekte blockieren die Sicht, Sichtlinien werden durch einen einfachen Bresenham-Linienalgorithmus bestimmt.\\
+Jede Gruppe von Sensoren nimmt einen anderen Typ von Objekt wahr. Die erste Gruppe nimmt das Zielobjekt, die zweite Gruppe andere Agenten und die dritte Gruppe Hindernisse wahr.\\
+Ein Sensor ist jeweils in eine bestimmte Richtung ausgerichtet (Norden, Osten, Süden und Westen, wobei auf den Abbildungen Norden immer oben ist) und wird auf ``wahr'' gesetzt, wenn sich in dem von der Sichtweite bestimmten Kegel ein entsprechendes Objekt befindet.
+
+TODO Abbildung für den einfachen Fall, Darstellung der Sichtkegel, der Sichtweite und des Überwachungsradius
 
 \section{Fähigkeiten}
 
-Jeder Agent kann in jedem Schritt zwischen 5 verschiedenen Aktionen wählen, die den vier Richtungen plus einer Aktion, bei der der Agent sich nicht bewegt, entsprechen. Agenten können pro Zeiteinheit genau einen Schritt durchführen. Der Zielagent kann je nach Szenario mehrere Schritte ausführen.
-Könnte der Zielagent ebenfalls nur einen Schritt ausführen, wäre das Problem sehr simpel, da der Zielagent Schwierigkeiten hätte, Agenten abzuschütteln, deren einzige Strategie es ist, sich in Richtung des Zielagenten zu bewegen.
+Jeder Agent kann in jedem Schritt zwischen 5 verschiedenen Aktionen wählen, die den vier Richtungen plus einer Aktion, bei der der Agent sich nicht bewegt, entsprechen. Agenten können pro Zeiteinheit genau einen Schritt durchführen. Das Zielobjekt kann je nach Szenarioparameter mehrere Schritte ausführen.
 
 \section{Ablauf der Bewegung}
 Alle Agenten werden nacheinander in der Art abgearbeitet, dass der jeweilige Agent die aktuellen Sensordaten aus der Umgebung holt und anhand dieser die nächste Aktion bestimmt. Ungültige Aktionen, d.h. der Versuch sich auf ein besetztes Feld zu bewegen, schlagen fehl und der Agent führt in diesem Schritt keine Aktion aus, wird aber nicht weiter bestraft. Eine detaillierte Beschreibung wird in Kapitel~\ref{conclusion:cha} geliefert.
 
 \section{Grundsätzliche Algorithmen der Agenten}
 
-Neben denjenigen Algorithmen die auf LCS basieren und weiter untern besprochen werden, gibt es folgende Grundtypen, die dazu dienen, die Qualität der anderen Algorithmen einzuordnen. Wesentliches Merkmal im Vergleich zu auf LCS basierenden Algorithmen ist, dass sie statische Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren.
+Neben denjenigen Algorithmen, die auf LCS basieren und in Kapitel~\ref{lcs:cha} besprochen werden, gibt es folgende Grundtypen, die dazu dienen, die Qualität der anderen Algorithmen einzuordnen. Wesentliches Merkmal im Vergleich zu auf LCS basierenden Algorithmen ist, dass sie statische, handgeschriebene Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren.
 
 \subsection{``Randomized''}
-In jedem Schritt wird eine zufällige Aktion ausgeführt.
+In jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung ~(\ref{agent_random:fig}) zeigt eine Beispielsituation bei der der Agent jegliche Sensordaten ignoriert und eine Aktion zufällig auswählen wird.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -63,30 +73,34 @@ In jedem Schritt wird eine zufällige Aktion ausgeführt.
 \end{figure}
 
 \subsection{``Simple AI Agent''}
-Ist der Zielagent in Sichtweite, bewegt sich dieser Agent auf das Ziel zu. Ist das Ziel nicht in Sichtweite, führt er eine zufällige Aktion aus.
+Ist das Zielobjekt in Sichtweite, bewegt sich dieser Agent auf das Ziel zu. Ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung ~(\ref{simple_agent_to_goal:fig}) zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte. 
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{simple_agent_to_goal.eps}
 }
-\caption[Einfacher Agent]{Agent bewegt sich auf Zielagent zu (sofern sichtbar)}
+\caption[Einfacher Agent]{Sofern es sichtbar ist bewegt sich der Agent auf das Zielobjekt zu}
 \label{simple_agent_to_goal:fig}
 \end{figure}
 
 \subsection{``Intelligent AI Agent''}
-Ist der Zielagent in Sicht, verhält sich dieser Algorithmus wie ``Simple AI Agent''. Ist der Zielagent dagegen nicht in Sicht, wird versucht anderen Agenten auszuweichen um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent geortet wurde, eine zufällig ausgewählt wird. Falls alle Richtungen belegt (oder alle frei) sind, aus allen Richtungen eine zufällig ausgewählt wird.
+Ist der Zielobjekt in Sicht, verhält sich dieser Algorithmus wie ``Simple AI Agent''. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird. Falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung ~(\ref{intelligent_agent:fig}) sieht der Agent das Zielobjekt nicht und wählt deswegen eine Richtung, in der der Sensor keine Agenten anzeigt, in diesem Fall Norden.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{intelligent_agent.eps}
 }
-\caption[Sich intelligent verhaltender Agent]{Agent bewegt sich von anderen Agenten weg (falls Zielagent nicht sichtbar)}
+\caption[Sich intelligent verhaltender Agent]{Falls Zielobjekt nicht sichtbarAgent bewegt sich von anderen Agenten weg )}
 \label{intelligent_agent:fig}
 \end{figure}
 
-\section{Grundsätzliche Zielagententypen}
+\section{Grundsätzliche Typen von Zielobjekten}
 
-Die Art der Bewegung des Zielagenten trägt grundsätzlich zur Schwierigkeit eines Szenarios bei. Gemeinsam haben alle Arten von Bewegungen des Zielagenten, dass, wenn kein freies Feld zur Verfügung steht, springt der Zielagent auf ein zufälliges freies Feld auf dem Grid springt. Dies kommt einem Neustart gleich und ist notwendig um einer Verfälschung des Ergebnisses zu verhindern, das dadurch rühren kann, dass ein oder mehrere Agenten (zusammen mit eventuellen Hindernissen) bis zum Ende des Problems alle vier Bewegungsrichtungen des Zielagenten blockieren.
+Die Art der Bewegung des Zielobjekten trägt wesentlich zur Schwierigkeit eines Szenarios bei.
+
+
+
+ Gemeinsam haben alle Arten von Bewegungen, dass, wenn kein freies Feld zur Verfügung steht, springt der Zielagent auf ein zufälliges freies Feld auf dem Grid springt. Dies kommt einem Neustart gleich und ist notwendig um einer Verfälschung des Ergebnisses zu verhindern, das dadurch rühren kann, dass ein oder mehrere Agenten (zusammen mit eventuellen Hindernissen) bis zum Ende des Problems alle vier Bewegungsrichtungen des Zielagenten blockieren.
 
 
 \subsection{``Random Movement''}
@@ -261,6 +275,7 @@ Der Code zur Generierung stammt aus \cite{Hamer}.
 \label{maze_grid:fig}
 \end{figure}
 
+
 \chapter{Ablauf der Simulation}
 
 Bei Simulationen am Computer stellt sich sofort die Frage nach der Genauigkeit. Die Agenten werden bei dieser Simulation nacheinander abgearbeitet und bewegen sich auf einem diskreten Grid. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die große Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.
@@ -312,9 +327,16 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielagenten) also 
 \centerline{\fbox{\box0}}
 \end{figure}
 
+
+
+
+
+
 \chapter{Erste Analyse der Agenten ohne LCS}
 
-In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des zufälligen Algorithmus, des Algorithmus mit einfacher Intelligenz (``Simple AI Agent'') und des Algorithmus mit komplexerer Regeln (``Intelligent AI agent'') angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen dienen.
+In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des zufälligen Algorithmus, des Algorithmus mit einfacher Intelligenz (``Simple AI Agent'') und des Algorithmus mit komplexerer Regeln (``Intelligent AI agent'') angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.
+
+
 
 \section{Total Random Goal Agent Movement}
 
@@ -373,7 +395,7 @@ TODO Anpassung LCS an unterschiedliche Sichtreichweiten?
 
 
 
-\chapter{LCS}
+\chapter{LCS}\label{lcs:cha}
 
 \section{Einführung}
 
@@ -1073,10 +1095,13 @@ Eine spezielle Implementierung für diesen Fall werde ich weiter unten besprechen
 
 \section{Ablauf}
 
-Jeder Reward, der aus einem normalen Event generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solcher sogenannter ``externer Reward'' von diesen Agenten aufgefasst wird, hängt von der jeweiligen Kommunikationsvariante ab, die weiter unten besprochen werden.
+Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes ``externes Ereignis'' von diesen Agenten aufgefasst wird, hängt von der jeweiligen Kommunikationsvariante ab, die in ~(\ref{sec:kommunikationsvarianten}) besprochen werden.
 
-Durch eine gemeinsame Schnittstelle erhält jeder Agent den Reward zusammen mit dem Factor. Dabei ergibt sich das Problem, dass sich Rewards überschneiden können, da jeder Reward sich rückwirkend auf die vergangenen ActionClassifierSets auswirken kann. Auch können mehrere externe Rewards eintreffen als auch ein eigener lokaler Reward aufgetreten sein. Würden die Rewards nach ihrer Eingangsreihenfolge abgearbeitet, kann es passieren, dass das selbe ActionClassifierSet sowohl mit einem hohen als auch einem niedrigen Reward aktualisiert wird. Da das globale Ziel ist, den Zielagenten durch einen Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein einzelner Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
+Durch eine gemeinsame Schnittstelle erhält jeder Agent den Reward zusammen mit dem Kommunikationsfaktor. Dabei ergibt sich das Problem, dass sich Rewards überschneiden können, da jeder Reward sich rückwirkend auf die vergangenen ActionClassifierSets auswirken kann. Auch können mehrere externe Rewards eintreffen als auch ein eigener lokaler Reward aufgetreten sein. Würden die Rewards nach ihrer Eingangsreihenfolge abgearbeitet werden, kann es passieren, dass das selbe ActionClassifierSet sowohl mit einem hohen als auch einem niedrigen Reward aktualisiert wird. Da das globale Ziel ist, den Zielagenten durch \emph{irgendeinen} Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein \emph{einzelner} Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
+
 Befindet sich das Ziel beispielsweise gerade in Überwachungsreichweite mehrerer Agenten und verliert ein anderer Agent das Ziel aus der Sicht, sollte der Agent (und alle anderen Agenten), der das Ziel in Sicht hat, deswegen nicht bestraft werden, da das globale Ziel ja weiterhin erfüllt wurde.
+
+
 
 \subsection{Fälle}
 
@@ -1127,52 +1152,177 @@ TODO Test
 
 
 \section{Kommunikationsvarianten}
+\label{sec:kommunikationsvarianten}
 
-Allen hier vorgestellten Kommunikationsvarianten ist gemeinsam, dass sie einen Faktor berechnen, nach denen sie den externen Reward, den ihnen ein anderer Agent übermittelt hat, bewerten. Der Faktor beeinflusst alle Verwendungen des Parameters beta (welcher die Lernrate bestimmt) der mit dem Faktor gewichtet wird. Ein Faktor von \(1.0\) hieße, dass der externe Reward wie ein normaler Reward behandelt wird, ein Faktor von \(0.0\) hieße, dass externe Rewards deaktiviert sein sollen.
-Idee ist, dass unterschiedliche Agenten unterschiedlich stark am Erfolg des anderen Agenten beteiligt sind, da ohne Kommunikation jeder Agent versuchen wird, selbst den Zielagenten möglichst in Überwachungsreichweite zu bekommen anstatt zu kooperieren, also das Gebiet des Grids möglichst großräumig abzudecken.
+Allen hier vorgestellten Kommunikationsvarianten ist gemeinsam, dass sie einen Kommunikationsfaktor berechnen, nach denen sie den externen Reward, den ihnen ein anderer Agent übermittelt hat, bewerten. Der Kommunikationsfaktor gewichtet alle Verwendungen des Parameters \(\beta\) (welcher die Lernrate bestimmt). Ein Faktor von \(1.0\) hieße, dass der externe Reward wie ein normaler Reward behandelt wird, ein Faktor von \(0.0\) hieße, dass externe Rewards deaktiviert sein sollen.
+Die Idee ist, dass unterschiedliche Agenten unterschiedlich stark am Erfolg des anderen Agenten beteiligt sind, da ohne Kommunikation jeder Agent versuchen wird, selbst den Zielagenten möglichst in die eigene Überwachungsreichweite zu bekommen, anstatt mit anderen Agenten zu kooperieren, also das Gebiet des Grids möglichst großräumig abzudecken.
 
 \subsection{No external reward}
 
-Mit dieser Variante wird der Faktor fest auf \(0.0\) gesetzt ist Kommunikation deaktiviert.
+Mit dieser Variante wird der Kommunikationsfaktor fest auf \(0.0\) gesetzt und Kommunikation ist deaktiviert.
 
 \subsection{Reward all equally}
 
-Mit dieser Variante wird der Faktor fest auf \(1.0\) gesetzt und es werden alle Rewards in gleicher Weise weitergegeben. Dadurch wird zwischen den Agenten nicht diskriminiert, was letztlich bedeutet, dass zwar zum einen diejenigen Agenten korrekt mit einem externen Reward belohnt werden, die sich zielführend verhalten, aber zum anderen eben auch diejenigen, die es nicht tun. Deren Classifier werden somit zu einem gewissen Grad zufällig bewertet, es fehlt die Verbindung zwischen Classifier und Reward.
-In Tests haben sich dennoch in bestimmten Fällen deutlich bessere Ergebnisse gezeigt als im Fall ohne Kommunikation. Dies ist wahrscheinlich darauf zurückzuführen, dass in dem Fall die Kartengröße und Zielagentengeschwindigkeit relativ zur Sichtweite und Lerngeschwindigkeit zu groß war, die Agenten also annahmen, dass ihr Verhalten schlecht ist, weil sie den Zielagenten relativ selten in Sicht bekamen. Eine Weitergabe des Rewards an alle Agenten kann hier zu einer Verbesserung führen, dabei ist der Punkt aber nicht, dass Informationen ausgetauscht werden, sondern, dass obiges Verhältnis gedreht wird. TODO genauer
+Mit dieser Variante wird der Kommunikationsfaktor fest auf \(1.0\) gesetzt und es werden alle Rewards in gleicher Weise weitergegeben. Dadurch wird zwischen den Agenten nicht diskriminiert, was letztlich bedeutet, dass zwar zum einen diejenigen Agenten korrekt mit einem externen Reward belohnt werden, die sich zielführend verhalten, aber zum anderen eben auch diejenigen, die es nicht tun. Deren Classifier werden somit zu einem gewissen Grad zufällig bewertet, denn es fehlt die Verbindung zwischen Classifier und Reward.
+In Tests (TODO) haben sich dennoch in bestimmten Fällen mit ``Reward all equally'' deutlich bessere Ergebnisse gezeigt als im Fall ohne Kommunikation. Dies ist wahrscheinlich darauf zurückzuführen, dass in diesen Fällen die Kartengröße und Geschwindigkeit des Zielagenten relativ zur Sichtweite und Lerngeschwindigkeit zu groß war, die Agenten also annahmen, dass ihr Verhalten schlecht ist, weil sie den Zielagenten relativ selten in Sicht bekamen. Eine Weitergabe des Rewards an alle Agenten kann hier also zu einer Verbesserung führen, dabei ist der Punkt aber nicht, dass Informationen ausgetauscht werden, sondern, dass obiges Verhältnis zugunsten der Sichtweite gedreht wird. Für die Auswahl geeigneter Tests sollten die Szenario-Parameter also möglichst so gewählt werden, dass ``Reward all equally'' keinen signifikanten Vorteil gegenüber ``No external reward'' bringt.
+Blickt man auf diesen Sachverhalt aus einer etwas anderen Perspektive ist es auch einleuchtend. Es scheint offensichtlich, dass es relevant ist, ob das Spielfeld z.B. 100x100 oder nur 10x10 Felder groß ist, wenn es darum geht, das Verhalten über die Zeit hinweg zu bewerten. In den Algorithmus für die Kommunikation bzw. für die Rewardvergabe müsste man deshalb einen weiteren (festen) Faktor einbauen, der zu Beginn in Abhängigkeit von Größe des zu überwachenden Feldes berechnet wird. Dies soll aber nicht Teil der Arbeit werden. TODO
 
-Für die Auswahl geeigneter Tests sollten die Szenario-Parameter also möglichst so gewählt werden, dass ``Reward all equally'' keinen signifikanten Vorteil bringt.
+
+\subsection{Simple relation}
+
+Eine dritte Implementation vergleicht die Classifier jeweils beider bei der Kommunikation beteiligten Agenten direkt. Alle Classifier des Agenten, der den Reward weitergibt, die ausreichend Erfahrung gesammelt haben und ausreichend genau ist (\emph{experience} und geringes \emph{predictionError}, Bedingung ist identisch mit \emph{isPossibleSubsumer}), werden mit einem identischen Classifier (d.h. mit gleicher \emph{condition} und gleicher \emph{action}) verglichen. Die Differenz der Produkte aus \emph{fitness} und \emph{prediction} geteilt durch den größeren \emph{prediction}-Wert der beiden Classifier stellt hier den Faktor dar. 
+
+\emph{pSet1} sei eine Teilmenge (bestehend aus  Classifiern, deren \emph{experience} größer als \emph{thetaSubsumer} und dessen \emph{predictionError} kleiner als epsilon0 ist) des ClassifierSets des Agenten, der den Reward vergibt.
+\emph{pSet2} sei die gleiche Teilmenge, allerdings des Agenten, der den Reward empfängt.
+
+Nun werden Paare identischer Classifier aus \emph{pSet1} und \emph{pSet2} gebildet. Gibt es mehrere Kandidaten für den selben Classifier aus \emph{pSet1}, wird der mit dem ähnlichsten Produkt aus \emph{fitness} und \emph{prediction} gewählt. Die Differenz zwischen den beiden Classifiern eines jeden Paares wird anhand ihres \emph{prediction}-Werts auf einen Wert zwischen \(0.0\) und \(1.0\) skaliert und aufaddiert. Die resultierende Summe wird schließlich durch die Anzahl der Paare dividiert und man erhält den Kommunikationsfaktor.
+
+Ein wesentlicher Nachteil hierbei ist natürlich, dass Classifier-Daten direkt übertragen werden müssen, was bei großer \emph{maxPopulation} u.U. einen hohen Kommunikations- und Speicheraufwand darstellt.
+
+Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Vergleiche ausführen, auch unter Einbeziehung der restlichen Classifier beider ClassifierSets, deren \emph{condition} bzw. \emph{action} nicht übereinstimmen. Beispielsweise kann man alle möglichen Zustände der Sensordaten durchgehen, die passenden Classifier beider ClassifierSets auswählen und die Wahrscheinlichkeiten für gewählte Aktionen vergleichen, was aber hinsichtlich der benötigten Rechenzeit nur für kleine Mengen von Sensordaten sinnvoll erscheint.
+
+\begin{program}
+  \begin{verbatim}
+    /**
+     * Relation of this classifier set (the active agent classifier set,
+     * e.g. the set that received a reward) to another classifier set
+     * @param other The other set we want to compare with
+     * @return degree of relationship (0.0 - 1.0)
+     */
+    public double checkDegreeOfRelationship(final MainClassifierSet other) {
+        double degree = 0.0;
+        int size = 0;
+        ArrayList<Classifier> matched = new ArrayList<Classifier>();
+
+        for (Classifier c : getClassifiers()) {
+            if(!c.isPossibleSubsumer()) {
+                continue;
+            }
+
+            Classifier cl = other.getBestIdenticalClassifier(matched, c);
+            if (cl != null) {
+                matched.add(cl);
+
+                double div = c.getPrediction();
+                if(cl.getPrediction() > div) {
+                    div = cl.getPrediction();
+                }
+                if(div != 0.0) {
+                    double difference =
+                            1.0 - Math.abs(
+                              c.getFitness() * c.getPrediction() - 
+                              cl.getFitness() * cl.getPrediction()) / div;
+                    if(difference > 1.0) {
+                        difference = 1.0;
+                    } else
+                    if(difference < 0.0) {
+                        difference = 0.0;
+                    }
+                    degree += difference;
+                }
+            }
+            size++;
+        }
+
+        if(size == 0) {
+            return 0.0;
+        }
+
+        degree /= (double)size;
+\end{verbatim}
+  \caption{``Simple relation'', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf \emph{prediction} und \emph{fitness} der ClassifierSets}
+\end{program}
+
+
+
 
 \subsection{Egoism factor}
 
 Eine weitere Variante berechnet erst einmal für jeden Agenten einen ``Egoismus-Faktor'', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, den Zielagenten in Sicht zu bekommen anstatt ein möglichst großes Gebiet abzudecken.
-Die Hypothese ist, dass Agenten mit ähnlichem Egoismus-Faktor auch einen ähnlichen Classifiersatz besitzen und der Reward nicht an alle Agenten gleichmäßig weitergegeben wird, sondern bevorzugt an ähnliche Agenten. Damit gäbe es einen Druck in Richtung eines bestimmten Egoismus-Faktors.
-TODO
 
-Der Kommunikationsaufwand ist hier nur minimal größer, neben dem Reward muss der Egoismus-Faktor übertragen werden.
+Die Hypothese ist, dass Agenten mit ähnlichem Egoismus-Faktor auch einen ähnlichen Classifiersatz besitzen und der Reward nicht an alle Agenten gleichmäßig weitergegeben wird, sondern bevorzugt an ähnliche Agenten. 
 
-Ein Problem dieser Variante kann sein, dass der Ansatz das Problem selbst schon löst, indem er kooperatives Verhalten belohnt, unabhängig davon, ob Kooperation für das Problem sinnvoll ist. Die Variante müsste also zum einen in 
+Damit gäbe es einen Druck in Richtung eines bestimmten Egoismus-Faktors. TODO
+
+Der Kommunikationsaufwand ist hier nur minimal, neben dem Reward muss lediglich der Egoismus-Faktor übertragen werden. Auch muss der Faktor nur einmal pro Zeitschritt neuberechnet werden und es müssen nicht quadratisch viele Vergleiche mit anderen Agenten durchgeführt werden.
+
+Ein Problem dieser Variante kann sein, dass der Ansatz das Problem selbst schon löst, indem er kooperatives Verhalten belohnt, unabhängig davon, ob Kooperation für das Problem sinnvoll ist.
+
+Die Variante müsste also zum einen in 
+
+
 schlecht abschneiden TODO
 
-\subsection{Simple relation}
 
-Eine dritte Implementation vergleicht die Classifiers direkt. Alle Classifier des Agenten, der den Reward weitergibt, die ausreichend Erfahrung gesammelt haben und ausreichend genau ist (Experience und geringes PredictionError, identisch mit isPossibleSubsumer), werden mit einem identischen Classifier (d.h. mit gleicher Condition und gleicher Action) verglichen. Die Differenz der Produkte aus Fitness und Prediction geteilt durch den größeren Prediction-Wert der beiden Classifier stellt hier den Faktor dar. 
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{reward_range.eps}
+}
+\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
+\label{reward_range:fig}
+\end{figure}
 
-pSet1 sei eine Teilmenge des ClassifierSets des Agenten, der den Reward vergibt, bestehend aus  Classifiern, deren experience größer als thetaSubsumer und dessen predictionError kleiner als epsilon0 ist. 
-pSet2 ist die gleiche Teilmenge, allerdings des Agenten, der den Reward empfängt.
 
-Nun werden Paare identischer Classifier aus pSet1 und pSet2 gebildet. Gibt es mehrere Kandidaten für den selben Classifier aus pSet1, wird der mit dem ähnlichsten Produkt aus fitness und prediction gewählt. Die Differenz zwischen den beiden Classifiern eines jeden Paares wird anhand ihres Prediction-Werts auf einen Wert zwischen \(0.0\) und \(1.0\) skaliert und aufaddiert.
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{reward_range_egoist.eps}
+}
+\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
+\label{reward_range_egoist:fig}
+\end{figure}
 
-Die resultierende Summe wird schließlich durch die Anzahl der Paare dividiert.
 
-Nachteil: Übertragung von Classifier-Daten notwendig
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{reward_range_egoist_block.eps}
+}
+\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
+\label{reward_range_egoist_block:fig}
+\end{figure}
 
-Weitere Implementationen sind denkbar, bei denen komplexere Vergleiche und Analysen durchgeführt werden. TODO
+
+\begin{program}
+  \begin{verbatim}
+    /**
+     * Relation of this classifier set (the active agent classifier set,
+     * e.g. the set that received a reward) to another classifier set
+     * @param other The other set we want to compare with
+     * @return degree of relationship (0.0 - 1.0)
+     */
+    public double checkEgoisticDegreeOfRelationship(final MainClassifierSet other) {
+        double ego_factor = getEgoisticFactor() - other.getEgoisticFactor();
+        if(ego_factor == 0.0) {
+            return 0.0;
+        }
+        return 1.0 - ego_factor * ego_factor;
+    }
+
+    public double getEgoisticFactor() throws Exception {
+        double factor = 0.0;
+        double pred_sum = 0.0;
+        for(Classifier c : getClassifiers()) {
+            if(!c.isPossibleSubsumer()) {
+                continue;
+            }
+            factor += c.getEgoFactor();
+            pred_sum += c.getFitness() * c.getPrediction();
+        }
+        if(pred_sum > 0.0) {
+            factor /= pred_sum;
+        } else {
+            factor = 0.0;
+        }
+        return factor;
+    }
+\end{verbatim}
+  \caption{``Egoistic relation'', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem Verhalten des Agenten gegenüber anderen Agenten}
+\end{program}
 
 \section{Realistischer Fall mit Kommunikationsrestriktionen}
 
-Wann immer ein Reward an einen Agenten verteilt wird, kann es sinnvoll sein, diesen Reward an andere Agenten weiterzugeben. Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite stattfinden kann. Dies ist natürlich kein realistisches Szenario. Bedenkt man jedoch, dass die Kommunikationsreichweite zumindest ausreichend groß ist um nahe Agenten zu erreichen, so kann man argumentieren, dass man dadurch ein Kommunikationsnetzwerk aufbauen kann, in dem jeder Agent jeden anderen Agenten erreichen kann. Bei ausreichender Agentenzahl relativ zur freien Fläche fallen dadurch nur vereinzelte Agenten aus dem Netz, was der Effektivität der Agentengruppe nur geringfügig schadet.
-Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muß die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls Zeit benötigt.
-Im realistischen Fall ist also davon auszugehen, dass jede Kommunikation erst mit einer gewissen Verzögerung ausgeführt wird.
+Wann immer ein Reward an einen Agenten verteilt wird, kann es sinnvoll sein, diesen Reward an andere Agenten weiterzugeben. Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite stattfinden kann. Dies ist natürlich kein realistisches Szenario. Geht man jedoch davon aus, dass die Kommunikationsreichweite zumindest ausreichend groß ist um nahe Agenten zu kontaktieren, so kann man argumentieren, dass man dadurch ein Kommunikationsnetzwerk aufbauen kann, in dem jeder Agent jeden anderen Agenten - mit einer gewissen Zeitverzögerung - erreichen kann. Bei ausreichender Agentenzahl relativ zur freien Fläche fallen dadurch nur vereinzelte Agenten aus dem Netz, was der Effektivität der Agentengruppe erwartungsgemäß nur geringfügig schadet (TODO zeigen?)
+Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muss die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls Zeit benötigt.
+Im realistischen Fall ist also davon auszugehen, dass jede Kommunikation erst mit einer gewissen Verzögerung ausgeführt wird, weshalb für Kommunikation nur der zuvor besprochene verzögerte LCS Algorithmus in Frage kommt.
 
 TODO lag einführen...
 
@@ -1211,7 +1361,13 @@ TODOGrafiken
 
 
 
-
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{corrected_reward.eps}
+}
+\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards] {Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
+\label{corrected_reward:fig}
+\end{figure}
 
 
 
@@ -1238,7 +1394,12 @@ Speicherverbrauch
 Speicherung der Agentenpositionen und des Grids verbrauchen fast keinen Speicher TODO
 Wesentlicher Faktor waren die LCS Systeme mit ihren ClassifierSets TODO
 
+OpenOffice
 
+LEd Latex
+
+
+Speicherprobleme JAVA GB
 
 \section{Beschreibung des Konfigurationsprogramms}
 
