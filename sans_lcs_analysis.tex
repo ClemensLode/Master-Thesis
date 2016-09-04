@@ -1,85 +1,134 @@
 \chapter{Erste Analyse der Agenten ohne XCS}\label{analysis_sans_lcs:cha}
 
-In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des ``zufälligen Algorithmus''~\ref{randomized_movement:sec}, des Algorithmus mit ``einfacher Heuristik''~\ref{simple_heuristik:sec} und des Algorithmus mit ``intelligenter Heuristik''~\ref{intelligent_heuristik:sec} angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit XCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.
+In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des Algorithmus zufälliger Bewegung (siehe Kapitel~\ref{randomized_movement:sec}), des Algorithmus mit einfacher Heuristik (siehe Kapitel~\ref{simple_heuristik:sec}) und des Algorithmus mit intelligenter Heuristik (siehe Kapitel~\ref{intelligent_heuristik:sec}) angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit XCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen. Insbesondere der Vergleich der intelligenten Heuristik mit einem Agentensystem mit zufälliger Bewegung kann Aufschluss darüber geben, wieviel ein Agent in einem solchen Szenario überhaupt lernen kann.
 
 TODO: Ziel: Schwere Szenarien finden (schwierig für zufälligen, leicht für einfache heuristik)
 
 \section{Statistische Merkmale}
 
-Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen, die Zahl der Zeitschritte wird somit auf 500 festgesetzt. Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Problemen ermittelt und gemittelt werden. Alle Werte sind auf 2 Stellen nach dem Komma gerundet. TODO
+Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen, die Zahl der Zeitschritte wird somit, soweit nicht anders angegeben, standardmäßig auf 500 festgesetzt. Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Problemen (siehe Kapitel~\ref{definition_probleminstanz:sec}) ermittelt und gemittelt werden. Die in den Tabellen jeweils angegebenen Werte sind auf zwei Stellen nach dem Komma gerundet.\\
+Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfasst. Wesentliches Merkmal zum Vergleich der Algorithmen ist der Wert der Qualität (siehe Kapitel~\ref{qualitaet:sec}), weitere Merkmale dienen zur Erklärung, warum z.B. ein Algorithmus bei einem Durchlauf schlechte Ergebnisse lieferte, bzw. dienten zum Testen und Finden von Fehlern oder Schwächen des Simulationsprogramms. Im Einzelnen sind hier zu nennen:
 
-\subsection{Qualität}
+\begin{enumerate}
+\item Anteil Sprünge des Zielagenten (siehe Kapitel~\ref{base_properties_goal:sec}), Durchläufe mit hohen Werte müssten verworfen werden
+\item Anteil blockierter Bewegungen der Agenten
+\item Halbzeitqualität (siehe Kapitel~\ref{qualitaet:sec}), größere Unterschiede zur ermittelten Qualität deuten darauf hin, dass sich der Algorithmus noch nicht stabilisiert hat und das Szenario mit höherer Schrittzahl erneut durchgeführt werden sollte
+\item Abdeckung
+\item Varianz der individuellen Punkte, ungefähres Maß, inwieweit einzelne Agenten an der Gesamtqualität beteiligt waren 
+
+\end{enumerate}
 
 \subsection{Abdeckung}
 
 Die theoretisch maximal mögliche Anzahl an Felder, die die Agenten innerhalb ihrer Überwachungsreichweite zu einem Zeitpunkt haben können, entspricht der Zahl der Agenten multipliziert mit der Zahl der Felder die ein Agent in seiner Übertragungsreichweite haben kann. Ist dieser Wert größer als die Gesamtzahl aller freien Felder, wird stattdessen dieser Wert benutzt.\\
 Teilt man nun die Anzahl der momentan tatsächlich überwachten Felder durch die eben ermittelte maximal mögliche Anzahl an überwachten Felder, erhält man die Abdeckung, die die Agenten momentan erreichen.\\
 
-\subsection{Blockierte Bewegungen}
-
-Der Wert der blockierten Bewegungen entspricht dem Anteil an Bewegungen, die insgesamt (Zielagent und Bewegungen gegen vom Zielagenten besetzte Felder ausgeschlossen) blockiert waren und somit nicht ausgeführt wurden. Der Wert ist ein 
 
 
 
 
-\section{``Total Random'' Zielobjekt}
+
+
+\section{Zielobjekt mit zufälligem Sprung}
+
+Im folgenden sollen alle.
+
+
 
 In allen Szenarien mit dieser Form der Bewegung des Zielobjekts kommt es nur darauf an, dass die Agenten einen möglichst großen Bereich des Torus abdecken. 
 
-\subsection{Ohne Hindernisse}
 
-Ohne Hindernisse gibt sich ein klares Bild~(siehe~\ref{table:empty_total_random}), die intelligente Heuristik ist etwas besser als der des zufälligen Agenten und der einfachen Heuristik. Ein möglichst weiträumiges Verteilen auf dem Torus führt zum Erfolg, was sich auch in einem hohen Wert der Abdeckung zeigt, denn genau das wird mit dem völlig zufällig springenden Agenten getestet. Auch ist die Zahl der blockierten Bewegungen deutlich niedriger, was sich auch mit der Haltung des Abstands erklären lässt.\\
-Die einfache Heuristik schneidet dagegen etwas schlechter als eine zufällige Bewegung ab. Zwar ist die Zahl der blockierten Bewegungen geringer, was sich dadurch erklären lässt, dass die einfache Heuristik zumindest an einem Punkt eine Sichtbarkeitsüberprüfung für die Richtung durchführt, in der sie sich bewegen möchte (nämlich wenn das Zielobjekt in Sicht ist), andererseits ist die Abdeckung etwas geringer. Dies kommt daher, dass, wenn mehrere Agenten das Zielobjekt in der selben Richtung in Sichtweite haben, mehrere Agenten sich in die selbe Richtung bewegen. Dies beeinträchtigt die zufällige Verteilung der Agenten auf dem Spielfeld und führt somit auch zu einer niedrigeren Abdeckung des Torus.\\
+\subsection{Szenario ohne Hindernisse}
+
+Ohne Hindernisse gibt sich ein klares Bild (siehe Tabelle~\ref{table:empty_total_random}), die intelligente Heuristik ist etwas besser als der des zufälligen Agenten und der einfachen Heuristik. Ein möglichst weiträumiges Verteilen auf dem Torus führt zum Erfolg, was sich auch in einem hohen Wert der Abdeckung zeigt, denn genau das wird mit dem völlig zufällig springenden Agenten getestet. Auch ist die Zahl der blockierten Bewegungen deutlich niedriger, was sich auch mit der Haltung des Abstands erklären lässt.\\
+Die einfache Heuristik schneidet dagegen etwas schlechter als eine zufällige Bewegung ab. Zwar ist die Zahl der blockierten Bewegungen geringer, was sich dadurch erklären lässt, dass die einfache Heuristik zumindest an einem Punkt eine Sichtbarkeitsüberprüfung für die Richtung durchführt, in der sie sich bewegen möchte (nämlich wenn das Zielobjekt in Sicht ist), andererseits ist die Abdeckung etwas geringer. Dies kommt daher, dass, wenn mehrere Agenten das Zielobjekt in derselben Richtung in Sichtweite haben, mehrere Agenten sich in dieselbe Richtung bewegen. Dies beeinträchtigt die zufällige Verteilung der Agenten auf dem Spielfeld und führt somit auch zu einer niedrigeren Abdeckung des Torus.\\
 Bezüglich der Anzahl der Agenten ergeben sich keine Besonderheiten, mit steigender Agentenzahl steigt die Zahl der blockierten Bewegungen (aufgrund größerer Anzahl von blockierten Feldern), während die Abdeckung sinkt (aufgrund sich überlappender Überwachungsreichweiten).
 
 \begin{table}[ht]
-\caption{``Total Random'' ohne Hindernisse}
+\caption{Zufällige Sprünge des Zielobjekts in einem Szenario ohne Hindernisse}
 \centering
 \begin{tabular}{c c c c c}
 \hline\hline
 Algorithmus & Agentenzahl & Blockierte Bewegungen & Abdeckung & Qualität \\ [0.5ex]
 \hline
-Zufällige Bewegung     & 8  & 2.84\% & 73.74\% & 32.43\% \\
-Einfache Heuristik     & 8  & 2.81\% & 73.21\% & 32.12\% \\
-Intelligente Heuristik & 8  & 0.63\% & 81.26\% & 36.01\% \\ [1ex]
+Zufällige Bewegung     & 8  & 2,82\% & 73,78\% & 32,36\% \\
+Einfache Heuristik     & 8  & 2,79\% & 73,22\% & 32,10\% \\
+Intelligente Heuristik & 8  & 0,64\% & 81,26\% & 35,91\% \\ [1ex]
 \hline
-Zufällige Bewegung     & 12 & 4.34\% & 69.49\% & 44.81\% \\
-Einfache Heuristik     & 12 & 4.17\% & 68.89\% & 43.90\% \\
-Intelligente Heuristik & 12 & 1.50\% & 77.57\% & 49.56\% \\ [1ex]
+Zufällige Bewegung     & 12 & 4,32\% & 69,55\% & 44,75\% \\
+Einfache Heuristik     & 12 & 4,19\% & 68,88\% & 43,86\% \\
+Intelligente Heuristik & 12 & 1,49\% & 77,60\% & 49,49\% \\ [1ex]
 \hline
-Zufällige Bewegung     & 16 & 5.81\% & 64.27\% & 54.57\% \\
-Einfache Heuristik     & 16 & 5.67\% & 63.62\% & 54.05\% \\
-Intelligente Heuristik & 16 & 2.85\% & 71.43\% & 60.73\% \\ [1ex]
+Zufällige Bewegung     & 16 & 5,82\% & 64,28\% & 54,55\% \\
+Einfache Heuristik     & 16 & 5,66\% & 63,65\% & 53,99\% \\
+Intelligente Heuristik & 16 & 2,85\% & 71,44\% & 60,73\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:empty_total_random}
 \end{table}
 
+
 \subsection{Säulenszenario}
+
+Für das Säulenszenario (siehe Tabelle~\ref{table:pillar_total_random}) ergeben sich erwartungsgemäß ähnliche Werte wie im Fall des Szenarios ohne Hindernisse (siehe Tabelle~\ref{table:empty_total_random}). Durch geringere Sicht und höhere Zahl an blockierten Bewegungen ergibt sich jeweils eine geringere Abdeckung und auch jeweils eine geringere Qualität. Auch hier ergeben sich keine Besonderheiten bezüglich der Agenten, im Folgenden werden sich die Tests deshalb auf den Fall mit 8 Agenten beschränken.
+
+\begin{table}[ht]
+\caption{Zufällige Sprünge des Zielobjekts in einem Säulenszenario}
+\centering
+\begin{tabular}{c c c c c}
+\hline\hline
+Algorithmus & Agentenzahl & Blockierte Bewegungen & Abdeckung & Qualität \\ [0.5ex]
+\hline
+Zufällige Bewegung     & 8  & 4,45\% & 72,11\% & 32,13\% \\
+Einfache Heuristik     & 8  & 4,08\% & 71,70\% & 31,99\% \\
+Intelligente Heuristik & 8  & 2,34\% & 79,61\% & 35,29\% \\ [1ex]
+\hline
+Zufällige Bewegung     & 12 & 5,93\% & 67,72\% & 44,44\% \\
+Einfache Heuristik     & 12 & 5,67\% & 67,23\% & 43,81\% \\
+Intelligente Heuristik & 12 & 3,62\% & 75,86\% & 49,34\% \\ [1ex]
+\hline
+Zufällige Bewegung     & 16 & 7,62\% & 62,53\% & 54,26\% \\
+Einfache Heuristik     & 16 & 7,23\% & 62,00\% & 53,58\% \\
+Intelligente Heuristik & 16 & 5,18\% & 69,91\% & 60,43\% \\ [1ex]
+\hline
+\end{tabular}
+\label{table:empty_total_random}
+\end{table}
 
 
 \subsection{Zufällig verteilte Hindernisse}
 
-Hier ergeben sich bei allen Einstellungen für \(\lambda_{h}\) und \(\lambda_{p}\) (siehe Kapitel~\ref{random_scenario_definition:sec}) ebenfalls ein klares Bild~(siehe~\ref{table:full_total_random}), die intelligente Heuristik liegt wieder vorne, gefolgt wieder von der einfachen Heuristik und der zufälligen Bewegung. Die einfache Heuristik schneidet minimal besser ab als die zufällige Bewegung, die Zahl der blockierten Bewegungen scheint hier stärker ins Gewicht zu fallen. Insbesondere die intelligente Heuristik scheint Probleme mit den Hindernissen zu haben. Da Hindernisse in der Heuristik nicht beachtet werden, erzeugt die maximale Ausbreitung der Agenten einen Bewegungsdruck gegen sie.
+
+Hier ergibt sich für alle Einstellungen für \(\lambda_{h}\) und \(\lambda_{p}\) (siehe Kapitel~\ref{random_scenario_definition:sec}) ebenfalls ein eindeutiges Bild (siehe Tabelle~\ref{table:full_total_random}), die intelligente Heuristik liegt wieder vorne, gefolgt wieder von der einfachen Heuristik und der zufälligen Bewegung. Im Fall mit vielen Hindernissen (\(\lambda_{h} = 0.2\)) liegt die einfache Heuristik trotz höherer Abdeckung hinter der zufälligen Bewegung. Dies ist wohl auf einen Zufall zurückzuführen, ändert man den \emph{random seed} Wert oder erhöht man die Anzahl der Experimente von 10 auf 30 ergibt sich wieder oben genannte Reihenfolge.\\
+
+Dass der einfache Agent, wenn er das Zielobjekt in Sicht hat, eine geringere Zahl an blockierten Bewegungen als der zufällige Agent aufweist, lässt sich damit begründen, dass er davon ausgehen kann, dass sich in dieser Richtung wahrscheinlich eher kein Hindernis befindet (da die Sicht nicht blockiert ist), während der zufällige Agent Hindernisse überhaupt nicht beachtet, somit öfters gegen ein Hindernis läuft und letztlich öfters stehen bleibt. Der Unterschied zwischen beiden Agenten ist besonders hoch in Szenarien mit größerem Anteil an Hindernissen.\\
+
+Im Vergleich zur einfachen Heuristik scheint insbesondere die intelligente Heuristik Probleme mit den Hindernissen zu haben (viele blockierte Bewegungen). Da Hindernisse in der Heuristik nicht beachtet werden, bewirkt die Strategie der maximalen Ausbreitung der Agenten, dass die Agenten gegen die Hindernisse gedrückt werden (andere Agenten sind bei hohem Verknüpfungsfaktor eher in einem Bereich ohne Hindernisse).\\
+
+Schließlich ist zu sehen, dass die Agenten in einem Szenario mit höherem Verknüpfungsfaktor (der Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.99\) im Vergleich zum Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.5\)) besser abschneiden. Dies liegt daran, dass Szenarien mit hohem Verknüpfungsfaktors bedeuten, dass viele Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernissen ähnlich sind, da es eher größere zusammenhängende Flächen gibt.\\
+
+Insgesamt ist zu sagen, dass keine der Szenarien mit zufälligem Sprung des Zielobjekts sich als zu lernende Aufgabe lohnt, der Unterschied zwischen der zufälligen Bewegung und der intelligenten Heuristik ist zu gering, die Aufgabe somit zu schwierig und soll in Verbindung mit XCS, bis auf einen einfachen Vergleichstest (siehe Kapitel TODO), nicht weiter betrachtet werden.
+
+TODO warum besser mit mehr HIndernissen
 
 \begin{table}[ht]
-\caption{``Total Random'' mit Hindernisse (12 Agenten)}
+\caption{Zufällige Sprünge des Zielobjekts in einem Szenario mit Hindernisse (8 Agenten)}
 \centering
 \begin{tabular}{c c c c c c}
 \hline\hline
 Algorithmus & \(\lambda_{h}\) & \(\lambda_{p}\) & Blockierte Bewegungen & Abdeckung & Qualität \\ [0.5ex]
 \hline
-Zufällige Bewegung     & 0.2 & 0.99 & 14.25\% & 57.93\% & 46.89\% \\
-Einfache Heuristik     & 0.2 & 0.99 & 11.96\% & 57.94\% & 46.99\% \\
-Intelligente Heuristik & 0.2 & 0.99 & 17.76\% & 63.17\% & 51.39\% \\ [1ex]
+Zufällige Bewegung     & 0.2 & 0.99 & 12,44\% & 62,50\% & 34,54\% \\
+Einfache Heuristik     & 0.2 & 0.99 & 10,04\% & 63,02\% & 34,48\% \\
+Intelligente Heuristik & 0.2 & 0.99 & 12,71\% & 68,22\% & 37,89\% \\ [1ex]
 \hline
-Zufällige Bewegung     & 0.1 & 0.99 &  9.11\% & 64.04\% & 45.75\% \\
-Einfache Heuristik     & 0.1 & 0.99 &  7.76\% & 63.82\% & 45.34\% \\
-Intelligente Heuristik & 0.1 & 0.99 &  9.68\% & 70.50\% & 50.40\% \\ [1ex]
+Zufällige Bewegung     & 0.1 & 0.99 &  7,58\% & 68,33\% & 32,81\% \\
+Einfache Heuristik     & 0.1 & 0.99 &  6,15\% & 68,49\% & 33,36\% \\
+Intelligente Heuristik & 0.1 & 0.99 &  6,50\% & 74,81\% & 36,29\% \\ [1ex]
 \hline
-Zufällige Bewegung     & 0.1 & 0.5  & 11.89\% & 61.82\% & 44.62\% \\
-Einfache Heuristik     & 0.1 & 0.5  & 10.27\% & 62.20\% & 44.32\% \\
-Intelligente Heuristik & 0.1 & 0.5  & 12.21\% & 68.96\% & 49.16\% \\ [1ex]
+Zufällige Bewegung     & 0.1 & 0.5  & 10,12\% & 66,01\% & 32,03\% \\
+Einfache Heuristik     & 0.1 & 0.5  &  8,57\% & 66,52\% & 32,38\% \\
+Intelligente Heuristik & 0.1 & 0.5  &  9,29\% & 72,63\% & 35,12\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:full_total_random}
@@ -88,24 +137,23 @@ Intelligente Heuristik & 0.1 & 0.5  & 12.21\% & 68.96\% & 49.16\% \\ [1ex]
 
 
 
-Agenten. Der wesentliche zweite Faktor ist hier, dass der einfache Agent, wenn er das Zielobjekt in Sicht hat, davon ausgehen kann, dass sich in dieser Richtung wahrscheinlich kein Hindernis befindet, während der zufällige Agent Hindernisse überhaupt nicht beachtet, somit öfters gegen ein Hindernis läuft und letztlich öfters stehen bleibt. Der Unterschied zwischen beiden Agenten ist besonders hoch in Szenarien mit größerem Anteil an Hindernissen.\\
 
-Ansonsten liegt der intelligente Agent wieder eindeutig vorne, beherrscht aber besonders gut Szenarien mit hohem ``Verknüpfungsfaktor'' (\(1.0\)) der geringem Anteil an Hindernissen (\(0.1\)), bei denen er bis zu etwa 15\% über dem Ergebnis des einfachen Agenten liegt.\\
-Dies liegt daran, dass Szenarien mit hohem ``Verknüpfungsfaktors'' bedeuten, dass alle Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernissen ähnlich sind, auf dem dieser Agent ja besonders gut abschneidet. In zerklüftete Szenarien hat der Algorithmus dagegen Schwierigkeiten um andere Agenten überhaupt zu Gesicht bekommen, der Vorteil der Verteilung fällt also zu einem Teil weg. 
+FAZIT:
 
-Dies bestätigt auch ein Durchlauf bei dem Behinderungen der Sicht durch Hindernisse deaktiviert sind. Hierbei erreicht der intelligente Agent im Szenario (\(0.4\), \(0.1\)) statt TODO evtl weg
+Je schneller, zufälliger 
 
-TODO
 
-\section{``Zufälliger Nachbar'' und ``Einfache Richtungsänderung''}
 
-Wesentlicher Punkt bei beiden Bewegungstypen (siehe~\ref{random_neighbor:sec},~\ref{direction_change:sec}) ist, dass der jetzige Ort des Zielobjekts maximal zwei Felder (die Standardgeschwindigkeit des Zielobjekts in den Tests) vom Ort in der vorangegangenen Zeiteinheit entfernt ist. Somit ist ein lokales Einfangen eher von Relevanz, wenn auch das Zielobjekt grundsätzlich schneller als andere Agenten ist.\\
-Wesentlicher Unterschied zwischen beiden Bewegungstypen ist, dass das Zielobjekt mit Bewegungstyp ``zufälliger Nachbar'' bei einer Bewegungsgeschwindigkeit von 2 mit einer Wahrscheinlichkeit von \(\frac{1}{4}\) auf das ursprüngliche Feld zurückkehrt, innerhalb eines Zeitschritts also stehenbleibt. Wie die Ergebnisse in Tabellen~\ref{table:neighbor_change_random} und ~\ref{table:neighbor_change_pillar} zeigen (TODO vielleicht noch näher darauf eingehen), ergibt sich dadurch ein leichteres Szenario. Ein mitunter stehenbleibender Agent kann mittels Heuristiken leichter überwacht werden, während es keine signifikante Veränderung bei der zufälligen Bewegung ergibt. In weiteren Tests soll deswegen immer nur die Bewegungsform ``Einfache Richtungsänderung'' getestet werden.
+\section{Zielobjekt mit zufälliger Bewegung bzw. einfacher Richtungsänderung}
+
+Wesentlicher Punkt bei beiden Bewegungstypen (siehe Kapitel~\ref{random_neighbor:sec} und Kapitel~\ref{direction_change:sec}) ist, dass der jetzige Ort des Zielobjekts maximal zwei Felder (die maximale Geschwindigkeit des Zielobjekts in den Tests) vom Ort in der vorangegangenen Zeiteinheit entfernt ist. Somit ist ein lokales Einfangen eher von Relevanz, der Ort an dem sich das Zielobjekt im nächsten Zeitschritt befinden wird, ist zumindest vom aktuellen Ort abhängig, wenn das Zielobjekt auch schneller sein kann als andere Agenten.\\
+
+Wesentlicher Unterschied zwischen beiden Bewegungstypen ist, dass das Zielobjekt mit zufälliger Bewegung nach 2 Schritten mit Wahrscheinlichkeit von \(\frac{1}{4}\) auf das ursprüngliche Feld zurückkehrt, also stehenbleibt. Wie die Ergebnisse in Tabellen~\ref{table:neighbor_change_random} und ~\ref{table:neighbor_change_pillar} zeigen, ergibt sich dadurch ein leichteres Szenario. Ein mitunter stehenbleibender Agent kann mittels Heuristiken leichter überwacht werden, während es keine signifikante Veränderung bei der zufälligen Bewegung ergibt. In weiteren Tests soll deswegen immer nur Zielobjekten mit einfacher Richtungsänderung getestet werden.
 
 %%TODO table:neighbor_change_no_obstacles
 
 \begin{table}[ht]
-\caption{Vergleich ``Zufälliger Nachbar'' und ``Einfache Richtungsänderung'' (12 Agenten, ohne Hindernisse)}
+\caption{Vergleich von Zielobjekt mit zufälliger Bewegung und einfacher Richtungsänderung (8 Agenten, ohne Hindernisse)}
 \centering
 \begin{tabular}{c c c c}
 \hline\hline
@@ -128,7 +176,7 @@ Intelligente Heuristik &  4.07\% & 71.24\% & 74.53\% \\ [1ex]
 \end{table}
 
 \begin{table}[ht]
-\caption{Vergleich ``Zufälliger Nachbar'' und ``Einfache Richtungsänderung'' (12 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
+\caption{Vergleich von Zielobjekt mit zufälliger Bewegung und einfacher Richtungsänderung (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.1$, $\lambda_{p} = 0.99$)}
 \centering
 \begin{tabular}{c c c c}
 \hline\hline
@@ -173,8 +221,36 @@ Intelligente Heuristik &  6.90\% & 68.75\% & 81.28\% \\ [1ex]
 \label{table:neighbor_change_pillar}
 \end{table}
 
+\section{Auswirkung der Zielgeschwindigkeit auf die Qualität}
 
-\section{``Intelligent Open'' und ``Intelligent Hide''}
+Angesichts der Ergebnisse in den zwei vorangegangenen Kapiteln, ist zu erwarten, dass die Geschwindigkeit des Zielobjekts bei der Qualität des Agenten mit zufälliger Bewegung keine Rolle spielt, da weder das Zielobjekt noch die Agenten Informationen über ihre Umgebung benutzen um sich für ein Verhalten zu entscheiden.\\
+In Abbildung~\ref{speed_random_goal:fig} sind die Testergebnisse für einen Test mit 8 Agenten auf dem Säulenszenario dargestellt, bei dem sich das Zielobjekt mit einfacher Richtungsänderung bewegt. Es ist keine Korrelation zwischen der Geschwindigkeit und der Qualität des Algorithmus mit zufälliger Bewegung festzustellen, nur bei Geschwindigkeit 0 scheint es ein deutlich besseres Ergebnis zu geben. Das lässt sich aber durch die Anfangskonfiguration erklären, beim Säulenszenario startet das Zielobjekt in der Mitte mit maximalem Abstand zu den Hindernissen, ist also immer optimal in Sicht.\\
+Der Algorithmus mit zufälliger Bewegung stellt also eine Untergrenze dar, ein Agent muss mehr als diesen Wert erreichen, damit man sagen kann, dass er etwas gelernt hat.\\
+In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnisse (im selben Szenario) für die einfache und die intelligente Heuristik zu sehen. Im Wesentlichen sind drei Punkte anzumerken, erstens gibt es eine Korrelation zwischen Qualität und Geschwindigkeit, zweitens gibt es einen Knick bei Geschwindigkeit 1 und drittens ist ein fast stetiger Anstieg der Differenz zwischen der einfachen und der intelligenten Heuristik zu verzeichnen. Der Knick lässt sich dadurch erklären, dass es ab dieser Geschwindigkeit möglich ist, dass das Zielobjekt Verfolger abschütteln kann, der Anstieg der Differenz lässt sich dadurch erklären, dass es Abdeckung des Gebiets eine immer größere Rolle spielt, als die Verfolgung des Zielobjekts.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{speed_random_goal.eps}
+}
+\caption[Auswirkung der Zielgeschwindigkeit auf Agenten mit zufälliger Bewegung]{Auswirkung der Zielgeschwindigkeit auf Agenten mit zufälliger Bewegung, bis auf den Sonderfall bei 0 ist keine Korrelation zu entdecken TODO Szenario}
+\label{speed_random_goal:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{speed_random_goal_heuristik.eps}
+}
+\caption[Auswirkung der Zielgeschwindigkeit auf Agenten mit Heuristik]{Auswirkung der Zielgeschwindigkeit auf Agenten mit Heuristik}
+\label{speed_random_goal_heuristik:fig}
+\end{figure}
+
+
+
+\section{Zielobjekt mit intelligenter Bewegung}
+
+Ein sich schnell bewegender, intelligenter Agent 
+
+Dass dies doch nicht stimmt... TODO
 
 \ref{table:intelligent_open_hide_no_obstacles}
 \ref{table:intelligent_open_hide_random}
@@ -259,12 +335,6 @@ Intelligente Heuristik & 65.65\% & 86.38\% \\ [1ex]
 TODO
 
 leeres Szenario
-
-\section{XCS}
-
-Wird weiter unten besprochen.
-
-
 
 
 
