@@ -17,30 +17,26 @@ Helen Keller\\
 Wesentliche Erkenntnisse aus dieser Arbeit sind:
 \begin{itemize}
 
-\item Die Bewertungsfunktion kann anhand einer Nachbildung einer gut funktionierenden Heuristik konstruiert werden.
+\item Die Bewertungsfunktion kann anhand einer Nachbildung einer gut funktionierenden Heuristik konstruiert werden (siehe Kapitel~\ref{bewertung_ueberwachungszenario:sec}).
 
-\item Ein Überwachungsszenario unterscheidet sich aufgrund fehlender Markow-Eigenschaft deutlich von den in der Literatur normalerweise betrachteten Szenarien.
+\item Durch Hinzufügen einer Form von Speicher (siehe Kapitel~\ref{sxcs_variant:sec}) kann SXCS die betrachtete Aufgabe wesentlich besser als XCS lösen (siehe Kapitel~\ref{lcs_analysis:cha}).
 
-\item Durch Hinzufügen einer Form von Speicher kann XCS die betrachtete Aufgabe wesentlich besser lösen.
+\item Eine Variation der Lernrate kann je nach Szenario sinnvoll sein (siehe Kapitel~\ref{sec:learnrate_parameter} und Kapitel~\ref{xcs_difficult_scenario:sec}).
 
-\item Der hier vorgestellte Algorithmus SXCS erreicht in den betrachteten Szenarien ein deutlich besseres Ergebnis als die Standardimplementierung von XCS.
+\item Die Agenten mit XCS und SXCS haben deutliche Probleme mit Szenarien mit vielen Hindernissen (siehe Kapitel~\ref{tournament_factor_test:sec}).
 
-\item Eine Variation der Lernrate kann je nach Szenario sinnvoll sein.
+\item Ein dynamischer Wechsel der Auswahlart für Aktionen während eines Laufs kann sinnvoll sein, um die Zahl der blockierten Bewegungen zu verringern und das Zielobjekt besser verfolgen zu können (siehe Kapitel~\ref{analysis_random_scenario_xcs:sec}).
 
-\item Die Agenten haben deutliche Probleme mit Szenarien mit vielen Hindernissen.
+\item Sowohl XCS als auch SXCS können (für sich zufällig bewegende Agenten) schwierige Szenarien (siehe Kapitel~\ref{difficult_scenario:sec}) mit markanten Hindernispunkten meistern (siehe Kapitel~\ref{xcs_difficult_scenario:sec}) und SXCS kann diese sogar besser als die intelligente Heuristik lösen (siehe Kapitel~\ref{sxcs_intelligent_difficult_test:sec}).
 
-\item Ein dynamischer Wechsel der Auswahlart für Aktionen während eines Laufs kann sinnvoll sein, um die Zahl der blockierten Bewegungen zu verringern und das Zielobjekt besser verfolgen zu können.
+\item Die vorgestellte Variante des verzögerten SXCS Algorithmus DSXCS bietet Raum für Verbesserung (siehe Kapitel~\ref{verzoegerter_reward:sec}).
 
-\item In einem Szenario, in dem markante Hindernispunkte gelernt werden müssen, behält SXCS seine Eigenschaften und kann womöglich auch für XCS Standardprobleme eingesetzt werden.
-
-\item Die vorgestellte Variante des verzögerten SXCS Algorithmus DSXCS bietet Raum für Verbesserung.
-
-\item Die versuchte Implementierung von Kommunikation führte nicht zum Erfolg, zum einen wegen geringer Möglichkeiten zur Kooperation, zum anderen wegen zu einfach umgesetztem Algorithmus.
+\item Die versuchte Implementierung von Kommunikation führte nicht zum Erfolg, zum einen wegen geringer Möglichkeiten zur Kooperation, zum anderen wegen zu einfach umgesetztem Algorithmus (siehe Kapitel~\ref{dsxcs_analysis:sec} und \ref{bewertung_komm:sec}).
 
 \end{itemize}
 
 
-Das wesentliche Ergebnis ist, dass die Implementierung des XCS auf  Überwachungsszenarien ausgeweitet werden kann, ohne wesentliche Veränderungen am Algorithmus vorzunehmen. Die alleinige Anpassung des XCS \emph{, dass eine neue Probleminstanz gestartet wird, wann immer sich das Ziel in Überwachungsreichweite befand, führte aber nicht zum Erfolg. Die Ergebnisse waren kaum besser als ein sich zufällig bewegender Agent.\\
+Das wesentliche Ergebnis ist, dass die Implementierung des XCS auf  Überwachungsszenarien ausgeweitet werden kann, ohne wesentliche Veränderungen am Algorithmus vorzunehmen. Die alleinige Anpassung des XCS \emph{multi step} Verfahrens, dass eine neue Probleminstanz gestartet wird, wann immer sich das Ziel in Überwachungsreichweite befand, führte aber nicht zum Erfolg. Die Ergebnisse waren kaum besser als ein sich zufällig bewegender Agent.\\
 
 Erst eine Untersuchung der Natur von Überwachungsszenarien, insbesondere die Feststellung, dass bei ihnen nicht die Markow-Eigenschaft gilt und somit ein Speicher sinnvoll sein könnte, führte weiter zur Entwicklung des SXCS Algorithmus.\\
 
@@ -103,7 +99,7 @@ Möglicherweise könnte man durch Hinzunahme eines weiteren Bits im \emph{conditio
 
 \subsection{Anpassungsfähigkeit von SXCS}\label{anpassungsfaehigkeit:sec}
 
-XCS im Allgemeinen besitzt die Eigenschaft zu lernen. Interessant wäre eine Untersuchung, ob und wie sich die in dieser Arbeit diskutierten Varianten sich an neue Szenarien anpassen können. Zwar wurde bei der Untersuchung der Szenarien mit zufälligen Hindernissen gezeigt, dass sie es schaffen, mit veränderten Hindernispositionen zurechtzukommen, es wurde jedoch nicht untersucht, wie schnell eine solche Anpassung erfolgt. Beispielsweise könnte man 10 Probleminstanzen das Säulenszenario testen lassen und dann mit der selben Population 10 Probleminstanzen mit dem schwierigen Szenario. Anschließend wäre eine Betrachtung der Zahl der neu erstellten \emph{classifier}, des gleitenden Durchschnitts der Qualität und der Vergleich zu den Qualitäten bei separatem Testens beider Szenarien interessant.\\
+XCS im Allgemeinen besitzt die Eigenschaft zu lernen. Interessant wäre eine Untersuchung, ob und wie sich die in dieser Arbeit diskutierten Varianten sich an neue Szenarien anpassen können. Zwar wurde bei der Untersuchung der Szenarien mit zufälligen Hindernissen gezeigt, dass sie es schaffen, mit veränderten Hindernispositionen zurechtzukommen, es wurde jedoch nicht untersucht, wie schnell eine solche Anpassung erfolgt. Beispielsweise könnte man 10 Probleminstanzen das Säulenszenario testen lassen und dann mit derselben Population 10 Probleminstanzen mit dem schwierigen Szenario. Anschließend wäre eine Betrachtung der Zahl der neu erstellten \emph{classifier}, des gleitenden Durchschnitts der Qualität und der Vergleich zu den Qualitäten bei separatem Testens beider Szenarien interessant.\\
 
 
 \subsection{Wechsel zwischen \emph{explore}/\emph{exploit} Phasen}
