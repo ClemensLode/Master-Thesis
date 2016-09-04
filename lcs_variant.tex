@@ -32,6 +32,25 @@ Der hier entwickelte Algorithmus muss primär nicht einen Weg zum Ziel erkennen, 
 Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht zum Erfolg führen. Eine einfache Implementation mit einem simplen Agenten der auf das Ziel zugeht, wenn es in Sicht ist und sich sonst wie ein sich zufällig bewegender Agent verhält, schneidet grundsätzlich schlechter ab.
 
 
+\subsection{matching}\label{matching:sec}
+appliedClassifierSet
+
+\subsection{actionSet}
+
+\subsection{Covering}\label{covering:sec}
+
+Die Implementation entspricht im Wesentlichen dem Original, es wurde aber im Hinblick auf eine klare Code-Struktur eine Optimierung entfernt und Code zur Behandlung von Drehungen hinzugefügt. Im Original wird die Erstellung des MatchSets gleichzeitig mit dem Covering ausgeführt, wodurch möglicherweise Zeit gespart wird, während in dieser Implementierung es in zwei Funktionen aufgeteilt wurde. TODOBEschreibung
+Bezüglich der Drehung musste eine Schleife eingefügt werden, die die abgedeckten Aktionen mit allen, inklusive durch Drehung entstandenen, Aktionen eines Classifiers aktualisiert. Ein einzelner Classifier kann also mehrere Aktionen abdecken, beispielsweise kann ``0-0000-0000->0'' bei der Sensoreingabe ``0-0000-0000'' alle vier Aktionen bereits abdecken. TODO besseres Beispiel. 
+
+
+In meiner ersten Version hatte ich alle ungültigen Aktionen von vornherein für das Covern ausgeschlossen. Eine ungültige Aktion ist beispielsweise ein Laufen gegen ein Hindernis oder einen Agenten. Alleine dadurch verbesserte sich die Leistung um etwa 0.5\%. Das lässt sich darauf zurückführen, dass die Sensoren eines Agenten eigentlich nur feststellen können, ob ein anderer Agent in Sichtweite ist, nicht aber in welcher Entfernung. Für die eigentlichen Ergebnisse wurde die dafür verantwortliche Methode wieder entfernt.
+
+Außerdem ist ein Fehler der originalen XCS Implementation behoben. Wenn neue Classifier beim Covering hinzugefügt werden, wird ihre anfängliche ActionSetSize auf die numerositySum des matchSets gesetzt. Einen Grund dafür gibt es nicht, in meiner Implementation setze ich deshalb den Wert auf die anfängliche Größe des actionSets.
+Beim Aufruf des Covering-Algorithmus weiss man schon, wie groß
+
+TODO nein!
+
+
 \section{Ablauf eines LCS}\label{ablauf_lcs:sec}
 
 \begin{enumerate}
@@ -244,7 +263,7 @@ Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Gru
 Bei der veränderten LCS Variante ist die Verbindung zwischen den \emph{actionSets} direkt durch die zeitliche Nähe zum Ziel gegeben. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
 \(r(a)\) bezeichnet den \emph{reward} Wert für das \emph{actionSet} mit Alter \(a\).
 
-Bei linearer Rewardvergabe:
+Bei linearer Vergabe des \emph{reward}:
 $$
 r(a) = \left\{ \begin{array}{rl}
   \frac{a}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $1$} \\
@@ -252,7 +271,7 @@ r(a) = \left\{ \begin{array}{rl}
        \end{array} \right.
 $$
 
-bzw. bei quadratischer Rewardvergabe:
+bzw. bei quadratischer Vergabe des \emph{reward}:
 
 $$
 r(a) = \left\{ \begin{array}{rl}
@@ -261,7 +280,7 @@ r(a) = \left\{ \begin{array}{rl}
        \end{array} \right.
 $$
 
-In Tests ergab sich für die quadratische Rewardvergabe ein minimal besseres Ergebnis (TODO zeigen), weitere Grafiken werden auf die lineare Rewardvergabe beschränkt sein um eine verständliche Darstellung zu ermöglichen, während in den Simulationen die quadratische Rewardvergabe benutzt wird.
+In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal besseres Ergebnis (TODO zeigen), weitere Grafiken werden auf die lineare Vergabe des \emph{reward} beschränkt sein um eine verständliche Darstellung zu ermöglichen, während in den Simulationen die quadratische Vergabe des \emph{reward} benutzt wird.
 
 \begin{figure}[htbp]
 \centerline{	
