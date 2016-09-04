@@ -68,7 +68,7 @@ TODOTabelle prediction discount
 
 \section{Parameter Lernrate $\beta$}\label{sec:learnrate_parameter}
 
-Für die Lernrate \(\beta\) hat sich ein etwas niedrigerer als in der Literatur angegebener Wert (\(0.01\)) als erfolgreich erwiesen. Die Lernrate bestimmt, wie stark ein ermittelter \emph{reward} Wert den \emph{prediction}, \emph{prediction error}, \emph{fitness} und \emph{action set size} Wert pro Aktualisierung beeinflusst.TODO
+Für die Lernrate \(\beta\) hat sich ein etwas niedrigerer als in der Literatur angegebener Wert (\(0.01\)) als erfolgreich erwiesen. Die Lernrate bestimmt, wie stark ein ermittelter \emph{reward} Wert den \emph{reward prediction}, \emph{reward prediction error}, \emph{fitness} und \emph{action set size} Wert pro Aktualisierung beeinflusst.TODO
 Auch dieser Parameter ist szenariospezifisch, über die konkrete Begründung kann nur spekuliert werden, die Schwierigkeit des Szenarios 
 TODO
 
@@ -159,7 +159,7 @@ Mutation probability \(\mu\) & \(0.05\) & [0.01-0.05]\\
 Prediction error reduction & 0.25 & [0.25]\\
 Fitness reduction & \(0.1\) & [0.1]\\
 
-Prediction init \(p_{i}\) & \textbf{0.5, 1.0} (siehe~\ref{sec:prediction_init}) & [\(\sim\) 0]\\
+Reward prediction init \(p_{i}\) & \textbf{0.5, 1.0} (siehe~\ref{sec:prediction_init}) & [\(\sim\) 0]\\
 Prediction error init \(\epsilon_{i}\) & 0.0 & [0.0]\\
 Fitness init \(F_{i}\) & \(0.01\) &  [0.01]\\
 Random init & \textbf{ja} & [ja oder nein]\\
@@ -169,7 +169,7 @@ Experience & 0 & [0]\\
 Accuracy equality \(\epsilon_{0}\) & \textbf{0.05} & [\emph{1\% des größten Werts}]\\
 Accuracy calculation \(\alpha\) & 0.1 & [0.1]\\
 Accuracy power \(\nu\) & 5.0 & [5.0]\\
-Prediction discount \(\gamma\) & 0.71 & [0.71]\\
+Reward prediction discount \(\gamma\) & 0.71 & [0.71]\\
 
 Learning rate \(\beta\) & \textbf{0.01} (siehe~\ref{sec:learnrate_parameter}) & [0.1-0.2]\\
 
