@@ -1,0 +1,155 @@
+\section{SXCS Variante mit Kommunikation}\label{communication:cha}
+
+Da ein Multiagentensystem betrachtet wird, stellt sich natürlich die Frage nach der Kommunikation. In der Literatur gibt es Multiagentensysteme, die auf Learning Classifier Systemen aufbauen, wie z.B. 
+
+TODO Literatur. 
+
+Alle Ansätze in der Literatur erlauben jedoch globale Kommunikation, z.T. gibt es globale \emph{classifier} auf die alle Agenten zurückgreifen können, z.T. gibt es globale Steuerung. 
+
+
+TODO
+Verteilung des rewards an alle - soccer
+TODO Einordnen
+
+soccer!
+
+\cite{Takadama} OCS, centralized control system
+
+In dieser Arbeit soll ein Szenario ohne globale Steuerung oder globale \emph{classifier}, also mit der Restriktion einer begrenzten, lokalen Kommunikation.
+Geht man davon aus, dass über die Zeit hinweg jeder Agent indirekt mit jedem anderen Agenten in Kontakt treten kann, Nachrichten also mit Zeitverzögerung weitergeleitet werden können, ist eine Form der globalen, wenn auch zeitverzögerten, Kommunikation möglich. TODO 
+Eine spezielle Implementierung für diesen Fall werde ich weiter unten besprechen TODO
+
+
+Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite stattfinden kann. Dies ist natürlich kein realistisches Szenario. Geht man jedoch davon aus, dass die Kommunikationsreichweite zumindest ausreichend groß ist um nahe Agenten zu kontaktieren, so kann man argumentieren, dass man dadurch ein Kommunikationsnetzwerk aufbauen kann, in dem jeder Agent jeden anderen Agenten - mit einer gewissen Zeitverzögerung - erreichen kann. Bei ausreichender Agentenzahl relativ zur freien Fläche fallen dadurch wahrscheinlich nur vereinzelte Agenten aus dem Netz, abhängig vom Szenario. Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muss die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls zusätzliche Zeit benötigt. Der Einfachheit halber soll deswegen angenommen werden, dass wir zwar globale Kommunikation zur Verfügung haben, jedoch diese u.U. zeitverzögert stattfindet und wir nur geringe Mengen an Information weitergeben können. In diesem Falle sollen ein Agent in jedem Schritt maximal lediglich einen sogenannten Kommunikationsfaktor und einen \emph{reward} Wert an alle anderen Agenten weitergeben können. Da dieser Algorithmus auf dem SXCS Algorithmus aufbauen soll, sollen hier auch Ereignisse auftreten können und immer eine ganze Reihe von \emph{action set} Listen bewertet werden. Somit muss außerdem noch ein Start- und Endzeitpunkt übermittelt werden. Dies wäre beispielsweise bei einem neutralen Ereignis \(\frac{maxStackSize}{2}\) und \emph{maxStackSize} oder bei einem positiven Ereignis mit 5 Schritten seit dem letzten Ereignis 0 als Startzeitpunkt und 4 als Endzeitpunkt.\\
+
+Insgesamt wird dafür also eine SXCS Variante benötigt, die mit zeitlich verzögerter Aktualisierung arbeiten kann.
+
+weshalb für Kommunikation der zuvor besprochene verzögerte SXCS Algorithmus (DSXCS) in Frage kommt.\\
+
+Hauptaugenmerk hier soll sein, dass es überhaupt Vorteile bringen kann, den \emph{reward} weiterzugeben
+
+TODO SWITCH EXPLORE/EXPLOIT + NEW LCS sehr gut
+
+Einführung, Kommunikationsbeschränkungen (nur Reward weitergeben)
+
+Vergleich Agentenzahl (1, 2, 3, 4, 5, 6, 7, 8)
+
+reward all equally besser als reward none
+Unterscheidung interner und externer reward
+
+Realistischer Fall mit Kommunikationsrestriktionen
+
+
+
+pg. 286 Zentralisierung der Daten
+
+TODO bei Faktorberechnung Ranking
+
+Lösungen aus der Literatur
+
+maxStackSize für DSXCS testen!
+
+
+\subsection{SXCS Variante mit verzögerter Reward (DSXCS)}
+
+Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel~\ref{sxcs_implementation:sec} besprochenen Funktion (Programm~\ref{sxcs_calc_reward:pro}) bei der SXCS Variante ohne verzögerte Bewertung. Ebenso ist die Funktion \emph{calculateNextMove()} (siehe Programm~\ref{dsxcs_calc_move:pro}) fast identisch mit der dort besprochenen Funktion, nur bei der Behandlung des Stacks wird hier beim Überlauf der Eintrag nicht einfach gelöscht, sondern mit der Funktion \emph{processReward()} zuerst noch verarbeitet. In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} Werte ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:pro} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:pro} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von \(1,0\) ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
+
+Eine hilfreiche Voraussetzung für Kommunikation ist, wenn die dadurch möglicherweise entstehende Verzögerung vom jeweiligen Algorithmus unterstützt wird. Während weiter oben 
+
+Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich erst einmal zusammen mit den jeweiligen \emph{action set} Listein einer Liste (\emph{historicActionSet} Liste) gespeichert werden und in jedem Schritt immer nur die \emph{classifier} der \emph{action set} Liste des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert werden. Somit ergibt sich also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, mehrere gleichzeitig stattgefundene (aber erst verzögert eintreffende, wegen z.B. Kommunikationsschwierigkeiten) Ereignisse zusammen auszuwerten. Dies ist macht die Auswertung der eingehenden \emph{reward} Werte und Kommunikationsfaktoren wesentlich einfacher, da alle gemeinsam betrachtet werden können, anstatt dass sie sofort bei Eingang verarbeitet werden müssen.\\
+
+Wann immer ein \emph{base reward} Wert an einen Agenten verteilt wird, kann es sinnvoll sein, diesen \emph{base reward} an andere Agenten weiterzugeben. Dies wurde z.B. in einem ähnlichen Szenario in~\cite{1102281} festgestellt, bei dem zwei auf XCS basierende Agenten gegen bis zu zwei anderen (zufälligen) Agenten eine vereinfachte Form des Fußballs spielen. Das in dieser Arbeite besprochene Szenario ist wesentlich komplexer, was d
+
+
+
+Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes "`externes Ereignis"' von diesen Agenten aufgefasst wird, hängt von den jeweiligen Kommunikationsvarianten ab, die weiter unten besprochen werden.
+
+Durch eine gemeinsame Schnittstelle erhält jeder Agent den \emph{reward} zusammen mit dem Kommunikationsfaktor. Dabei ergibt sich das Problem, dass sich \emph{reward} überschneiden können, da jeder \emph{reward} sich rückwirkend auf die vergangenen \emph{action set} Listen auswirken kann. Auch können mehrere externe \emph{reward} Werte eintreffen, als auch ein eigener positiver lokaler \emph{reward} Wert aufgetreten sein. Würden die \emph{reward} Werte nach ihrer Eingangsreihenfolge abgearbeitet werden, kann es passieren, dass dieselbe \emph{action set} Liste sowohl mit einem hohen als auch einem niedrigen \emph{reward} aktualisiert wird. Da das globale Ziel ist, das Zielobjekt durch \emph{irgendeinen} Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein \emph{einzelner} Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
+
+Befindet sich das Ziel beispielsweise gerade in Überwachungsreichweite mehrerer Agenten und verliert ein anderer Agent das Ziel aus der Sicht, sollte der Agent (und alle anderen Agenten), der das Ziel in Sicht hat, deswegen nicht bestraft werden, da das globale Ziel ja weiterhin erfüllt wurde.
+
+TODO überlegen ob das noch Sinn macht, inwieweit das erklärt werden musws
+
+
+
+
+
+Abbildung~\ref{corrected_reward:fig}
+
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{corrected_reward.eps}
+}
+\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards]{Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
+\label{corrected_reward:fig}
+\end{figure}
+
+
+
+Allen hier vorgestellten Kommunikationsvarianten ist gemeinsam, dass sie einen Kommunikationsfaktor berechnen, nach denen sie den externen Reward, den ihnen ein anderer Agent übermittelt hat, bewerten. Der Kommunikationsfaktor gewichtet alle Verwendungen des Parameters \(\beta\) (welcher die Lernrate bestimmt). Ein Faktor von \(1.0\) hieße, dass der externe \emph{reward} Wert wie ein normaler \emph{reward} Wert behandelt wird, ein Faktor von \(0,0\) hieße, dass externe \emph{reward} Werte deaktiviert sein sollen.\\
+
+Die Idee ist, dass unterschiedliche Agenten unterschiedlich stark am Erfolg des anderen Agenten beteiligt sind, da ohne Kommunikation jeder Agent versuchen würde, selbst das Zielobjekt möglichst in die eigene Überwachungsreichweite zu bekommen, anstatt die Arbeit mit anderen Agenten zu teilen, also z.B. das Gebiet des Torus möglichst großräumig abzudecken, wie es der in Kapitel~\ref{intelligent_heuristik:sec} vorgestellte Agent mit intelligenter Heuristik in mehreren Tests u.a. in Kapitel~\ref{zielagent_analyse_intelligent:sec} demonstriert hat.\\
+
+Hier sollen nun zwei Formen der Weitergabe des \emph{reward} Werts vorgestellt werden, zum einen die Kommunikationsvariante in der alle Agenten ihre \emph{reward} Werte teilen (siehe Kapitel~\ref{einfache_gruppe_kommunikation:sec}) und zum anderen eine Kommunikationsvariante bei der der \emph{reward} Wert anhand ähnlicher in den \emph{classifier sets} gespeicherter Verhaltensweisen verteilt wird (siehe Kapitel~\ref{egoistic_relation:sec}.\\
+
+
+\subsection{Kommunikationsvariante "`Einzelne Gruppe"'}\label{einfache_gruppe_kommunikation:sec}
+
+Mit dieser Variante wird der Kommunikationsfaktor fest auf \(1,0\) gesetzt und es werden alle \emph{reward} Werte in gleicher Weise weitergegeben. Dadurch wird zwischen den Agenten nicht diskriminiert, was letztlich bedeutet, dass zwar zum einen diejenigen Agenten korrekt mit einem externen \emph{reward} Wert belohnt werden, die sich zielführend verhalten, aber zum anderen eben auch diejenigen, die es nicht tun. Deren \emph{classifier} werden somit zu einem gewissen Grad zufällig bewertet, denn es fehlt die Verbindung zwischen \emph{classifier}, Handlung und der Bewertung.\\
+
+
+Letztlich ist eine Zusammenlegung der Rewards im Grunde mit einer Zusammenlegung aller Sensoren zu vergleichen, 
+Tatsächlich nur ein einzelner Agent?
+
+
+In Tests (TODO) haben sich dennoch in bestimmten Fällen mit ``Reward all equally'' deutlich bessere Ergebnisse gezeigt als im Fall ohne Kommunikation. Dies ist wahrscheinlich darauf zurückzuführen, dass in diesen Fällen die Kartengröße und Geschwindigkeit des Zielobjekts relativ zur Sichtweite und Lerngeschwindigkeit zu groß war, die Agenten also annahmen, dass ihr Verhalten schlecht ist, weil sie den Zielobjekts relativ selten in Sicht bekamen. Eine Weitergabe des Rewards an alle Agenten kann hier also zu einer Verbesserung führen, dabei ist der Punkt aber nicht, dass Informationen ausgetauscht werden, sondern, dass obiges Verhältnis zugunsten der Sichtweite gedreht wird. Für die Auswahl geeigneter Tests sollten die Szenarioparameter also möglichst so gewählt werden, dass ``Reward all equally'' keinen signifikanten Vorteil gegenüber ``No external reward'' bringt.
+Blickt man auf diesen Sachverhalt aus einer etwas anderen Perspektive ist es auch einleuchtend. Es scheint offensichtlich, dass es relevant ist, ob das Spielfeld z.B. 100x100 oder nur 10x10 Felder groß ist, wenn es darum geht, das Verhalten über die Zeit hinweg zu bewerten. In den Algorithmus für die Kommunikation bzw. für die Rewardvergabe müsste man deshalb einen weiteren (festen) Faktor einbauen, der zu Beginn in Abhängigkeit von Größe des zu überwachenden Feldes berechnet wird. Dies soll aber nicht Teil der Arbeit werden. TODO
+
+
+
+TODO Idee:
+Verteilt man den Reward an alle Agenten mit gleichem Faktor heisst das letztlich, dass jeder Agent in jedem Zeitschritt den selben Rewardwert erhält. Dann bildet das System der Agenten im Grunde als gemeinsames System von Agenten mit gemeinsamen Sensoren und gemeinsame, ClassifierSet TODO
+
+
+\subsection{Gruppenbildung über Ähnlichkeit des Verhaltens der Agenten}\label{egoistic_relation:sec}
+
+In \cite{Miyazaki} wurde gezeigt, dass Gruppenbildung (rationality, grade 2 confusion)
+
+
+Eine weitere Variante berechnet erst einmal für jeden Agenten einen "`Egoismusfaktor"', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, das Zielobjekt in Sicht zu bekommen, anstatt ein möglichst großes Gebiet abzudecken.\\
+
+Die Hypothese ist, dass Agenten mit ähnlichem Egoismusfaktor auch einen ähnlichen Classifiersatz besitzen und der Reward nicht an alle Agenten gleichmäßig weitergegeben wird, sondern bevorzugt an ähnliche Agenten. 
+
+Damit gäbe es einen Druck in Richtung eines bestimmten Egoismusfaktors. TODO
+
+Der Vorteil gegenüber den anderen Verfahren liegt darin, dass der Kommunikationsaufwand hier nur minimal ist, neben dem \emph{reward} muss lediglich der Egoismus Faktor übertragen und pro Zeitschritt nur einmal berechnet werden.\\
+Ein Problem dieser Variante kann sein, dass der Ansatz das Problem selbst schon löst, indem er kooperatives Verhalten belohnt, unabhängig davon, ob Kooperation für das Problem sinnvoll ist.
+
+Die Variante müsste also zum einen in 
+
+
+schlecht abschneiden TODO
+
+
+
+Die offensichtliche Unstetigkeit der in dieser Weise verarbeiteten \emph{reward} Werte gibt Raum für Verbesserungen.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{reward_range_egoist.eps}
+}
+\caption[Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis}
+\label{reward_range_egoist:fig}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{reward_range_egoist_block.eps}
+}
+\caption[Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis}
+\label{reward_range_egoist_block:fig}
+\end{figure}
+
+Die Berechnung des Faktors ist in Programm~\ref{egoistic_relationship:pro} dargestellt. Für jede \emph{classifier set} Liste wird ein sogenannter Egoismusfaktor bestimmt, die Differenz beider Egoismusfaktoren wird dann im Quadrat von \(1,0\) abgezogen und als Kommunikationsfaktor zurückgegeben. Die Egoismusfaktoren selbst bestimmen sich aus dem (mit jeweils dem Produkt aus den jeweiligen \emph{fitness} und \emph{reward predicton} Werten gewichtet) Anteil aller \emph{classifier}, die sich auf andere Agenten zubewegen, sofern sie in Sicht sind. Somit ist der Kommunikationsfaktor umso größer, je ähnlicher die Agenten in ihrem Abstandsverhalten gegenüber anderen Agenten sind.

@@ -6,7 +6,7 @@ In diesem Abschnitt sollen erste Analysen bezüglich der verwendeten Szenarien an
 
 
 
-TODO erwähnen, dass 8 Agenten ok sind?
+
 
 \subsection{Zielobjekt mit zufälligem Sprung}\label{zielobjekt_analyse_zufall_sprung:sec}
 
@@ -261,6 +261,11 @@ Für verschiedene Anzahl von Schritten sind für die drei Agententypen in Abbildun
 \caption[Auswirkung der Anzahl der Schritte (schwieriges Szenario, Geschwindigkeit 2, ohne Richtungsänderung) auf Qualität von Agenten mit Heuristik]{Auswirkung der Anzahl der Schritte (schwieriges Szenario, Geschwindigkeit 2, ohne Richtungsänderung) auf Qualität von Agenten mit Heuristik}
 \label{steps_direction_difficult_heuristics:fig}
 \end{figure}
+TODO neu
+
+
+
+
 
 \subsection{Zusammenfassung}
 
@@ -395,9 +400,10 @@ Der in Kapitel~\ref{variant_zielobjekt_xcs_sxcs:sec} besprochene Ansatz, einen Z
 Wichtig: niedrige Lerngeschwindigkeit!
 evtl viele Probleme testen
 
+
 \section{Zusammenfassung der bisherigen Erkenntnisse}
 
- Algorithmen mit Ergebnissen die unter dem des zufälligen Algorithmus liegt, sind unbrauchbar und nicht vergleichbar. ``Verbesserungen'', die die Qualität des Algorithmus näher an das Ergebnis des zufälligen Algorithmus bringen, sind in Wirklichkeit Veränderungen, die den Algorithmus eher zufällige Entscheidungen treffen lassen, und keine tatsächlichen Lernerfolge.
+Algorithmen mit Ergebnissen die unter dem des zufälligen Algorithmus liegt, sind unbrauchbar und nicht vergleichbar. "`Verbesserungen"', die die Qualität des Algorithmus näher an das Ergebnis des zufälligen Algorithmus bringen, sind in Wirklichkeit Veränderungen, die den Algorithmus eher zufällige Entscheidungen treffen lassen, und keine tatsächlichen Lernerfolge.
 
 \section{Von den Agenten nicht schaffbare Szenarien TODO Titel}
 
@@ -436,6 +442,9 @@ TODO classifier ausgeben
 SXCS sehr gut bei NO DIRECTION CHANGE und speed 1!
 
 
+DSXCS reward equally hohe lernrate, switch exploit
+
+
 nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zufälliger
 
     deutlich schneller als intelligenter weil der nicht lernt
@@ -443,6 +452,17 @@ nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zu
 Da in den meisten Fällen eine mehr oder weniger zufällige Auswahl der Aktion benutzt wird, ist es nicht negativ, wenn eine Geschwindigkeit von 1 benutzt wird
 Nicht möglich dauernd zu verfolgen, 84\% etc. TODO oberes Limit der Genauigkeit, 84\%, da ja geswitched wird.
 
+
+difficult, geschwindigkeit 2, 2000 Schritte, 0.1 learn (bzw. 0.7 dsxcs)
+TODO Abbildung~\ref{plot_100_goal_agent_observed-16-03-09--18-31-42-688:fig}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{plot_100_goal_agent_observed-16-03-09--18-31-42-688.eps}
+}
+\caption[Verlauf des gleitenden Durchschnitts der Qualität (schwieriges Szenario)]{Verlauf des gleitenden Durchschnitts der Qualität (schwieriges Szenario) TODO}
+\label{plot_100_goal_agent_observed-16-03-09--18-31-42-688:fig}
+\end{figure}
 
 \begin{table}[ht]
 \caption{Verschiedene Szenarien mit intelligentem Zielobjekt, Geschwindigkeit 1 und 2000 Schritten}

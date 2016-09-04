@@ -2,30 +2,29 @@
 
 In jedem Zeitschritt gilt es zu entscheiden, welche Bewegung ein Agent ausführen soll. Als Basis der Entscheidung hat ein Agent zum einen die Sensordaten und zum anderen das eigene \emph{classifier set} zur Verfügung. Da ein Sensordatensatz von mehreren \emph{classifier} erkannt werden kann und in jedem Schritt somit mehrere passende \emph{classifier} samt Aktionen ausgewählt werden können (siehe Kapitel~\ref{platzhalter:sec}), stellt sich die Frage, welche der Aktionen ausgeführt werden soll.\\
 
-In XCS wird dazu die zur jeweiligen Sensordatensatz passenden \emph{match set} Liste in vier (Anzahl der möglichen Aktionen) Gruppen entsprechend des \emph{action} Werts des jeweiligen \emph{classifier} aufgeteilt um dann alle Produkte aus den \emph{fitness} und \emph{reward prediction} Werten der \emph{classifier} aus der jeweiligen Gruppe aufaddiert und durch die Summe der \emph{fitness} Werte der \emph{classifier} der jeweiligen Gruppe geteilt. Dieser Wert soll im folgenden \emph{predictionFitnessProductSum} genannt werden.\\
+In XCS wird dazu die zur jeweiligen Sensordatensatz passenden \emph{match set} Liste in vier (Anzahl der möglichen Aktionen) Gruppen entsprechend des \emph{action} Werts des jeweiligen \emph{classifier} aufgeteilt. Danach werden alle Produkte aus den \emph{fitness} und \emph{reward prediction} Werten der \emph{classifier} aus der jeweiligen Gruppe aufaddiert und durch die Summe der \emph{fitness} Werte der \emph{classifier} der jeweiligen Gruppe geteilt. Dieser Wert soll im folgenden \emph{predictionFitnessProductSum} genannt werden.\\
 
 In der ursprünglichen Implementierung \cite{Butz_xcsclassifier} wurden dann folgende Arten beschrieben, wie eine Aktion aus diesen vier ausgewählt werden kann:
 
 \begin{enumerate}
-\item \emph{random selection} : Zufällige Auswahl einer Aktion (identisch mit zufälliger Bewegung)
-\item \emph{roulette wheel selection} : Zufällige Auswahl einer Aktion, Wahrscheinlichkeit abhängig vom \emph{predictionFitnessProductSum} Wert der jeweiligen Gruppe
-\item \emph{best selection} : Auswahl der Aktion mit dem höchsten \emph{predictionFitnessProductSum} Wert der jeweiligen Gruppe
+\item \emph{random selection} : Zufällige Auswahl einer Aktion (identisch mit zufälliger Bewegung),
+\item \emph{roulette wheel selection} : Zufällige Auswahl einer Aktion, Wahrscheinlichkeit abhängig vom \emph{predictionFitnessProductSum} Wert der jeweiligen Gruppe,
+\item \emph{best selection} : Auswahl der Aktion mit dem höchsten \emph{predictionFitnessProductSum} Wert der jeweiligen Gruppe;
 \end{enumerate}
 
-Im Folgenden sollen diese Auswahlarten näher vorgestellt und außerdem noch eine weitere Auswahlart aus der Literatur besprochen werden. Im nächsten Abschnitt (Kapitel~\ref{exploreexploit:sec}) soll dann der Wechsel zwischen diesen Auswahlarten näher untersucht und die tatsächlichen Testergebnisse (Kapitel~\ref{test_auswahlarten:sec}) zwischen den vorgestellten Varianten präsentiert werden.
+Im Folgenden werden nun diese Auswahlarten näher vorgestellt und außerdem noch eine weitere Auswahlart aus der Literatur besprochen. Im nächsten Abschnitt (Kapitel~\ref{exploreexploit:sec}) wird dann der Wechsel zwischen diesen Auswahlarten näher untersucht und abschließend die tatsächlichen Testergebnisse (Kapitel~\ref{test_auswahlarten:sec}) zwischen den vorgestellten Varianten präsentiert.\\
 
 
 
 \subsection{Auswahlart \emph{random selection}}
 
-Bei einem dynamischen Überwachungsszenario ist es im Vergleich zu standardmäßigen statischen Szenarien weder nötig noch hilfreich \emph{random selection} zu nutzen. Die Idee für diese Auswahlart in einem statischen Szenario ist, dass man möchte, dass das XCS möglichst vielen verschiedenen Situationen ausgesetzt ist. Da in einem statischen Szenario Start- und Zielposition wie auch die Hindernisse fest sind, ist es wichtig, durch \emph{random selection} dem XCS einen gewissen Spielraum zu geben.\\
-
-Bei einem dynamischen Szenario (siehe Kapitel~\ref{dynamisch_kollaborativ:sec}) ergibt sich dieses Problem nicht, andere Agenten und das Zielobjekt sind in stetiger Bewegung, der eigene Startpunkt ist nicht fixiert und das Problem wird bei Erreichen des Ziels nicht neugestartet. Aufgrund der Natur der Aufgabenstellung ist es in einem Überwachungsszenario außerdem wichtig, dass das XCS über eine längere Zeit hinweg eine gute Leistung liefert, also stetig gute Entscheidungen trifft, eine zufällige Auswahl scheint also wenig zielführend zu sein.\\
+Prägende Idee für diese Auswahlart in einem statischen Szenario ist, das XCS möglichst vielen verschiedenen Situationen auszusetzen. Da in einem statischen Szenario Start- und Zielposition wie auch die Hindernisse fest sind, ist es wichtig, durch \emph{random selection} dem XCS einen gewissen Spielraum zu geben.\\
+Bei einem dynamischen Überwachungsszenario (siehe Kapitel~\ref{dynamisch_kollaborativ:sec}) ist es im Vergleich zu standardmäßigen statischen Szenarien dagegen weder nötig noch hilfreich \emph{random selection} zu nutzen, da sich oben genanntes Problem nicht ergibt. Zum einen ist, aufgrund ständiger Bewegung anderer Agenten und des Zielobjekts, nicht fixiertem Startpunkt und fehlendem Neustart beim Erreichen des Ziels (positivem \emph{base reward}), das Problem dynamisch und die Agenten werden mit vielen verschiedenen Situationen konfrontiert. Zum anderen ist es für ein erfolgreiches Bestehen in einem Überwachungsseznario wichtig, dass das XCS über eine längere Zeit hinweg eine gute Leistung liefert, also stetig gute Entscheidungen trifft, eine zufällige Auswahl scheint also wenig zielführend zu sein.\\
 
 
 \subsection{Auswahlart \emph{best selection}}\label{best_selection_auswahlart:sec}
 
-Bei der Auswahlart~\emph{best selection} wird einfach nur die Aktion mit dem höchsten \emph{predictionFitnessProductSum} Wert ausgewählt. Die Verwendung dieser Auswahlart kann u.U. schnell in eine Sackgasse bzw. zu langen Folgen gleicher Aktionen (beispielsweise andauernd gegen eine Wand laufen) führen, sofern sich die Umwelt nicht ändert. Auf den ersten Blick scheint es zwar, dass z.B. zur Verfolgung von einem Zielobjekt ein kompromissloses Verhalten sinnvoll ist, jedoch bedarf dies zum einen bereits guter, gelernter \emph{classifier} und zum anderen vollständige Information. In dem in dieser Arbeit betrachteten Szenario sind die Sensordaten allerdings beschränkt, der Agent weiß nicht genau, wo sich das Zielobjekt befindet, selbst wenn es in Sicht ist. Eine optimale Verhaltensstrategie muss hier also Entscheidungen auf Basis von Wahrscheinlichkeitsverteilungen treffen, weshalb die alleinige Verwendung der Auswahlart \emph{best selection} eher nicht in Frage kommt.\\
+Bei der Auswahlart~\emph{best selection} wird einfach nur die Aktion mit dem höchsten \emph{predictionFitnessProductSum} Wert ausgewählt. Die Verwendung dieser Auswahlart kann u.U. schnell in eine Sackgasse bzw. zu langen Folgen gleicher Aktionen (beispielsweise andauernd gegen eine Wand laufen) führen, sofern sich die Umwelt nicht ändert. Auf den ersten Blick scheint es zwar, dass z.B. zur Verfolgung von einem Zielobjekt ein kompromissloses Verhalten sinnvoll ist, jedoch bedarf dies zum einen bereits guter, gelernter \emph{classifier} und zum anderen vollständige Information. In dem in dieser Arbeit betrachteten Szenario sind die Sensordaten allerdings beschränkt, der Agent weiß nicht, wo genau sich das Zielobjekt befindet, selbst wenn es in Sicht ist. Dementsprechend muss eine optimale Verhaltensstrategie Entscheidungen auf Basis von Wahrscheinlichkeitsverteilungen treffen, weshalb die alleinige Verwendung der Auswahlart \emph{best selection} eher nicht in Frage kommt.\\
 
 
 \subsection{Auswahlart \emph{roulette wheel selection}}
@@ -35,43 +34,66 @@ Bei dieser Auswahlart bestimmt der \emph{predictionFitnessProductSum} Wert (rela
 
 \subsection{Auswahlart \emph{tournament selection}}\label{tournament_selection:sec}
 
-Zu den oben erwähnten drei Möglichkeiten wurde in \cite{Butz2003} eine weitere vorgestellt und in Bezug auf XCS diskutiert, die sogenannte \emph{tournament selection}. Als Vorteile werden geringerer Selektionsdruck, höhere Effizienz und geringerer Einfluss von Störungen genannt, durch die Anpassung der Turniergröße ergibt sich außerdem eine flexible Anpassungsmöglichkeit. In den dort vorgestellten Experimenten mit einem \emph{single step} Problem wurden signifikante Vorteile dieser, auf proportionaler Selektion beruhender, Auswahlart gefunden, weshalb sie auch hier getestet werden soll. Da dort allerdings die Auswahl auf Basis von einzelnen \emph{classifier} stattfindet, während hier wie in der Standardimplementation von XCS in \cite{Butz_xcsclassifier} alle \emph{classifier} in nach \emph{action} Werten eingeteilten Gruppen sortiert und deren \emph{prediction} und \emph{fitness} Werte zusammengenommen werden, soll hier eine Implementation der Auswahlart \emph{tournament selection} gewählt werden, die näher am ursprünglichen Algorithmus aus dem Bereich der genetischen Algorithmen liegt \cite{Miller95geneticalgorithms}.\\
-
-Bei dieser Auswahlart werden allgemein gesagt \(k\) Elemente aus einer Menge zufällig ausgewählt, nach ihrem zugehörigen Wert sortiert und absteigend mit Wahrscheinlichkeit \(p\) das jeweilige Element gewählt (d.h. das erste mit \(p\), das zweite mit \((1,0-p)p\), das dritte mit \((1,0-p)^{2}p\) usw.).\\
-
-In dem hier besprochenen Fall wären die Mengen immer der Größe 4 (Anzahl der Aktionen) und die Elemente entsprechen jeweils den berechneten \emph{predictionFitnessProductSum} Werten. Der Einfachheit soll \(k\) auf den Maximalwert gesetzt werden, damit alle Aktionen zumindest eine geringe Wahrscheinlichkeit besitzen, ausgewählt zu werden.\\
-
-Im Grunde entspricht diese Auswahlart also der \emph{roulette wheel selection}, allerdings ohne dem Problem, dass die Auswahlwahrscheinlichkeit aufgrund ähnlicher Produkte sich ebenfalls ähneln. Diese Form der Auswahl, bei geeigneter Wahl von \(k\) und \(p\), scheint also am vielversprechend zu sein. Außerdem ist die Darstellung selbst sehr flexibel, beispielsweise wäre \emph{tournament selection} mit \(p = 1,0\) und \(k = 4\) identisch mit \emph{best selection} und mit \(p = 1,0\) und \(k = 1\) wäre es identisch mit \emph{random selection}.\\ 
-
-Bei der Implementierung dieser Auswahlart muss man aufpassen, dass bei der Sortierung Einträge mit gleichem Produkt aus \emph{fitness} und \emph{reward prediction} in zufälliger Reihenfolge aufgeführt werden. Insbesondere am Anfang kann es sonst dazu kommen, dass alle Agenten in die selbe Richtung laufen.\\
-
-Bei der Bestimmung des idealen Werts für \(p\) ist es wichtig, verschiedene Szenarien und sowohl XCS als auch SXCS zu vergleichen, ansonsten ergibt ein späterer Vergleich von XCS und SXCS womöglich nur deshalb einen Vorteil für SXCS, da die Parameterwerte für XCS schlecht gewählt wurden. In den Tests in Kapitel~\ref{tournament_factor_test:sec} wurde der Wert \(0,84\) als für die hier betrachteten Szenarien optimaler Wert bestimmt.
-
-
-\subsection{Wechsel zwischen den \emph{explore} und \emph{exploit} Phasen}\label{exploreexploit:sec}
-
-In der Standardimplementierung von XCS wird zwischen verschiedenen Auswahlarten hin und her geschalten. Die Auswahlarten werden in zwei Gruppen geteilt, in die sogenannte \emph{explore} Phase und in die \emph{exploit} Phase. In der \emph{exploit} Phase soll bevorzugt eine Auswahlart ausgeführt werden, die das Produkt aus den Werten \emph{fitness} und \emph{reward prediction} möglichst stark gewichtet, \emph{best selection} und \emph{tournament selection} sind Kandidaten für die \emph{exploit} Phase, während \emph{random selection} und \emph{roulette wheel selection} Kandidaten für die \emph{explore} Phase wären. Idee ist, dass man mit Hilfe der \emph{explore} Phasen den Suchraum besser erforschen kann, dann aber zur eigentlichen Problemlösung in der \emph{exploit} Phase möglichst direkt auf das Ziel zugeht um \emph{classifier} stärker zu belohnen, die am kürzesten Weg beteiligt sind.\\
-
-Die Wahl der Auswahlart in Kapitel~\ref{ablauf_lcs:sec} für \emph{classifier} in Punkt (3) kann auf verschiedene Weise erfolgen. In der Standardimplementierung von XCS wird zwischen \emph{exploit} und \emph{explore} nach jedem Erreichen des Ziels entweder umgeschalten oder zufällig mit einer bestimmten Wahrscheinlichkeit eine Auswahlart ermittelt. Es werden also abwechselnd ganze Probleme entweder im \emph{exploit} oder im \emph{explore} Modus berechnet. Dies erscheint sinnvoll für die erwähnten Standardprobleme, da nach Erreichen des Ziels ein neues Problem gestartet wird und die Entscheidungen die während der Lösung eines Problems getroffen werden keine Auswirkungen auf die folgenden Probleme hat, die Probleme also nicht miteinander zusammenhängen.\\
-
-Bei dem hier vorgestellten Überwachungsszenario kann dagegen nicht neugestartet werden, es gibt keine "`Trockenübung"', die Qualität eines Algorithmus soll deshalb davon abhängen, wie gut sich der Algorithmus während der gesamten Berechnung, inklusive der Lernphasen, verhält. Es ist nicht möglich bei diesem Szenario zwischen \emph{exploit} und \emph{explore} Phasen in dem Sinne zu differenzieren, wie dies in den Standardszenarien bei XCS der Fall ist, bei denen u.a. die Qualität nur während der \emph{exploit} Phase gemessen wird.\\
-
-Desweiteren greift auch die Idee einer reinen \emph{explore} Phase beim Überwachungsszenario nicht, da das Szenario nicht statisch, sondern dynamisch ist. Ein zufälliges Herumlaufen kann, im Vergleich zur gewichteten Auswahl der Aktionen, dazu führen, dass der Agent mit bestimmten Situationen mit deutlich niedrigerer Wahrscheinlichkeit konfrontiert wird, da der Agent sich in Hindernissen verfängt oder das Zielobjekt (z.B. mit "`Intelligentem Verhalten"' aus Kapitel~\ref{zielobjekt_intelligentes_verhalten:sec}) ihm andauernd ausweicht. Aus diesen Gründen erscheint es sinnvoll, weitere Formen des Wechsels zwischen diesen Phasen zu untersuchen.\\
-
-Bei der Standardimplementierung für den statischen Fall ist allerdings das Erreichen eines positiven \emph{base reward} äquivalent mit einem Neustart des Problems. Während dort beim Neustart des Problems das gesamte Szenario (alle Agenten, Hindernisse und das Zielobjekt) auf den Startzustand zurückgesetzt werden, läuft das Überwachungsszenario weiter. Als erweiterten Ansatz soll nun deshalb eine neue Problemdefinition gelten, dass nicht das Erreichen eines positiven \emph{base rewards} (also ein Neustart des Problems) einen Phasenwechsel auslöst, sondern eine \emph{Änderung} des \emph{base rewards}, so dass mit anfänglicher \emph{explore} Phase immer dann in die \emph{exploit} Phase gewechselt wird, wenn das Zielobjekt in Sicht ist (bzw. umgekehrt, wenn mit der \emph{exploit} Phase begonnen wird). Als Vergleich soll der andauernde, zufällige Wechsel zwischen der \emph{explore} und \emph{exploit} Phase, eine andauernde \emph{exploit} und andauernde \emph{explore} Phase dienen. 
+Zu den oben erwähnten drei Möglichkeiten wurde in \cite{Butz2003} eine weitere vorgestellt und in Bezug auf XCS diskutiert, die mit \emph{tournament selection} bezeichnet wird. Als Vorteile werden geringerer Selektionsdruck, höhere Effizienz und geringerer Einfluss von Störungen genannt, durch die Anpassung der Turniergröße ergibt sich außerdem eine flexible Anpassungsmöglichkeit. In den dort vorgestellten Experimenten mit einem \emph{single step} Problem wurden signifikante Vorteile dieser, auf proportionaler Selektion beruhender, Auswahlart gefunden, weshalb sie auch hier getestet werden soll. Da dort allerdings die Auswahl auf Basis von einzelnen \emph{classifier} stattfindet, während hier wie in der Standardimplementation von XCS in \cite{Butz_xcsclassifier} alle \emph{classifier} in nach \emph{action} Werten eingeteilten Gruppen sortiert und deren \emph{prediction} und \emph{fitness} Werte zusammengenommen werden, soll hier eine Implementation der Auswahlart \emph{tournament selection} gewählt werden, die näher am ursprünglichen Algorithmus aus dem Bereich der genetischen Algorithmen liegt \cite{Miller95geneticalgorithms}.\\
 
 \begin{figure}[H]
 \setbox0\vbox{\small
-Es sollen nun also folgende Arten des Wechsel zwischen den Phasen untersucht werden:
+Charakteristisch für diese Auswahlart ist, dass 
 \begin{enumerate}
-\item Andauernde \emph{explore} Phase
-\item Andauernde \emph{exploit} Phase
-\item Abwechselnd \emph{explore} und \emph{exploit} Phase (bei Änderung des \emph{base reward}, beginnend mit \emph{explore})
-\item Abwechselnd \emph{explore} und \emph{exploit} Phase (bei Änderung des \emph{base reward}, beginnend mit \emph{exploit})
-\item In jedem Schritt zufällig entweder \emph{explore} oder \emph{exploit} Phase (50\% Wahrscheinlichkeit jeweils)
+\item \(k\) Elemente aus einer Menge zufällig ausgewählt werden,
+\item nach ihrem zugehörigen Wert sortiert werden und
+\item absteigend mit Wahrscheinlichkeit \(p\) das jeweilige Element gewählt wird.\\
+
+\(\Rightarrow\) Das beste Element wird mit Wahrscheinlichkeit \(p\), das zweitbeste mit Wahrscheinlichkeit \((1,0-p)p\), das drittbeste mit Wahrscheinlichkeit \((1,0-p)^{2}p\) usw. gewählt.
 \end{enumerate}
 }
 \centerline{\fbox{\box0}}
 \end{figure}
 
-Anzumerken sei hier, dass Punkt (3.), (4.) und (5.) in der Standardimplementierung praktisch äquivalent sind, da dort die Phasen separat betrachtet werden können und nur nach jedem Problem vertauscht werden. Dabei wird bei jedem Erreichen eines positiven \emph{reward} zwischen \emph{explore} und \emph{exploit} hin und hergeschaltet, was in der Standardimplementierung dem Beginn eines neuen Problems entspricht.
+
+In dem hier besprochenen Fall enthalten die Mengen immer 4 Elemente (Anzahl der Aktionen) und diese entsprechen jeweils den berechneten \emph{predictionFitnessProductSum} Werten. Der Einfachheit soll \(k\) auf den Maximalwert gesetzt werden, damit alle Aktionen zumindest eine geringe Wahrscheinlichkeit besitzen, ausgewählt zu werden.\\
+
+Im Grunde ist diese Auswahlart deckungsgleich mit der \emph{roulette wheel selection}, allerdings ohne dem Problem, dass die Auswahlwahrscheinlichkeit aufgrund ähnlicher Produkte sich ebenfalls ähneln. Außerdem ist die Darstellung selbst sehr flexibel, beispielsweise wäre \emph{tournament selection} mit \(p = 1,0\) und \(k = 4\) identisch mit \emph{best selection} und mit \(p = 1,0\) und \(k = 1\) wäre es identisch mit \emph{random selection}. Diese Form der Auswahl, bei geeigneter Wahl von \(k\) und \(p\), scheint also sehr vielversprechend zu sein.\\
+
+Bei der Implementierung ist darauf zu achten, dass bei der Sortierung Einträge mit gleichem Produkt aus \emph{fitness} und \emph{reward prediction} in zufälliger Reihenfolge aufgeführt werden. Ansonsten würden insbesondere am Anfang alle Agenten in die selbe Richtung laufen, da alle \emph{predictionFitnessProductSum} Werte identisch sind.\\
+
+Bei der Bestimmung des idealen Werts für \(p\) ist es wichtig, verschiedene Szenarien und sowohl XCS als auch SXCS zu vergleichen, ansonsten ergibt ein späterer Vergleich von XCS und SXCS womöglich nur deshalb einen Vorteil für SXCS, da die Parameterwerte für XCS schlecht gewählt wurden. In den Tests in Kapitel~\ref{tournament_factor_test:sec} wurde der Wert \(0,84\) als für die hier betrachteten Szenarien optimaler Wert bestimmt.\\
+
+
+\subsection{Wechsel zwischen den \emph{explore} und \emph{exploit} Phasen}\label{exploreexploit:sec}
+
+In der Standardimplementierung von XCS wird zwischen verschiedenen Auswahlarten gewechselt. Die Auswahlarten werden hierzu in zwei Gruppen geteilt, in die  \emph{explore} Phase und in die \emph{exploit} Phase. In der \emph{exploit} Phase soll bevorzugt eine Auswahlart ausgeführt werden, die das Produkt aus den Werten \emph{fitness} und \emph{reward prediction} möglichst stark gewichtet, \emph{best selection} und \emph{tournament selection} sind Kandidaten für die \emph{exploit} Phase, während \emph{random selection} und \emph{roulette wheel selection} Kandidaten für die \emph{explore} Phase wären. Wesentlicher Leitgedanke ist es, mit Hilfe der \emph{explore} Phasen den Suchraum besser erforschen zu können, dann aber zur eigentlichen die konkrete Problemlösung in der \emph{exploit} Phase möglichst direkt auf das Ziel zuzugehen um \emph{classifier} stärker zu belohnen, die am kürzesten Weg beteiligt sind.\\
+
+Die Wahl der Auswahlart in Kapitel~\ref{ablauf_lcs:sec} für \emph{classifier} in Punkt (3) kann auf verschiedene Weise erfolgen. In der Standardimplementierung von XCS wird zwischen \emph{exploit} und \emph{explore} nach jedem Erreichen des Ziels entweder umgeschalten oder zufällig mit einer bestimmten Wahrscheinlichkeit eine Auswahlart ermittelt. Es werden also abwechselnd ganze Probleme entweder nur in der \emph{exploit} oder nur in der \emph{explore} Phase berechnet. Dies erscheint sinnvoll für die erwähnten Standardprobleme, da nach Erreichen des Ziels ein neues Problem gestartet wird und die Entscheidungen die während der Lösung eines Problems getroffen werden keine Auswirkungen auf die folgenden Probleme hat, die Probleme also nicht miteinander zusammenhängen.\\
+
+
+Damit werden ganze Problempakete abwechselnd entweder von …
+Vor dem Hintergrund, dass
+nach Erreichen des Ziels ein neues Problem gestartet wird,
+jede Aufgabenstellung sich  isoliert darstellt und daher eigenständig zu lösen ist und
+vorangehende Entscheidungen für die anstehende Problemlösung ohne Relevanz sind,
+erscheint der permanente Wechsel der Standardprogramme sinnvoll. TODO
+
+
+Bei dem hier vorgestellten Überwachungsszenario kann dagegen nicht neugestartet werden, es gibt keine "`Trockenübung"', die Qualität eines Algorithmus soll deshalb davon abhängen, wie gut sich der Algorithmus während der gesamten Berechnung, inklusive der Lernphasen, verhält. Es ist nicht möglich bei diesem Szenario zwischen \emph{exploit} und \emph{explore} Phasen in dem Sinne zu differenzieren, wie dies in den Standardszenarien bei XCS der Fall ist, bei denen u.a. die Qualität nur während der \emph{exploit} Phase gemessen wird.\\
+
+Desweiteren greift auch die Idee einer reinen \emph{explore} Phase beim Überwachungsszenario nicht, da das Szenario nicht statisch, sondern dynamisch ist. Ein zufälliges Herumlaufen kann, im Vergleich zur gewichteten Auswahl der Aktionen, dazu führen, dass der Agent mit bestimmten Situationen mit deutlich niedrigerer Wahrscheinlichkeit konfrontiert wird, da der Agent sich in Hindernissen verfängt oder das Zielobjekt (z.B. mit "`Intelligentem Verhalten"' aus Kapitel~\ref{zielobjekt_intelligentes_verhalten:sec}) ihm andauernd ausweicht. Aus diesen Gründen erscheint es sinnvoll, weitere Formen des Wechsels zwischen diesen Phasen zu untersuchen.\\
+
+Bei der Standardimplementierung für den statischen Fall ist allerdings das Erreichen eines positiven \emph{base reward} äquivalent mit einem Neustart des Problems. Während dort beim Neustart des Problems das gesamte Szenario (alle Agenten, Hindernisse und das Zielobjekt) auf den Startzustand zurückgesetzt werden, läuft das Überwachungsszenario weiter. Als erweiterten Ansatz soll nun deshalb eine neue Problemdefinition gelten, bei der nicht das Erreichen eines positiven \emph{base rewards} (also ein Neustart des Problems) einen Phasenwechsel auslöst, sondern stattdessen eine \emph{Änderung} des \emph{base reward} Werts ausschlaggebend ist und einen Wechsel zwischen der \emph{explore} und \emph{exploit} Phase auslöst.\\
+Bei einer anfänglichen \emph{explore} Phase würde dann immer in die \emph{exploit} Phase gewechselt werden, wenn das Zielobjekt in Sicht ist (bzw. umgekehrt, wenn mit der \emph{exploit} Phase begonnen wird). Als Vergleich soll der andauernde, zufällige Wechsel zwischen der \emph{explore} und \emph{exploit} Phase, eine andauernde \emph{exploit} und andauernde \emph{explore} Phase dienen.\\
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Es sollen nun also folgende Arten des Wechsel zwischen den Phasen untersucht werden:
+\begin{enumerate}
+\item Andauernde \emph{explore} Phase;
+\item andauernde \emph{exploit} Phase;
+\item abwechselnd \emph{explore} und \emph{exploit} Phase (bei Änderung des \emph{base reward}, beginnend mit \emph{explore});
+\item abwechselnd \emph{explore} und \emph{exploit} Phase (bei Änderung des \emph{base reward}, beginnend mit \emph{exploit}), und sowie
+\item in jedem Schritt zufällig entweder \emph{explore} oder \emph{exploit} Phase (50\% Wahrscheinlichkeit jeweils)
+\end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
+
+Hervorzuheben ist, dass die Varianten (3.), (4.) und (5.) angewendet auf die Standardimplementierung des \emph{multi step} XCS Verfahrens keinen Unterschied machen würden. Dies liegt daran, dass beim Erreichen eines positiven \emph{base reward} Werts sowieso ein neues Problem gestartet wird, die \emph{explore} und \emph{exploit} Phasen separat betrachtet werden können und zwischen den Problemen zwischen der \emph{exploit} und \emph{explore} Phase gewechselt wird.
