@@ -1,6 +1,6 @@
-\chapter{Erste Analyse der Agenten ohne LCS}
+\chapter{Erste Analyse der Agenten ohne XCS}\label{analysis_sans_lcs:cha}
 
-In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des ``zufälligen Algorithmus''~\ref{randomized_movement:sec}, des Algorithmus mit ``einfacher Heuristik''~\ref{simple_heuristik:sec} und des Algorithmus mit ``intelligenter Heuristik''~\ref{intelligent_heuristik:sec} angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.\\
+In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des ``zufälligen Algorithmus''~\ref{randomized_movement:sec}, des Algorithmus mit ``einfacher Heuristik''~\ref{simple_heuristik:sec} und des Algorithmus mit ``intelligenter Heuristik''~\ref{intelligent_heuristik:sec} angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit XCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.\\
 Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen.
 
 \section{``Total Random'' Zielobjekt}
@@ -19,9 +19,11 @@ Der intelligente Agent liegt hier sehr deutlich vorne, ein möglichst weiträumige
 \centerline{	
 \includegraphics{empty_total_random_ai.eps}
 }
-\caption[Auswirkung des Parameters \emph{max population N} auf Laufzeit (leeres Szenario)] {Darstellung Auswirkung des Parameters \emph{max population N} auf die Laufzeit im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus und über 10 Probleme, gemittelt über 10 Experimente}
+\caption[Auswirkung des Parameters \emph{max population N} auf Laufzeit (leeres Szenario)] {Darstellung Auswirkung des Parameters \emph{max population N} auf die Laufzeit im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit XCS Algorithmus}
 \label{empty_total_random_ai:fig}
 \end{figure}
+
+TODO
 
 \begin{figure}[htbp]
 \centerline{	

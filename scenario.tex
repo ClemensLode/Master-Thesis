@@ -1,59 +1,82 @@
-\chapter{Szenario}
+\chapter{Beschreibung des Szenarios}
 
-Im Wesentlichen sollen die hier besprochenen Algorithmen in einem Überwachungsszenario getestet werden, d.h. die Qualität eines Algorithmus wird anhand des Anteils der Zeit bewertet, die er das Zielobjekt überwachen konnte, relativ zur Gesamtzeit.\\
-Verwendetes Umfeld wird ein quadratischer Torus sein, der aus quadratischen Feldern besteht.\\
-Jedes bewegliche Objekt auf einem Feld kann sich in einem Zeitschritt nur auf eines der vier Nachbarfelder bewegen (mit Ausnahme des Zielobjekts, welches mehrere Bewegungen in einem Zeitschritt durchführen kann).\\
-Die Felder können entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder können nicht betreten werden, eine Bewegung auf ein solches Feld schlägt fehl.\\
-Es gibt drei verschiedene Arten von Objekten: unbewegliche Hindernisse, ein zu überwachendes Zielobjekt und Agenten. Sowohl das Zielobjekt als auch die Agenten bewegen sich anhand eines jeweils bestimmten Algorithmus und bestimmter Sensordaten.\\
-Bis Kapitel~\ref{communication:cha} wird ausschließlich der Fall ohne Kommunikation betrachtet, d.h. die Agenten können untereinander keine Informationen austauschen und müssen sich alleine auf ihre Sensordaten verlassen.\\
+Im Wesentlichen sollen die Algorithmen, die in dieser Arbeit besprochen werden, in einem Szenario getestet werden, in dem mehrere Agenten ein sich bewegendes Zielobjekt überwachen sollen. Dies soll im folgenden als Überwachungsszenario bezeichnet werden. Die Qualität eines Algorithmus in einem solchen Überwachungsszenario wird anhand des Anteils der Zeit bewertet, in der er mit Hilfe der Agenten das Zielobjekt überwachen konnte, relativ zur Gesamtzeit (siehe Kapitel~\ref{qualitaet:sec}).\\
 
-\section{Probleminstanzen}
+Verwendetes Umfeld wird ein quadratischer Torus sein, der aus quadratischen Feldern besteht. Jedes bewegliche Objekt auf einem Feld des Torus kann sich in einem Zeitschritt nur auf eines der vier Nachbarfelder bewegen (mit Ausnahme des Zielobjekts, welches mehrere Bewegungen in einem Zeitschritt durchführen kann, Näheres dazu im Kapitel~\ref{base_properties_goal:sec}).\\
+Die Felder können entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder können nicht betreten werden, eine Bewegung auf ein solches Feld schlägt ohne weitere Konsequenzen fehl.\\
+Es gibt drei verschiedene Arten von Objekten: Unbewegliche Hindernisse, ein zu überwachendes Zielobjekt und Agenten. Sowohl das Zielobjekt als auch die Agenten bewegen sich jeweils anhand eines bestimmten Algorithmus und bestimmter Sensordaten. Eine nähere Beschreibung der Agenten findet sich in Kapitel~\ref{agents:cha}, während die Eigenschaften des Zielobjekts in Kapitel~\ref{zielobjekt:cha} beschrieben wird.\\
 
-Eine einzelne Probleminstanz entspricht einem Torus mit einer (abhängig vom verwendeten Random-Seed-Wert) bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. Soweit nicht anders angegeben sollen hier Prombleninstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall.\\
-Jedes Problem soll sich, sofern nicht anders angegeben, über 500 Zeitschritte ziehen. Ein einzelnes Experiment entspricht dem Test einer Anzahl von Probleminstanzen die jeweils mit einer Reihe von \emph{random seed} Werten initialisiert werden. In einem Durchlauf werden mehrere Experimente (jeweils mit unterschiedlichen Reihen an \emph{random seed} Werten) durchgeführt.
- und über 10 Probleme, gemittelt über 10 Experimente
+Ziel dieses Kapitels wird vor allem sein, auf Kapitel~\ref{analysis_sans_lcs:cha} vorzubereiten, in dem anhand von Tests herausgefunden werden soll, welche der hier vorgestellten Szenarien brauchbare Ergebnisse liefern kann, um zum einen das gestellte Problem an sich, als auch die jeweils erforderlichen Eigenschaften besser verstehen zu können.\\
 
-\section{Sichtbarkeit}\label{sichtbarket:sec}
-Der Parameter \emph{sight range} bzw. \emph{reward range} einer Probleminstanz bestimmt, bis zu welcher Distanz andere Objekte von einem Objekt als ``gesehen'' bzw. ``überwacht'' gelten, sofern die Sicht durch andere Objekte nicht versperrt ist. Der Parameter \emph{reward range} ist relevant für die Bewertung der Qualität des Algorithmus (siehe~\ref{qualitaet:sec}) und wird immer kleiner als der \emph{sight range} Wert gewählt. Über die Sensoren kann ein Agent feststellen, ob sich Objekte in welcher der beiden Reichweiten befindet.
+Eine separate Beschäftigung mit diesen - relativ einfachen - Szenarien war notwendig, um zum einen das eigene Simulationsprogramm zu testen und zum anderen um vergleichbare Ergebnisse zu erhalten. Ein Rückgriff auf die Literatur war deshalb nicht möglich, insbesondere gibt es keine Arbeiten in Bezug auf XCS mit einer solchen Problemstellung. Zwar entspricht das Standardszenario bei XCS einem Feld, einem Agenten, Hindernissen und einem Ziel, es fehlen jedoch Arbeiten, in denen Sichtbarkeit (die Sichtweite beschränkte sich in der Literatur meist auf angrenzende Felder), Kollaboration (meist war nur ein einzelner Agenten Gegenstand der Untersuchung), Dynamik (meist gab es feste Start- und Zielpunkte) und die Messung der durchschnittlichen Qualität (meist ging es um die Anzahl der Schritte zum Ziel) gemeinsam in einem Szenario betrachtet werden.\\
+
+Im folgenden sollen nun also auf diese einzelnen Punkte näher eingegangen werden und eine Abgrenzung zu Arbeiten in der Literatur aufgezeigt werden.
+
+\section{Definition einer Probleminstanz}
+
+Eine einzelne Probleminstanz entspricht einem Torus mit einer bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. Die Anfangsbelegung ist über einen \emph{random seed} Wert bestimmt. Soweit nicht anders angegeben, sollen hier Prombleninstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall.\\
+Jedes Problem soll sich, sofern nicht anders angegeben, über 500 Zeitschritte ziehen. Ein einzelnes Experiment entspricht dem Test einer Anzahl von Probleminstanzen, die jeweils mit einer Reihe von \emph{random seed} Werten initialisiert werden. In einem Durchlauf werden mehrere Experimente (jeweils mit unterschiedlichen Reihen an \emph{random seed} Werten) durchgeführt. Falls nicht anders angegeben sollen die Tests jeweils über 10 Experimente mit jeweils 10 Problemen laufen.\\
+
+TODO XCS, neustart etc.
+
+\section{Sichtbarkeit von Objekten}\label{sichtbarket:sec}
+
+Der Parameter \emph{sight range} bzw. \emph{reward range} einer Probleminstanz bestimmt, bis zu welcher Distanz andere Objekte von einem Objekt als "`gesehen"' bzw. "`überwacht"' gelten, sofern die Sicht durch andere Objekte nicht versperrt ist. Der Parameter \emph{reward range} ist relevant für die Bewertung der Qualität des Algorithmus (siehe Kapitel~\ref{qualitaet:sec}) und wird immer kleiner als der \emph{sight range} Wert gewählt. Über die Sensoren kann ein Agent feststellen, ob sich Objekte in welcher der beiden Reichweiten befinden. Falls nicht anders angegeben sollen jeweils \emph{sight range} auf 5 und \emph{reward range} auf 2 gesetzt werden.\\
 
 \section{Kollaboration}
 
-Wesentliches Hauptaugenmerk der Gestaltung der Szenarien soll Kollaboration sein, d.h. die Aufgabe soll mit Hilfe mehrerer Agenten gemeinsam gelöst werden. Eine erfolgreiche Überwachung soll deswegen so definiert sein, dass sich ein beliebiger Agent in Überwachungsreichweite des Ziels befindet. Um sicherzustellen, dass diese Aufgabe nicht auch ein einzelner Agent erfüllen kann, soll sich das Zielobjekt schneller fortbewegen als die einzelnen Agenten.\\
-Würde sich das Zielobjekt genauso langsam oder langsamer als die Agenten bewegen, dann wäre das Problem sehr simpel, da das Zielobjekt Schwierigkeiten hätte, Agenten abzuschütteln, deren einzige Strategie es ist, sich in Richtung des Zielobjekts zu bewegen.\\
+Wesentliches Hauptaugenmerk der Gestaltung der Szenarien soll Kollaboration sein, d.h. die Aufgabe soll mit Hilfe mehrerer Agenten gemeinsam gelöst werden. 
 
-\section{Qualität}\label{qualitaet:sec}
+TODO Literatur Definition vo Kollaboration in der Literatur, Abgrenzung
 
-Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen (d.h. das Zielobjekt innerhalb einer Distanz von höchstens \emph{reward range} halten) konnte, relativ zur Gesamtzeit.\\
-Qualität eines Algorithmus zu einer Anzahl von Problemen (also einem Experiment) wird Anhand des Gesamtanteil der Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.\\
-Qualität eines Algorithmus entspricht dem Durchschnitt der Qualitäten des Algorithmus mehrerer Experimente.\\
-Halbzeitqualität eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit.\\
-Halbzeitqualität eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit aller Probleme.\\
-Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeitqualitäten des Algorithmus mehrerer Experimente.\\
-Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus ermöglicht einen Einblick, wie gut sich der Algorithmus verhält, nachdem er sich auf das Problem bereits eine Zeit lang einstellen konnte.\\
+Eine erfolgreiche Überwachung soll deswegen so definiert sein, dass sich ein beliebiger Agent in Überwachungsreichweite des Zielobjekts befindet. Angesichts dessen, dass diese Aufgabe auch ein einzelner Agent erfüllen kann, sofern die Geschwindigkeit des Zielobjekts kleiner oder gleich der Geschwindigkeit des Agenten ist, sollen in späteren Tests (insbesondere in Kapitel~\ref{lcs_analysis:cha} beim Vergleich unterschiedlicher XCS Varianten und im Kapitel~\ref{cha:parameter} beim Vergleich unterschiedlicher XCS Parameter) unterschiedliche Geschwindigkeiten getestet werden.\\
+
+Bewegt sich das Zielobjekt zu schnell, werden die Agenten Schwierigkeiten haben, einen Bezug zwischen Sensordaten und eigener Aktionen zu erkennen, bewegt es sich zu langsam, wird das Problem sehr einfach, eine einzelne Regel ("`Bewege dich auf das Ziel zu"`) würde zur Lösung dann schon genügen.\\
 
 \section{Dynamik}
 
-Die Szenarien fallen alle unter die Kategorie ``dynamisch''. Darunter soll in diesem Zusammenhang verstanden werden, dass es kein festes Ziel gibt, das erreicht werden soll oder kann, das Zielobjekt befindet sich in stetiger Bewegung, wie auch sich andere Agenten in Bewegung befinden können.\\
-Dies ist ein wesentlicher Gesichtspunkt, den diese Arbeit von vielen anderen unterscheidet, Gegenstand der Untersuchung in der Literatur sind eher statische Probleme wie z.B. 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}) oder Probleme bei denen die Agenten globale Information besitzen. Eine nähere Diskussion zur Literatur gibt es in Kapitel~\ref{lcs:cha}.
+Die Szenarien fallen alle unter die Kategorie "`dynamisch"'. Darunter soll in diesem Zusammenhang verstanden werden, dass es kein festes Ziel gibt, das erreicht werden soll oder kann, das Zielobjekt befindet sich in stetiger Bewegung, wie auch sich andere Agenten in Bewegung befinden können.\\
+
+Dies ist ein wesentlicher Gesichtspunkt, dass diese Arbeit von vielen anderen unterscheidet, Gegenstand der Untersuchung in der Literatur sind eher statische Probleme wie z.B. 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}) 
+
+El Fasor, Soccer 
+
+oder Probleme bei denen die Agenten globale Information besitzen 
+
+TODO
+
+Eine nähere Diskussion zur Literatur folgt in Kapitel~\ref{lcs:cha}.
+
 
 \section{Startkonfigurationen des Torus}
 
-Getestet wurden eine Reihe von Szenarien (in Verbindung mit unterschiedlichen Werten für die Anzahl der Agenten, Größe des Torus und Art und Geschwindigkeit des Zielobjekts). Wesentliche Rolle spielt hier die Verteilung der Hindernisse.\\
-In den folgenden Abbildungen repräsentieren rote Felder jeweils Hindernisse, weiße Felder jeweils Agenten und das grüne Feld jeweils das Zielobjekt. In Abbildung ~(\ref{empty_grid:fig}) ist ein Szenario ohne Hindernisse und mit zufälliger Verteilung der Agenten und zufälliger Position des Zielobjekts dargestellt.\\
+Getestet wurden eine Reihe von Szenarien (in Verbindung mit unterschiedlichen Werten für die Anzahl der Agenten, Größe des Torus und Art und Geschwindigkeit des Zielobjekts). 
+TODO
+Wesentliche Rolle spielt hier die Verteilung der Hindernisse. TODO
+TODO
+
+In den folgenden Abbildungen repräsentieren rote Felder jeweils Hindernisse, weiße Felder jeweils Agenten und das grüne Feld jeweils das Zielobjekt. Außerdem sind die Sicht- und Überwachungsreichweiten aus Kapitel~\ref{sichtbarket:sec}, jeweils kreisförmig vom jeweiligen Agenten ausgehend grau den Bereich, der durch die \emph{reward range} abgedeckt wird, und blau den Bereich, der zusätzlich noch durch die \emph{sight range} abgedeckt wird.
+
+\subsection{Leeres Szenario}
+
+In Abbildung~(\ref{empty_grid:fig}) ist ein Szenario ohne Hindernisse und mit zufälliger Verteilung der Agenten und zufälliger Position des Zielobjekts dargestellt. Im leeren Szenario soll das Verhalten der Agenten in einem Torus ohne Hindernisse untersucht werden. 
+
+TODO warum
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{00_000_grid.eps}
 }
-\caption[``Leeres Szenario'' ohne Hindernisse]{``Leeres Szenario'' ohne Hindernisse}
+\caption["`Leeres Szenario"' ohne Hindernisse]{"`Leeres Szenario"' ohne Hindernisse}
 \label{empty_grid:fig}
 \end{figure}
 
-\subsection{Zufälliges Szenario}\label{random_scenario_definition:sec}
+\subsection{Szenario mit zufällig verteilten Hindernissen}\label{random_scenario_definition:sec}
 
-Zwei Parameter bestimmen das Aussehen des zufälligen Szenarios, zum einen der Prozentsatz an Hindernissen an der Gesamtzahl der Felder des Torus (Hindernissanteil~\(\lambda_{h}\)), zum anderen der Grad inwieweit die Hindernisse zusammenhängen (Verknüpfungsfaktor~\(\lambda_{p}\).\\
-Bei der Erstellung des Szenarios bestimmt \(\lambda_{p}\) die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass beim Verteilen der Hindernisse nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. \(\lambda_{p} = 0.0\) ergäbe somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert von \(1.0\) eine oder mehrere stark zusammenhängende Strukturen schafft.\\
-Wird der Prozentsatz an Hindernissen \(\lambda_{h}\) auf \(0.0\) gesetzt, dann werden Hindernisse keine Hindernisse gesetzt.\\
+Zwei Parameter bestimmen das Aussehen des Szenarios mit zufällig verteilten Hindernissen, zum einen der Prozentsatz an Hindernissen an der Gesamtzahl der Felder des Torus (Hindernissanteil~\(\lambda_{h}\)), zum anderen der Grad inwieweit die Hindernisse zusammenhängen (Verknüpfungsfaktor~\(\lambda_{p}\)).\\
+Bei der Erstellung des Szenarios bestimmt \(\lambda_{p}\) die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass beim Verteilen der Hindernisse nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. \(\lambda_{p} = 0.0\) ergäbe somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert von \(1.0\) eine oder mehrere stark zusammenhängende Strukturen schafft. Wird der Prozentsatz an Hindernissen \(\lambda_{h}\) auf \(0.0\) gesetzt, dann entspricht diesem dem oben erwähnten leeren Szenario. Ein Wert von \(1.0\) würde eine völlige Abdeckung des Torus bedeuten und wäre für einen Test somit unbrauchbar. Hier sollen nur geringe Werte bis \(0.4\) betrachtet werden, wobei später in Tests sich auf Werte bis \(0.2\) beschränkt wird, da bei großen Hindernissanteil die lokalen Entscheidungen einzelner Agenten zu wichtig werden, da das Zielobjekt sich oft nur in einem kleinen Bereich aufhält
+
+TODO Zielobjektabdeckung! (in 100 Schritten abgedecktes Gebiet o.ä.)
 
 In Abbildungen ~(\ref{random_grid_005:fig}), ~(\ref{random_grid_01:fig}), ~(\ref{random_grid_02:fig}) und ~(\ref{random_grid_04:fig}) werden Beispiele für zufällige Szenarien gegeben mit \(\lambda_{h} = 0.05\), \(0.1\), \(0.2\) bzw. \(0.4\) und \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).
 
@@ -63,7 +86,7 @@ In Abbildungen ~(\ref{random_grid_005:fig}), ~(\ref{random_grid_01:fig}), ~(\ref
 \includegraphics{005_050_grid.eps}
 \includegraphics{005_099_grid.eps}
 }
-\caption[``Zufälliges Szenario'' mit $\lambda_{h} = 0.05$] {``Zufälliges Szenario'' mit \(\lambda_{h} = 0.05\) und \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.05$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.05\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
 \label{random_grid_005:fig}
 \end{figure}
 
@@ -73,7 +96,7 @@ In Abbildungen ~(\ref{random_grid_005:fig}), ~(\ref{random_grid_01:fig}), ~(\ref
 \includegraphics{01_050_grid.eps}
 \includegraphics{01_099_grid.eps}
 }
-\caption[``Zufälliges Szenario'' mit $\lambda_{h} = 0.1$] {``Zufälliges Szenario''\(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.1$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.1\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
 \label{random_grid_01:fig}
 \end{figure}
 
@@ -83,7 +106,7 @@ In Abbildungen ~(\ref{random_grid_005:fig}), ~(\ref{random_grid_01:fig}), ~(\ref
 \includegraphics{02_050_grid.eps}
 \includegraphics{02_099_grid.eps}
 }
-\caption[``Zufälliges Szenario'' mit $\lambda_{h} = 0.2$] {``Zufälliges Szenario'' mit \(\lambda_{h} = 0.2\) und \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.2$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.2\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
 \label{random_grid_02:fig}
 \end{figure}
 
@@ -93,67 +116,80 @@ In Abbildungen ~(\ref{random_grid_005:fig}), ~(\ref{random_grid_01:fig}), ~(\ref
 \includegraphics{04_050_grid.eps}
 \includegraphics{04_099_grid.eps}
 }
-\caption[``Zufälliges Szenario'' mit $\lambda_{h} = 0.4$] {``Zufälliges Szenario'' mit \(\lambda_{h} = 0.4\) und \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.4$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.4\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
 \label{random_grid_04:fig}
 \end{figure}
 
 
+\subsection{Säulen Szenario}
 
-\subsection{``Säulen Szenario''}
-Hier werden mit jeweils 7 Feldern Zwischenraum zueinander regelmäßig Hindernisse verteilt. Idee ist, dass die Agenten eine kleine Orientierungshilfe besitzen aber gleichzeitig möglichst wenig Hindernisse verteilt werden. Das Zielobjekt startet an zufälliger Position, die Agenten starten mit möglichst großem Abstand zum Zielobjekt. Abbildung~\ref{pillar_grid:fig} zeigt ein Beispiel bei der das Zielobjekt sich in der Mitte und die Agenten am Rand befinden.
+In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinander,  Hindernisse auf dem Torus verteilt. Idee ist, dass die Agenten eine kleine Orientierungshilfe besitzen sollen, aber gleichzeitig möglichst wenig Hindernisse verteilt werden. Das Zielobjekt startet an zufälliger Position, die Agenten starten mit möglichst großem Abstand zum Zielobjekt. Abbildung~\ref{pillar_grid:fig} zeigt ein Beispiel für den Startzustand eines solchen Szenarios, bei der das Zielobjekt sich in der Mitte und die Agenten am Rand befinden.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{pillar_grid.eps}
 }
-\caption[``Säulen Szenario'']{``Säulen Szenario'' mit regelmäßig angeordneten Hindernissen und zufälliger Verteilung von Agenten mit möglichst großem Abstand zum Zielobjekt}
+\caption[Startzustand des Säulen Szenarios]{Startzustand des Säulen Szenarios mit regelmäßig angeordneten Hindernissen und zufälliger Verteilung von Agenten mit möglichst großem Abstand zum Zielobjekt}
 \label{pillar_grid:fig}
 \end{figure}
 
-\subsection{``Kreuz Szenario''}
+\subsection{"`Kreuz Szenario"'}
+TODO raus
 Hier gibt eine horizontale Reihe aus Hindernissen halber Gesamtbreite welche durch eine vertikale Reihe aus Hindernissen halber Gesamthöhe in der Mitte geschnitten wird. Agenten und das Zielobjekt werden zufällig verteilt. Abbildung~\ref{cross_grid:fig} zeigt ein Beispiel für ein solches Szenario.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{cross_grid.eps}
 }
-\caption[``Kreuz Szenario'']{``Kreuz Szenario'' mit kreuzförmiger Anordnung der Hindernisse und zufälliger Verteilung der Agenten und des Zielobjekts}
+\caption[Kreuz Szenario]{Kreuz Szenario mit kreuzförmiger Anordnung der Hindernisse und zufälliger Verteilung der Agenten und des Zielobjekts}
 \label{cross_grid:fig}
 \end{figure}
 
-\subsection{``Raum Szenario''}
+\subsection{"`Raum Szenario"'}
 Auf dem Torus wird ein Rechteck der halben Gesamthöhe und -breite des Torus erstellt, welches im Norden eine Öffnung von 4 Feldern Breite aufweist. Der Zielagent startet in der Mitte des Raums, alle Agenten starten mit maximaler Distanz zu den Hindernissen an zufälliger Position. Abbildung~\ref{room_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines solchen Szenarios.\\
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{room_grid.eps}
 }
-\caption[``Raum Szenario'']{``Raum Szenario'' mit quaderförmiger Anordnung der Hindernisse mit Öffnung im Norden, zufälliger Verteilung der Agenten am Rand und zu Beginn im Zentrum startendem }
+\caption["`Raum Szenario"']{"`Raum Szenario"' mit quaderförmiger Anordnung der Hindernisse mit Öffnung im Norden, zufälliger Verteilung der Agenten am Rand und zu Beginn im Zentrum startendem }
 \label{room_grid:fig}
 \end{figure}
 
 
-\subsection{``Schwieriges Szenario''}
-Hier wird das Torus zum einen an der rechten Seite vollständig durch Hindernisse blockiert, um den Torus zu halbieren. Alle Agenten starten (zufällig verteilt) am linken Rand, der Zielagent startet auf der rechten Seite.\\
+\subsection{Schwieriges Szenario}
+Hier wird der Torus an der rechten Seite vollständig durch Hindernisse blockiert, um den Torus zu halbieren. Alle Agenten starten (zufällig verteilt) am linken Rand, der Zielagent startet auf der rechten Seite.\\
 In regelmäßigen Abständen (7 Felder Zwischenraum) befindet sich eine vertikale Reihe von Hindernissen mit Öffnungen von 4 Feldern Breite abwechselnd im oberen Viertel und dem unteren Viertel.\\
-Idee dieses Szenarios ist zu testen, inwieweit die Agenten durch die Öffnungen zum Ziel finden können. Ohne Orientierung an den Öffnungen und anderen Agenten ist es sehr schwierig, sich durch das Szenario zu bewegen. Abbildung~\ref{difficult_grid:fig} zeigt die Startkonfiguration des Szenarios.
+Idee dieses Szenarios ist es, zu testen, inwieweit die Agenten durch die Öffnungen zum Ziel finden können. Ohne Orientierung an den Öffnungen und anderen Agenten ist es sehr schwierig, sich durch das Szenario zu bewegen. Abbildung~\ref{difficult_grid:fig} zeigt die Startkonfiguration des Szenarios.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{difficult_grid.eps}
 }
-\caption[``Schwieriges Szenario'']{``Schwieriges Szenario'' mit fester, wallartiger Verteilung von Hindernissen in regelmäßigen Abständen und mit Öffnungen, mit den Agenten mit zufälligem Startpunkt am linken Rand und dem Zielagenten mit festem Startpunkt rechts oben}
+\caption[Schwieriges Szenario]{Schwieriges Szenario mit fester, wallartiger Verteilung von Hindernissen in regelmäßigen Abständen und mit Öffnungen, mit den Agenten mit zufälligem Startpunkt am linken Rand und mit dem Zielobjekt mit festem Startpunkt rechts oben}
 \label{difficult_grid:fig}
 \end{figure}
 
-\subsection{``Irrgarten Szenario''}
+\subsection{"`Irrgarten Szenario"'}
 
-Der Code zur Generierung der Hindernisse stammt aus \cite{Hamer}. In den ``Gängen'' des Irrgartens herrscht jeweils eine Breite von \(2\) Feldern. Die anfängliche Verteilung der Agenten und des Zielobjekts geschieht zufällig. Abbildung~\ref{maze_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines Irrgartens.\\
+Der Code zur Generierung der Hindernisse stammt aus \cite{Hamer}. In den "`Gängen"' des Irrgartens herrscht jeweils eine Breite von \(2\) Feldern. Die anfängliche Verteilung der Agenten und des Zielobjekts geschieht zufällig. Abbildung~\ref{maze_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines Irrgartens.\\
+TODO Idee oder raus
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{maze_grid.eps}
 }
-\caption[``Irrgarten Szenario'']{``Irrgarten Szenario'' mit einer Anordnung von Hindernissen in der Art, dass es nur wenige Pfade gibt.}
+\caption["`Irrgarten Szenario"']{"`Irrgarten Szenario"' mit einer Anordnung von Hindernissen in der Art, dass es nur wenige Pfade gibt.}
 \label{maze_grid:fig}
 \end{figure}
+
+
+\section{Bestimmung der Qualität eines Algorithmus}\label{qualitaet:sec}
+
+Die Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen (d.h. das Zielobjekt innerhalb einer Distanz von höchstens \emph{reward range} halten) konnte, relativ zur Gesamtzeit.\\
+Die Qualität eines Algorithmus zu einer Anzahl von Problemen (also einem Experiment) wird Anhand des Gesamtanteil der Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.\\
+Die Qualität eines Algorithmus entspricht dem Durchschnitt der Qualitäten des Algorithmus mehrerer Experimente.\\
+Die Halbzeitqualität eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit.\\
+Die Halbzeitqualität eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit aller Probleme.\\
+Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeitqualitäten des Algorithmus mehrerer Experimente.\\
+Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus ermöglicht einen Einblick, wie gut sich der Algorithmus verhält, nachdem er sich auf das Problem bereits eine Zeit lang einstellen konnte.\\

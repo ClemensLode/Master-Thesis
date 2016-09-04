@@ -220,7 +220,7 @@ In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschrit
 Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe ~(\ref{saved_rewards:fig})).
 
 Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. Wählen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe ~(\ref{neutral_reward:fig})). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
-Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. ``maxStackSize'' stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
+Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
 
 \begin{figure}[H]
 \setbox0\vbox{\small

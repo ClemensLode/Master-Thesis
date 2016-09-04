@@ -59,7 +59,7 @@ Bei der ersten Möglichkeit haben alle Agenten die Sensordaten vom Beginn der Zei
 Wenn sich mehrere Agenten auf dasselbe Feld bewegen wollen, dann spielt die Reihenfolge der Ausführung der Aktionen eine Rolle. Wird die Liste der Agenten einfach linear abgearbeitet, können Agenten mit niedriger Position in der Liste die Aktion auf Basis jüngerer Sensordaten fällen. Dies kann dazu führen, dass Aktionen von Agenten mit höherer Position in der Liste eher fehlschlagen, da das als frei angenommene Feld nun bereits besetzt ist. Da es keinen Grund gibt, Agenten mit niedrigerer Position zu bevorteilen, werden die Aktionen der Agenten in zufälliger Reihenfolge abgearbeitet.\\
 Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von maximal einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann (siehe auch Kapitel~\ref{base_properties_goal:sec}).
 Die Entscheidung fiel hier auf eine zufällige Verteilung. Kann sich das Zielobjekt um \(n\) Schritte bewegen, so wird seine Bewegung in \(n\) Einzelschritte unterteilt, die nacheinander mit zufälligen Abständen (d.h. Bewegungen anderer Agenten) ausgeführt werden.\\
-Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingeführt werden, so dass das Zielobjekt in einer Zeiteinheit mehrmals (\(n\)-mal) neue Sensordaten erfassen und sich für eine neue Aktion entscheiden kann.
+Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingeführt werden, sodass das Zielobjekt in einer Zeiteinheit mehrmals (\(n\)-mal) neue Sensordaten erfassen und sich für eine neue Aktion entscheiden kann.
 
 \section{Messung der Qualität}\label{qualitaetsmessung:sec}
 
@@ -68,12 +68,11 @@ Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Tor
 
 \section{Reihenfolge der Ermittlung des \emph{base reward}}
 
-Keine der bisher vorgestellten Varianten machen Gebrauch von einem sogenannten \emph{base reward}, d.h. 
+Keine der bisher vorgestellten Varianten machen Gebrauch von einem sogenannten \emph{base reward}, d.h.  TODO
 
 Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein \emph{reward} ergeben soll. Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der Reward jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der Reward von binärer Natur ist (``Zielobjekt in Überwachungsreichweite'' oder ``Zielobjekt nicht in Überwachungsreichweite''), weshalb Zwischenzustände für den Reward, der sich aus der mehrfachen Bewegung des Zielagenten ergeben könnte, ausgeschlossen werden soll (z.B. ``War zwei von drei Schritten in der Überwachungsreichweite'' \(\Rightarrow \frac{2}{3}\) Reward). Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.\\
 
-TODO neue rewarderhebung...
-TODO Rewarderhebung für normale Agenten irrelevant, evtl teilen
+TODO Rewarderhebung für normale Agenten irrelevant, evtl teilen und in XCS Kapitel
 
 Für den Reward gibt es somit folgende Möglichkeiten:
 

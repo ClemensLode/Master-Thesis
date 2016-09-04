@@ -55,7 +55,10 @@ Geschwindigkeit 2 problematisch, Geschwindigkeit 1 ok?
 
 TODO classifier ausgeben 
 
+\section{Vergleich unterschiedlicher Geschwindigkeiten des Zielobjekts}
 
+In Abbildung~\ref{goal_agent_speed:fig} ist ein Vergleich der unterschiedlicher Geschwindigkeiten des Zielobjekts dargestellt. XCS (mit 500 Schritten) macht bei keiner Geschwindigkeit Lernfortschritte, die Qualität pendelt zwischen 31.69\% und 33.40\%, also in etwa identisch mit der zufälligen Bewegung. Die SXCS Implementierung scheint dagegen die geringere Geschwindigkeit ausgenutzt zu haben und ist dadurch in der Lage das Zielobjekt besser zu verfolgen. Mit 500 Schritten ist die Qualität abnehmend von 39.64\% (Geschwindigkeit 1.0) bis 35.96\% (Geschwindigkeit 2.0), im Fall mit 2000 Schritten erhöht sich dieser Bereich leicht auf 40.15\% bis 37.71\%.\\
+Auch bei den Heuristiken zeichnet sich ein klares Bild ab, bei niedrigen Geschwindigkeiten ist die Ausbreitung der Agenten auf dem Feld (intelligente Heuristik) weniger wichtig als die konstante Verfolgung des Zielobjekts, während bei höheren Geschwindigkeiten die Verteilung auf dem Feld wichtiger wird.
 
 \begin{figure}[htbp]
 \centerline{	

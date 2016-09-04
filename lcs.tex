@@ -1,4 +1,4 @@
-\chapter{LCS}\label{lcs:cha}
+\chapter{XCS}\label{lcs:cha}
 
 \section{Einführung}
 
@@ -32,15 +32,13 @@ TODO base reward und reward unterscheiden
 Ein XCS ist ein regelbasiertes evolutionäres Lernsystem, das im Wesentlichen aus folgenden Elementen besteht:
 
 \begin{enumerate}
-\item Einer Menge an Regeln, sogenannte \emph{classifier} (siehe~\ref{classifier:sec}
-\item Ein Mechanismus zur Auswahl der \emph{classifier} (siehe~\ref{auswahlart:sec}
+\item Einer Menge an Regeln, sogenannte \emph{classifier} (siehe~\ref{classifier:sec})
+\item Ein Mechanismus zur Auswahl der \emph{classifier} (siehe~\ref{auswahlart:sec})
 \item Einem Mechanismus zur Evolution der \emph{classifier} (mittels genetischer Operatoren, siehe~\ref{genetische_operatoren:sec})
 \item Eine Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning}, siehe~\ref{bewertung:sec})
 \end{enumerate}
 
 Während die ersten drei Punkten bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei Punkte näher betrachtet werden.
-
-
 
 \section{Classifier}\label{classifier:sec}
 
@@ -155,6 +153,17 @@ TODO Vergleich!
 TODO wenig Unterschied sensoragent, evtl wieder raus
 
 \section{Bewertung}\label{bewertung:sec}
+
+6 unterschiedliche Möglichkeiten,
+goal in reward range
+goal in sight range
+goal in reward range, kein agent in reward range
+goal in sight range, kein agent in sight range
+goal in reward range, kein agent in sight range
+goal in sight range, kein agent in reward range
+
+
+
 \begin{program}
   \begin{verbatim}
 /**
