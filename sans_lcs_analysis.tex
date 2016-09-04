@@ -11,7 +11,7 @@ Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfa
 
 \begin{enumerate}
 
-\item Anteil Sprünge des Zielagenten (siehe Kapitel~\ref{base_properties_goal:sec}), Durchläufe mit hohen Werte müssten verworfen werden
+\item Anteil Sprünge des Zielobjekts (siehe Kapitel~\ref{base_properties_goal:sec}), Durchläufe mit hohen Werte müssten verworfen werden
 \item Anteil blockierter Bewegungen der Agenten
 \item Halbzeitqualität (siehe Kapitel~\ref{qualitaet:sec}), größere Unterschiede zur ermittelten Qualität deuten darauf hin, dass sich der Algorithmus noch nicht stabilisiert hat und das Szenario mit höherer Schrittzahl erneut durchgeführt werden sollte
 \item Abdeckung
@@ -107,7 +107,7 @@ Dass der einfache Agent, wenn er das Zielobjekt in Sicht hat, eine geringere Zah
 
 Im Vergleich zur einfachen Heuristik scheint insbesondere die intelligente Heuristik Probleme mit den Hindernissen zu haben (viele blockierte Bewegungen). Da Hindernisse in der Heuristik nicht beachtet werden, bewirkt die Strategie der maximalen Ausbreitung der Agenten, dass die Agenten gegen die Hindernisse gedrückt werden (andere Agenten sind bei hohem Verknüpfungsfaktor eher in einem Bereich ohne Hindernisse).\\
 
-Schließlich ist zu sehen, dass die Agenten in einem Szenario mit höherem Verknüpfungsfaktor (der Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.99\) im Vergleich zum Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.5\)) besser abschneiden. Dies liegt daran, dass Szenarien mit hohem Verknüpfungsfaktors bedeuten, dass viele Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernissen ähnlich sind, da es eher größere zusammenhängende Flächen gibt.\\
+Schließlich ist zu sehen, dass die Agenten in einem Szenario mit höherem Verknüpfungsfaktor (der Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.99\) im Vergleich zum Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.5\)) besser abschneiden. Dies liegt daran, dass Szenarien mit hohem Verknüpfungsfaktor bedeuten, dass viele Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernisse ähnlich sind, da es eher größere zusammenhängende Flächen gibt.\\
 
 Insgesamt ist zu sagen, dass keine der Szenarien mit zufälligem Sprung des Zielobjekts sich als zu lernende Aufgabe lohnt, der Unterschied zwischen der zufälligen Bewegung und der intelligenten Heuristik ist zu gering, die Aufgabe somit zu schwierig und soll in Verbindung mit XCS, bis auf einen einfachen Vergleichstest (siehe Kapitel TODO), nicht weiter betrachtet werden.
 
@@ -237,7 +237,7 @@ Angesichts der Ergebnisse in den zwei vorangegangenen Kapiteln, ist zu erwarten,
 
 In Abbildung~\ref{speed_random_goal:fig} sind die Testergebnisse für einen Test mit 8 Agenten auf dem Säulenszenario dargestellt, bei dem sich das Zielobjekt mit einfacher Richtungsänderung bewegt. Es ist keine Korrelation zwischen der Geschwindigkeit und der Qualität des Algorithmus mit zufälliger Bewegung festzustellen, nur bei Geschwindigkeit 0 scheint es ein deutlich besseres Ergebnis zu geben. Das lässt sich aber durch die Anfangskonfiguration erklären, beim Säulenszenario startet das Zielobjekt in der Mitte mit maximalem Abstand zu den Hindernissen, ist also immer optimal in Sicht.\\
 Der Algorithmus mit zufälliger Bewegung stellt also eine Untergrenze dar, ein Agent muss mehr als diesen Wert erreichen, damit man sagen kann, dass er etwas gelernt hat.\\
-In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnisse (im selben Szenario) für die einfache und die intelligente Heuristik zu sehen. Im Wesentlichen sind drei Punkte anzumerken, erstens gibt es eine Korrelation zwischen Qualität und Geschwindigkeit, zweitens gibt es einen Knick bei Geschwindigkeit 1 und drittens ist ein fast stetiger Anstieg der Differenz zwischen der einfachen und der intelligenten Heuristik zu verzeichnen. Der Knick lässt sich dadurch erklären, dass es ab dieser Geschwindigkeit möglich ist, dass das Zielobjekt Verfolger abschütteln kann, der Anstieg der Differenz lässt sich dadurch erklären, dass es Abdeckung des Gebiets eine immer größere Rolle spielt, als die Verfolgung des Zielobjekts.
+In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnisse (im selben Szenario) für die einfache und die intelligente Heuristik zu sehen. Im Wesentlichen sind drei Punkte anzumerken, erstens existiert eine Korrelation zwischen Qualität und Geschwindigkeit, zweitens gibt es einen Knick bei Geschwindigkeit 1 und drittens ist ein fast stetiger Anstieg der Differenz zwischen der einfachen und der intelligenten Heuristik zu verzeichnen. Der Knick lässt sich dadurch erklären, dass es ab dieser Geschwindigkeit möglich ist, dass das Zielobjekt Verfolger abschütteln kann, der Anstieg der Differenz lässt sich dadurch erklären, dass es Abdeckung des Gebiets eine immer größere Rolle spielt, als die Verfolgung des Zielobjekts.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -369,6 +369,6 @@ Für verschiedene Anzahl von Schritten sind für die drei Agententypen in Abbildun
 
 \section{Zusammenfassung}
 
-Wie wir gesehen haben gibt es also Szenarien in denen Abdeckung kaum eine Rolle spielt und lokale Entscheidungen eine wesentliche Rolle spielen. Dies wird es erleichtern, geeignete Szenarien im Kapitel~\ref{communication:cha}  zu finden.
+Wie man sehen konnte, existieren also Szenarien in denen Abdeckung kaum eine Rolle spielt und lokale Entscheidungen eine wesentliche Rolle spielen. Dies wird es erleichtern, geeignete Szenarien im Kapitel~\ref{communication:cha}  zu finden.
 
 TODO

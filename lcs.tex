@@ -2,7 +2,7 @@
 
 Jeder Agent besitzt ein unabhängiges, sogennantes \emph{eXtended Classifier System} (XCS), welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{uebersicht_classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
 
-Eine wesentliche Erweiterung des LCS ist das sogenannte \emph{accuracy-based} XCS, zuerst beschrieben in \cite{wilson:95}. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum LCS gibt es vor allem in der Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
+Eine wesentliche Erweiterung des LCS ist das sogenannte \emph{accuracy-based} XCS, zuerst beschrieben in \cite{wilson:95}. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum LCS gibt es vor allem innerhalb der Funktion zur Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
 
 Im einfachsten Fall, im sogenannten \emph{single step} Verfahren erfolgt die Bewertung einzelner \emph{classifier}, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten \emph{multi step} Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde.\\
 
@@ -98,8 +98,8 @@ TODO ausfuehrlicher
 
 TODO
 Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} Vektoren gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das \emph{matchSet}.
-\item Im nächsten Schritt wählen wir einen \emph{classifier} aus diesem \emph{matchset} aus und speichern dessen Aktion.
-\item Schließlich bilden wir anhand des \emph{match set} und der gewählten Aktion das \emph{action set}
+\item Im nächsten Schritt wird ein \emph{classifier} aus diesem \emph{matchset} ausgewählt und dessen Aktion gespeichert.
+\item Schließlich wird anhand des \emph{match set} und der gewählten Aktion das \emph{action set} gebildet.
 \end{enumerate}
 
 \subsection{Covering}\label{covering:sec}
@@ -132,22 +132,26 @@ Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jewei
 
 \end{enumerate}
 
-Während die ersten drei Punkte bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei Punkte näher betrachtet werden.
+Während die ersten drei Punkte bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei Punkte näher betrachtet werden.\\
 
 \section{Classifier}\label{classifier:sec}
 
-Ein \emph{classifier} besteht aus einer Anzahl im folgenden diskutierten Variablen die anhand der in Kapitel~\ref{cha:parameter} aufgelisteten Werte initialisiert werden. Wesentliche Teile sind der \emph{condition} Vektor (Kapitel~\ref{condition_vector:sec}) und der \emph{action} Wert (Kapitel~\ref{action_wert:sec}), alle restlichen Variablen dienen zur Berechnung der Wahrscheinlichkeit mit der der \emph{classifier} ausgewählt und dessen \emph{action} Wert ausgeführt wird.
+Ein \emph{classifier} besteht aus einer Anzahl im folgenden diskutierten Variablen die anhand der in Kapitel~\ref{cha:parameter} aufgelisteten Werte initialisiert werden. Wesentliche Teile sind der \emph{condition} Vektor (Kapitel~\ref{condition_vector:sec}) und der \emph{action} Wert (Kapitel~\ref{action_wert:sec}), alle restlichen Variablen dienen zur Berechnung der Wahrscheinlichkeit mit der der \emph{classifier} ausgewählt und dessen \emph{action} Wert ausgeführt wird.\\
 
 
 \subsection{Der \emph{condition} Vektor}\label{condition_vector:sec}
 
-Der \emph{condition} Vektor gibt die Kondition an, in welcher Situation der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordaten von dem jeweiligen \emph{classifier} erkannt werden. Der Aufbau des Vektors entspricht dem Vektor der über die Sensoren erstellt wird (siehe Kapitel~\ref{sensoren:sec}).
+Der \emph{condition} Vektor gibt die Kondition an, in welcher Situation der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordaten von dem jeweiligen \emph{classifier} erkannt werden. Der Aufbau des Vektors (siehe Abbildung~\ref{gruppen_condition_vector:fig}) entspricht dem Vektor der über die Sensoren erstellt wird (siehe Kapitel~\ref{sensoren:sec}).
 
-\[
-\underbrace{z_{s_{N}} z_{r_{N}} z_{s_{O}} z_{r_{O}} z_{s_{S}} z_{r_{S}} z_{s_{W}} z_{r_{W}}}_{Erste~Gruppe~(Zielobjekt)}
+\begin{figure}[htbp]
+\centerline{	
+$\underbrace{z_{s_{N}} z_{r_{N}} z_{s_{O}} z_{r_{O}} z_{s_{S}} z_{r_{S}} z_{s_{W}} z_{r_{W}}}_{Erste~Gruppe~(Zielobjekt)}
 \underbrace{a_{s_{N}} a_{r_{N}} a_{s_{O}} a_{r_{O}} a_{s_{S}} a_{r_{S}} a_{s_{W}} a_{r_{W}}}_{Zweite~Gruppe~(Agenten)}
-\underbrace{h_{s_{N}} h_{r_{N}} h_{s_{O}} h_{r_{O}} h_{s_{S}} h_{r_{S}} h_{s_{W}} h_{r_{W}}}_{Dritte~Gruppe~(Hindernisse)}
-\]
+\underbrace{h_{s_{N}} h_{r_{N}} h_{s_{O}} h_{r_{O}} h_{s_{S}} h_{r_{S}} h_{s_{W}} h_{r_{W}}}_{Dritte~Gruppe~(Hindernisse)}$
+}
+\caption[Einteilung des \emph{condition} Vektors] {Einteilung des \emph{condition} Vektors in drei Gruppen}
+\label{gruppen_condition_vector:fig}
+\end{figure}
 
 
 \subsection{Platzhalter im \emph{condition} Vektor}\label{platzhalter:sec}
