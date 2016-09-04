@@ -1,6 +1,6 @@
 \chapter{Parameter}\label{cha:parameter}
 
-Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen weitgehend den Vorschlägen in~\cite{Butz} (``Commonly Used Parameter Settings''). Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. Im Folgenden sollen Parameter besprochen werden, die entweder in der Empfehlung offen gelassen sind, also klar vom jeweiligen Szenario abhängen, und solche, bei denen von der Empfehlung abgewichen wurde.\\
+Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen weitgehend den Vorschlägen in~\cite{butz01algorithmic} (``Commonly Used Parameter Settings''). Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. Im Folgenden sollen Parameter besprochen werden, die entweder in der Empfehlung offen gelassen sind, also klar vom jeweiligen Szenario abhängen, und solche, bei denen von der Empfehlung abgewichen wurde.\\
 Mitunter führen andere Parametereinstellungen auch zu wesentlich besseren Ergebnissen. Dies muss man aber vorsichtig bewerten, wenn die erreichte Qualität unter der des zufälligen Algorithmus liegt, da eine Auswirkung sein kann, dass der Algorithmus nicht besser lernt, sondern sich umgekehrt eher wie der zufällige Algorithmus verhält. Ein Vergleich mit der Qualität des zufälligen Algorithmus wird deswegen jeweils immer angegeben.\\
 Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Um  synchronisierte und vergleichbare Daten zu haben, wurden die Tests deshalb in mehreren Etappen durchgeführt, die angegebenen Testergebnisse entsprechen jeweils den endgültigen Ergebnissen.
 
@@ -56,7 +56,7 @@ In den hier vorgestellten XCS Varianten wird dagegen der \emph{reward} Wert abst
 
 \section{Parameter \emph{accuracy equality} $\epsilon_{0}$}
 TODO 
-Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der \emph{subsummation} Funktion und der Berechnung des \emph{accuracy} Werts von Bedeutung. In der Literatur~\cite{Butz} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete Reward annehmen kann. Aufgrund der Überlegungen in~\ref{sec:maximalwert_rho} wird \(\epsilon_{0}\) für die neuen XCS Varianten auf \(0.02\) gesetzt, während es für die Standardimplementation von XCS auf \(0.01\) gesetzt wird. Ein Testdurchlauf auf dem Säulenszenario (siehe Abbildung~\ref{pillar_epsilon0:fig}) ergibt aber, dass der Parameter keine besondere Auswirkung hat, weshalb der Wert auf \(0.01\) belassen wird.
+Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der \emph{subsummation} Funktion und der Berechnung des \emph{accuracy} Werts von Bedeutung. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete Reward annehmen kann. Aufgrund der Überlegungen in~\ref{sec:maximalwert_rho} wird \(\epsilon_{0}\) für die neuen XCS Varianten auf \(0.02\) gesetzt, während es für die Standardimplementation von XCS auf \(0.01\) gesetzt wird. Ein Testdurchlauf auf dem Säulenszenario (siehe Abbildung~\ref{pillar_epsilon0:fig}) ergibt aber, dass der Parameter keine besondere Auswirkung hat, weshalb der Wert auf \(0.01\) belassen wird.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -79,7 +79,7 @@ TODO
 TODO Reward prediction unnötig bei speed 2, pillar, random
 
 TODO Abschnitt entfernen
-Auch für den Wert \emph{reward prediction discount} \(\gamma\) hat sich ein etwas höherer Wert als sinnvoll erwiesen, als standardmäßig benutzt wird. Laut~\cite{Butz} hängt der Wert auch vom verwendeten Szenario ab. Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifiers} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.
+Auch für den Wert \emph{reward prediction discount} \(\gamma\) hat sich ein etwas höherer Wert als sinnvoll erwiesen, als standardmäßig benutzt wird. Laut~\cite{butz01algorithmic} hängt der Wert auch vom verwendeten Szenario ab. Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifiers} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.
 
 Tabelle~\ref{table:prediction_discount} zeigt einen Vergleich der Qualität mit dem Standardwert \(\gamma = 0.71\) und dem für die in dieser Arbeit verwendeten Testszenarien gewählten Wert \(\gamma = 0.95\).\\
 
@@ -181,7 +181,7 @@ LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
 \centering
 \begin{tabular}{c c c}
 \hline\hline
-Parameter & Wert & Standardwert (siehe~\cite{Butz})\\ [0.5ex]
+Parameter & Wert & Standardwert (siehe~\cite{butz01algorithmic})\\ [0.5ex]
 \hline
 Max population \(N\) & \textbf{128} (siehe Kapitel~\ref{sec:max_population_parameter})\\
 Max value \(\rho\) & \textbf{1.0} (siehe Kapitel~\ref{sec:maximalwert_rho}) & [10000]\\

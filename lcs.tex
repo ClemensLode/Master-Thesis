@@ -5,7 +5,7 @@ Jeder Agent besitzt ein unabhängiges, sogennantes \emph{eXtended Classifier Syst
 Eine wesentliche Erweiterung des LCS ist das sogenannte \emph{accuracy-based} XCS, zuerst beschrieben in \cite{wilson:95}. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum LCS gibt es vor allem in der Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
 
 Im einfachsten Fall, im sogenannten \emph{single step} Verfahren erfolgt die Bewertung einzelner \emph{classifier}, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten \emph{multi step} Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde.\\
-Ein klassisches Beispiel für den Test \emph{single step} Verfahren ist das 6-Multiplexer Problem (z.B. in ~\cite{Butz2006}), bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"', so soll das dritte Datenbit, also "`0"' zurückgeben. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden.\\
+Ein klassisches Beispiel für den Test \emph{single step} Verfahren ist das 6-Multiplexer Problem (z.B. in~\cite{Butz2006}), bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"', so soll das dritte Datenbit, also "`0"' zurückgeben. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden.\\
 
 Ein klassisches Beispiel für \emph{multi step} Verfahren ist das "`Maze~\(N\)"' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neugestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifiers}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind. 
 
@@ -31,7 +31,7 @@ Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} darg
 
 Eine nähere Beschreibung bezüglich der Implementierung von und dem Unterschied zwischen dem \emph{single step} und \emph{multi step} Verfahren findet sich in \cite{butz01algorithmic}.\\
 
-Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des \emph{multi step} Verfahrens von~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in~\cite{butz01algorithmic}), eine 
+Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des \emph{multi step} Verfahrens von~\cite{Butz_xcsclassifier} (mit der algorithmischen Beschreibung des Algorithmus in~\cite{butz01algorithmic}), eine 
 
 Besonderheit stellt allerdings die Problemdefinition dar, da es kein Ziel zu erreichen gibt, sondern über die Zeit hinweg ein bestimmtes Verhalten erreicht werden soll (die Überwachung des Zielobjekts). Somit gibt es auch kein Neustart des Problems und keinen festen Start- oder Zielpunkt. Zusätzlich, durch die Bewegung der anderen Agenten und des Zielobjekts, verändert sich die Umwelt in jedem Schritt, ein Lernen durch Wiederholung gemachter Bewegungsabläufe ist deswegen deutlich schwieriger.\\
 
@@ -87,9 +87,12 @@ TODO ausfuehrlicher
 TODO
 Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} Vektoren gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das \emph{matchSet}.
 \item Im nächsten Schritt wählen wir einen \emph{classifier} aus diesem \emph{matchset} aus und speichern dessen Aktion.
-\item Schließlich bilden wir anhand des MatchSets und der gewählten Aktion das ActionSet
+\item Schließlich bilden wir anhand des \emph{match set} und der gewählten Aktion das \emph{action set}
 \end{enumerate}
 
+\subsection{Covering}\label{covering:sec}
+
+TODO
 
 \subsection{Variable \emph{lastMatchSet}}\label{matching:sec}
 
@@ -166,7 +169,7 @@ Beispiele für erkennende condition Vektoren:
 
 \subsection{Der \emph{action} Wert}\label{action_wert:sec}
 
-Wird ein \emph{classifier} ausgewählt, wird eine bestimmte Aktion ausgeführt, die durch den \emph{action} Wert determiniert ist. Im Rahmen dieser Arbeit entsprechen diese Aktionsmöglichkeiten den 4 Bewegungsrichtungen, die in Kapitel~\ref{agent_abilities:sec} besprochen wurden.\\
+Wird ein \emph{classifier} ausgewählt, wird eine bestimmte Aktion ausgeführt, die durch den \emph{action} Wert determiniert ist. Im Rahmen dieser Arbeit entsprechen diese Aktionsmöglichkeiten den 4 Bewegungsrichtungen, die in Kapitel~\ref{agents:cha} besprochen wurden.\\
 
 
 \subsection{Der \emph{fitness} Wert}
