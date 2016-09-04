@@ -13,7 +13,7 @@ Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus ermöglicht
 Die Simulation selbst läuft in ineinander geschachtelten Schleifen ab. Jede Konfiguration (in den abgedruckten Programmen jeweils über die globale Variable \emph{Configuration} angesprochen) wird über eine Reihe von Experimenten getestet (10 soweit nicht anders angegeben). Für einen Test wird die Funktion \emph{doOneMultiStepExperiment()} (siehe Programm~\ref{mainExperiment:pro}) mit der aktuellen Nummer des Experiments als Parameter aufgerufen. In der Funktion wird ein neuer \emph{random seed} Wert initialisierung, der Torus auf den Startzustand gesetzt und schließlich das eigentliche Problem mit der Funktion \emph{doOneMultiStepProblem()} aufgerufen, welche in Programm~\ref{mainProblem:pro} abgebildet ist. Dort werden in einer Schleife alle Schritte durchlaufen und jeweils die Objekte abgearbeitet.\\
 
 In welcher Reihenfolge dies geschieht, soll im Folgenden geklärt werden. Zusammenfassend ist zu sagen, dass zuerst die aktuelle Qualität und die aktuellen Sensordaten bestimmt werden. Daraus ermittelt jeder Agent die Bewertung für den letzten Schritt und bestimmt eine neue Aktion. Haben Agenten und das Zielobjekt diese Schritte abgeschlossen, werden ihre ermittelten Aktionen in zufälliger Reihenfolge ausgeführt.\\
-
+TODO
 
 Bei der Berechnung eines einzelnen Problems in der Funktion \emph{doOneMultiStepProblem()} stellt sich die Frage nach der Genauigkeit und der Reihenfolge der Abarbeitung, da die Simulation nicht parallel, sondern schrittweise auf einem diskreten Torus abläuft. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
 
@@ -40,9 +40,13 @@ Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen sol
 
 \subsection{Messung der Qualität}\label{qualitaetsmessung:sec}
 
-TODO welche zwei Fragen?
-Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da die Agenten und das Zielobjekt in einem Durchlauf gemeinsam nacheinander bewegt werden, stellt sich die Frage nicht, ob womöglich vor der Bewegung des Zielobjekts die Qualität gemessen werden sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
-Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Torus anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn man vom realistischen Fall ausgeht, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
+Wie man die Qualität messen sollte, dafür gibt es keinen Anhaltspunkt. Das zu verwendende Verfahren hängt davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Misst man die Qualität direkt nach der Bewegung des Zielobjekts, würde man diesem immer die Möglichkeit geben, sich noch vorher optimal zu positionieren, d.h. eine niedrigere Qualität wäre zu erwarten. Misst man sie immer zuvor, dann gilt das Umgekehrte für die Agenten.\\
+
+Letztlich ist es eine Frage der Problemstellung, d.h. wann das Zielobjekt noch überwacht gilt. Man denke z.B. an den Grenzfall, dass es sich gerade in die bzw. gerade aus der Überwachungsreichweite bewegt hat
+
+Da ein wesentlicher Bestandteil die Kollaboration (und somit die Abdeckung des Torus anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss der Aktionen des Zielobjekts minimiert werden soll. D.h. die Agenten sollen sich möglichst so verhalten, dass sie, unabhängig wie sich das Zielobjekt daraufhin bewegt, trotzdem möglichst gut dastehen. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
+
+Spielt irgendwie keine Rolle... TODO raus!
 
 
 \subsection{Reihenfolge der Ermittlung des \emph{base reward}}
@@ -80,161 +84,3 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 }
 \centerline{\fbox{\box0}}
 \end{figure}
-
-
-\subsection{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
-
-In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird in einer weiteren Schleife über die Anzahl der maximalen Schritte die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich werden die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha}, was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
-
-\newlisting{Zentrale Schleife für einzelne Experimente}{mainExperiment:pro}
-/**
- * Führt eine Anzahl von Problemen aus
- * @param experiment_nr Nummer des auszuführenden Experiments
- */
-  public void doOneMultiStepExperiment(int experiment_nr) {
-    int currentTimestep = 0;
-
-  /**
-   * number of problems for the same population
-   */
-    for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
-
-    /**
-     * Initialisierung des neuen "Random Seed" Wert
-     */
-      Misc.initSeed(Configuration.getRandomSeed() + 
-        experiment_nr * Configuration.getNumberOfProblems() + i);
-
-    /**
-     * Erstellt einen neuen Torus und verteilt Agenten und 
-     *   das Zielobjekt neu
-     */
-      BaseAgent.grid.resetState();
-
-    /**
-     * Führe Problem aus und aktualisiere aktuellen Zeitschritt
-     */
-      currentTimestep = doOneMultiStepProblem(currentTimestep);
-    }
-  }
-\end{lstlisting}
-
-\newlisting{Zentrale Schleife für einzelne Probleme}{mainProblem:pro}
-/**
- * Führt eine Anzahl von Schritten auf dem aktuellen Torus aus
- * @param stepCounter Aktuelle Zeitschritt
- * @return Der Zeitschritt nach der Ausführung
- */
-  private int doOneMultiStepProblem(int stepCounter) {
-  /**
-   * Zeitpunkt bis zu dem das Problem ausgeführt wird
-   */
-    int steps_next_problem = 
-      Configuration.getNumberOfSteps() + stepCounter;    
-    for (int currentTimestep = stepCounter; 
-         currentTimestep < steps_next_problem; currentTimestep++) {
-
-    /**
-     * Ermittle die Sichtbarkeit und erhebe Statistiken
-     */
-      BaseAgent.grid.updateSight();
-      BaseAgent.grid.updateStatistics(currentTimestep);
-
-    /**
-     * Ermittle neue Sensordaten und berechne Aktionen der Agenten
-     */
-      calculateAgents(currentTimestep);
-
-    /**
-     * Ermittle den Reward für alle Agenten (nach dem ersten Schritt)
-     */
-      if(currentTimestep > stepCounter) {
-        rewardAgents(currentTimestep);
-      }
-
-    /**
-     * Führe zuvor berechnete Aktionen aus
-     */
-      moveAgents();
-    }
-
-    /**
-     * Abschließende Ermittlung des Rewards
-     */
-    BaseAgent.grid.updateSight();
-    rewardAgents(steps_next_problem);
-    return steps_next_problem;
-  }
-\end{lstlisting}
-
-
-
-\newlisting{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainCalculate:pro}
-/**
- * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
- * @param gaTimestep der aktuelle Zeitschritt
- */
-  private void calculateAgents(final long gaTimestep) {
-
-  /**
-   * Ermittle Sensordaten und bestimme nächste Bewegung
-   */
-    for(BaseAgent a : agentList) {
-      a.aquireNewSensorData();
-      a.calculateNextMove(gaTimestep);
-    }
-    BaseAgent.goalAgent.aquireNewSensorData();
-    BaseAgent.goalAgent.calculateNextMove(gaTimestep);
-  }
-\end{lstlisting}
-
-
-
-\newlisting{Zentrale Bearbeitung (Verteilung des Rewards) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainReward:pro}
-/**
- * Verteilt den Reward an alle Agenten
- */
-  private void rewardAgents(final long gaTimestep) {
-    for(BaseAgent a : agentList) {
-      a.calculateReward(gaTimestep);
-    }
-    BaseAgent.goalAgent.calculateReward(gaTimestep);
-  }
-\end{lstlisting}
-
-
-
-\newlisting{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainMove:pro}
-/**
- * Führt die berechnete Bewegungen der Agenten in zufälliger Reihenfolge aus
- */
-  private void moveAgents(long gaTimestep) {
-  /**
-   * Erstelle Ausführungsliste für alle Objekte (Zielobjekt mehrfach)
-   */
-    int goal_speed = Configuration.getGoalAgentMovementSpeed();
-    ArrayList<BaseAgent> random_list = 
-      new ArrayList<BaseAgent>(agentList.size() + goal_speed);
-
-    random_list.addAll(agentList);
-    for(int i = 0; i < goal_speed; i++) {
-      random_list.add(BaseAgent.goalAgent);
-    }
-
-  /**
-   * Führe die ermittelten Aktionen in zufälliger Reihenfolge aus
-   *   (Zielobjekt kann mehrfach ausgeführt werden).
-   */
-    int[] array = Misc.getRandomArray(random_list.size());
-    for(int i = 0; i < array.length; i++) {
-      BaseAgent a = random_list.get(array[i]);
-      a.doNextMove();
-      if(a.isGoalAgent() && goal_speed > 1) {
-        goal_speed--;
-        a.aquireNewSensorData();
-        a.calculateNextMove(gaTimestep);
-        a.calculateReward(gaTimestep);
-      }
-    }
-  }
-\end{lstlisting}

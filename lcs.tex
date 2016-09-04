@@ -1,6 +1,6 @@
 \chapter{XCS}\label{lcs:cha}
 
-Jeder Agent besitzt ein unabhängiges, sogennantes \emph{eXtended Classifier System} (XCS), welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{uebersicht_classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
+Jeder Agent besitzt ein unabhängiges, sogennantes \emph{eXtended Classifier System} (XCS), welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
 
 Das auf Genauigkeit der \emph{classifier} basierende XCS wurde zuerst in \cite{wilson:95} beschrieben und stellt eine wesentliche Erweiterung von LCS dar. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum LCS gibt es vor allem innerhalb der Funktion zur Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
 
@@ -43,12 +43,13 @@ Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} darg
 Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des \emph{multi step} Verfahrens von~\cite{Butz_xcsclassifier}. Die algorithmische Beschreibung des Algorithmus findet sich in~\cite{butz01algorithmic}, wo auch näher auf die Unterscheidung von \emph{single step} und \emph{multi step} Verfahren eingegangen wird.
 
 
-Besonderheit stellt allerdings die Problemdefinition dar, da es kein Ziel zu erreichen gibt, sondern über die Zeit hinweg ein bestimmtes Verhalten erreicht werden soll (die Überwachung des Zielobjekts). Somit gibt es auch kein Neustart des Problems und keinen festen Start- oder Zielpunkt. Zusätzlich, durch die Bewegung der anderen Agenten und des Zielobjekts, verändert sich die Umwelt in jedem Schritt, ein Lernen durch Wiederholung gemachter Bewegungsabläufe ist deswegen deutlich schwieriger.\\
+Eine Besonderheit stellt allerdings die Problemdefinition dar, da es kein Ziel zu erreichen gibt, sondern über die Zeit hinweg ein bestimmtes Verhalten erreicht werden soll (die Überwachung des Zielobjekts). Somit gibt es auch kein Neustart des Problems und keinen festen Start- oder Zielpunkt. Zusätzlich, durch die Bewegung der anderen Agenten und des Zielobjekts, verändert sich die Umwelt in jedem Schritt, ein Lernen durch Wiederholung gemachter Bewegungsabläufe ist deswegen deutlich schwieriger.\\
 
 
 Die meisten Implementationen und Varianten von XCS beschäftigen sich mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere relativ einfache Probleme 6-Multiplexer Problem und Maze1 (z.B. in~\cite{Butz2006} \cite{wilson:95} \cite{xcs2}), während XCS mit Problemen größerer Schrittzahl zwischen Start und Ziel Probleme hat \cite{barry02stability} \cite{Banzhaf}. Zwar gibt es Ansätze um auch schwierigere Probleme besser in den Griff zu bekommen (z.B. Maze5, Maze6, Woods14 in~\cite{Butz2005}), indem ein Gradientenabstieg in XCS implementiert wurde. Ein konkreter Bezug zu einem dynamischen Überwachungsszenario konnte jedoch in keiner dieser Arbeiten gefunden werden.\\
 
 Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama} basieren, also im Gegensatz zum Gegenstand dieser Arbeit auf eine übergeordnete Organisationseinheit bzw. auf globale Regeln oder globalem Regeltausch zwischen den Agenten zurückgreifen.\\
+
 Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll, während in dieser Arbeit alle Agenten dieselbe Rolle spielen sollen.\\
 
 Vielversprechend war der Titel der Arbeit~\cite{Lujan2008}, "`Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment"'. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels einer \emph{reward} Funktion bewertet werden, da es globale Information gab. Dies vereinfacht ein solches Problem deutlich und macht einen Vergleich schwierig.\\
@@ -72,7 +73,7 @@ TODO
 Limits in Long Path Learning with XCS
 Gamma!
 
-\section{Übersicht}\label{uebersicht_classifier:sec}
+%\section{Übersicht}\label{uebersicht_classifier:sec}
 
 
 
@@ -105,7 +106,7 @@ Ein \emph{classifier} besteht aus einer Anzahl im folgenden diskutierten Variabl
 
 \subsection{Der \emph{condition} Vektor}\label{condition_vector:sec}
 
-Der \emph{condition} Vektor gibt die Kondition an, in welcher Situation der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordaten von dem jeweiligen \emph{classifier} erkannt werden. Der Aufbau des Vektors (siehe Abbildung~\ref{gruppen_condition_vector:fig}) entspricht dem Vektor der über die Sensoren erstellt wird (siehe Kapitel~\ref{sensordatensatz:sec}).
+Der \emph{condition} Vektor gibt die Kondition an, in welcher Situation der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordatensätze von dem jeweiligen \emph{classifier} erkannt werden. Der Aufbau des Vektors (siehe Abbildung~\ref{gruppen_condition_vector:fig}) entspricht dem Vektor der über die Sensoren erstellt wird (siehe Kapitel~\ref{sensordatensatz:sec}). Eine wesentliche Erweiterung des \emph{condition} Vektors stellen sogenannte Platzhalter dar, die es dem \emph{condition} Vektor erlauben, mehrere verschiedene Sensordatensätze zu erkennen (siehe Kapitel~\ref{platzhalter:sec}).
 
 \begin{figure}[htbp]
 \centerline{	
@@ -117,34 +118,6 @@ $\underbrace{z_{s_{N}} z_{r_{N}} z_{s_{O}} z_{r_{O}} z_{s_{S}} z_{r_{S}} z_{s_{W
 \label{gruppen_condition_vector:fig}
 \end{figure}
 
-
-\subsection{Platzhalter im \emph{condition} Vektor}\label{platzhalter:sec}
-
-Neben den zu den Sensordaten korrespondierenden Werten \(0\) und \(1\) soll es noch einen dritten Zustand, den Platzhalter "`\#"', geben, der anzeigen soll, dass beim Vergleich zwischen Kondition und Sensordaten diese Stelle ignoriert werden soll. Eine Stelle im \emph{condition} Vektor mit Platzhalter gilt also als äquivalent zur korrespondierenden Stelle in den Sensordaten, egal ob sie mit \(0\) oder \(1\) belegt ist. Ein Vektor, der ausschließlich aus Platzhaltern besteht, würde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle möglichen Kombinationen der Sensordaten passt. Umgekehrt können dadurch bei der Auswahl der \emph{classifier} mehrere \emph{classifier} auf einen gegebenen Sensordatenvektor passen. Diese bilden dann die sogenannte \emph{match set} Liste, aus welchem dann wie in Kapitel~\ref{auswahlart:sec} beschrieben der eigentliche \emph{classifier} ausgewählt wird.\\
-
-
-\subsection{Vergleich des \emph{condition} Vektors mit den Sensordaten}
-
-Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In Kapitel~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt. Daraus folgt, dass auch das Datenpaar \((0/\#)\) zu \((\#/\#)\) äquivalent ist, also beide Datenpaare die selben Sensordatenpaare erkennen. Es ergeben sich also folgende Fälle:
-
-\begin{enumerate}
-\item Sensorenpaar \((0/0)\) wird erkannt von \((0/0)\), \((\#, 0)\), \((0, \#)\), \((\#, \#)\)
-\item Sensorenpaar \((1/0)\) wird erkannt von \((1/0)\), \((\#, 0)\), \((1, \#)\), \((\#, \#)\)
-\item Sensorenpaar \((1/1)\) wird erkannt von \((1/1)\), \((\#, 1)\), \((1, \#)\), \((\#, \#)\), \((0/1)\), \((0/\#)\)
-\end{enumerate}
-
-Beispielsweise würden folgende Sensordaten von den folgenden \emph{condition} Vektoren erkannt:
-\begin{verbatim}
-Sensordaten:
-(Zielobjekt in Sicht im Norden, Agent im Sicht im Süden, 
-Hindernisse im Westen und Osten)
-10 00 00 00 . 00 00 11 00 . 00 11 00 11
-
-Beispiele für erkennende condition Vektoren:
-10 00 00 00 . ## ## ## ## . 00 ## ## ##
-## ## ## ## . ## ## #1 00 . 00 11 ## ##
-#0 ## ## ## . ## ## 01 ## . ## 11 ## 11
-\end{verbatim}
 
 
 \subsection{Der \emph{action} Wert}\label{action_wert:sec}
@@ -172,30 +145,52 @@ Der \emph{reward prediction error} Wert soll die Genauigkeit des \emph{classifie
 
 Der \emph{experience} Wert des \emph{classifier} repräsentiert die Anzahl, wie oft ein \emph{classifier} aktualisiert wurde, also wieviel Erfahrung er sammeln konnte. Im Wesentlichen dient dieser Wert als Entscheidungshilfe, ob auf die anderen Werte des \emph{classifier} vertraut werden kann bzw. ob der \emph{classifier} als unerfahren gilt und somit z.B. bei Löschung und Subsummation gesondert behandelt werden muss.\\
 
-
 \subsection{Der \emph{numerosity} Wert}
 
-Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und Kapitel~\ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden. Was die Implementation betrifft sei Kapitel~\ref{implementierung_numerosity:sec} zu erwähnen, verglichen mit der originalen Implementierung wurden einige Änderungen vorgenommen.\\
+Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und Kapitel~\ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden. Was die Implementation betrifft sei Kapitel~\ref{corrected_numerosity_function:sec} zu erwähnen, verglichen mit der originalen Implementierung wurden einige Änderungen vorgenommen.\\
 
 
-\section{Subsummation von \emph{classifier}}\label{subsummation:sec}
+
+\section{Vergleich des \emph{condition} Vektors mit den Sensordaten}\label{platzhalter:sec}
+
+Neben den zu den Sensordaten korrespondierenden Werten \(0\) und \(1\) soll es noch einen dritten Zustand als Teil des \emph{condition} Vektors geben, den Platzhalter "`\#"'. Dieser soll anzeigen, dass beim Vergleich zwischen dem \emph{condition} Vektor und den Sensordaten diese Stelle ignoriert werden soll. Eine Stelle im \emph{condition} Vektor mit Platzhalter gilt dann also als äquivalent zur korrespondierenden Stelle in den Sensordaten, egal ob sie mit \(0\) oder \(1\) belegt ist. Ein Vektor, der ausschließlich aus Platzhaltern besteht, würde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle möglichen Kombinationen der Sensordaten passt. Umgekehrt können dadurch bei der Auswahl der \emph{classifier} mehrere \emph{classifier} auf einen gegebenen Sensordatenvektor passen. Diese bilden dann die sogenannte \emph{match set} Liste, aus welchem dann wie in Kapitel~\ref{auswahlart:sec} beschrieben der eigentliche \emph{classifier} ausgewählt wird.\\
+Im Folgenden soll nun zum einen untersucht werden, welche Sensordatensätze ein \emph{condition} Vektor erkennt (siehe Kapitel~\ref{erkennung_sensordatenpaar:sec}), und zum anderen, auf welche Weise man ähnliche \emph{classifier} zusammenlegen kann (siehe Kapitel~\ref{subsummation:sec}).
+
+\subsection{Erkennung von Sensordatenpaare}\label{erkennung_sensordatenpaar:sec}
+
+Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In Kapitel~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt. Daraus folgt, dass auch das Datenpaar \((0/\#)\) zu \((\#/\#)\) äquivalent ist, also beide Datenpaare die selben Sensordatenpaare erkennen. Es ergeben sich also folgende Fälle:
+
+\begin{enumerate}
+
+\item Sensorenpaar \((0/0)\) wird erkannt von \((0/0)\), \((\#, 0)\), \((0, \#)\), \((\#, \#)\)
+\item Sensorenpaar \((1/0)\) wird erkannt von \((1/0)\), \((\#, 0)\), \((1, \#)\), \((\#, \#)\)
+\item Sensorenpaar \((1/1)\) wird erkannt von \((1/1)\), \((\#, 1)\), \((1, \#)\), \((\#, \#)\), \((0/1)\), \((0/\#)\)
+
+\end{enumerate}
+
+Beispielsweise würden folgende Sensordaten von den folgenden \emph{condition} Vektoren erkannt:
+\begin{verbatim}
+Sensordaten:
+(Zielobjekt in Sicht im Norden, Agent im Sicht im Süden, 
+Hindernisse im Westen und Osten)
+10 00 00 00 . 00 00 11 00 . 00 11 00 11
+
+Beispiele für erkennende condition Vektoren:
+10 00 00 00 . ## ## ## ## . 00 ## ## ##
+## ## ## ## . ## ## #1 00 . 00 11 ## ##
+#0 ## ## ## . ## ## 01 ## . ## 11 ## 11
+\end{verbatim}
+
+
+
+\subsection{Subsummation von \emph{classifier}}\label{subsummation:sec}
 
 Die Benutzung von den oben erwähnten Platzhaltern (Kapitel~\ref{platzhalter:sec}) erlaubt es dem XCS mehrere \emph{classifier} zu zusammenzulegen, wodurch die Gesamtzahl der \emph{classifier} sinkt und somit Erfahrungen, die ein XCS Agent sammelt, nicht unbedingt mehrfach gemacht werden müssen. Die dahinter stehende Annahme ist, dass es Situationen gibt, in denen der Gewinn der durch Unterscheidung zwischen zwei verschiedenen Sensordatensätzen geringer ist als die Ersparnis durch das Zusammenlegen beider \emph{classifier}, d.h. dem Ignorieren der Unterschiede.\\
 
 Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wert als auch einen ausreichend kleinen \emph{reward prediction error} Wert, so kann er als sogenannter \emph{subsumer} auftreten. Andere \emph{classifier} (in derselben \emph{action set} Liste, also mit gleichem \emph{action} Wert) werden durch den \emph{subsumer} ersetzt, sofern der von ihnen abgedeckte Sensordatenbereich eine Teilmenge des von dem \emph{subsumer} abgedeckten Bereichs ist, der \emph{subsumer} also an allen Stellen des \emph{condition} Vektors entweder denselben Wert wie der zu subsummierende \emph{classifier} oder einen Platzhalter besitzt.\\
 
 
-\section{Genetische Operatoren}\label{genetische_operatoren:sec}
 
-Es werden aus der jeweiligen \emph{action set} Liste zwei \emph{classifier} (die Eltern) zufällig ausgewählt und zwei neue \emph{classifier} (die Kinder) aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt (da sie aus derselben \emph{action set} Liste stammen, ist der Wert beider Eltern identisch). Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Werden Kinder in die Population eingefügt, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifier} ist, werden sie stattdessen subsummiert.\\
-Da die Sensoren und somit auch der \emph{condition} Vektor aus drei in sich geschlossenen Gruppen bestehen, werden im Unterschied zur Standardimplementation beim \emph{crossing over} zwei feste Stellen benutzt, die die Gruppe für das Zielobjekt, die Gruppe für Agenten und die Gruppe für feste Hindernisse voneinander trennen.\\
-
-Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen (siehe Kapitel~\ref{condition_vector:sec}) des \emph{condition} Vektors des ersten bzw. zweiten ausgewählten Elternteils, dann können für die drei Gruppen der \emph{condition} Vektoren \((z_{1k}, a_{1k}, h_{1k})\) und \((z_{2k}, a_{2k}, h_{2k})\) der beiden Kinder folgende Kombinationen auftreten:
-
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_1, h_1) , (z_2, a_2, h_2)]\]
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_1, h_1) , (z_1, a_2, h_2)]\]
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_2, h_1) , (z_2, a_1, h_2)]\]
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_2, h_1) , (z_1, a_1, h_2)]\]
 
 
 
@@ -209,22 +204,21 @@ Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen 
 \item Erstellung der zur Aktion zugehörigen Liste von \emph{classifier} (\emph{action set} Liste, siehe Kapitel~\ref{actionSet:sec})
 \end{enumerate}
 
-\subsection{Covering}\label{covering:sec}
+\subsection{Abdeckung aller Aktionen durch \emph{covering}}\label{covering:sec}
+
+Beim sogenannten \emph{covering} wird die Menge aller \emph{classifier} aus dem letzten \emph{match set} (siehe Kapitel~\ref{matching:sec}) untersucht, ob für jede mögliche Aktion jeweils mindestens ein \emph{classifier} vorhanden ist. Ist dies nicht der Fall, wird ein neuer \emph{classifier} mit dieser Aktion als seinen \emph{action} Wert und einem \emph{condition} Vektor, der auf den letzten Sensordatensatz passt, erstellt und in die Population eingefügt. So wird sichergestellt, dass alle Situationen und Aktionen abgedeckt sind. Ist die Populationsgröße \(N\) zu niedrig, kommt es zum \emph{trashing}, d.h. es werden andauernd neue \emph{classifier} erstellt, gleichzeitig müssen aber (brauchbare) alte \emph{classifier} gelöscht werden. In Kapitel~\ref{sec:max_population_parameter} in Abbildung~\ref{neuerstellte_classifier_maxpop:fig} sieht man beispielsweise, dass in dem dortigen Szenario mindestens bis zu einer Größe von 64 dies regelmäßig passiert.
+
+\subsection{Die \emph{match set} Liste}\label{matching:sec}
+
+In der \emph{match set} Liste werden jeweils alle \emph{classifier} gespeichert, die den letzten Sensordatensatz erkannt haben. Sie entspricht dem \emph{predictionArray} in der originalen Implementierung von XCS in~\cite{Butz_xcsclassifier}, dort werden außerdem Vorberechnungen zur Auswahl der nächsten Aktion durchgeführt und die Ergebnisse gespeichert, die insbesondere in Kapitel~\ref{auswahlart:sec} von Bedeutung sind (die sogenannten \emph{predictionFitnessProductSum} Werte).
+
+
+\subsection{Die \emph{action set} Liste}\label{actionSet:sec}
+
+Eine \emph{action set} Liste ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt denselben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur das die letzte \emph{action set} Liste gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden (siehe Kapitel~\ref{sxcs_variant:sec}).
 
 TODO
-
-\subsection{Variable \emph{lastMatchSet}}\label{matching:sec}
-
-In der \emph{lastMatchSet} Variable werden jeweils alle \emph{classifier} gespeichert, die den letzten Sensordatenvektor erkannt haben. Sie entspricht dem \emph{predictionArray} in der originalen Implementierung von XCS in~\cite{Butz_xcsclassifier}, dort werden außerdem Vorberechnungen zur Auswahl der nächsten Aktion durchgeführt und die Ergebnisse gespeichert.\\
-
-\subsection{Variable \emph{actionSet}}\label{actionSet:sec}
-
-Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt denselben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur das letzte \emph{actionSet} gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden.
-
-
-
-
-\section{Bewertung der Aktionen (\emph{base reward})}\label{bewertung:sec}
+\subsection{Bewertung der Aktionen (\emph{base reward})}\label{bewertung:sec}
 
 XCS ist darauf ausgelegt, dass es eine komplette, genaue und möglichst allgemeine Darstellung einer \emph{reward} Funktion darstellt. Bei einer Problemstellung, die mit dem \emph{single step} Verfahren gelöst werden kann, entspricht die optimale Darstellung der \emph{reward} Funktion durch das XCS gleichzeitig auch der Lösung des eigentlichen Problems. Beispielsweise beim oben erwähnten \emph{6-Multiplexer} Problem prüft die \emph{reward} Funktion, ob das XCS aus den 4 Datenbits anhand der 2 Steuerbits das richtige Datenbit gewählt hat, also ob das XCS so wie ein \emph{6-Multiplexer} funktioniert. Wesentliche Voraussetzung für das \emph{single step} Verfahren ist, dass der Agent globale Information besitzt, also in einem Schritt möglichst alle Informationen zur Lösung des Problems zur Verfügung hat, um die jeweilige Lösung zu bewerten.\\
 
@@ -292,7 +286,7 @@ Programm~\ref{agent_check_reward:pro}
     boolean[] sensor_goal = lastState.getSensorGoal();
  
     for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
-      if((sensor_goal[2*i]) && (!sensor_agent[2*i+1])) {
+      if(sensor_goal[2*i]) {
         return true;
       }
     }
@@ -301,4 +295,16 @@ Programm~\ref{agent_check_reward:pro}
   }
 \end{lstlisting}
 
-TODO raus
+
+
+\subsection{Genetische Operatoren}\label{genetische_operatoren:sec}
+
+Es werden aus der jeweiligen \emph{action set} Liste zwei \emph{classifier} (die Eltern) zufällig ausgewählt und zwei neue \emph{classifier} (die Kinder) aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt (da sie aus derselben \emph{action set} Liste stammen, ist der Wert beider Eltern identisch). Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Werden Kinder in die Population eingefügt, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifier} ist, werden sie stattdessen subsummiert.\\
+Da die Sensoren und somit auch der \emph{condition} Vektor aus drei in sich geschlossenen Gruppen bestehen, werden im Unterschied zur Standardimplementation beim \emph{crossing over} zwei feste Stellen benutzt, die die Gruppe für das Zielobjekt, die Gruppe für Agenten und die Gruppe für feste Hindernisse voneinander trennen.\\
+
+Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen (siehe Kapitel~\ref{condition_vector:sec}) des \emph{condition} Vektors des ersten bzw. zweiten ausgewählten Elternteils, dann können für die drei Gruppen der \emph{condition} Vektoren \((z_{1k}, a_{1k}, h_{1k})\) und \((z_{2k}, a_{2k}, h_{2k})\) der beiden Kinder folgende Kombinationen auftreten:
+
+\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_1, h_1) , (z_2, a_2, h_2)]\]
+\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_1, h_1) , (z_1, a_2, h_2)]\]
+\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_2, h_1) , (z_2, a_1, h_2)]\]
+\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_2, h_1) , (z_1, a_1, h_2)]\]

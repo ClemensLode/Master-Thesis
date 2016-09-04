@@ -3,7 +3,9 @@
 Im Wesentlichen sollen die Algorithmen, die in dieser Arbeit besprochen werden, in einem Szenario getestet werden, in dem mehrere Agenten ein sich bewegendes Zielobjekt überwachen sollen. Dies soll im folgenden als Überwachungsszenario bezeichnet werden. Die Qualität eines Algorithmus in einem solchen Überwachungsszenario wird anhand des Anteils der Zeit bewertet, in der er mit Hilfe der Agenten das Zielobjekt überwachen konnte, relativ zur Gesamtzeit (siehe Kapitel~\ref{qualitaet:sec}).\\
 
 Verwendetes Umfeld wird ein quadratischer Torus sein, der aus quadratischen Feldern besteht. Jedes bewegliche Objekt auf einem Feld des Torus kann sich in einem Zeitschritt nur auf eines der vier Nachbarfelder bewegen (mit Ausnahme des Zielobjekts, welches mehrere Bewegungen in einem Zeitschritt durchführen kann, Näheres dazu im Kapitel~\ref{zielobjekt:sec}).\\
+
 Die Felder können entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder können nicht betreten werden, eine Bewegung auf ein solches Feld schlägt ohne weitere Konsequenzen fehl.\\
+
 Es gibt drei verschiedene Arten von Objekten: Unbewegliche Hindernisse, ein zu überwachendes Zielobjekt und Agenten. Sowohl das Zielobjekt als auch die Agenten bewegen sich jeweils anhand eines bestimmten Algorithmus und bestimmter Sensordaten. Eine nähere Beschreibung der Agenten findet sich in Kapitel~\ref{agents:cha}, während die Eigenschaften des Zielobjekts in Kapitel~\ref{zielobjekt:sec} beschrieben werden.\\
 
 Ziel dieses Kapitels wird vor allem sein, auf Kapitel~\ref{analysis_sans_lcs:cha} vorzubereiten, in dem anhand von Tests herausgefunden werden soll, welche der hier vorgestellten Szenarien brauchbare Ergebnisse liefern kann, um zum einen das gestellte Problem an sich, als auch die jeweils erforderlichen Eigenschaften besser verstehen zu können.\\
@@ -14,7 +16,7 @@ Im folgenden sollen nun also auf diese einzelnen Punkte näher eingegangen werden
 
 
 
-\section{Dynamische, kollaborative Szenarien}\label{dynamisch_kollaborativ:sec}
+%\section{Dynamische, kollaborative Szenarien}\label{dynamisch_kollaborativ:sec}
 
 Wesentliches Hauptaugenmerk der Gestaltung der Szenarien soll Kollaboration sein, d.h. die Aufgabe soll mit Hilfe mehrerer Agenten gemeinsam gelöst werden. Nach einem der Standardwerke zu Multiagentensystemen~\cite{collaborative} ist Kollaboration im Allgemeinen definiert als 
 
@@ -53,21 +55,16 @@ TODO
 Eine nähere Diskussion zur Literatur folgt in Kapitel~\ref{lcs:cha}.
 
 
-\section{Startkonfigurationen des Torus}
+\section{Konfigurationen des Torus}
 
-Getestet wurden eine Reihe von Szenarien (in Verbindung mit unterschiedlichen Werten für die Anzahl der Agenten, Größe des Torus und Art und Geschwindigkeit des Zielobjekts). 
-TODO
-Wesentliche Rolle spielt hier die Verteilung der Hindernisse. TODO
-TODO
+Getestet wurden eine Reihe von Szenarien (in Verbindung mit unterschiedlichen Werten für die Anzahl der Agenten, Größe des Torus und Art und Geschwindigkeit des Zielobjekts). Wesentliches Merkmal jedes Szenarios ist die Menge und die Verteilung der Hindernisse.\\
 
 In den folgenden Abbildungen repräsentieren rote Felder jeweils Hindernisse, weiße Felder jeweils Agenten und das grüne Feld jeweils das Zielobjekt. Außerdem sind die Sicht- und Überwachungsreichweiten aus Kapitel~\ref{sichtbarkeit:sec} dargestellt. Sie haben jeweils eine Gestalt ähnlich der eines viertel Abschnitts einer Kreisfläche mit dem jeweiligen Agenten im Mittelpunkt. In den Abbildungen soll der Bereich, der durch die Überwachungsreichweite abgedeckt wird, grau dargestellt werden und der restliche Bereich, der zusätzlich noch durch die Sichtweite abgedeckt wird, blau.
 
 
 \subsection{Leeres Szenario ohne Hindernisse}
 
-In Abbildung~(\ref{empty_grid:fig}) ist ein Szenario ohne Hindernisse und mit zufälliger Verteilung der Agenten und zufälliger Position des Zielobjekts dargestellt. Im leeren Szenario soll das Verhalten der Agenten in einem Torus ohne Hindernisse untersucht werden. 
-
-TODO warum
+In Abbildung~(\ref{empty_grid:fig}) ist ein Szenario ohne Hindernisse und mit zufälliger Verteilung der Agenten und zufälliger Position des Zielobjekts dargestellt. Im leeren Szenario soll das Verhalten der Agenten in einem Torus ohne Hindernisse untersucht werden. Eine Untersuchung dieses Szenario erlaubt zum einen die Vereinfachung, dass Hindernisse (beispielsweise bei den in Kapitel~\ref{sensoren:sec} besprochenen Sensoren) nicht beachtet werden müssen und zum anderen, dass Sicht nicht versperrt wird und kein Agent gegen Hindernisse laufen (und stehenbleiben) muss.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -77,12 +74,14 @@ TODO warum
 \label{empty_grid:fig}
 \end{figure}
 
+
 \subsection{Szenario mit zufällig verteilten Hindernissen}\label{random_scenario_definition:sec}
 
 Zwei Parameter bestimmen das Aussehen des Szenarios mit zufällig verteilten Hindernissen, zum einen der Prozentsatz an Hindernissen an der Gesamtzahl der Felder des Torus (Hindernissanteil~\(\lambda_{h}\)), zum anderen der Grad inwieweit die Hindernisse zusammenhängen (Verknüpfungsfaktor~\(\lambda_{p}\)).\\
-Bei der Erstellung des Szenarios bestimmt \(\lambda_{p}\) die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass beim Verteilen der Hindernisse nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. \(\lambda_{p} = 0.0\) ergäbe somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert von \(1.0\) eine oder mehrere stark zusammenhängende Strukturen schafft. Wird der Prozentsatz an Hindernissen \(\lambda_{h}\) auf \(0.0\) gesetzt, dann entspricht diesem dem oben erwähnten leeren Szenario. Ein Wert von \(1.0\) würde eine völlige Abdeckung des Torus bedeuten und wäre für einen Test somit unbrauchbar. Hier sollen nur geringe Werte bis \(0.4\) betrachtet werden, wobei später in Tests sich auf Werte bis \(0.2\) beschränkt wird, da bei großen Hindernissanteil die lokalen Entscheidungen einzelner Agenten zu wichtig werden, da das Zielobjekt sich oft nur in einem kleinen Bereich aufhält TODO
 
-In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), Abbildung~(\ref{random_grid_02:fig}) und Abbildung~(\ref{random_grid_04:fig}) werden Beispiele für zufällige Szenarien gegeben mit \(\lambda_{h} = 0.05\), \(0.1\), \(0.2\) bzw. \(0.4\) und \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).
+Bei der Erstellung des Szenarios bestimmt \(\lambda_{p}\) die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass beim Verteilen der Hindernisse nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. \(\lambda_{p} = 0,0\) ergäbe somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert von \(1,0\) eine oder mehrere stark zusammenhängende Strukturen schafft. Wird der Prozentsatz an Hindernissen \(\lambda_{h}\) auf \(0,0\) gesetzt, dann entspricht diesem dem oben erwähnten leeren Szenario. Ein Wert von \(1,0\) würde eine völlige Abdeckung des Torus bedeuten und wäre für einen Test somit unbrauchbar. Hier sollen nur geringe Werte bis \(0,4\) betrachtet werden, wobei später in Tests sich auf Werte bis \(0,2\) beschränkt wird, da bei großen Hindernissanteil die lokalen Entscheidungen einzelner Agenten zu wichtig werden, da das Zielobjekt sich eher  in einem kleinen Bereich aufhält.\\
+
+In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), Abbildung~(\ref{random_grid_02:fig}) und Abbildung~(\ref{random_grid_04:fig}) werden Beispiele für zufällige Szenarien mit \(\lambda_{h} = 0,05\), \(0,1\), \(0,2\) bzw. \(0,4\) und \(\lambda_{p} = 0,01\), \(0,5\) bzw. \(0,99\) dargestellt.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -90,7 +89,7 @@ In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), 
 \includegraphics{005_050_grid.eps}
 \includegraphics{005_099_grid.eps}
 }
-\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.05$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.05\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.05$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0,05\) und Verknüpfungsfaktor \(\lambda_{p} = 0,01\), \(0,5\) bzw. \(0,99\).}
 \label{random_grid_005:fig}
 \end{figure}
 
@@ -100,7 +99,7 @@ In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), 
 \includegraphics{01_050_grid.eps}
 \includegraphics{01_099_grid.eps}
 }
-\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.1$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.1\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0,1$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0,1\) und Verknüpfungsfaktor \(\lambda_{p} = 0,01\), \(0,5\) bzw. \(0,99\).}
 \label{random_grid_01:fig}
 \end{figure}
 
@@ -110,7 +109,7 @@ In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), 
 \includegraphics{02_050_grid.eps}
 \includegraphics{02_099_grid.eps}
 }
-\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.2$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.2\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0,2$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0,2\) und Verknüpfungsfaktor \(\lambda_{p} = 0,01\), \(0,5\) bzw. \(0,99\).}
 \label{random_grid_02:fig}
 \end{figure}
 
@@ -120,15 +119,14 @@ In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), 
 \includegraphics{04_050_grid.eps}
 \includegraphics{04_099_grid.eps}
 }
-\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0.4$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0.4\) und Verknüpfungsfaktor \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).}
+\caption[Szenario mit zufällig verteilten Hindernissen mit $\lambda_{h} = 0,4$] {Szenario mit zufällig verteilten Hindernissen mit Hindernissanteil \(\lambda_{h} = 0,4\) und Verknüpfungsfaktor \(\lambda_{p} = 0,01\), \(0,5\) bzw. \(0,99\).}
 \label{random_grid_04:fig}
 \end{figure}
 
-TODO Grafik zerschneidet Titel
 
 \subsection{Säulenszenario}
 
-In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinander,  Hindernisse auf dem Torus verteilt. Idee ist, dass die Agenten eine kleine Orientierungshilfe besitzen sollen, aber gleichzeitig möglichst wenig Hindernisse verteilt werden. Das Zielobjekt startet an zufälliger Position, die Agenten starten mit möglichst großem Abstand zum Zielobjekt. Abbildung~\ref{pillar_grid:fig} zeigt ein Beispiel für den Startzustand eines solchen Szenarios, bei der das Zielobjekt sich in der Mitte und die Agenten am Rand befinden.
+In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinander,  Hindernisse auf dem Torus verteilt. Idee ist, dass die Agenten eine kleine Orientierungshilfe besitzen sollen, aber gleichzeitig möglichst wenig Hindernisse verteilt werden. Das Zielobjekt startet an zufälliger Position, die Agenten starten mit möglichst großem Abstand zum Zielobjekt.\\ Abbildung~\ref{pillar_grid:fig} zeigt ein Beispiel für den Startzustand eines solchen Szenarios, bei der das Zielobjekt sich in der Mitte und die Agenten am Rand befinden.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -143,7 +141,9 @@ In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinan
 \subsection{Schwieriges Szenario}\label{difficult_scenario:sec}
 
 Hier wird der Torus an der rechten Seite vollständig durch Hindernisse blockiert, um den Torus zu halbieren. Alle Agenten starten (zufällig verteilt) am linken Rand, das Zielobjekt startet auf der rechten Seite.\\
+
 In regelmäßigen Abständen (7 Felder Zwischenraum) befindet sich eine vertikale Reihe von Hindernissen mit Öffnungen von 4 Feldern Breite abwechselnd im oberen Viertel und dem unteren Viertel.\\
+
 Idee dieses Szenarios ist es, zu testen, inwieweit die Agenten durch die Öffnungen zum Ziel finden können. Ohne Orientierung an den Öffnungen und anderen Agenten ist es sehr schwierig, sich durch das Szenario zu bewegen. Die später besprochenen Tests in Kapitel~\ref{xcs_difficult_scenario:sec} werden zeigen, dass dieses Szenario besonders schwierig für sich zufällig bewegende Agenten und Agenten mit einfacher Heuristik ist und wie Kommunikation hier von Vorteil sein kann.\\
 Abbildung~\ref{difficult_grid:fig} zeigt die Startkonfiguration des Szenarios.
 
@@ -154,7 +154,3 @@ Abbildung~\ref{difficult_grid:fig} zeigt die Startkonfiguration des Szenarios.
 \caption[Schwieriges Szenario]{Schwieriges Szenario mit fester, wallartiger Verteilung von Hindernissen in regelmäßigen Abständen und mit Öffnungen, mit den Agenten mit zufälligem Startpunkt am linken Rand und mit dem Zielobjekt mit festem Startpunkt rechts oben}
 \label{difficult_grid:fig}
 \end{figure}
-
-
-
-

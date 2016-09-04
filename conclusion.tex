@@ -81,13 +81,20 @@ Dieses Dokument schließlich wurde mittels dem \LaTeX Editor LEd 0.5263 \cite{LeD
 
 \section{Beschreibung des Konfigurationsprogramms}
 
+In Abbildung~\ref{agent_configuration_whole:fig} ist ein Screenshot des gesamten Konfigurationsprogramms abgebildet. Auf der rechten Seite befinden sich die Ergebnisse aller bisherigen Läufe in einer Datenbank, auf der linken Seite (siehe Abbildung~\ref{agent_configuration_conf:fig}) befindet sich das Konfigurationsmenü um neue Testläufe zusammenzustellen. Dabei kann man mehrere Konfigurationen nacheinander eingeben, mittels des \emph{Save} Knopfs speichern und schließlich mittels des \emph{Package} Knopfs alle gespeicherten Konfigurationen zu einem Testpaket zusammenschnüren. Das Testpaket kann dann entweder lokal als Batchdatei oder mit Hilfe des gemeinsam generierten Skripts bei JoSchKa am AIFB hochgeladen und dort automatisch abgearbeitet werden. Ergebnisse werden für jedes Experiment in ein Verzeichnis geschrieben, aus der das Programm wiederum automatisch einen Eintrag in der Datenbank generiert, welche mittels der Betätigung des \emph{Update} Knopfs aktualisiert wird.
+
 \begin{figure}[htbp]
 \centerline{	
-%\includegraphics{agent_configuration.eps}
+\includegraphics{AgentConfiguration_whole.eps}
 }
-\caption[Screenshot des Konfigurationsprogramms] {Screenshot des Konfigurationsprogramms}
-\label{agent_configuration:fig}
+\caption[Screenshot des Konfigurationsprogramms] {Screenshot des Konfigurationsprogramms (Gesamtübersicht)}
+\label{agent_configuration_whole:fig}
 \end{figure}
 
-
-
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{AgentConfiguration_conf.eps}
+}
+\caption[Screenshot des Konfigurationsprogramms] {Screenshot des Konfigurationsprogramms (Konfigurationsbereich)}
+\label{agent_configuration_conf:fig}
+\end{figure}

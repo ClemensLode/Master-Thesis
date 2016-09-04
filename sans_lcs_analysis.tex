@@ -1,20 +1,15 @@
 \chapter{Erste Analyse der Agenten ohne XCS}\label{analysis_sans_lcs:cha}
 
-In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des Algorithmus zufälliger Bewegung (siehe Kapitel~\ref{randomized_movement:sec}), des Algorithmus mit einfacher Heuristik (siehe Kapitel~\ref{simple_heuristik:sec}) und des Algorithmus mit intelligenter Heuristik (siehe Kapitel~\ref{intelligent_heuristik:sec}) angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit XCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen. Insbesondere der Vergleich der intelligenten Heuristik mit einem Agentensystem mit zufälliger Bewegung kann Aufschluss darüber geben, wieviel ein Agent in einem solchen Szenario überhaupt lernen kann.
+In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des Algorithmus zufälliger Bewegung (siehe Kapitel~\ref{randomized_movement:sec}), des Algorithmus mit einfacher Heuristik (siehe Kapitel~\ref{simple_heuristik:sec}) und des Algorithmus mit intelligenter Heuristik (siehe Kapitel~\ref{intelligent_heuristik:sec}) angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit XCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen. Außerdem kann der Vergleich von Agenten intelligenten Heuristik mit Agenten mit zufälliger Bewegung Aufschluss darüber geben, wieviel und welche Aspekte ein Agent in einem solchen Szenario überhaupt lernen kann. Große Unterschiede zwischen intelligenter und einfacher Heuristik weisen beispielsweise darauf hin, dass die Verteilung auf dem Torus wichtiger ist, als das Hinterherlaufen. TODO ref
 
-TODO: Ziel: Schwere Szenarien finden (schwierig für zufälligen, leicht für einfache heuristik)
+Beim Testen selbst war es durch die Verwendung der in Kapitel~\ref{qualitaet:sec} erwähnten (und im Simulator berechneten) Halbzeitqualitäten sehr einfach, festzustellen, ob ein Algorithmus noch Potential hatte, d.h. ob eine Erhöhung der Schrittzahl die Qualität weiter steigern würde. Da (im Gegensatz zu den später in Kapitel~\ref{lcs_variants:cha} erwähnten lernenden Algorithmen) keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen. Die Zahl der Zeitschritte wird somit für alle Tests, soweit nicht anders angegeben, standardmäßig auf 500 festgesetzt.\\
 
-\section{Statistische Merkmale}
-
-Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen, die Zahl der Zeitschritte wird somit, soweit nicht anders angegeben, standardmäßig auf 500 festgesetzt. Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Probleminstanzen ermittelt und gemittelt werden. Eine einzelne Probleminstanz entspricht einem Torus mit einer bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. Die Anfangsbelegung ist über einen \emph{random seed} Wert bestimmt, wobei bei jeder Probleminstanz mit einem neuen Wert initialisiert wird, der sich aus der Nummer des Experiments und der Nummer des Problems berechnet. Die Probleminstanzen sind also untereinander unterschiedlich, jedoch vergleichbar mit anderen Testdurchläufen mit einer anderen Konfiguration. Soweit nicht anders angegeben, sollen hier Prombleninstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall. Die in den Tabellen jeweils angegebenen Werte sind auf zwei Stellen nach dem Komma gerundet.\\
+Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Probleminstanzen (siehe Kapitel~\ref{definition_probleminstanz:sec}) ermittelt und gemittelt werden, was erfahrungsgemäß ausreicht um ausreichend genaue Ergebnisse zu erhalten. 
 
 
 \section{Definition einer Probleminstanz}\label{definition_probleminstanz:sec}
 
-
-
-TODO XCS, neustart etc.
-
+Eine einzelne Probleminstanz entspricht hier einem Torus mit einer bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit, auf dem über die erwähnte Anzahl von Schritten die Simulation abläuft. Die Anfangsbelegung ist über einen \emph{random seed} Wert bestimmt, wobei bei jeder Probleminstanz mit einem neuen Wert initialisiert wird, der sich aus der Nummer des Experiments und der Nummer des Problems berechnet. Die Probleminstanzen sind also untereinander unterschiedlich, jedoch vergleichbar mit anderen Testdurchläufen mit einer anderen Konfiguration. Soweit nicht anders angegeben, sollen hier Probleminstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall. Die in den Tabellen jeweils angegebenen Werte sind auf zwei Stellen nach dem Komma gerundet.\\
 
 Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfasst. Wesentliches Merkmal zum Vergleich der Algorithmen ist der Wert der Qualität (siehe Kapitel~\ref{qualitaet:sec}), weitere Merkmale dienen zur Erklärung, warum z.B. ein Algorithmus bei einem Durchlauf schlechte Ergebnisse lieferte, bzw. dienten zum Testen und Finden von Fehlern oder Schwächen des Simulationsprogramms. Im Einzelnen sind hier zu nennen:
 
@@ -35,8 +30,7 @@ Die theoretisch maximal mögliche Anzahl an Felder, die die Agenten innerhalb ihr
 Teilt man nun die Anzahl der momentan tatsächlich überwachten Felder durch die eben ermittelte maximal mögliche Anzahl an überwachten Felder, erhält man die Abdeckung, die die Agenten momentan erreichen.\\
 
 
-
-\section{Bestimmung der Qualität eines Algorithmus}\label{qualitaet:sec}
+\subsection{Qualität eines Algorithmus}\label{qualitaet:sec}
 
 Die Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen (d.h. das Zielobjekt innerhalb einer Distanz von höchstens \emph{reward range} halten) konnte, relativ zur Gesamtzeit.\\
 Die Qualität eines Algorithmus zu einer Anzahl von Problemen (also einem Experiment) wird Anhand des Gesamtanteil der Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.\\
@@ -46,9 +40,10 @@ Die Halbzeitqualität eines Algorithmus zu einer Anzahl von Problemen entspricht 
 Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeitqualitäten des Algorithmus mehrerer Experimente.\\
 Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus ermöglicht einen Einblick, wie gut sich der Algorithmus verhält, nachdem er sich auf das Problem bereits eine Zeit lang einstellen konnte.\\
 
+
 \section{Ablauf der Simulation}\label{reihenfolge:sec}
 
-Die Simulation selbst läuft in ineinander geschachtelten Schleifen ab. Jede Konfiguration (in den abgedruckten Programmen jeweils über die globale Variable \emph{Configuration} angesprochen) wird über eine Reihe von Experimenten getestet (10 soweit nicht anders angegeben). Für einen Test wird die Funktion \emph{doOneMultiStepExperiment()} (siehe Programm~\ref{mainExperiment:pro}) mit der aktuellen Nummer des Experiments als Parameter aufgerufen. In der Funktion wird ein neuer \emph{random seed} Wert initialisierung, der Torus auf den Startzustand gesetzt und schließlich das eigentliche Problem mit der Funktion \emph{doOneMultiStepProblem()} aufgerufen, welche in Programm~\ref{mainProblem:pro} abgebildet ist. Dort werden in einer Schleife alle Schritte durchlaufen und jeweils die Objekte abgearbeitet.\\
+Die Simulation selbst läuft in ineinander geschachtelten Schleifen ab. Jede Konfiguration (in den abgedruckten Programmen jeweils über die globale Variable \emph{Configuration} angesprochen) wird über eine Reihe von Experimenten getestet (10 soweit nicht anders angegeben). Für einen Test wird die Funktion \emph{doOneMultiStepExperiment()} (siehe Programm~\ref{mainExperiment:pro}) mit der aktuellen Nummer des Experiments als Parameter aufgerufen. In der Funktion wird ein neuer \emph{random seed} Wert initialisiert, der Torus auf den Startzustand gesetzt und schließlich das eigentliche Problem mit der Funktion \emph{doOneMultiStepProblem()} aufgerufen, welche in Programm~\ref{mainProblem:pro} abgebildet ist. Dort werden in einer Schleife alle Schritte durchlaufen und jeweils die Objekte abgearbeitet.\\
 
 In welcher Reihenfolge dies geschieht, soll im Folgenden geklärt werden. Zusammenfassend ist zu sagen, dass zuerst die aktuelle Qualität und die aktuellen Sensordaten bestimmt werden. Daraus ermittelt jeder Agent die Bewertung für den letzten Schritt und bestimmt eine neue Aktion. Haben Agenten und das Zielobjekt diese Schritte abgeschlossen, werden ihre ermittelten Aktionen in zufälliger Reihenfolge ausgeführt.\\
 
@@ -88,11 +83,9 @@ TODO
 
 Keine der bisher vorgestellten Varianten machen Gebrauch von einem sogenannten \emph{base reward}, d.h.  TODO
 
-Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein \emph{reward} ergeben soll. Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der Reward jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der Reward von binärer Natur ist ("`Zielobjekt in Überwachungsreichweite"' oder "`Zielobjekt nicht in Überwachungsreichweite"'), weshalb Zwischenzustände für den Reward, der sich aus der mehrfachen Bewegung des Zielobjekts ergeben könnte, ausgeschlossen werden soll (z.B. "`War zwei von drei Schritten in der Überwachungsreichweite"' \(\Rightarrow \frac{2}{3}\) Reward). Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.\\
+Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein \emph{reward} ergeben soll. Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der \emph{base reward} Wert jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der \emph{base reward} von binärer Natur ("`Zielobjekt in Überwachungsreichweite"' oder "`Zielobjekt nicht in Überwachungsreichweite"') ist, weshalb Zwischenzustände für diesen Wert , der sich aus der mehrfachen Bewegung des Zielobjekts ergeben könnte (z.B. "`War zwei von drei Schritten in der Überwachungsreichweite"' \(\Rightarrow \frac{2}{3}\) \emph{base reward}), ausgeschlossen werden soll. Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.
 
-TODO Rewarderhebung für normale Agenten irrelevant, evtl teilen und in XCS Kapitel
-
-Für den Reward ergeben sich somit folgende Möglichkeiten:
+Für den \emph{base reward} ergeben sich somit folgende Möglichkeiten:
 
 \begin{enumerate}
 \item Ermittlung der einzelnen \emph{reward} Werte jeweils direkt nach der Ausführung einer einzelnen Aktion
@@ -111,7 +104,7 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 \begin{enumerate}
 \item Bestimmen der aktuellen \textbf{Qualität}
 \item Erfassung aller \textbf{Sensordaten}
-\item Bestimmung der jeweiligen {\bfseries {\em reward} Werte} für die einzelnen Objekte für den letzten Schritt
+\item Bestimmung der jeweiligen {\bfseries {\em reward} Werte} für die einzelnen Objekte für den letzten Schritt (für lernende Agenten)
 \item \textbf{Wahl der Aktion} anhand der Regeln des jeweiligen Agenten
 \item \textbf{Ausführung der Aktion} (in zufälliger Reihenfolge, das Zielobjekt wiederholt Schritte 1 und 2 nach der Ausführung der Aktion)
 \end{enumerate}
@@ -121,22 +114,21 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 
 
 
-
-
-
 \section{Zielobjekt mit zufälligem Sprung}\label{zielobjekt_analyse_zufall_sprung:sec}
 
-Im folgenden sollen alle.
+Im folgenden sollen alle TODO
 
 
 
 In allen Szenarien mit dieser Form der Bewegung des Zielobjekts kommt es nur darauf an, dass die Agenten einen möglichst großen Bereich des Torus abdecken. 
 
 
-\subsection{Im leeren Szenario ohne Hindernisse}
+\subsection{Im leeren Szenario ohne Hindernisse}\label{jump_empty_scenario:sec}
 
 Ohne Hindernisse gibt sich ein klares Bild (siehe Tabelle~\ref{table:empty_total_random}), die intelligente Heuristik ist etwas besser als der des zufälligen Agenten und der einfachen Heuristik. Ein möglichst weiträumiges Verteilen auf dem Torus führt zum Erfolg, was sich auch in einem hohen Wert der Abdeckung zeigt, denn genau das wird mit dem völlig zufällig springenden Agenten getestet. Auch ist die Zahl der blockierten Bewegungen deutlich niedriger, was sich auch mit der Haltung des Abstands erklären lässt.\\
+
 Die einfache Heuristik schneidet dagegen etwas schlechter als eine zufällige Bewegung ab. Zwar ist die Zahl der blockierten Bewegungen geringer, was sich dadurch erklären lässt, dass die einfache Heuristik zumindest an einem Punkt eine Sichtbarkeitsüberprüfung für die Richtung durchführt, in der sie sich bewegen möchte (nämlich wenn das Zielobjekt in Sicht ist), andererseits ist die Abdeckung etwas geringer. Dies kommt daher, dass, wenn mehrere Agenten das Zielobjekt in derselben Richtung in Sichtweite haben, mehrere Agenten sich in dieselbe Richtung bewegen. Dies beeinträchtigt die zufällige Verteilung der Agenten auf dem Spielfeld und führt somit auch zu einer niedrigeren Abdeckung des Torus.\\
+
 Bezüglich der Anzahl der Agenten ergeben sich keine Besonderheiten, mit steigender Agentenzahl steigt die Zahl der blockierten Bewegungen (aufgrund größerer Anzahl von blockierten Feldern), während die Abdeckung sinkt (aufgrund sich überlappender Überwachungsreichweiten).
 
 \begin{table}[ht]
@@ -187,22 +179,22 @@ Einfache Heuristik     & 16 & 7,23\% & 62,00\% & 53,58\% \\
 Intelligente Heuristik & 16 & 5,18\% & 69,91\% & 60,43\% \\ [1ex]
 \hline
 \end{tabular}
-\label{table:empty_total_random}
+\label{table:pillar_total_random}
 \end{table}
 
 
 \subsection{Zufällig verteilte Hindernisse}
 
 
-Hier ergibt sich für alle Einstellungen für \(\lambda_{h}\) und \(\lambda_{p}\) (siehe Kapitel~\ref{random_scenario_definition:sec}) ebenfalls ein eindeutiges Bild (siehe Tabelle~\ref{table:full_total_random}), die intelligente Heuristik liegt wieder vorne, gefolgt wieder von der einfachen Heuristik und der zufälligen Bewegung. Im Fall mit vielen Hindernissen (\(\lambda_{h} = 0.2\)) liegt die einfache Heuristik trotz höherer Abdeckung hinter der zufälligen Bewegung. Dies ist wohl auf einen Zufall zurückzuführen, ändert man den \emph{random seed} Wert oder erhöht man die Anzahl der Experimente von 10 auf 30 ergibt sich wieder oben genannte Reihenfolge.\\
+Hier ergibt sich für alle Einstellungen für \(\lambda_{h}\) und \(\lambda_{p}\) (siehe Kapitel~\ref{random_scenario_definition:sec}) ebenfalls ein eindeutiges Bild (siehe Tabelle~\ref{table:full_total_random}), die intelligente Heuristik liegt wieder vorne, gefolgt wieder von der einfachen Heuristik und der zufälligen Bewegung. Im Fall mit vielen Hindernissen (\(\lambda_{h} = 0,2\)) liegt die einfache Heuristik trotz höherer Abdeckung hinter der zufälligen Bewegung. Dies ist wohl auf einen Zufall zurückzuführen, ändert man den \emph{random seed} Wert oder erhöht man die Anzahl der Experimente von 10 auf 30 ergibt sich wieder oben genannte Reihenfolge.\\
 
 Dass der einfache Agent, wenn er das Zielobjekt in Sicht hat, eine geringere Zahl an blockierten Bewegungen als der zufällige Agent aufweist, lässt sich damit begründen, dass er davon ausgehen kann, dass sich in dieser Richtung wahrscheinlich eher kein Hindernis befindet (da die Sicht nicht blockiert ist), während der zufällige Agent Hindernisse überhaupt nicht beachtet, somit öfters gegen ein Hindernis läuft und letztlich öfters stehen bleibt. Der Unterschied zwischen beiden Agenten ist besonders hoch in Szenarien mit größerem Anteil an Hindernissen.\\
 
 Im Vergleich zur einfachen Heuristik scheint insbesondere die intelligente Heuristik Probleme mit den Hindernissen zu haben (viele blockierte Bewegungen). Da Hindernisse in der Heuristik nicht beachtet werden, bewirkt die Strategie der maximalen Ausbreitung der Agenten, dass die Agenten gegen die Hindernisse gedrückt werden (andere Agenten sind bei hohem Verknüpfungsfaktor eher in einem Bereich ohne Hindernisse).\\
 
-Schließlich ist zu sehen, dass die Agenten in einem Szenario mit höherem Verknüpfungsfaktor (der Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.99\) im Vergleich zum Fall mit \(\lambda_{h} = 0.1\) und \(\lambda_{p} = 0.5\)) besser abschneiden. Dies liegt daran, dass Szenarien mit hohem Verknüpfungsfaktor bedeuten, dass viele Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernisse ähnlich sind, da es eher größere zusammenhängende Flächen gibt.\\
+Schließlich ist zu sehen, dass die Agenten in einem Szenario mit höherem Verknüpfungsfaktor (der Fall mit \(\lambda_{h} = 0,1\) und \(\lambda_{p} = 0,99\) im Vergleich zum Fall mit \(\lambda_{h} = 0,1\) und \(\lambda_{p} = 0,5\)) besser abschneiden. Dies liegt daran, dass Szenarien mit hohem Verknüpfungsfaktor bedeuten, dass viele Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernisse ähnlich sind, da es eher größere zusammenhängende Flächen gibt.\\
 
-Insgesamt ist zu sagen, dass keine der Szenarien mit zufälligem Sprung des Zielobjekts sich als zu lernende Aufgabe lohnt, der Unterschied zwischen der zufälligen Bewegung und der intelligenten Heuristik ist zu gering, die Aufgabe somit zu schwierig und soll in Verbindung mit XCS, bis auf einen einfachen Vergleichstest (siehe Kapitel TODO), nicht weiter betrachtet werden.
+Insgesamt ist zu sagen, dass keine der Szenarien mit zufälligem Sprung des Zielobjekts sich als zu lernende Aufgabe lohnt, der Unterschied zwischen der zufälligen Bewegung und der intelligenten Heuristik ist zu gering, die Aufgabe somit zu schwierig und soll in Verbindung mit XCS, bis auf einen einfachen Test zum Vergleich (siehe Kapitel TODO), nicht weiter betrachtet werden.
 
 TODO warum besser mit mehr HIndernissen
 
@@ -213,17 +205,17 @@ TODO warum besser mit mehr HIndernissen
 \hline\hline
 Algorithmus & \(\lambda_{h}\) & \(\lambda_{p}\) & Blockierte Bewegungen & Abdeckung & Qualität \\ [0.5ex]
 \hline
-Zufällige Bewegung     & 0.2 & 0.99 & 12,44\% & 62,50\% & 34,54\% \\
-Einfache Heuristik     & 0.2 & 0.99 & 10,04\% & 63,02\% & 34,48\% \\
-Intelligente Heuristik & 0.2 & 0.99 & 12,71\% & 68,22\% & 37,89\% \\ [1ex]
+Zufällige Bewegung     & 0,2 & 0,99 & 12,44\% & 62,50\% & 34,54\% \\
+Einfache Heuristik     & 0,2 & 0,99 & 10,04\% & 63,02\% & 34,48\% \\
+Intelligente Heuristik & 0,2 & 0,99 & 12,71\% & 68,22\% & 37,89\% \\ [1ex]
 \hline
-Zufällige Bewegung     & 0.1 & 0.99 &  7,58\% & 68,33\% & 32,81\% \\
-Einfache Heuristik     & 0.1 & 0.99 &  6,15\% & 68,49\% & 33,36\% \\
-Intelligente Heuristik & 0.1 & 0.99 &  6,50\% & 74,81\% & 36,29\% \\ [1ex]
+Zufällige Bewegung     & 0,1 & 0,99 &  7,58\% & 68,33\% & 32,81\% \\
+Einfache Heuristik     & 0,1 & 0,99 &  6,15\% & 68,49\% & 33,36\% \\
+Intelligente Heuristik & 0,1 & 0,99 &  6,50\% & 74,81\% & 36,29\% \\ [1ex]
 \hline
-Zufällige Bewegung     & 0.1 & 0.5  & 10,12\% & 66,01\% & 32,03\% \\
-Einfache Heuristik     & 0.1 & 0.5  &  8,57\% & 66,52\% & 32,38\% \\
-Intelligente Heuristik & 0.1 & 0.5  &  9,29\% & 72,63\% & 35,12\% \\ [1ex]
+Zufällige Bewegung     & 0,1 & 0,5  & 10,12\% & 66,01\% & 32,03\% \\
+Einfache Heuristik     & 0,1 & 0,5  &  8,57\% & 66,52\% & 32,38\% \\
+Intelligente Heuristik & 0,1 & 0,5  &  9,29\% & 72,63\% & 35,12\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:full_total_random}
@@ -278,7 +270,7 @@ Intelligente Heuristik & 0,01\% &  2,93\% & 73,37\% & 62,48\% \\ [1ex]
 \end{table}
 
 \begin{table}[ht]
-\caption{Vergleich von Zielobjekt mit zufälliger Bewegung und einfacher Richtungsänderung (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.1$, $\lambda_{p} = 0.99$)}
+\caption{Vergleich von Zielobjekt mit zufälliger Bewegung und einfacher Richtungsänderung (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0,1$, $\lambda_{p} = 0,99$)}
 \centering
 \begin{tabular}{c c c c c}
 \hline\hline
@@ -325,14 +317,17 @@ Intelligente Heuristik & 0,01\% & 4,58\% & 72,44\% & 60,41\% \\ [1ex]
 
 
 
-\section{Auswirkung der Zielgeschwindigkeit auf die Qualität}
+\section{Auswirkung der Geschwindigkeit des Zielobjekts}
 
-Angesichts der Ergebnisse in den zwei vorangegangenen Kapiteln, ist zu erwarten, dass die Geschwindigkeit des Zielobjekts bei der Qualität des Agenten mit zufälliger Bewegung keine Rolle spielt, da weder das Zielobjekt noch die Agenten Informationen über ihre Umgebung benutzen um sich für ein Verhalten zu entscheiden.\\
+Angesichts der Ergebnisse in den zwei vorangegangenen Kapiteln, ist zu erwarten, dass die Geschwindigkeit des Zielobjekts bei der Qualität des Agenten mit zufälliger Bewegung keine Rolle spielt, da weder das Zielobjekt noch die Agenten Informationen über ihre Umgebung benutzen um sich für ein Verhalten zu entscheiden.
+
+TODO subsections zusammenfassen
 
 \subsection{Zielobjekt mit einfacher Richtungsänderung}\label{speed_single_direction:sec}
 
 In Abbildung~\ref{speed_random_goal:fig} sind die Testergebnisse für einen Test mit 8 Agenten auf dem Säulenszenario dargestellt, bei dem sich das Zielobjekt mit einfacher Richtungsänderung bewegt. Es ist keine Korrelation zwischen der Geschwindigkeit und der Qualität des Algorithmus mit zufälliger Bewegung festzustellen, nur bei Geschwindigkeit 0 scheint es ein deutlich besseres Ergebnis zu geben. Das lässt sich aber durch die Anfangskonfiguration erklären, beim Säulenszenario startet das Zielobjekt in der Mitte mit maximalem Abstand zu den Hindernissen, ist also immer optimal in Sicht.\\
 Der Algorithmus mit zufälliger Bewegung stellt also eine Untergrenze dar, ein Agent muss mehr als diesen Wert erreichen, damit man sagen kann, dass er etwas gelernt hat.\\
+
 In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnisse (im selben Szenario) für die einfache und die intelligente Heuristik zu sehen. Im Wesentlichen sind drei Punkte anzumerken, erstens existiert eine Korrelation zwischen Qualität und Geschwindigkeit, zweitens gibt es einen Knick bei Geschwindigkeit 1 und drittens ist ein fast stetiger Anstieg der Differenz zwischen der einfachen und der intelligenten Heuristik zu verzeichnen. Der Knick lässt sich dadurch erklären, dass es ab dieser Geschwindigkeit möglich ist, dass das Zielobjekt Verfolger abschütteln kann, der Anstieg der Differenz lässt sich dadurch erklären, dass es Abdeckung des Gebiets eine immer größere Rolle spielt, als die Verfolgung des Zielobjekts.
 
 \begin{figure}[htbp]
@@ -395,16 +390,16 @@ Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
 ``Intelligent Open'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 74.15\% & 11.32\% \\
-Einfache Heuristik     & 60.90\% & 82.86\% \\
-Intelligente Heuristik & 69.62\% & 85.74\% \\ [1ex]
+Zufällige Bewegung     & 74,15\% & 11,32\% \\
+Einfache Heuristik     & 60,90\% & 82,86\% \\
+Intelligente Heuristik & 69,62\% & 85,74\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_no_obstacles}
 \end{table}
 
 \begin{table}[ht]
-\caption{Vergleich von ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
+\caption{Vergleich von ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0,2$, $\lambda_{p} = 0,99$)}
 \centering
 \begin{tabular}{c c c c}
 \hline\hline
@@ -412,15 +407,15 @@ Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
 ``Intelligent Open'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 62.54\% & 13.37\% \\
-Einfache Heuristik     & 52.23\% & 84.33\% \\
-Intelligente Heuristik & 56.92\% & 85.12\% \\ [1ex]
+Zufällige Bewegung     & 62,54\% & 13,37\% \\
+Einfache Heuristik     & 52,23\% & 84,33\% \\
+Intelligente Heuristik & 56,92\% & 85,12\% \\ [1ex]
 \hline
 ``Intelligent Hide'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 62.52\% & 13.10\% \\
-Einfache Heuristik     & 50.17\% & 90.32\% \\
-Intelligente Heuristik & 56.94\% & 90.45\% \\ [1ex]
+Zufällige Bewegung     & 62,52\% & 13,10\% \\
+Einfache Heuristik     & 50,17\% & 90,32\% \\
+Intelligente Heuristik & 56,94\% & 90,45\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_random}
@@ -435,15 +430,15 @@ Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
 ``Intelligent (Open)'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 72.55\% & 11.58\% \\
-Einfache Heuristik     & 57.19\% & 85.58\% \\
-Intelligente Heuristik & 64.26\% & 91.18\% \\ [1ex]
+Zufällige Bewegung     & 72,55\% & 11,58\% \\
+Einfache Heuristik     & 57,19\% & 85,58\% \\
+Intelligente Heuristik & 64,26\% & 91,18\% \\ [1ex]
 \hline
 ``Intelligent (Hide)'' \\ [1ex]
 \hline
-Zufällige Bewegung     & 72.56\% & 11.78\% \\
-Einfache Heuristik     & 58.45\% & 80.98\% \\
-Intelligente Heuristik & 65.65\% & 86.38\% \\ [1ex]
+Zufällige Bewegung     & 72,56\% & 11,78\% \\
+Einfache Heuristik     & 58,45\% & 80,98\% \\
+Intelligente Heuristik & 65,65\% & 86,38\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_pillar}

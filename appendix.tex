@@ -88,6 +88,8 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 
 
+
+
 \newlisting{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainCalculate:pro}
 /**
  * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
@@ -155,6 +157,102 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
         a.calculateReward(gaTimestep);
       }
     }
+  }
+\end{lstlisting}
+
+\clearpage
+
+
+
+\section{Typen von Agentenbewegungen}
+
+\newlisting{Berechnung der nächsten Aktion bei der Benutzung des Algorithmus mit zufälliger Bewegung}{calculateNextMoveRandomAlgorithm:pro}
+/**
+ * Berechne nächste Aktion (zufälliger Algorithmus)
+ */
+  private void calculateNextMove() {
+  /**
+   * Wähle zufällige Richtung als nächste Aktion
+   */
+    calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+  }
+\end{lstlisting}
+
+
+\newlisting{Berechnung der nächsten Aktion bei der Benutzung der einfachen Heuristik}{calculateNextMove_SimpleHeuristic:pro}
+/**
+ * Berechne nächste Aktion (einfache Heuristik)
+ */
+  private void calculateNextMove() {
+  /**
+   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
+   * das Zielobjekt ausgerichtet sind
+   */
+    boolean[] goal_sensor = lastState.getSensorGoal();
+    calculatedAction = -1;
+    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+    /**
+     * Zielagent in Sicht in dieser Richtung?
+     */
+      if(goal_sensor[2*i]) {
+        calculatedAction = i;
+        break;
+      }
+    }
+
+  /**
+   * Sonst wähle zufällige Richtung als nächste Aktion
+   */
+    if(calculatedAction == -1) {
+      calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+    }      
+
+  }
+\end{lstlisting}
+
+\newlisting{Berechnung der nächsten Aktion bei der Benutzung der intelligenten Heuristik}{calculateNextMove_IntelligentHeuristic:pro}
+/**
+ * Berechne nächste Aktion (intelligente Heuristik)
+ */
+private void calculateNextMove() {
+  /**
+   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
+   * das Zielobjekt ausgerichtet sind
+   */
+    boolean[] goal_sensor = lastState.getSensorGoal();
+
+    calculatedAction = -1;
+    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+    /**
+     * Zielagent in Sicht in dieser Richtung?
+     */
+      if(goal_sensor[2*i]) {
+        calculatedAction = i;
+        break;
+      }
+    }
+
+  /**
+   * Zielobjekt nicht in Sicht? Dann bewege von Agenten weg
+   */
+    if(calculatedAction == -1) {
+      calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+
+      boolean[] agent_sensors = lastState.getSensorAgent();
+      boolean one_free = false;
+      for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+        if(!agent_sensors[2*i]) {
+          one_free = true;
+          break;
+        }
+      }
+
+      if(one_free) {
+        while(agent_sensors[2*calculatedAction]) {
+          calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+        }
+      }
+    } 
   }
 \end{lstlisting}
 
@@ -370,7 +468,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 
 
-\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des reward auf die action set Listen)}{sxcs_collect_reward:pro}
+\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des reward Wert auf die action set Listen)}{sxcs_collect_reward:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen reward und gibt ihn an die
  * zugehörigen action set Listen weiter.
@@ -378,10 +476,10 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
  * @param reward Wahr wenn der Zielobjekt in Sicht war.
  * @param best_value Bester Wert des vorangegangenen action set Listen
  * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven reward, aufgerufen wurde
+ *        einem positiven reward Wert, aufgerufen wurde
  */
 
-  public void collectReward(
+  public void collectReward(int start_index, int action_set_size, 
                 boolean reward, double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
   /**
@@ -397,7 +495,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
     for(int i = 0; i < action_set_size; i++) {
 
   /**
-   * Benutze aufsteigenden bzw. absteigenden Reward bei einem positiven 
+   * Benutze aufsteigenden bzw. absteigenden reward Wert bei einem positiven 
    * bzw. negativen Ereignis
    */
       if(is_event) {
@@ -406,9 +504,9 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
           calculateReward(action_set_size - i, action_set_size);
       }
   /**
-   * Aktualisiere die action set Liste mit dem bestimmten reward und
-   * gebe bei allen anderen action set Listen den reward weiter wie 
-   * beim Multistepverfahren 
+   * Aktualisiere die action set Liste mit dem bestimmten reward Wert und
+   * gebe bei allen anderen action set Listen den reward Wert weiter wie 
+   * beim multi step Verfahren 
    */
       ActionClassifierSet action_classifier_set = 
         historicActionSet.get(start_index - i);
@@ -423,7 +521,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 
 
-\newlisting{Drittes Kernstück des SXCS-Algorithmus DSXCS (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung der zugehörigen \emph{action set} Liste)}{sxcs_calc_move:pro}
+\newlisting{Drittes Kernstück des SXCS-Algorithmus (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung der zugehörigen \emph{action set} Liste)}{sxcs_calc_move:pro}
 /**
  * Bestimmt die zum letzten bekannten Status passenden classifier und
  * wählt aus dieser Menge eine Aktion. Außerdem wird die aktuelle 
@@ -472,22 +570,23 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 \clearpage
 
+
 \section{Implementation des DSXCS Algorithmus}
 
-\newlisting{Zweites Kernstück des verzögerten SXCS Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}{collect_reward_dsxcs:pro}
+\newlisting{Zweites Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()} - Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
 /**
- * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
- * zugehörigen action sets weiter. Wesentlicher Unterschied zum SXCS 
+ * Diese Funktion verarbeitet den übergebenen reward Wert und gibt ihn an die
+ * zugehörigen action set Listen weiter. Wesentlicher Unterschied zum SXCS 
  * Algorithmus ist, dass der maxPrediction Wert erst bei der endgültigen 
- * Verarbeitung des historicActionSets ermittelt wird.
+ * Verarbeitung des historicActionSet Listen ermittelt wird.
  *
  * @param reward Wahr wenn das Zielobjekt in Sicht war.
- * @param best_value Bester Wert des vorangegangenen action sets
+ * @param best_value Bester Wert des vorangegangenen action set Listen
  * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven Reward, aufgerufen wurde
+ *        einem positiven reward Wert, aufgerufen wurde
  */
 
-  public void collectReward(
+  public void collectReward(int start_index, int action_set_size, 
                 boolean reward, double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
 
@@ -497,7 +596,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
      for(int i = 0; i < action_set_size; i++) {
 
   /**
-   * Benutze aufsteigenden bzw. absteigenden reward bei einem positiven 
+   * Benutze aufsteigenden bzw. absteigenden reward Wert bei einem positiven 
    * bzw. negativen Ereignis
    */
        if(is_event) {
@@ -513,7 +612,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
        }
 
   /**
-   * Füge den ermittelten Reward zum historicActionSet
+   * Füge den ermittelten reward Wert zum historicActionSet
    */
        historicActionSet.get(start_index - i).
          addReward(corrected_reward, factor);
@@ -523,13 +622,13 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 \end{lstlisting}
 
 
-\newlisting{Auszug aus dem dritten Kernstück des verzögerten SXCS-Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
+\newlisting{Auszug aus dem dritten Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
 
 /**
- * Der erste Teil der Funktion ist identisch mit dem calculateNextMove
- * der SXCS Variante ohne Kommunikation. Der Zusatz ist, dass beim 
- * Überlauf die im HistoricActionSet gespeicherte Rewards verarbeitet
- * werden
+ * Der erste Teil der Funktion ist identisch mit der calculateNextMove()
+ * Funktion der SXCS Variante ohne Kommunikation. Der Zusatz ist, dass beim 
+ * Überlauf die in der historicActionSet Liste gespeicherte reward Werte
+ * verarbeitet werden
  */
 
   public void calculateNextMove(long gaTimestep) {
@@ -537,7 +636,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
   // ... 
 
   /**
-   * HistoryActionSet voll? Dann verarbeite den dort gespeicherten Reward
+   * historyActionSet voll? Dann verarbeite den dort gespeicherten reward Wert
    */
      if (historicActionSet.size() > Configuration.getMaxStackSize()) {
       HistoryActionClassifierSet first = historicActionSet.pop();
@@ -547,7 +646,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 \end{lstlisting}
 
 
-\newlisting{Viertes Kernstück des verzögerten SXCS-Algorithmus DSXCS  (Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs1:pro}
+\newlisting{Viertes Kernstück des verzögerten SXCS Algorithmus DSXCS  (Verarbeitung des jeweiligen reward Werts, \emph{processReward()})}{process_reward_dsxcs1:pro}
 /**
  * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
  * eingegangenen Rewards bis zu diesem Punkt.
@@ -575,7 +674,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 \end{lstlisting}
 
 
-\newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS-Algorithmus DSXCS (Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs2:pro}
+\newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
 /**
  * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
  * eingegangenen Rewards bis zu diesem Punkt.
@@ -614,40 +713,40 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 \section{Implementation des egoistischen \emph{reward}}
 
-\newlisting{"'Egoistische Relation"', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem Verhalten des Agenten gegenüber anderen Agenten}{egoistic_relationship:pro}
-    /**
-     * Relation of this classifier set (the active agent classifier set,
-     * e.g. the set that received a reward) to another classifier set
-     * @param other The other set we want to compare with
-     * @return degree of relationship (0.0 - 1.0)
-     */
-    public double checkEgoisticDegreeOfRelationship(
+\newlisting{"'Egoistische Relation"', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem erwarteten Verhalten des Agenten gegenüber anderen Agenten}{egoistic_relationship:pro}
+/**
+ * Ähnlichkeit dieser classifier set Liste zu der übergebenen Liste im
+ * Hinblick auf die Wahrscheinlichkeit, auf andere Agenten zuzugehen
+ * @param other Die andere Liste mit der verglichen werden soll
+ * @return Grad der Ähnlichkeit bzw. der Kommunikationsfaktor (0,0 - 1,0)
+ */
+  public double checkEgoisticDegreeOfRelationship(
                     final MainClassifierSet other) {
-        double ego_factor = 
-                 getEgoisticFactor() - other.getEgoisticFactor();
-        if(ego_factor == 0.0) {
-            return 0.0;
-        }
-        return 1.0 - ego_factor * ego_factor;
+    double ego_factor = getEgoisticFactor() - other.getEgoisticFactor();
+    if(ego_factor == 0.0) {
+      return 0.0;
+    } else {
+      return 1.0 - ego_factor * ego_factor;
     }
+  }
 
-    public double getEgoisticFactor() throws Exception {
-        double factor = 0.0;
-        double pred_sum = 0.0;
-        for(Classifier c : getClassifiers()) {
-            if(!c.isPossibleSubsumer()) {
-                continue;
-            }
-            factor += c.getEgoFactor();
-            pred_sum += c.getFitness() * c.getPrediction();
-        }
-        if(pred_sum > 0.0) {
-            factor /= pred_sum;
-        } else {
-            factor = 0.0;
-        }
-        return factor;
+  public double getEgoisticFactor() throws Exception {
+    double factor = 0.0;
+    double pred_sum = 0.0;
+    for(Classifier c : getClassifiers()) {
+      if(!c.isPossibleSubsumer()) {
+        continue;
+      }
+      factor += c.getEgoFactor();
+      pred_sum += c.getFitness() * c.getPrediction();
     }
+    if(pred_sum > 0.0) {
+      factor /= pred_sum;
+    } else {
+      factor = 0.0;
+    }
+    return factor;
+  }
 \end{lstlisting}
 
 

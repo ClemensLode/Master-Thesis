@@ -1,7 +1,7 @@
-\section{Sensoren der Objekte}\label{sensoren:sec}
+\section{Eigenschaften der Objekte}\label{sensoren:sec}
 
 Jeder Agent bzw. das Zielobjekt besitzt eine Anzahl visueller, binärer Sensoren mit begrenzter Reichweite. Jeder Sensor kann nur feststellen, ob sich in seinem Sichtbereich ein Objekt eines bestimmten Typs befindet (\(1\)) oder nicht (\(0\)). Die Sensoren sind jeweils in eine bestimmte Richtung ausgerichtet, andere Objekte blockieren die Sicht und Sichtlinien werden durch einen einfachen Bresenham-Algorithmus~\cite{Bresenham} bestimmt.\\
-Zwei Sensoren, die in dieselbe Richtung ausgerichtet sind und den selben Typ von Objekt erkennen, werden in diesem Zusammenhang ein Sensordatenpaar genannt (siehe Kapitel~\ref{sensor_datenpaar:sec}). Alle Sensoren, die nur gemeinsam haben, dass sie den selben Typ von Objekt erkennen, werden in einer Gruppe zusammengefasst und der Aufbau eines ganzen, aus solchen Gruppen bestehenden Sensordatensatzes soll in Kapitel~\ref{sensordatensatz:sec} besprochen werden.
+Zwei Sensoren, die in dieselbe Richtung ausgerichtet sind und den selben Typ von Objekt erkennen, werden in diesem Zusammenhang ein Sensordatenpaar genannt (siehe Kapitel~\ref{sensor_datenpaar:sec}). Alle Sensoren, die nur gemeinsam haben, dass sie den selben Typ von Objekt erkennen, werden in einer Gruppe zusammengefasst und der Aufbau eines ganzen, aus solchen Gruppen bestehenden Sensordatensatzes soll in Kapitel~\ref{sensordatensatz:sec} besprochen werden. Die Eigenschaften der Agenten und des Zielobjekts selbst sollen dann in Kapitel~\ref{agents:cha} beschrieben werden.
 
 
 \subsection{Sichtbarkeit von Objekten}\label{sichtbarkeit:sec}
@@ -11,7 +11,7 @@ Der Parameter \emph{sight range} bzw. \emph{reward range} bestimmt, bis zu welch
 
 \subsection{Aufbau eines Sensordatenpaars}\label{sensor_datenpaar:sec}
 
-Ein Datenpaar besteht aus zwei Sensoren, die den selben Typ von Objekt erkennen, in dieselbe Richtung ausgerichtet sind und sich nur in ihrer Sichtweite unterscheiden, wodurch der Agent rudimentär die Entfernung zu anderen Objekten feststellen kann. Die Sichtweite des ersten Sensors eines Paares wird über den Parameter \emph{sight range} bestimmt, die Sichtweite des zweiten Sensors über den Parameter \emph{reward range} (siehe auch Kapitel~\ref{sichtbarket:sec}). Allgemein sollen \emph{sight range = 5.0} und \emph{reward range = 2.0} betragen, der überwachte Bereich ist also eine Teilmenge des sichtbaren Bereichs. In Abbildung~\ref{sight_directions:fig} sind alle Sichtreichweiten (heller und dunkler Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt.\\
+Ein Datenpaar besteht aus zwei Sensoren, die den selben Typ von Objekt erkennen, in dieselbe Richtung ausgerichtet sind und sich nur in ihrer Sichtweite unterscheiden, wodurch der Agent rudimentär die Entfernung zu anderen Objekten feststellen kann. Die Sichtweite des ersten Sensors eines Paares wird über den Parameter \emph{sight range} bestimmt, die Sichtweite des zweiten Sensors über den Parameter \emph{reward range} (siehe auch Kapitel~\ref{sichtbarkeit:sec}). Allgemein sollen \emph{sight range = 5.0} und \emph{reward range = 2.0} betragen, der überwachte Bereich ist also eine Teilmenge des sichtbaren Bereichs. In Abbildung~\ref{sight_directions:fig} sind alle Sichtreichweiten (heller und dunkler Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt.\\
 
 Anzumerken sei hier, dass wegen der gewählten Werte für beide Reichweiten ein Sensordatenpaar (0\/1) nicht auftreten kann, da ein Objekt nicht gleichzeitig näher als \(2.0\) und weiter als \(5.0\) entfernt sein kann.\\
 
@@ -65,9 +65,8 @@ $
 \label{sensordatensatz_beispiel:fig}
 \end{figure}
 
-\section{Eigenschaften der Agenten und des Zielobjekts}\label{agents:cha}
 
-TODO Namen für Heuristiken
+\subsection{Eigenschaften der Agenten und des Zielobjekts}\label{agents:cha}
 
 Ein Agent kann in jedem Schritt zwischen vier verschiedenen Aktionen wählen, die den vier Richtungen (Norden, Osten, Süden, Westen) entsprechen. Während ein Agent pro Zeiteinheit genau einen Schritt durchführen kann, kann das Zielobjekt je nach Szenarioparameter auch mehrere Schritte ausführen, was in Kapitel~\ref{zielobjekt:sec} erläutert wird.\\
 
@@ -98,17 +97,6 @@ Programm~\ref{calculateNextMoveRandomAlgorithm:pro} zeigt den zugehörigen Quellt
 \label{agent_random:fig}
 \end{figure}
 
-\newlisting{Berechnung der nächsten Aktion bei der Benutzung des Algorithmus mit zufälliger Bewegung}{calculateNextMoveRandomAlgorithm:pro}
-/**
- * Berechne nächste Aktion (zufälliger Algorithmus)
- */
-  private void calculateNextMove() {
-  /**
-   * Wähle zufällige Richtung als nächste Aktion
-   */
-    calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
-  }
-\end{lstlisting}
 
 
 \subsection{Algorithmus mit einfacher Heuristik}\label{simple_heuristik:sec}
@@ -124,36 +112,7 @@ Programm~\ref{calculateNextMove_SimpleHeuristic:pro} zeigt den zugehörigen Quell
 \label{simple_agent_to_goal:fig}
 \end{figure}
 
-\newlisting{Berechnung der nächsten Aktion bei der Benutzung der einfachen Heuristik}{calculateNextMove_SimpleHeuristic:pro}
-/**
- * Berechne nächste Aktion (einfache Heuristik)
- */
-  private void calculateNextMove() {
-  /**
-   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
-   * das Zielobjekt ausgerichtet sind
-   */
-    boolean[] goal_sensor = lastState.getSensorGoal();
-    calculatedAction = -1;
-    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
-    /**
-     * Zielagent in Sicht in dieser Richtung?
-     */
-      if(goal_sensor[2*i]) {
-        calculatedAction = i;
-        break;
-      }
-    }
 
-  /**
-   * Sonst wähle zufällige Richtung als nächste Aktion
-   */
-    if(calculatedAction == -1) {
-      calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
-    }      
-
-  }
-\end{lstlisting}
 
 \subsection{Algorithmus mit intelligenter Heuristik}\label{intelligent_heuristik:sec}
 
@@ -166,53 +125,6 @@ Ist das Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuri
 \caption[Agent mit intelligenter Heuristik]{Agent mit intelligenter Heuristik: Falls das Zielobjekt nicht sichtbar ist, bewegt sich der Agent von anderen Agenten weg.}
 \label{intelligent_agent:fig}
 \end{figure}
-
-\newlisting{Berechnung der nächsten Aktion bei der Benutzung der intelligenten Heuristik}{calculateNextMove_IntelligentHeuristic:pro}
-/**
- * Berechne nächste Aktion (intelligente Heuristik)
- */
-private void calculateNextMove() {
-  /**
-   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
-   * das Zielobjekt ausgerichtet sind
-   */
-    boolean[] goal_sensor = lastState.getSensorGoal();
-
-    calculatedAction = -1;
-    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
-    /**
-     * Zielagent in Sicht in dieser Richtung?
-     */
-      if(goal_sensor[2*i]) {
-        calculatedAction = i;
-        break;
-      }
-    }
-
-  /**
-   * Zielobjekt nicht in Sicht? Dann bewege von Agenten weg
-   */
-    if(calculatedAction == -1) {
-      calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
-
-      boolean[] agent_sensors = lastState.getSensorAgent();
-      boolean one_free = false;
-      for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
-        if(!agent_sensors[2*i]) {
-          one_free = true;
-          break;
-        }
-      }
-
-      if(one_free) {
-        while(agent_sensors[2*calculatedAction]) {
-          calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
-        }
-      }
-    } 
-  }
-\end{lstlisting}
-
 
 
 
@@ -236,7 +148,7 @@ Ein Zielobjekt dieses Typs verhält sich so wie ein Agent mit dem Algorithmus mit
 
 \subsection{Typ "`Einfache Richtungsänderung"'}\label{direction_change:sec}
 
-Ein Zielobjekt dieses Typs entfernt zuerst alle Richtungen, in denen sich direkt angrenzend ein Hindernis befindet. Diese Erweiterung der Sensorfähigkeiten wurde gewählt, damit das Zielobjekt nicht in Hindernissen längere Zeit steckenbleibt.
+Ein Zielobjekt dieses Typs entfernt zuerst alle Richtungen, in denen sich direkt angrenzend ein Hindernis befindet. Diese Erweiterung der Fähigkeiten der Sensoren wurde gewählt, damit das Zielobjekt nicht in Hindernissen längere Zeit steckenbleibt.\\
 Anschließend wird die Richtung entfernt, die der im letzten Schritt gewählten entgegengesetzt ist. Von den verbleibenden (bis zu) drei Richtungen wird schließlich eine zufällig ausgewählt. Sind alle drei Richtungen versperrt, wird in die entgegengesetzte Richtung zurückgegangen.\\
 In Abbildung~\ref{goal_agent_one_direction_change:fig} sind alle Felder grau markiert, die das Zielobjekt innerhalb von zwei Schritten erreichen kann, nachdem er sich einmal nach Norden bewegt hat.
 
@@ -266,11 +178,11 @@ In Abbildung~\ref{goal_agent_intelligent:fig} wird die Richtung Süden gestrichen
 
 \subsection{Typ "`Beibehaltung der Richtung"'}\label{no_direction_change:sec}
 
-Ein Zielobjekt dieses Typs versucht, immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, wählt es ein zufälliges, angrenzendes, freies Feld im Westen oder Osten. Anzumerken ist, dass dies zusätzliche Fähigkeiten darstellen, d.h. das Zielobjekt kann feststellen, ob sich direkt angrenzend ein Hindernis im Norden befindet, während normale Agenten, was die Distanz betrifft, keine Informationen darüber besitzen können.\\ TODO
+Ein Zielobjekt dieses Typs versucht, immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, wählt es ein zufälliges, angrenzendes, freies Feld im Westen oder Osten. Anzumerken ist, dass dies zusätzliche Fähigkeiten darstellen, d.h. das Zielobjekt kann feststellen, ob sich direkt angrenzend ein Hindernis im Norden befindet, während normale Agenten, was die Distanz betrifft, keine Informationen darüber besitzen können.\\
 
-Sind auch die Felder im Westen und Osten belegt, springt es auf ein zufälliges freies Feld in der Nähe. Schafft es das Zielobjekt innerhalb von einer bestimmten Zahl (Breite des Spielfelds) von Schritten nicht, einen weiteren Schritt nach Norden zu gehen, wird ebenfalls gesprungen, um ein "`Festhängen"' an einem Hindernis zu vermeiden.\\
+In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen dargestellt, zum einen ein wiederholtes Hin- und Herlaufen unter den Hindernissen, der Weg links um die Hindernisse herum und der Weg rechts um die Hindernisse herum.\\
 
-In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen dargestellt, zum einen ein wiederholtes Hin- und Herlaufen unter den Hindernissen, der Weg links um die Hindernisse herum und der Weg rechts um die Hindernisse herum.
+Diese Art von Zielobjekt soll insbesondere im schwierigen Szenario benutzt werden um den Bereich, den das Zielobjekt überquert, möglichst gering zu halten, aber gleichzeitig das Zielobjekt auch nicht an einer Stelle stehen zu lassen.\\
 
 \begin{figure}[htbp]
 \centerline{	
@@ -282,6 +194,5 @@ In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen da
 
 
 \subsection{Typ "`Lernendes Zielobjekt"'}\label{zielobjekt_sxcs_einfuehrung:sec}
-TODO Typname?
 
 Ein Zielobjekt dieses Typs kann mit Hilfe einer der in Kapitel~\ref{lcs_variants:cha} besprochenen Algorithmen lernen. Wesentlicher Unterschied zu lernenden Agenten ist, dass hier das Zielobjekt eine Aktion als positiv vermerkt, wenn sich keine Agenten in Überwachungsreichweite befinden. Eine genaue Beschreibung folgt in Kapitel~\ref{variant_zielobjekt_xcs_sxcs:sec}, hier soll die Idee nur der Vollständigkeit halber erwähnt werden.

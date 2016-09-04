@@ -1,22 +1,17 @@
 \chapter{Analyse SXCS}\label{lcs_analysis:cha}
 
+\section{Von den Agenten nicht schaffbare Szenarien TODO Titel}
 
+TODO im schwierigen Szenario, Intelligent speed 2...
+weder XCS noch SXCS schaffen es. ?
 
-
+INTELLIGENT:always exploid
 
 TODO Tests:
-
 explore/exploit 
 
-Leeres Szenario:
-Populationsgrößen mit und ohne zufälliger Initialisierung (covered actions)
-Lernrate XCS/SXCS, 0,01-0,1
-
 Säulenszenario:
-Populationsgrößen mit und ohne zufälliger Initialisierung (covered actions)
-Laufzeit mit und ohne zufälliger Initialisierung
-XCS mit unterschiedlichem gamma (prediction discount)
-Lernrate XCS/SXCS, 0,01-0,1
+XCS mit unterschiedlichem gamma (prediction discount)!!
 tournament selection Werte testen ~0.7 (XCS, SXCS)
 explore exploit testen (XCS, SXCS)
 
@@ -28,7 +23,9 @@ Lernrate XCS/SXCS, 0,01-0,1
 % OK! TODO mit und ohne numerosity Korrektur
 
 
-SXCS+max prediction+always exploit
+SXCS+max prediction+always exploit 
+SXCS+max prediction+always exploit  <- difficult scenario
+
 SXCS+switch exploit
 dsxcs gut: alles an TODO maxpred überprüfen...
 TODO Reward prediction unnötig bei speed 2, pillar, random?
@@ -41,41 +38,16 @@ auch mit Geschwindigkeit 0.1 oder so testen
 TODO 
 %if((sensor_goal[2*i])) {//  && (!sensor_agent[2*i+1])) { vergleichen. Ohne Sensoragent minimal schlechter
 
-\section{Vergleich unterschiedlicher Geschwindigkeiten des Zielobjekts} Säulenszenario
+Säulenszenario
 random, simple, intelligent, xcs, sxcs 500, sxcs 2000
 
 Hybrid:
 sxcs 500, sxcs2000, hsxcs500, hsxcs2000
 auf Säulen und auf Schwieriges Szenario!
 
-
-Zielobjekt mit SXCS
-
 SXCS sehr gut bei NO DIRECTION CHANGE und speed 1!
 
-
 nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zufälliger
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 SXCS+max prediction+always exploit
 SXCS+switch exploit
@@ -83,69 +55,12 @@ dsxcs gut: alles an TODO maxpred überprüfen...
 TODO Reward prediction unnötig bei speed 2, pillar, random?
 auch mit Geschwindigkeit 0.1 oder so testen
 
-
-
-
 - pillar, 1 direction change, speed 1, max pred + GA, 0.01 prediction init, prediction init adaption
 
 nur gering gg random
 
-GA immer an, nicht testen
-
 pillar, intelligent, low speed, maxpred aus, GA, SWITCH EXPLOIT, SEHR GUT!
 
-dann bei Bewertung weitermachen!
-
-\begin{table}[ht]
-\caption{Vergleich ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
-\centering
-\begin{tabular}{c c c}
-\hline\hline
-Algorithmus & Abdeckung & Qualität \\ [1ex]
-\hline
-``Intelligent (Open)'' \\ [1ex]
-\hline
-Zufällige Bewegung     & 72.55\% & 11.58\% \\
-XCS                    & 71.35\% & 13.98\% \\
-SXCS                   & 72.10\% & 13.50\% \\ [1ex]
-\hline
-``Intelligent (Hide)'' \\ [1ex]
-\hline
-Zufällige Bewegung     & 72.56\% & 11.78\% \\
-XCS                    & 71.33\% & 14.27\% \\
-SXCS                   & 72.05\% & 13.90\% \\ [1ex]
-\hline
-\end{tabular}
-\label{table:intelligent_open_hide_pillar}
-\end{table}
-
-
-\begin{table}[ht]
-\caption{Vergleich ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
-\centering
-\begin{tabular}{c c c}
-\hline\hline
-Algorithmus & Abdeckung & Qualität \\ [1ex]
-\hline
-``Intelligent (Open)'' \\ [1ex]
-\hline
-Zufällige Bewegung     & 72.55\% & 11.58\% \\
-XCS                    & 71.35\% & 13.98\% \\
-SXCS                   & 72.10\% & 13.50\% \\ [1ex]
-\hline
-``Intelligent (Hide)'' \\ [1ex]
-\hline
-Zufällige Bewegung     & 72.56\% & 11.78\% \\
-XCS                    & 71.33\% & 14.27\% \\
-SXCS                   & 72.05\% & 13.90\% \\ [1ex]
-\hline
-\end{tabular}
-\label{table:intelligent_open_hide_pillar}
-\end{table}
-
-
-TODO 
-%if((sensor_goal[2*i])) {//  && (!sensor_agent[2*i+1])) { vergleichen. Ohne Sensoragent minimal schlechter
 
 TODO auch sich langsam bewegende analysieren!
 Und auch stehenbleibende : z.B. im Raumszenario.
@@ -154,9 +69,74 @@ Geschwindigkeit 2 problematisch, Geschwindigkeit 1 ok?
 
 TODO classifier ausgeben 
 
-\section{Vergleich unterschiedlicher Geschwindigkeiten des Zielobjekts}
+SXCS sehr gut bei NO DIRECTION CHANGE und speed 1!
 
-In Abbildung~\ref{goal_agent_speed:fig} ist ein Vergleich der unterschiedlicher Geschwindigkeiten des Zielobjekts dargestellt. XCS (mit 500 Schritten) macht bei keiner Geschwindigkeit Lernfortschritte, die Qualität pendelt zwischen 31.69\% und 33.40\%, also in etwa identisch mit der zufälligen Bewegung. Die SXCS Implementierung scheint dagegen die geringere Geschwindigkeit ausgenutzt zu haben und ist dadurch in der Lage das Zielobjekt besser zu verfolgen. Mit 500 Schritten ist die Qualität abnehmend von 39.64\% (Geschwindigkeit 1.0) bis 35.96\% (Geschwindigkeit 2.0), im Fall mit 2000 Schritten erhöht sich dieser Bereich leicht auf 40.15\% bis 37.71\%.\\
+
+nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zufälliger
+
+
+\section{Test der verschiedenen Auswahlarten}\label{test_auswahlarten:sec}
+
+In Tabelle~\ref{table:auswahlarten_vergleich_direction} kann man die bisherigen Vermutungen sehr gut erkennen. Die Auswahlarten \emph{random selection} und \emph{roulette wheel selection}  sind für sich alleine kaum brauchbar, das Ergebnis ist nicht besser als des des sich zufällig bewegenden Agenten. Die Auswahlart \emph{best selection} sorgt gar für über 40\% blockierte Bewegungen und einer deutlich schlechteren Abdeckung. Für die \emph{exploit} Phase scheint nur \emph{tournament selection} deutlich bessere Ergebnisse zu liefern, wenn auch mit relativ hoher Zahl blockierter Bewegungen. Da die \emph{roulette wheel} Auswahlart etwas bessere Ergebnisse liefert, soll sie für die \emph{explore} Phase benutzt werden.\\
+
+Für den Wechsel zwischen der \emph{explore} und \emph{exploit} Phase sieht man bei zufälligem Wechsel, dass die statistischen Werte zwischen denen der \emph{roulette wheel} und \emph{tournament selection} Auswahlart liegen, stellt angesichts der minimalen Steigerung zur Qualität von der \emph{roulette wheel} Auswahlart also kein signifikante Verbesserung dar. Wechselt man bei einer Änderung des \emph{base reward} Werts und startet in der \emph{explore} Phase ergibt sich ein deutlich schlechteres Ergebnis, der Algorithmus scheint sich also genau falsch zu verhalten. Umgekehrt, startet man in der \emph{exploit} Phase, ergibt sich dagegen ein deutlich besseres Ergebnis. Über die Gründe kann man spekulieren TODO vermutlich lernen? TODO classifier anschauen!
+
+Insgesamt soll also im Weiteren nur die \emph{tournament selection} und der Wechsel zwischen \emph{tournament selection} und \emph{roulette wheel selection} als Auswahlart benutzt werden.
+
+TODO neu!?
+
+Tabelle~\ref{table:auswahlarten_vergleich_direction2}
+
+\begin{table}[ht]
+\caption{Vergleich der verschiedenen Auswahlarten (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario, Geschwindigkeit 1, 8 Agenten mit SXCS Algorithmus)}
+\centering
+\begin{tabular}{c c c c}
+\hline\hline
+Auswahlart & Blockierte Bewegungen & Abdeckung & Qualität \\ [1ex]
+\hline
+Agent mit zufälliger Bewegung                      &  4,46\% & 72,12\% & 29,05\% \\[1ex]
+\hline
+\emph{roulette wheel selection}         &  4,54\% & 72,10\% & 30,30\% \\
+\emph{random selection}                 &  4,34\% & 72,21\% & 28,50\% \\
+\bf{\emph{tournament selection}}        & 11,21\% & 70,20\% & \bf{33,39\%} \\
+\emph{best selection}                   & 41,16\% & 63,64\% & 29,22\% \\
+Zufällig \emph{explore}/\emph{exploit}  &  6,29\% & 71,18\% & 30,58\% \\
+Abwechselnd, zuerst \emph{explore}      &  5,63\% & 71,37\% & 26,30\% \\
+\bf{Abwechselnd, zuerst \emph{exploit}} &  9,28\% & 70,40\% & \bf{35,36\%} \\[1ex]
+\hline
+\end{tabular}
+\label{table:auswahlarten_vergleich_direction}
+\end{table}
+
+TODO ges2, int 1 und 2
+
+\begin{table}[ht]
+\caption{Vergleich der verschiedenen Auswahlarten (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario, \bf{Geschwindigkeit 2}, 8 Agenten mit SXCS Algorithmus)}
+\centering
+\begin{tabular}{c c c c}
+\hline\hline
+Auswahlart & Blockierte Bewegungen & Abdeckung & Qualität \\ [1ex]
+\hline
+Agent mit zufälliger Bewegung                      &  4,46\% & 72,12\% & 29,05\% \\[1ex]
+\hline
+\emph{roulette wheel selection} &  4,54\% & 72,10\% & 30,30\% \\
+\emph{random selection}         &  4,34\% & 72,21\% & 28,50\% \\
+\bf{\emph{tournament selection}}     & 11,21\% & 70,20\% & \bf{33,39\%} \\
+\emph{best selection}           & 41,16\% & 63,64\% & 29,22\% \\
+Zufällig \emph{explore}/\emph{exploit}             &  6,29\% & 71,18\% & 30,58\% \\
+Abwechselnd, zuerst \emph{explore}          &  5,63\% & 71,37\% & 26,30\% \\
+\bf{Abwechselnd, zuerst \emph{exploit}}          &  9,28\% & 70,40\% & \bf{35,36\%} \\[1ex]
+\hline
+\end{tabular}
+\label{table:auswahlarten_vergleich_direction2}
+\end{table}
+
+
+
+\section{Auswirkung unterschiedlicher Geschwindigkeiten des Zielobjekts}
+
+
+In Abbildung~\ref{goal_agent_speed:fig} ist ein Vergleich der unterschiedlicher Geschwindigkeiten des Zielobjekts dargestellt. XCS (mit 500 Schritten) macht bei keiner Geschwindigkeit Lernfortschritte, die Qualität pendelt zwischen 31,69\% und 33,40\%, also in etwa identisch mit der zufälligen Bewegung. Die SXCS Implementierung scheint dagegen die geringere Geschwindigkeit ausgenutzt zu haben und ist dadurch in der Lage das Zielobjekt besser zu verfolgen. Mit 500 Schritten ist die Qualität abnehmend von 39,64\% (Geschwindigkeit 1,0) bis 35,96\% (Geschwindigkeit 2.0), im Fall mit 2000 Schritten erhöht sich dieser Bereich leicht auf 40,15\% bis 37,71\%.\\
 Auch bei den Heuristiken zeichnet sich ein klares Bild ab, bei niedrigen Geschwindigkeiten ist die Ausbreitung der Agenten auf dem Feld (intelligente Heuristik) weniger wichtig als die konstante Verfolgung des Zielobjekts, während bei höheren Geschwindigkeiten die Verteilung auf dem Feld wichtiger wird.
 
 \begin{figure}[htbp]
@@ -176,29 +156,21 @@ Bester Agent nach 20000 Schritten
 TODO
 \end{verbatim}
 
+
 \section{Zielobjekt mit XCS und SXCS}\label{goal_agent_with_xcs:sec}
 
 Der in Kapitel~\ref{variant_zielobjekt_xcs_sxcs:sec} besprochene Ansatz, einen Zielobjekt mit einem XCS bzw. SXCS auszustatten, soll hier nun getestet werden. Dabei sollen zuerst Agenten mit den besprochenen statischen Heuristiken gegen diesen Zielobjekt antreten, abschließend soll - hauptsächlich aus Neugier - ein solches Zielobjekt gegen ebenfalls mit SXCS ausgestatteten Agenten antreten, hier soll insbesondere der Verlauf über die Zeit interessieren, da die Qualität TODO
 
+Wichtig: niedrige Lerngeschwindigkeit!
+evtl viele Probleme testen
 
 \section{Zusammenfassung der bisherigen Erkenntnisse}
 
  Algorithmen mit Ergebnissen die unter dem des zufälligen Algorithmus liegt, sind unbrauchbar und nicht vergleichbar. ``Verbesserungen'', die die Qualität des Algorithmus näher an das Ergebnis des zufälligen Algorithmus bringen, sind in Wirklichkeit Veränderungen, die den Algorithmus eher zufällige Entscheidungen treffen lassen, und keine tatsächlichen Lernerfolge.
 
-SXCS sehr gut bei NO DIRECTION CHANGE und speed 1!
-
-
-nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zufälliger
-
-
-\section{Standard XCS Multistepverfahren}
-
-
 
 
 \subsection{SXCS und Heuristiken}
-
-erst multistep... mit random vergleichen
 
 In allen Tests erreichten die Heuristiken deutlich bessere Ergebnisse. Diesen Nachteil hat sich XCS in diesen Szenarien durch deutlich überlegene Flexibilität erkauft TODO
 Ein Großteil der eingehenden Informationen ist für die Auswertung nicht relevant und lokale Information ist zu ungenau.
@@ -208,15 +180,6 @@ Insbesondere der Vergleich mit dem intelligenten Agenten, der anderen Agenten au
 
 der Abstand zu anderen Agenten nicht Teil der Berechnung des Rewards ist, noch gibt keine eingebaute Heuristik. Man könnte zwar 
 
-
-\subsection{Vergleich XCS / SXCS}
-
-Szenarien, Parameter.
-
-\subsection{Test der verschiedenen Exploration-Modi}
-
-
-Prediction Error sehr hoch, da dynamisches 
 
 \subsection{Test Kommunikation}
 
@@ -231,27 +194,8 @@ Vergleich mit LCS?
 
 \subsection{Difficult XCS TODO}\label{xcs_difficult_scenario:sec}
 
-\subsection{Vergleich TODO}
+Im schwierigen Szenario wurde in Kapitel~\ref{test_schwieriges_szenario:sec} gezeigt, dass hier sich zufällige bewegende Agenten wie auch Agenten mit einfacher Heuristik versagen. Auch wurde argumentiert, dass Agenten mit intelligenter Heuristik nur deshalb Erfolg haben, weil sie sich gegenseitig durch die Öffnungen "`drängen"'. Hier sollen nun lernende Agenten ihre Fähigkeiten unter Beweis stellen. Zwar soll sich der Agent hier auch bewegen, aber eben wieder nur in einer Linie. Es ist also kein Überwachungsszenario im eigentlichen Sinne, wenn ein Agent das letzte Feld erreicht, ist das Problem im Grunde schon gelöst.
 
-Old LCS Agent
-New LCS Agent
-
-Multistep LCS Agent
-Dieser Algorithmus stellt eine Implementation des Standard XCS Algorithmus dar. Unterschied zur Standardimplementation ist, dass die Probleminstanz bei Erreichen des temporären Ziels (d.h. das Zielobjekt in Sicht zu bekommen) nicht tatsächlich neugestartet wird.
-Events, wie bei den neuen LCS Implementationen gibt es nicht, ist das Ziel in Sicht wird Reward 1.0 weitergegeben.
-
-Sight range/Kommunikationsrange
 
 
 LCS Agenten schneiden auch ohne Kommunikation (bei ausreichender Anzahl von Schritten) immer besser ab als zufällige Agenten.
-
-TODOGrafiken
-
-TODO Problemzahl und Schrittzahl mit
-Kapitel~\ref{test_schwieriges_szenario:sec} vergleichen
-
-
-
-
-
-

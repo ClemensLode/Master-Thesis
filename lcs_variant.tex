@@ -1,24 +1,13 @@
 \chapter{XCS Varianten}\label{lcs_variants:cha}
 
-Ziel der Arbeit war es, wie man den XCS Algorithmus auf ein Überwachungsszenario anwenden kann. Notwendig dafür war es, die XCS Implementierung vollständig nachzuvollziehen, um für jeden Bestandteil entscheiden zu können, welche Rolle es bezüglich eines solchen Szenarios spielt. Für die Tests wurde nicht auf bestehende Pakete (z.B. XCSlib~\cite{xcslib}) zurückgegriffen, wenn auch der Quelltext von \cite{Butz_xcsclassifier} Modell stand und aus ihm große Teile entnommen wurden.\\
+Ziel der Arbeit war es, wie man den XCS Algorithmus auf ein Überwachungsszenario anwenden kann. Notwendig dafür war es, die XCS Implementierung vollständig nachzuvollziehen, um für jeden Bestandteil entscheiden zu können, welche Rolle er bezüglich eines solchen Szenarios spielt. Für die Tests wurde nicht auf bestehende Pakete (z.B. XCSlib~\cite{xcslib}) zurückgegriffen, wenn auch der Quelltext von \cite{Butz_xcsclassifier} Modell stand und aus ihm große Teile entnommen wurden.\\
 
-Im Vordergrund stand zum einen die grundsätzliche Frage, ob XCS in einem solchen Szenario überhaupt besser als ein Algorithmus sein kann, der sich rein zufällig verhält und wie mögliche Ansätze aussehen können, den Algorithmus zu verbessern.\\
-Neben den in Kapitel~\ref{allgemeine_anpassungen:sec} aufgeführten Punkten, welche allgemeine Anpassungen des Algorithmus und der Implementation betreffen, soll im ersten Teil der XCS Varienten in Kapitel~\ref{standardxcs:sec} XCS selbst besprochen werden, insbesondere die Behandlung des Neustarts eines Problems.\\
-Im nächsten Teil soll dann die erste Variante, der sogenannte SXCS Algorithmus vorgestellt werden. Dieser Algorithmus wurde unter dem Gesichtspunkt des Problems einer kontinuierlichen Überwachung eines Zielobjekts entwickelt, also nicht, wie der originale XCS Algorithmus, einen Weg zu einem Ziel finden.\\
+Im Vordergrund stand zum einen die grundsätzliche Frage, ob XCS in einem solchen Szenario überhaupt besser als ein Algorithmus sein kann, der sich rein zufällig verhält, und wie mögliche Ansätze aussehen können, den Algorithmus zu verbessern.\\
+
+Zuerst sollen allgemeine Anpassungen des Algorithmus und der Implementation besprochen werden (siehe Kapitel~\ref{allgemeine_anpassungen:sec}) um dann auf die konkreten Veränderungen der einzelnen XCS Varianten einzugehen. Zum einen wird der XCS Algorithmus selbst in Kapitel~\ref{standardxcs:sec} vorgestellt, dort wird insbesondere die Behandlung des Neustarts eines Problems diskutiert. Zum anderen wird eine an Überwachungsszenarios angepasste Variante, der sogenannte SXCS Algorithmus, vorgestellt werden. Dieser Algorithmus wurde unter dem Gesichtspunkt des Problems einer kontinuierlichen Überwachung eines Zielobjekts entwickelt, also nicht, wie viele der Standardprobleme beim originalen XCS \emph{multi step} Verfahren, einen Weg durch ein Labyrinth zu einem Ziel finden. Schließlich soll in Kapitel~\ref{communication:cha} eine Variante mit verzögerter Aktualisierung des \emph{reward} Werts in den \emph{action set} Listen und eine darauf aufbauende Variante mit Kommunikation mit anderen Agenten vorgestellt werden (der sogenannte DSXCS Algorithmus, siehe Kapitel~\ref{communication:cha}).
 
 
-
-In Kapitel~\ref{cha:parameter} wurden mögliche Optimierungen zu den Parametern vorgestellt, in Kapitel~\ref{ablauf_lcs:sec} wurde diskutiert, in welcher Reihenfolge bei einem Multiagentensystem auf einem diskreten Torus die einzelnen Teile ausgeführt werden sollen.
-
-Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction bereitete 
-
-Das Multistepverfahren baut darauf auf, dass die Qualität der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
-
-Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht zum Erfolg führen. Eine einfache Implementation mit einem simplen Agenten der auf das Ziel zugeht, wenn es in Sicht ist und sich sonst wie ein sich zufällig bewegender Agent verhält, schneidet grundsätzlich schlechter ab.
-
-TODO!
-
-\section{Allgemeine Anpassungen und Verbesserungen}\label{allgemeine_anpassungen:sec}
+\section{Allgemeine Anpassungen}\label{allgemeine_anpassungen:sec}
 
 Eine Anzahl allgemeine Änderungen an der Implementation und am Algorithmus waren notwendig, um XCS in einem Überwachungsszenario laufen zu lassen. Unter anderen sind dies:
 
@@ -33,17 +22,15 @@ Eine Anzahl allgemeine Änderungen an der Implementation und am Algorithmus waren
 
 \item Das Erreichen des Ziels wurde für das Überwachungsszenario neu verfasst wie auch der Neustart von Probleminstanzen neu geregelt wurde (siehe Kapitel~\ref{bewertung:sec}).
 
+\item Die Reihenfolge bei der Bewertung, Entscheidung und Aktion in einem Multiagentensystem auf einem diskreten Torus musste überdacht werden (siehe Kapitel~\ref{ablauf_lcs:sec})
 \end{enumerate}
 
 
-
-
-
-\section{Standard XCS Multistepverfahren}\label{standardxcs:sec}
+\section{XCS \emph{multi step} Verfahren}\label{standardxcs:sec}
 
 Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. der jeweils zugehörigen \emph{action set} Liste und die dortigen \emph{classifier}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängen soll. Somit wird, rückführend vom letzten Schritt auf das Ziel, der \emph{reward} Wert schrittweise (mit jeder neuen Probleminstanz) an vorgehende Aktionen verteilt. Die Annahme ist, dass dann, durch mehrfache Wiederholung des Lernprozesses, mit dem sich dadurch ergebenen Regelsatz mit höherer Wahrscheinlichkeit das Ziel gefunden wird.\\
 
-Dies entspricht dem aus \cite{butz01algorithmic} bekannten XCS \emph{multi step} Verfahren. Der wesentliche Unterschied der Implementierung in dieser Arbeit ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Dies zeigt sich in Programm~\ref{multistep_calc_reward:pro} (Zeile 22-27), zwar wird die \emph{action set} Liste gelöscht, das Szenario selbst läuft aber weiter. In der originalen Implementierung in~\cite{Butz_xcsclassifier} wird an dieser Stelle im Algorithmus die aktuelle Probleminstanz abgebrochen (in \emph{XCS.java} in der Funktion \emph{doOneMultiStepProblemExploit()} bzw. \emph{doOneMultiStepProblemExplore()}). Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an die letzte \emph{action set} Liste gegeben.\\
+Dies entspricht dem aus \cite{butz01algorithmic} bekannten XCS \emph{multi step} Verfahren. Der wesentliche Unterschied der Implementierung in dieser Arbeit ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Dies zeigt sich in Programm~\ref{multistep_calc_reward:pro} (Zeilen 22-27), zwar wird die \emph{action set} Liste gelöscht, das Szenario selbst läuft aber weiter. In der originalen Implementierung in~\cite{Butz_xcsclassifier} wird an dieser Stelle im Algorithmus die aktuelle Probleminstanz abgebrochen (in \emph{XCS.java} in der Funktion \emph{doOneMultiStepProblemExploit()} bzw. \emph{doOneMultiStepProblemExplore()}). Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an die letzte \emph{action set} Liste gegeben.\\
 
 In den Programmen~\ref{multistep_collect_reward:pro} und \ref{multistep_calc_move:pro} finden sich, neben Anpassungen an den Simulator, keine wesentlichen Änderungen. In Programm~\ref{multistep_collect_reward:pro} wird der ermittelte \emph{base reward} zusammen mit dem ermittelten \emph{maxPrediction} Wert an die Aktualisierungsfunktion der jeweiligen \emph{action set} Liste weitergegeben und in Programm~\ref{multistep_calc_move:pro} wird eine Aktion ausgewählt und entsprechende \emph{match set} und \emph{action set} Listen erstellt.
 
@@ -51,7 +38,13 @@ In den Programmen~\ref{multistep_collect_reward:pro} und \ref{multistep_calc_mov
 \section{XCS Variante für Überwachungsszenarien (SXCS)}\label{sxcs_variant:sec}
 
 Die Hypothese bei der Aufstellung dieser XCS Variante ist im Grunde dieselbe wie beim XCS \emph{multi step} Verfahren selbst, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim \emph{multi step} Verfahren besteht die wesentliche Verbindung zwischen den \emph{action set} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{action set} Listen über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (des \emph{fitness} und \emph{reward prediction} Werts) für die \emph{classifier} gefunden werden.\\
-Bei der veränderten XCS Variante \emph{Supervising eXtended Classifier System} SXCS soll die Verbindung zwischen den \emph{action set} Listen direkt durch die zeitliche Nähe zur Vergabe des \emph{base reward} gegeben sein. Es wird in jedem Schritt die jeweilige \emph{action set} Liste gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
+
+Bei der hier besprochenen SXCS Variante (\emph{Supervising eXtended Classifier System}) soll in Kapitel~\ref{umsetzung_sxcs:sec} zuerst die Umsetzung dieser Idee diskutiert. Insbesondere baut sie auf sogenannten Ereignissen auf, die mit einer Änderung des \emph{base reward} Werts einhergehen, welche in Kapitel~\ref{sec:events} erklärt werden. Die Implementierung selbst wird dann in Kapitel~\ref{sxcs_implementation:sec} vorgestellt.\\
+
+
+\subsection{Umsetzung von SXCS}\label{umsetzung_sxcs:sec}
+
+Bei SXCS Variante soll die Verbindung zwischen den \emph{action set} Listen direkt durch die zeitliche Nähe zur Vergabe des \emph{base reward} gegeben sein. Es wird in jedem Schritt die jeweilige \emph{action set} Liste gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
 Bezeichne \(r(a)\) den \emph{reward} Wert für die \emph{action set} Liste mit Alter \(a\), bei linearer Verteilung des \emph{base reward} ergibt sich dann:
 $$
 r(a) = \left\{ \begin{array}{rl}
@@ -81,27 +74,15 @@ Die schematische Abbildung~\ref{positive_negative_reward:fig} demonstriert diese
 
 TODO, evtl maxprediction komplett raus bei SXCS, testen!?
 
+TODO explore/exploit, nur bei explore lernen, erwähnen dass immer gelernt werden muss
+
+TODO oberes Limit der Genauigkeit, 84\%, da ja geswitched wird.
+
 \subsection{Ereignisse}\label{sec:events}
 
 In XCS wird lediglich das jeweils letzte \emph{action set} Liste aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zum Wert \emph{maxStackSize}) von \emph{action set} Listen gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des \emph{reward} anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von \emph{action set} Listen und zum anderen die zeitliche Relativierung einer \emph{action set} Liste zu einem Ereignis. Die \emph{classifier} werden dann jeweils rückwirkend anhand des jeweiligen \emph{reward} Werts aktualisiert, sobald bestimmte Bedingungen eingetreten sind.\\
 
 Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{base reward} im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn das Zielobjekt sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).\\
-
-Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die \emph{classifier} besitzen jeweils Information, die bis zu \emph{maxStackSize} Schritte zu alt sind. Wählt man den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählt man ihn zu klein, kann es sein, dass ein Überlauf auftritt, also \emph{maxStackSize} Schritte lang keine Änderung des \emph{base reward} aufgetreten ist. Im letzteren Fall wird deswegen abgebrochen, die \emph{action set} Listen der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten \emph{base reward} Wert (welcher dem aktuellen \emph{base reward} Wert entspricht, es ist ja keine Änderung des \emph{base reward} eingetreten) aktualisiert und vom Stack genommen (siehe Abbildung~\ref{neutral_reward:fig}). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
-Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
-
-\begin{figure}[H]
-\setbox0\vbox{\small
-Ein Ereignis tritt auf, wenn:
-\begin{enumerate}
-\item Positive Rewardänderung (Zielobjekt war im letzten Zeitschritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis (mit reward = \(1\))
-\item Negative Rewardänderung (Zielobjekt war im letzten Zeitschritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis (mit reward = \(0\))
-\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielobjekt ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(1\))
-\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielobjekt ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(0\))
-\end{enumerate}
-}
-\centerline{\fbox{\box0}}
-\end{figure}
 
 \begin{figure}[htbp]
 \centerline{	
@@ -111,23 +92,52 @@ Ein Ereignis tritt auf, wenn:
 \label{saved_rewards:fig}
 \end{figure}
 
+Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die \emph{classifier} erhalten jeweils Information, die bis zu \emph{maxStackSize} Schritte zu alt sein kann. Tritt beim Stack ein Überlauf ein, gab es also \emph{maxStackSize} Schritte lang keine Änderung des \emph{base reward} Werts, wird abgebrochen und die \(\frac{maxStackSize}{2}\) ältesten Einträge vom Stack genommen.\\
+
+Beträgt der \emph{base reward} den Wert \(0\) so werden diese Einträge verworfen. Idee ist, dass ein Agent, der es längere Zeit nicht schafft, das Zielobjekt in Sichtweite zu bekommen, nicht unbedingt falsch, was das globale Ziel betrifft, gehandelt haben muss, da er trotzdem ein Gebiet überwacht, das vom Zielobjekt passiert hätte können. Es ist anzunehmen, dass (nach der erwarteten Verteilung der zukünftigen Positionen des Zielobjekts) selbst bei einer optimalen Verteilung der Agenten, einige Agenten das Zielobjekt nie in Sicht bekommen.\\
+
+Beträgt der \emph{base reward} den Wert \(1\) werden alle diese Einträge mit diesem Wert aktualisiert. Abbildung~\ref{neutral_reward:fig} zeigt die Bewertung bei einem solchen neutralen Ereignis, bei dem nach Überlauf die erste Hälfte mit \(1\) bewertet wurde. Außerdem ist dort der maximale Fehler dargestellt, welcher eintreten würde, wenn direkt beim Schritt nach dem Abbruch eine Änderung des \emph{base reward} Werts auftritt, im dargestellten Fall also der \emph{base reward} sich beim aktuellen Zeitpunkt auf \(0\) verändern würde.\\
+
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{neutral_reward.eps}
 }
-\caption[Schematische Darstellung der Verteilung des \emph{reward} an \emph{action set} Listen bei einem neutralen Ereignis] {Schematische Darstellung der Verteilung des \emph{reward} an \emph{action set} Listen bei einem neutralen Ereignis}
+\caption[Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis (mit \emph{base reward} = 0)}
 \label{neutral_reward:fig}
 \end{figure}
 
+
+Wählt man den Stack zu groß, dann werden eher am Ergebnis unbeteiligte (d.h. vom Ereignis weit weg liegende) \emph{action set} Listen bewertet. Auch nimmt die Reaktionsgeschwindigkeit des Systems ab, d.h. zum einen bewegen sich die Agenten zu Beginn, bis sie das erste Mal das Zielobjekt in Sichtweite haben, zufällig. Wählt man den Stack zu klein, kann es sein, dass ein Überlauf und somit u.U. ein gewisser Fehler auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar. Wie Abbildung~\ref{max_stack_size} TODO zeigt, ist dies bei größerer Schrittzahl aber vernachlässigbar, ein Wert von 128 erscheint sinnvoll.\\
+
+\begin{figure}[htbp]
+\centerline{	
+%\includegraphics{max_stack_size.eps}
+}
+\caption[Vergleich verschiedener Werte für \emph{maxStackSize}] {Vergleich verschiedener Werte für \emph{maxStackSize}}
+\label{max_stack_size:fig}
+\end{figure}
+
+Zusammengefasst ergeben sich also folgende Ereignisse:
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Ein Ereignis tritt auf, wenn:
+\begin{enumerate}
+\item Änderung des \emph{base reward} Werts von 0 auf 1 (Zielobjekt war im letzten Zeitschritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis
+\item Änderung des \emph{base reward} Werts von 1 auf 0 (Zielobjekt war im letzten Zeitschritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis
+\item Überlauf des Stacks (kein positives oder negatives Ereignis in den letzten \emph{maxStackSize} Schritten), Zielobjekt ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit \emph{base reward} = \(1\))
+\item Überlauf des Stacks (kein positives oder negatives Ereignis in den letzten \emph{maxStackSize} Schritten), Zielobjekt ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit \emph{base reward} = \(0\))
+\end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
+
+
+
+
 \subsection{Implementierung von SXCS}\label{sxcs_implementation:sec}
 
-TODO Erläuterung
-TODO Programm~\ref{sxcs_calc_reward:pro}
-TODO Programm~\ref{sxcs_collect_reward:pro}
-TODO Programm~\ref{sxcs_calc_move:pro}
-
-
-
+Im Wesentlichen entspricht die Implementierung von SXCS der bekannten Implementierung von XCS (siehe Kapitel~\ref{standardxcs:sec}). Unterschiede gibt es erstens bei Berechnung des \emph{reward} Werts in der Funktion \emph{calculateReward()} in Programm~\ref{sxcs_calc_reward:pro}, bei der zwischen zwei Fällen unterschieden wird. Zum einen gibt es die Behandlung negativer und positiver Ereignisse (Zeile 17-21) und zum anderen die Behandlung des Überlaufs des Stacks (Zeile 24-30), während bei der Implementierung von XCS in Programm~\ref{multistep_calc_reward:pro} in fast jedem Schritt unabhängig von Ereignissen eine Aktualisierung stattfindet. Zweitens gibt es Unterschiede in der Funktion \emph{collectReward()} in Programm~\ref{sxcs_collect_reward:pro}. Dort werden nicht nur die aktuelle bzw. letzte \emph{action set} Liste aktualisiert, sondern eine ganze Reihe aus dem gespeicherten Stack. Insbesondere werden dort die auf- bzw. absteigenden \emph{reward} Werte nach einem positiven bzw. negativen Ereignis berechnet (Zeile 31-33). Bei der Berechnung der nächsten Aktion hingegen (Funktion \emph{calculateNextMove()} in Programm~\ref{sxcs_calc_move:pro}) wurde lediglich die Behandlung des Stacks hinzugefügt (Zeile 39-43).
 
 
 \subsection{Zielobjekt mit XCS und SXCS}\label{variant_zielobjekt_xcs_sxcs:sec}
@@ -158,8 +168,29 @@ Die abgeänderte Version ist in Programm~\ref{goal_check_reward:pro} aufgelistet,
 
 
 
-\section{XCS Variante mit Kommunikation}\label{communication:cha}
+\section{SXCS Variante mit Kommunikation}\label{communication:cha}
 
+Da ein Multiagentensystem betrachtet wird, stellt sich natürlich die Frage nach der Kommunikation. In der Literatur gibt es Multiagentensysteme, die auf Learning Classifier Systemen aufbauen, wie z.B. TODO Literatur. 
+Alle Ansätze in der Literatur erlauben jedoch globale Kommunikation, z.T. gibt es globale \emph{classifier} auf die alle Agenten zurückgreifen können, z.T. gibt es globale Steuerung. TODO
+Verteilung des rewards an alle - soccer
+TODO Einordnen
+
+soccer!
+
+\cite{Takadama} OCS, centralized control system
+
+In dieser Arbeit soll ein Szenario ohne globale Steuerung oder globale \emph{classifier}, also mit der Restriktion einer begrenzten, lokalen Kommunikation.
+Geht man davon aus, dass über die Zeit hinweg jeder Agent indirekt mit jedem anderen Agenten in Kontakt treten kann, Nachrichten also mit Zeitverzögerung weitergeleitet werden können, ist eine Form der globalen, wenn auch zeitverzögerten, Kommunikation möglich. TODO 
+Eine spezielle Implementierung für diesen Fall werde ich weiter unten besprechen TODO
+
+
+Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite stattfinden kann. Dies ist natürlich kein realistisches Szenario. Geht man jedoch davon aus, dass die Kommunikationsreichweite zumindest ausreichend groß ist um nahe Agenten zu kontaktieren, so kann man argumentieren, dass man dadurch ein Kommunikationsnetzwerk aufbauen kann, in dem jeder Agent jeden anderen Agenten - mit einer gewissen Zeitverzögerung - erreichen kann. Bei ausreichender Agentenzahl relativ zur freien Fläche fallen dadurch wahrscheinlich nur vereinzelte Agenten aus dem Netz, abhängig vom Szenario. Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muss die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls zusätzliche Zeit benötigt. Der Einfachheit halber soll deswegen angenommen werden, dass wir zwar globale Kommunikation zur Verfügung haben, jedoch diese u.U. zeitverzögert stattfindet und wir nur geringe Mengen an Information weitergeben können. In diesem Falle sollen ein Agent in jedem Schritt maximal lediglich einen sogenannten Kommunikationsfaktor und einen \emph{reward} Wert an alle anderen Agenten weitergeben können. Da dieser Algorithmus auf dem SXCS Algorithmus aufbauen soll, sollen hier auch Ereignisse auftreten können und immer eine ganze Reihe von \emph{action set} Listen bewertet werden. Somit muss außerdem noch ein Start- und Endzeitpunkt übermittelt werden. Dies wäre beispielsweise bei einem neutralen Ereignis \(\frac{maxStackSize}{2}\) und \emph{maxStackSize} oder bei einem positiven Ereignis mit 5 Schritten seit dem letzten Ereignis 0 als Startzeitpunkt und 4 als Endzeitpunkt.\\
+
+Insgesamt wird dafür also eine SXCS Variante benötigt, die mit zeitlich verzögerter Aktualisierung arbeiten kann.
+
+weshalb für Kommunikation der zuvor besprochene verzögerte SXCS Algorithmus (DSXCS) in Frage kommt.\\
+
+Hauptaugenmerk hier soll sein, dass es überhaupt Vorteile bringen kann, den \emph{reward} weiterzugeben
 
 TODO SWITCH EXPLORE/EXPLOIT + NEW LCS sehr gut
 
@@ -174,90 +205,35 @@ Realistischer Fall mit Kommunikationsrestriktionen
 
 
 
-Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite stattfinden kann. Dies ist natürlich kein realistisches Szenario. Geht man jedoch davon aus, dass die Kommunikationsreichweite zumindest ausreichend groß ist um nahe Agenten zu kontaktieren, so kann man argumentieren, dass man dadurch ein Kommunikationsnetzwerk aufbauen kann, in dem jeder Agent jeden anderen Agenten - mit einer gewissen Zeitverzögerung - erreichen kann. Bei ausreichender Agentenzahl relativ zur freien Fläche fallen dadurch nur vereinzelte Agenten aus dem Netz, was der Effektivität der Agentengruppe erwartungsgemäß nur geringfügig schadet (TODO zeigen?)
-Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muss die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls Zeit benötigt.
-Im realistischen Fall ist also davon auszugehen, dass jede Kommunikation erst mit einer gewissen Verzögerung ausgeführt wird, weshalb für Kommunikation nur der zuvor besprochene verzögerte SXCS Algorithmus (DSXCS) in Frage kommt.
-
 pg. 286 Zentralisierung der Daten
 
 TODO bei Faktorberechnung Ranking
 
 Lösungen aus der Literatur
 
-Da ein Multiagentensystem betrachtet wird, stellt sich natürlich die Frage nach der Kommunikation. In der Literatur gibt es Multiagentensysteme, die auf Learning Classifier Systemen aufbauen, wie z.B. TODO Literatur. 
-Alle Ansätze in der Literatur erlauben jedoch globale Kommunikation, z.T. gibt es globale \emph{classifier} auf die alle Agenten zurückgreifen können, z.T. gibt es globale Steuerung. 
-
-Verteilung des rewards an alle - soccer
-
-TODO Einordnen
-In \cite{Miyazaki} gezeigt, Gruppenbildung (rationality, grade 2 confusion)
-
-soccer!
-
-\cite{Takadama} OCS, centralized control system
-
-In dieser Arbeit soll ein Szenario ohne globale Steuerung oder globale \emph{classifier}, also mit der Restriktion einer begrenzten, lokalen Kommunikation.
-Geht man davon aus, dass über die Zeit hinweg jeder Agent indirekt mit jedem anderen Agenten in Kontakt treten kann, Nachrichten also mit Zeitverzögerung weitergeleitet werden können, ist eine Form der globalen, wenn auch zeitverzögerten, Kommunikation möglich. TODO 
-Eine spezielle Implementierung für diesen Fall werde ich weiter unten besprechen TODO
-
 
 \subsection{SXCS Variante mit verzögerter Reward (DSXCS)}
 
-
+Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel~\ref{sxcs_implementation:sec} besprochenen Funktion (Programm~\ref{sxcs_calc_reward:pro}) bei der SXCS Variante ohne verzögerte Bewertung. Ebenso ist die Funktion \emph{calculateNextMove()} (siehe Programm~\ref{dsxcs_calc_move:pro}) fast identisch mit der dort besprochenen Funktion, nur bei der Behandlung des Stacks wird hier beim Überlauf der Eintrag nicht einfach gelöscht, sondern mit der Funktion \emph{processReward()} zuerst noch verarbeitet. In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} Werte ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:pro} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:pro} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von \(1,0\) ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
 
 Eine hilfreiche Voraussetzung für Kommunikation ist, wenn die dadurch möglicherweise entstehende Verzögerung vom jeweiligen Algorithmus unterstützt wird. Während weiter oben 
 
-Realistischer Fall
-
-Drei Werte weitergeben... Egoismus Faktor, Reward und Timestamp
-
-Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich erst einmal zusammen mit den jeweiligen \emph{actionSets} in einer Liste (\emph{historicActionSet} TODO Bezeichnung) gespeichert werden und in jedem Schritt immer nur die \emph{classifiers} des \emph{actionSets} des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert wird. Somit ergibt sich also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, mehrere gleichzeitig stattgefundene (aber erst verzögert eintreffende, wegen z.B. Kommunikationsschwierigkeiten) Ereignisse zusammen auszuwerten. Dies ist eine wesentliche Voraussetzung für Kommunikation zwischen den Agenten. TODO
+Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich erst einmal zusammen mit den jeweiligen \emph{action set} Listein einer Liste (\emph{historicActionSet} Liste) gespeichert werden und in jedem Schritt immer nur die \emph{classifier} der \emph{action set} Liste des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert werden. Somit ergibt sich also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, mehrere gleichzeitig stattgefundene (aber erst verzögert eintreffende, wegen z.B. Kommunikationsschwierigkeiten) Ereignisse zusammen auszuwerten. Dies ist macht die Auswertung der eingehenden \emph{reward} Werte und Kommunikationsfaktoren wesentlich einfacher, da alle gemeinsam betrachtet werden können, anstatt dass sie sofort bei Eingang verarbeitet werden müssen.\\
 
 Wann immer ein \emph{base reward} Wert an einen Agenten verteilt wird, kann es sinnvoll sein, diesen \emph{base reward} an andere Agenten weiterzugeben. Dies wurde z.B. in einem ähnlichen Szenario in~\cite{1102281} festgestellt, bei dem zwei auf XCS basierende Agenten gegen bis zu zwei anderen (zufälligen) Agenten eine vereinfachte Form des Fußballs spielen. Das in dieser Arbeite besprochene Szenario ist wesentlich komplexer, was d
 
 
 
-Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel ~\ref{calculateRewardLCS:fig} besprochenen Funktion bei der SXCS Variante ohne verzögerten \emph{reward}. 
-
-In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:pro} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:pro} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von 1.0 ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
-
-TODO Programm~\ref{dsxcs_calc_move:pro}
-TODO Programm~\ref{process_reward_dsxcs1:pro}
-TODO Programm~\ref{process_reward_dsxcs2:pro}
-
-
-
-
-TODO reward bzw. reward Werte
-
-Ablauf TODO
-
-TODO wann weitergabe des rewards
-
 Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes "`externes Ereignis"' von diesen Agenten aufgefasst wird, hängt von den jeweiligen Kommunikationsvarianten ab, die in Kapitel~\ref{kommunikationsvarianten:sec} besprochen werden.
 
-Durch eine gemeinsame Schnittstelle erhält jeder Agent den \emph{reward} zusammen mit dem Kommunikationsfaktor. Dabei ergibt sich das Problem, dass sich \emph{reward} überschneiden können, da jeder \emph{reward} sich rückwirkend auf die vergangenen \emph{action set} Listen auswirken kann. Auch können mehrere externe \emph{reward} eintreffen, als auch ein eigener lokaler \emph{reward} aufgetreten sein. Würden die \emph{reward} Werte nach ihrer Eingangsreihenfolge abgearbeitet werden, kann es passieren, dass dieselbe \emph{action set} Liste sowohl mit einem hohen als auch einem niedrigen \emph{reward} aktualisiert wird. Da das globale Ziel ist, das Zielobjekt durch \emph{irgendeinen} Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein \emph{einzelner} Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
+Durch eine gemeinsame Schnittstelle erhält jeder Agent den \emph{reward} zusammen mit dem Kommunikationsfaktor. Dabei ergibt sich das Problem, dass sich \emph{reward} überschneiden können, da jeder \emph{reward} sich rückwirkend auf die vergangenen \emph{action set} Listen auswirken kann. Auch können mehrere externe \emph{reward} Werte eintreffen, als auch ein eigener positiver lokaler \emph{reward} Wert aufgetreten sein. Würden die \emph{reward} Werte nach ihrer Eingangsreihenfolge abgearbeitet werden, kann es passieren, dass dieselbe \emph{action set} Liste sowohl mit einem hohen als auch einem niedrigen \emph{reward} aktualisiert wird. Da das globale Ziel ist, das Zielobjekt durch \emph{irgendeinen} Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein \emph{einzelner} Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
 
 Befindet sich das Ziel beispielsweise gerade in Überwachungsreichweite mehrerer Agenten und verliert ein anderer Agent das Ziel aus der Sicht, sollte der Agent (und alle anderen Agenten), der das Ziel in Sicht hat, deswegen nicht bestraft werden, da das globale Ziel ja weiterhin erfüllt wurde.
 
 TODO überlegen ob das noch Sinn macht, inwieweit das erklärt werden musws
 
 
-Gebe keinen Reward an andere Agenten weiter. Es ist nicht relevant, ob ein Agent das Ziel aus den Augen verliert oder nicht, es ist nur relevant, ob das Zielobjekt weiterhin von anderen Agenten beobachtet wird.
-Ein Sonderfall ist, wenn im vorherigen Schritt das Zielobjekt nicht in Sichtweite eines anderen Agenten stand, also in diesem Schritt auf einmal mehrere Agenten das Zielobjekt sehen können. In diesem Fall gibt nur der erste Agent den Reward weiter und setzt ein Flag.
 
-
-Ziel verschwindet aus Sicht
-War das Zielobjekt von keinem anderen Agenten in Sicht, dann hat sich das Zielobjekt hiermit aus der Sichtweite aller Agenten bewegt. Somit haben alle Agenten versagt und der negative Reward wird weitergegeben.
-
-
-
-
-
-Selbiges wenn das Ziel in Sicht kommt und von keinem anderen Agenten in Sicht ist. Die Agenten waren offensichtlich erfolgreich und können belohnt werden.
-
-TODOTODOTODOTODO
-Ist kein Event aufgetreten und wird die Hälfte des Stacks geleert, dann ist es nicht sinnvoll, einen 0-Reward weiterzugeben, da zwangsläufig immer mehrere Agenten eine längere Zeit das Zielobjekt nicht sehen, selbst wenn sie sich optimal verteilen / bewegen. TODO
 
 Dies zeigt auch der Test:
 TODO
@@ -278,18 +254,17 @@ Abbildung~\ref{corrected_reward:fig}
 
 
 
-\subsection{Kommunikationsvariante "`Einzelne Gruppe"'}\label{kommunikationsvarianten:sec}
+Allen hier vorgestellten Kommunikationsvarianten ist gemeinsam, dass sie einen Kommunikationsfaktor berechnen, nach denen sie den externen Reward, den ihnen ein anderer Agent übermittelt hat, bewerten. Der Kommunikationsfaktor gewichtet alle Verwendungen des Parameters \(\beta\) (welcher die Lernrate bestimmt). Ein Faktor von \(1.0\) hieße, dass der externe \emph{reward} Wert wie ein normaler \emph{reward} Wert behandelt wird, ein Faktor von \(0,0\) hieße, dass externe \emph{reward} Werte deaktiviert sein sollen.\\
 
-Allen hier vorgestellten Kommunikationsvarianten ist gemeinsam, dass sie einen Kommunikationsfaktor berechnen, nach denen sie den externen Reward, den ihnen ein anderer Agent übermittelt hat, bewerten. Der Kommunikationsfaktor gewichtet alle Verwendungen des Parameters \(\beta\) (welcher die Lernrate bestimmt). Ein Faktor von \(1.0\) hieße, dass der externe Reward wie ein normaler Reward behandelt wird, ein Faktor von \(0.0\) hieße, dass externe Rewards deaktiviert sein sollen.
-Die Idee ist, dass unterschiedliche Agenten unterschiedlich stark am Erfolg des anderen Agenten beteiligt sind, da ohne Kommunikation jeder Agent versuchen wird, selbst das Zielobjekt möglichst in die eigene Überwachungsreichweite zu bekommen, anstatt mit anderen Agenten zu kooperieren, also das Gebiet des Torus möglichst großräumig abzudecken.
+Die Idee ist, dass unterschiedliche Agenten unterschiedlich stark am Erfolg des anderen Agenten beteiligt sind, da ohne Kommunikation jeder Agent versuchen würde, selbst das Zielobjekt möglichst in die eigene Überwachungsreichweite zu bekommen, anstatt die Arbeit mit anderen Agenten zu teilen, also z.B. das Gebiet des Torus möglichst großräumig abzudecken, wie es der in Kapitel~\ref{intelligent_heuristik:sec} vorgestellte Agent mit intelligenter Heuristik in mehreren Tests u.a. in Kapitel~\ref{zielagent_analyse_intelligent:sec} demonstriert hat.\\
 
-Gruppenbildung
+Hier sollen nun zwei Formen der Weitergabe des \emph{reward} Werts vorgestellt werden, zum einen die Kommunikationsvariante in der alle Agenten ihre \emph{reward} Werte teilen (siehe Kapitel~\ref{einfache_gruppe_kommunikation:sec}) und zum anderen eine Kommunikationsvariante bei der der \emph{reward} Wert anhand ähnlicher in den \emph{classifier sets} gespeicherter Verhaltensweisen verteilt wird (siehe Kapitel~\ref{egoistic_relation:sec}.\\
 
-Das hoch...
 
-Einzelne Gruppe
+\subsection{Kommunikationsvariante "`Einzelne Gruppe"'}\label{einfache_gruppe_kommunikation:sec}
 
-Mit dieser Variante wird der Kommunikationsfaktor fest auf \(1.0\) gesetzt und es werden alle Rewards in gleicher Weise weitergegeben. Dadurch wird zwischen den Agenten nicht diskriminiert, was letztlich bedeutet, dass zwar zum einen diejenigen Agenten korrekt mit einem externen Reward belohnt werden, die sich zielführend verhalten, aber zum anderen eben auch diejenigen, die es nicht tun. Deren Classifier werden somit zu einem gewissen Grad zufällig bewertet, denn es fehlt die Verbindung zwischen Classifier und Reward.\\
+Mit dieser Variante wird der Kommunikationsfaktor fest auf \(1,0\) gesetzt und es werden alle \emph{reward} Werte in gleicher Weise weitergegeben. Dadurch wird zwischen den Agenten nicht diskriminiert, was letztlich bedeutet, dass zwar zum einen diejenigen Agenten korrekt mit einem externen \emph{reward} Wert belohnt werden, die sich zielführend verhalten, aber zum anderen eben auch diejenigen, die es nicht tun. Deren \emph{classifier} werden somit zu einem gewissen Grad zufällig bewertet, denn es fehlt die Verbindung zwischen \emph{classifier}, Handlung und der Bewertung.\\
+
 
 Letztlich ist eine Zusammenlegung der Rewards im Grunde mit einer Zusammenlegung aller Sensoren zu vergleichen, 
 Tatsächlich nur ein einzelner Agent?
@@ -305,7 +280,8 @@ Verteilt man den Reward an alle Agenten mit gleichem Faktor heisst das letztlich
 
 \subsection{Gruppenbildung über Ähnlichkeit des Verhaltens der Agenten}\label{egoistic_relation:sec}
 
-TODO TITEL
+In \cite{Miyazaki} wurde gezeigt, dass Gruppenbildung (rationality, grade 2 confusion)
+
 
 Eine weitere Variante berechnet erst einmal für jeden Agenten einen "`Egoismusfaktor"', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, das Zielobjekt in Sicht zu bekommen, anstatt ein möglichst großes Gebiet abzudecken.\\
 
@@ -321,23 +297,15 @@ Die Variante müsste also zum einen in
 
 schlecht abschneiden TODO
 
-TODO rewardrange = kommrange, Vereinfachung
 
 
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{reward_range.eps}
-}
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
-\label{reward_range:fig}
-\end{figure}
-
+Die offensichtliche Unstetigkeit der in dieser Weise verarbeiteten \emph{reward} Werte gibt Raum für Verbesserungen.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{reward_range_egoist.eps}
 }
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
+\caption[Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis}
 \label{reward_range_egoist:fig}
 \end{figure}
 
@@ -346,13 +314,8 @@ TODO rewardrange = kommrange, Vereinfachung
 \centerline{	
 \includegraphics{reward_range_egoist_block.eps}
 }
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
+\caption[Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von action set Listen bei einem neutralen Ereignis}
 \label{reward_range_egoist_block:fig}
 \end{figure}
 
-TODO Programm~\ref{egoistic_relationship:pro}
-
-
-
-
-Unstetigkeit Raum für Verbesserung
+Die Berechnung des Faktors ist in Programm~\ref{egoistic_relationship:pro} dargestellt. Für jede \emph{classifier set} Liste wird ein sogenannter Egoismusfaktor bestimmt, die Differenz beider Egoismusfaktoren wird dann im Quadrat von \(1,0\) abgezogen und als Kommunikationsfaktor zurückgegeben. Die Egoismusfaktoren selbst bestimmen sich aus dem (mit jeweils dem Produkt aus den jeweiligen \emph{fitness} und \emph{reward predicton} Werten gewichtet) Anteil aller \emph{classifier}, die sich auf andere Agenten zubewegen, sofern sie in Sicht sind. Somit ist der Kommunikationsfaktor umso größer, je ähnlicher die Agenten in ihrem Abstandsverhalten gegenüber anderen Agenten sind.
