@@ -1,0 +1,163 @@
+\section{Implementation des DSXCS Algorithmus}
+
+\newlisting{Erstes Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()} - Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
+/**
+ * Diese Funktion verarbeitet den übergebenen reward Wert und gibt ihn an 
+ * die zugehörigen action set Listen weiter. 
+ *
+ * @param reward Wahr wenn das Zielobjekt in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen action set Listen
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
+ *          d.h. einem positiven reward Wert, aufgerufen wurde
+ */
+
+  public void collectReward(int start_index, int action_set_size, 
+                boolean reward, double best_value, boolean is_event) {
+    double corrected_reward = reward ? 1.0 : 0.0;
+
+  /**
+   * Aktualisiere eine ganze Anzahl von Einträgen im historicActionSet
+   */
+     for(int i = 0; i < action_set_size; i++) {
+
+  /**
+   * Benutze aufsteigenden bzw. absteigenden reward Wert bei 
+   * einem positiven bzw. negativen Ereignis
+   */
+       if(is_event) {
+         corrected_reward = reward ? 
+           calculateReward(i, action_set_size) : 
+           calculateReward(action_set_size - i, action_set_size);
+       } 
+
+  /**
+   * Füge den ermittelten reward Wert zur historicActionSet Liste
+   */
+       historicActionSet.get(start_index - i).
+         addReward(corrected_reward, factor);
+
+    }
+  }
+\end{lstlisting}
+
+
+\newlisting{Auszug aus dem zweiten Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
+
+/**
+ * Der erste Teil der Funktion ist identisch mit der calculateNextMove()
+ * Funktion der SXCS Variante ohne Kommunikation. Der Zusatz ist, dass beim 
+ * Überlauf die in der historicActionSet Liste gespeicherte reward Werte
+ * verarbeitet werden.
+ */
+
+  public void calculateNextMove(long gaTimestep) {
+
+  // ... 
+
+  /**
+   * historicActionSet voll? Dann verarbeite den dortigen reward Wert
+   */
+     if (historicActionSet.size() > Configuration.getMaxStackSize()) {
+       historicActionSet.pop().processReward();
+    }
+  }
+\end{lstlisting}
+
+
+\newlisting{Drittes Kernstück des verzögerten SXCS Algorithmus DSXCS  (Verarbeitung des jeweiligen reward Werts, \emph{processReward()})}{process_reward_dsxcs1:pro}
+/**
+ * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
+ * eingegangenen reward Werte bis zu diesem Punkt.
+ */
+
+  public void processReward() {
+  /**
+   * Finde das größte reward / factor Paar
+   */
+    for(RewardHelper r : reward) {
+    /**
+     * Dieser Eintrag wurde schon in collectReward() verwertet
+     */
+      if(r.reward == 1.0 && r.factor == 1.0) {
+        continue;
+      }
+    /**
+     * Aktualisiere den Eintrag mit den entsprechenden Werten
+     */
+      actionClassifierSet.updateReward(r.reward, 0.0, r.factor);
+    }
+  }
+\end{lstlisting}
+
+
+\newlisting{Verbesserte Variante des dritten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
+/**
+ * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
+ * eingegangenen reward Wert bis zu diesem Punkt.
+ */
+
+  public void processReward() {
+
+    double max_value = 0.0;
+    double max_reward = 0.0;
+  /**
+   * Finde das größte reward / factor Paar
+   */
+    for(RewardHelper r : reward) {
+      
+      if(r.reward * r.factor > max_value) {
+        max_value = r.reward * r.factor;
+        max_reward = r.reward;
+      }
+    }
+    /**
+     * Aktualisiere den Eintrag mit dem ermittelten Werten
+     */
+    actionClassifierSet.updateReward(max_reward, 0.0, 1.0);
+  }
+\end{lstlisting}
+
+\clearpage
+
+
+\section{Implementation des egoistischen \emph{reward}}
+
+\newlisting{"'Egoistische Relation"', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem erwarteten Verhalten des Agenten gegenüber anderen Agenten}{egoistic_relationship:pro}
+/**
+ * Ähnlichkeit dieser classifier set Liste zu der übergebenen Liste im
+ * Hinblick auf die Wahrscheinlichkeit, auf andere Agenten zuzugehen
+ * @param other Die andere Liste mit der verglichen werden soll
+ * @return Grad der Ähnlichkeit bzw. der Kommunikationsfaktor (0,0 - 1,0)
+ */
+  public double checkEgoisticDegreeOfRelationship(
+                    final MainClassifierSet other) {
+    double ego_factor = getEgoisticFactor() - other.getEgoisticFactor();
+    if(ego_factor == 0.0) {
+      return 0.0;
+    } else {
+      return 1.0 - ego_factor * ego_factor;
+    }
+  }
+
+  public double getEgoisticFactor() throws Exception {
+    double factor = 0.0;
+    double pred_sum = 0.0;
+    for(Classifier c : getClassifiers()) {
+      if(!c.isPossibleSubsumer()) {
+        continue;
+      }
+      factor += c.getEgoFactor();
+      pred_sum += c.getFitness() * c.getPrediction();
+    }
+    if(pred_sum > 0.0) {
+      factor /= pred_sum;
+    } else {
+      factor = 0.0;
+    }
+    return factor;
+  }
+\end{lstlisting}
+
+
+
+

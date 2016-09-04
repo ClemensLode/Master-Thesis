@@ -7,30 +7,26 @@ Im Vordergrund stehen zwei grundsätzliche Fragen:
 \item zum anderen, wie mögliche Verbesserungsansätze für den Algorithmus aussehen könnten.
 \end{itemize}
 
-Zuerst werden allgemeine Anpassungen des Algorithmus und der Implementation besprochen (siehe Kapitel~\ref{allgemeine_anpassungen:sec}) um dann auf die konkreten Veränderungen der einzelnen XCS Varianten einzugehen. Zum einen wird der XCS Algorithmus selbst in Kapitel~\ref{standardxcs:sec} vorgestellt, dort wird insbesondere die Behandlung des Neustarts eines Problems diskutiert. Zum anderen wird eine an Überwachungsszenarios angepasste Variante, der sogenannte SXCS Algorithmus, vorgestellt. Dieser Algorithmus wurde unter dem Gesichtspunkt des Problems einer kontinuierlichen Überwachung eines Zielobjekts entwickelt, also nicht, wie viele der Standardprobleme beim originalen XCS \emph{multi step} Verfahren, einen Weg durch ein Labyrinth zu einem Ziel finden. Schließlich stellt das Kapitel~\ref{communication:cha} eine Variante mit verzögerter Aktualisierung des \emph{reward} Werts in den \emph{action set} Listen und eine darauf aufbauende Variante mit Kommunikation mit anderen Agenten vor (der sogenannte DSXCS Algorithmus, siehe Kapitel~\ref{communication:cha} TODO).
+Zuerst werden allgemeine Anpassungen des Algorithmus und der Implementation besprochen (siehe Kapitel~\ref{allgemeine_anpassungen:sec}) um dann auf die konkreten Veränderungen der einzelnen XCS Varianten einzugehen. Zum einen wird der XCS Algorithmus selbst in Kapitel~\ref{standardxcs:sec} vorgestellt, dort wird insbesondere die Behandlung des Neustarts eines Problems diskutiert. Zum anderen wird eine an Überwachungsszenarios angepasste Variante, der sogenannte SXCS Algorithmus, vorgestellt. Dieser Algorithmus wurde unter dem Gesichtspunkt des Problems einer kontinuierlichen Überwachung eines Zielobjekts entwickelt, also nicht, wie viele der Standardprobleme beim originalen XCS \emph{multi step} Verfahren, einen Weg durch ein Labyrinth zu einem Ziel finden. 
+
+%Schließlich stellt das Kapitel~\ref{communication:cha} eine Variante mit verzögerter Aktualisierung des \emph{reward} Werts in den \emph{action set} Listen und eine darauf aufbauende Variante mit Kommunikation mit anderen Agenten vor (der sogenannte DSXCS Algorithmus, siehe Kapitel~\ref{communication:cha} TODO).
 
 
 \section{Allgemeine Anpassungen}\label{allgemeine_anpassungen:sec}
 
-Eine Anzahl allgemeine Änderungen an der Implementation und am Algorithmus waren notwendig, um XCS in einem Überwachungsszenario laufen zu lassen. Unter anderen sind dies:
+Eine Anzahl allgemeiner Änderungen an der Implementation und am Algorithmus waren notwendig, um XCS in einem Überwachungsszenario laufen zu lassen. Unter anderen sind dies:
 
-%TODO?
-%1.Vollständig neu organisierte Berechnung der.. und Korrektur eines Fehlers bei %..
-%2.Der …
-%3.Qualitätsmessung des Algorithmus nicht nur .. Phase, da …
-%5.Neuformulierung des Ziels für das Überwachungsszenario und Neuregelung des %Neustarts von Probleminstanzen
-%6.Überdenken der Reihenfolge …Torus.
 
 \begin{itemize}
-\item Vollständig neu organisierte Berechnung der Summe der \emph{numerosity} Werte wurde vollständig neuorganisiert wie auch ein Fehler bei der Aktualisierung des \emph{numerosity} Werts in der Implementierung korrigiert (siehe Kapitel~\ref{corrected_numerosity_function:sec}).
+\item Berechnung der Summe der \emph{numerosity} Werte wurde neuorganisiert und ein Fehler bei der Aktualisierung des \emph{numerosity} Werts in der Implementierung korrigiert (siehe Kapitel~\ref{corrected_numerosity_function:sec}).
 
-\item Der genetischer Operator wird hier zwei feste anstatt zufällige Schnittpunkte für das \emph{two point crossover} verwenden (siehe Kapitel~\ref{genetische_operatoren:sec}).
+\item Der genetische Operator wird hier zwei feste, anstatt zufällige Schnittpunkte für das \emph{two point crossover} verwenden (siehe Kapitel~\ref{genetische_operatoren:sec}).
 
 \item Die Qualität des Algorithmus wird nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird (siehe Kapitel~\ref{exploreexploit:sec}).
 
 \item Mehrere XCS Parameter wurden angepasst (siehe Kapitel~\ref{cha:parameter}).
 
-\item Das Erreichen des Ziels wurde für das Überwachungsszenario neu verfasst wie auch der Neustart von Probleminstanzen neu geregelt wurde (siehe Kapitel~\ref{bewertung:sec}).
+\item Das Erreichen des Ziels wurde für das Überwachungsszenario neu verfasst, wie auch der Neustart von Probleminstanzen neu geregelt wurde (siehe Kapitel~\ref{bewertung:sec}).
 
 \item Die Reihenfolge bei der Bewertung, Entscheidung und Aktion in einem Multiagentensystem auf einem diskreten Torus musste überdacht werden (siehe Kapitel~\ref{ablauf_lcs:sec})
 
@@ -51,7 +47,7 @@ In den Programmen~\ref{multistep_collect_reward:pro} und \ref{multistep_calc_mov
 
 Die Hypothese bei der Aufstellung dieser XCS Variante ist im Grunde dieselbe wie beim XCS \emph{multi step} Verfahren selbst, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim \emph{multi step} Verfahren besteht die wesentliche Verbindung zwischen den \emph{action set} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{action set} Listen über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (des \emph{fitness} und \emph{reward prediction} Werts) für die \emph{classifier} gefunden werden.\\
 
-Bei der hier besprochenen SXCS Variante (\emph{Supervising eXtended Classifier System}) wird in Kapitel~\ref{umsetzung_sxcs:sec} zuerst die Umsetzung dieser Idee diskutiert. Insbesondere baut sie auf sogenannten Ereignissen auf, die mit einer Änderung des \emph{base reward} Werts einhergehen, welche in Kapitel~\ref{sec:events} erklärt werden. Die Implementierung selbst wird dann in Kapitel~\ref{sxcs_implementation:sec} vorgestellt.\\
+Bei der hier besprochenen SXCS Variante (\emph{Supervising eXtended Classifier System}) wird in Kapitel~\ref{umsetzung_sxcs:sec} zuerst die Umsetzung dieser Idee diskutiert werden. Insbesondere baut sie auf sogenannten Ereignissen auf, die mit einer Änderung des \emph{base reward} Werts einhergehen, welche in Kapitel~\ref{sec:events} erklärt werden. Die Implementierung selbst wird dann in Kapitel~\ref{sxcs_implementation:sec} vorgestellt.\\
 
 
 \subsection{Umsetzung von SXCS}\label{umsetzung_sxcs:sec}
@@ -60,8 +56,8 @@ Bei SXCS Variante soll die Verbindung zwischen den \emph{action set} Listen dire
 Bezeichne \(r(a)\) den \emph{reward} Wert für die \emph{action set} Liste mit Alter \(a\), bei linearer Verteilung des \emph{base reward} ergibt sich dann:
 $$
 r(a) = \left\{ \begin{array}{rl}
-  \frac{a}{\mathrm{size(actionSet)}} &\mbox{, falls base reward = $1$} \\
-  \frac{1 - a}{\mathrm{size(actionSet)}} &\mbox{, falls base reward = $0$}
+  \frac{a}{\mathrm{size(\emph{action set})}} &\mbox{, falls \emph{base reward} = $1$} \\
+  \frac{1 - a}{\mathrm{size(\emph{action set})}} &\mbox{, falls \emph{base reward} = $0$}
        \end{array} \right.
 $$
 
@@ -69,8 +65,8 @@ bzw. bei quadratischer Verteilung des \emph{base reward}:
 
 $$
 r(a) = \left\{ \begin{array}{rl}
-  \frac{{a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls base reward = $1$} \\
-  \frac{{1 - a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls base reward = $0$}
+  \frac{{a}^{2}}{{\mathrm{size(\emph{action set})}}^{2}} &\mbox{ falls \emph{base reward} = $1$} \\
+  \frac{{(1 - a)}^{2}}{{\mathrm{size(\emph{action set})}}^{2}} &\mbox{ falls \emph{base reward} = $0$}
        \end{array} \right.
 $$
 
@@ -89,9 +85,9 @@ Die schematische Abbildung~\ref{positive_negative_reward:fig} demonstriert diese
 
 \subsection{Ereignisse}\label{sec:events}
 
-In XCS wird lediglich das jeweils letzte \emph{action set} Liste aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zum Wert \emph{maxStackSize}) von \emph{action set} Listen gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des \emph{reward} anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von \emph{action set} Listen und zum anderen die zeitliche Relativierung einer \emph{action set} Liste zu einem Ereignis. Die \emph{classifier} werden dann jeweils rückwirkend anhand des jeweiligen \emph{reward} Werts aktualisiert, sobald bestimmte Bedingungen eingetreten sind.\\
+In XCS wird lediglich das jeweils letzte \emph{action set} Liste aus dem vorherigen Schritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zum Wert \emph{maxStackSize}) von \emph{action set} Listen gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des \emph{reward} anhand der vergangenen Schritte und auf Basis einer größeren Zahl von \emph{action set} Listen und zum anderen die zeitliche Relativierung einer \emph{action set} Liste zu einem Ereignis. Die \emph{classifier} werden dann jeweils rückwirkend anhand des jeweiligen \emph{reward} Werts aktualisiert, sobald bestimmte Bedingungen eingetreten sind.\\
 
-Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{base reward} im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn das Zielobjekt sich in Überwachungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).\\
+Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{base reward} im Vergleich zum vorangegangenen Schritt verändert hat, also wenn das Zielobjekt sich in Überwachungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).\\
 
 \begin{figure}[htbp]
 \centerline{	
@@ -101,7 +97,7 @@ Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{bas
 \label{saved_rewards:fig}
 \end{figure}
 
-Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die \emph{classifier} erhalten jeweils Information, die bis zu \emph{maxStackSize} Schritte zu alt sein kann. Tritt beim Stack ein Überlauf ein, gab es also \emph{maxStackSize} Schritte lang keine Änderung des \emph{base reward} Werts, wird abgebrochen und die \(\frac{maxStackSize}{2}\) ältesten Einträge vom Stack genommen.\\
+Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die \emph{classifier} erhalten jeweils Information, die bis zu \emph{maxStackSize} Schritte zu alt sein kann. Tritt beim Stack ein Überlauf ein (gab es also \emph{maxStackSize} Schritte lang keine Änderung des \emph{base reward} Werts) dann wird abgebrochen und die \(\frac{maxStackSize}{2}\) ältesten Einträge vom Stack genommen.\\
 
 Alle diese Einträge werden vorher dabei mit diesem \emph{base reward} Wert aktualisiert. Abbildung~\ref{neutral_reward:fig} zeigt die Bewertung bei einem solchen neutralen Ereignis, bei dem nach Überlauf die erste Hälfte mit \(1\) bewertet wurde. Außerdem ist dort der maximale Fehler dargestellt, welcher eintreten würde, wenn direkt beim Schritt nach dem Abbruch eine Änderung des \emph{base reward} Werts auftritt, im dargestellten Fall also der \emph{base reward} sich beim aktuellen Zeitpunkt auf \(0\) verändern würde.\\
 
@@ -111,6 +107,19 @@ Alle diese Einträge werden vorher dabei mit diesem \emph{base reward} Wert aktua
 }
 \caption[Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis (mit \emph{base reward} = 1)}
 \label{neutral_reward:fig}
+\end{figure}
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Ein Ereignis tritt auf, wenn:
+\begin{itemize}
+\item Änderung des \emph{base reward} Werts von 0 auf 1 (Zielobjekt war im letzten Schritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis
+\item Änderung des \emph{base reward} Werts von 1 auf 0 (Zielobjekt war im letzten Schritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis
+\item Überlauf des Stacks (kein positives oder negatives Ereignis in den letzten \emph{maxStackSize} Schritten), Zielobjekt ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit \emph{base reward} = \(1\))
+\item Überlauf des Stacks (kein positives oder negatives Ereignis in den letzten \emph{maxStackSize} Schritten), Zielobjekt ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit \emph{base reward} = \(0\))
+\end{itemize}
+}
+\centerline{\fbox{\box0}}
 \end{figure}
 
 
@@ -129,24 +138,6 @@ Wie Abbildung~\ref{max_stack_size:fig} zeigt, ist dies bei größerer Schrittzahl 
 \end{figure}
 
 
-\subsection{Zusammenfassung der Ereignisse}
-
-\begin{figure}[H]
-\setbox0\vbox{\small
-Ein Ereignis tritt auf, wenn:
-\begin{itemize}
-\item Änderung des \emph{base reward} Werts von 0 auf 1 (Zielobjekt war im letzten Zeitschritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis
-\item Änderung des \emph{base reward} Werts von 1 auf 0 (Zielobjekt war im letzten Zeitschritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis
-\item Überlauf des Stacks (kein positives oder negatives Ereignis in den letzten \emph{maxStackSize} Schritten), Zielobjekt ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit \emph{base reward} = \(1\))
-\item Überlauf des Stacks (kein positives oder negatives Ereignis in den letzten \emph{maxStackSize} Schritten), Zielobjekt ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit \emph{base reward} = \(0\))
-\end{itemize}
-}
-\centerline{\fbox{\box0}}
-\end{figure}
-
-
-
-
 \subsection{Implementierung von SXCS}\label{sxcs_implementation:sec}
 
 Im Wesentlichen entspricht die Implementierung von SXCS der bekannten Implementierung von XCS (siehe Kapitel~\ref{standardxcs:sec}). Als Unterschiede sind festzuhalten:
@@ -161,13 +152,8 @@ Im Wesentlichen entspricht die Implementierung von SXCS der bekannten Implementi
 
 
 
-\subsection{Zielobjekt mit XCS und SXCS}\label{variant_zielobjekt_xcs_sxcs:sec}
 
-Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, wird hier eine Implementierung von XCS und SXCS für das Zielobjekt diskutiert werden. Ziel der Untersuchung ist es, eine weitere Anwendungsmöglichkeit aufzuzeigen und XCS und SXCS nochmals zu vergleichen, anstatt konkrete neue Erkenntnisse zu gewinnen. Insbesondere handelt es sich hierbei nicht mehr um ein kollaboratives Multiagentensystem, da es zum einen nur ein einziges Zielobjekt im Szenario gibt und zum anderen die Aufgabe, anderen Agenten auszuweichen, durch Zusammenarbeit nicht besser gelöst werden kann (mal von hochentwickelten Verhaltensweisen abgesehen, bei der ein Zielobjekt das andere dadurch "`rettet"', dass es einen Agent weglocken kann). Die Ergebnisse der Analyse folgt in Kapitel~\ref{goal_agent_with_xcs:sec}, auch hier ist der Ansatz von SXCS gegenüber dem von XCS überlegen.\\
 
-Was die Implementierung betrifft ist sie, bis auf die Funktion \emph{checkRewardPoints()}, für das Zielobjekt fast identisch. Dort wird ein positiver \emph{base reward} Wert dann vergeben, wenn kein Agent in Sicht ist (während bei den Agenten ein positiver \emph{base reward} Wert dann vergeben wurde, wenn das Zielobjekt in Sicht ist). Die einzige zweite Änderung ist in der Funktion \emph{calculateNextMove()} (siehe Programm~\ref{multistep_calc_move:pro} (XCS) bzw. Programm~\ref{sxcs_calc_move:pro} (SXCS)), bei der die zusätzliche Sprungeigenschaft des Zielobjekts hinzugefügt ist (siehe Kapitel~\ref{zielobjekt:sec}).\\
-
-TODO evtl
 
 
 

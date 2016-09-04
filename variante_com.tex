@@ -1,3 +1,32 @@
+\section{SXCS Variante mit verzögerter \emph{reward} (DSXCS)}
+
+Die Struktur der besprochenen SXCS Variante erlaubt, ermittelte \emph{reward} Werte erst bis zu \emph{maxStackSize} Schritte später an die \emph{classifier} weiterzugeben. Während diese Verzögerung dort lediglich als notwendiges Übel gesehen wurde, kann dies auch wesentliche Vorteile erbringen. Erst einmal kann eine Verzögerung dazu führen, dass ein ermittelter \emph{reward} Wert nicht sofort eine Auswirkung auf die Bewegungsart des jeweiligen Agenten hat, der Agent also noch auf Basis seiner alten Konfiguration seiner \emph{classifier set} Liste handelt. Würde ein Agent beispielsweise zu Beginn nach Westen gehen und dort das Zielobjekt sehen, dann würden in den nächsten Schritten nach Westen gerichtete Schritte besonders bevorzugt, obwohl in den meisten Fällen speziell zu Beginn ein eher exploratives Verhalten von Vorteil ist. Zweiter und wesentlich wichtigerer Punkt ist, dass aufgrund der Verzögerung zum Zeitpunkt der Vergabe des \emph{reward} Werts eine viel größere Anzahl an Werten zur Verfügung steht (die \emph{reward} Werte der letzten \emph{maxStackSize} Schritte), anhand derer entschieden werden kann, mit welchem Wert die einzelnen \emph{classifier} aktualisiert werden sollen. Offen bleibt da nur die Frage nach einer Funktion, die dies vorteilhaft ausnutzt. Zwar konnte im Rahmen dieser Arbeit noch keine Funktion gefunden werden, prinzipiell erscheint es aber sehr wahrscheinlich, dass eine existiert. Im Folgenden soll deshalb nur auf den Aufbau einer solchen, speziell auf Verzögerungen ausgelegte, SXCS Variante DSXCS (\emph{Delayed Surveillance eXtended Classifier System}) eingegangen und später in Kapitel~\ref{dsxcs_analysis:sec} die Qualität im Vergleich zu SXCS getestet werden.
+
+\subsection{Implementierung}
+
+Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel~\ref{sxcs_implementation:sec} besprochenen Funktion (Programm~\ref{sxcs_calc_reward:pro}) bei der SXCS Variante ohne verzögerter Bewertung. Ebenso ist die Funktion \emph{calculateNextMove()} (siehe Programm~\ref{dsxcs_calc_move:pro}) fast identisch mit der dort besprochenen Funktion, nur bei der Behandlung des Stacks wird hier beim Überlauf der erste Eintrag nicht einfach gelöscht, sondern mit der Funktion \emph{processReward()} zuerst noch verarbeitet. In der Verarbeitung werden alle bisher gespeicherten \emph{reward} Werte berücksichtigt, um den \emph{reward} Wert für den ersten Eintrags zu berechnen und die \emph{classifier} der zugehörigen \emph{action set} Liste zu aktualisieren.
+
+
+\subsection{Zeitgleiche Ereignisse}
+
+Durch die Struktur von DSXCS ist es desweiteren möglich, mehrere zeitgleiche Ereignisse bzw. deren zugehörige \emph{reward} Werte sinnvoll zu verarbeiten. Während bei SXCS das Auftreten mehrerer gleichzeitiger \emph{reward} Werte dazu geführt hätte, dass die \emph{classifier} der jeweiligen \emph{action set} Listen nacheinander mit den jeweiligen Werten aktualisiert worden wären, kann sich ein auf DSXCS basierender Agent alle \emph{reward} Werte erst einmal näher ansehen und beispielsweise nur den höchsten \emph{reward} Wert für die Aktualisierung benutzen. Auch hier ist wieder offen, wie die Funktion aussieht, die einen Wert auswählt bzw. berechnet.
+
+
+\subsection{Kommunikation}
+
+Zeitgleiche Ereignisse können im verwendeten System eigentlich nicht auftreten. Erst mit der Einführung einer Form der Kommunikation ist es möglich, dass z.B. ein Agent den eigenen \emph{reward} Wert, die eigenen Sensordaten oder andere Informationen an einen anderen Agenten schickt und dadurch in diesem Schritt einen \emph{reward} Wert generiert. Hier ist ebenfalls offen, wie 
+
+
+\subsection{Faktor}
+
+beta
+
+
+
+
+. In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} Werte ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:pro} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:pro} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von \(1,0\) ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
+
+
 \section{SXCS Variante mit Kommunikation}\label{communication:cha}
 
 Da ein Multiagentensystem betrachtet wird, stellt sich natürlich die Frage nach der Kommunikation. In der Literatur gibt es Multiagentensysteme, die auf Learning Classifier Systemen aufbauen, wie z.B. 
@@ -50,9 +79,14 @@ Lösungen aus der Literatur
 maxStackSize für DSXCS testen!
 
 
-\subsection{SXCS Variante mit verzögerter Reward (DSXCS)}
 
-Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel~\ref{sxcs_implementation:sec} besprochenen Funktion (Programm~\ref{sxcs_calc_reward:pro}) bei der SXCS Variante ohne verzögerte Bewertung. Ebenso ist die Funktion \emph{calculateNextMove()} (siehe Programm~\ref{dsxcs_calc_move:pro}) fast identisch mit der dort besprochenen Funktion, nur bei der Behandlung des Stacks wird hier beim Überlauf der Eintrag nicht einfach gelöscht, sondern mit der Funktion \emph{processReward()} zuerst noch verarbeitet. In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} Werte ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:pro} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:pro} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von \(1,0\) ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
+
+
+
+
+
+
+
 
 Eine hilfreiche Voraussetzung für Kommunikation ist, wenn die dadurch möglicherweise entstehende Verzögerung vom jeweiligen Algorithmus unterstützt wird. Während weiter oben 
 

@@ -1,4 +1,3 @@
-\begin{appendix}
 \chapter{Implementation}\label{implementation:cha}
 
 Im Folgenden sind die Kernbestandteile aus dem Quelltext des Simulators aufgelistet. Sie dienen primär zum Verständnis der Idee und sind nur bedingt lauffähig. Der vollständige Quelltext ist auf der beiliegenden DVD bzw. unter~\cite{agentsimulator} verfügbar.
@@ -265,16 +264,15 @@ private void calculateNextMove() {
 
 \section{Korrigierte \emph{addNumerosity()} Funktion}\label{corrected_numerosity_function:sec}
 
-Durch die Benutzung von \emph{macro classifier} ergibt sich das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifier} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifier} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz_xcsclassifier} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einer einzelnen \emph{action set} Liste optimiert, während die hier verwendete Implementierung jeweils mit bis über 100 \emph{action set} Listen programmiert wurde, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{action set} Listen zur Folge, in der der \emph{classifier} Mitglied ist.\\
+Durch die Benutzung von \emph{macro classifier} ergibt sich das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifier} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifier} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz_xcsclassifier} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einer einzelnen \emph{action set} Liste optimiert. Dagegen wurde die für diese Arbeit erstellte Implementierung jeweils mit bis über 100 \emph{action set} Listen programmiert, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{action set} Listen zur Folge, in der der \emph{classifier} Mitglied ist.\\
 
-Wird also z.B. ein \emph{micro classifier} entfernt, dann wird lediglich die Änderungsfunktion des \emph{classifiers} aufgerufen, der dann wiederum den \emph{numerositySum} Wert der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viel Umstände, den \emph{numerositySum} der Eltern immer auf den aktuellen Stand zu halten und einzelne \emph{classifiers} zu löschen.\\
+Wird also ein \emph{micro classifier} entfernt, dann wird lediglich die Änderungsfunktion des jeweiligen \emph{classifier} aufgerufen, der dann wiederum den \emph{numerositySum} Wert der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viele Umstände, den \emph{numerositySum} der Eltern immer auf den aktuellen Stand zu halten und einzelne \emph{classifier} zu löschen.\\
 
-Positiver Nebeneffekt durch die verbesserte Struktur ist, dass man dadurch leicht auf die Menge der \emph{action set} Listen zugreifen kann, denen ein \emph{classifier} angehört, hierfür wurde aber im Rahmen dieser Arbeit keine Verwendung gefunden.\\
+Positiver Nebeneffekt durch die verbesserte Struktur ist der vereinfachte Zufgriff auf die Menge der \emph{action set} Listen, denen ein \emph{classifier} angehört, hierfür wurde aber im Rahmen dieser Arbeit keine Verwendung gefunden.\\
 
-Ein weiteres Problem der Standardimplementierung ist, dass der \emph{fitness} Wert eines \emph{classifiers} als Optimierung bereits den \emph{numerosity} Wert als Faktor enthält, während bei der Aktualisierung des \emph{numerosity} Werts der \emph{fitness} Wert nicht aktualisiert wurde. Das hat zur Folge, dass theoretisch \emph{fitness} Werte von \emph{classifiers} fast den \emph{max population} Wert annehmen kann, wenn ein \emph{classifier} mit \emph{numerosity} und \emph{fitness} Wert in der Höhe von \emph{max population} auf einen \emph{numerosity} Wert von \(1,0\) reduziert wird.\\
-Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die Korrektur besteht darin, den \emph{fitness} Wert mit dem Quotienten aus dem neuen durch den alten \emph{numerosity} Wert zu multiplizieren. Die korrigierte Fassung ist in Programm~\ref{corrected_numerosity_function:pro} dargestellt.\\
+Die Standardimplementierung weist ein weiteres Problem auf. So enthält der \emph{fitness} Wert eines \emph{classifier} als Optimierung bereits den \emph{numerosity} Wert als Faktor, während bei der Aktualisierung des \emph{numerosity} Werts der \emph{fitness} Wert nicht aktualisiert wurde. Das hat zur Folge, dass theoretisch der \emph{fitness} Wert eines \emph{classifier} fast den \emph{max population} Wert annehmen kann, wenn ein \emph{classifier} mit \emph{numerosity} und \emph{fitness} Wert in der Höhe von \emph{max population} auf einen \emph{numerosity} Wert von \(1,0\) reduziert wird. Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die Korrektur besteht darin, den \emph{fitness} Wert mit dem Quotienten aus dem neuen durch den alten \emph{numerosity} Wert zu multiplizieren. Die korrigierte Fassung ist in Programm~\ref{corrected_numerosity_function:pro} dargestellt.\\
 
-Möglicherweise kann man diesen Fehler durch Veränderung der Parameter oder längere Laufzeiten kompensieren, logisch betrachtet macht es aber keinen Sinn, dass beim Subsummieren bzw. Löschen eines \emph{micro classifier} der \emph{fitness} Wert verändert wird. In Tests haben sich nur minimale Unterschiede ergeben. Beispielsweise ergab sich (auf dem Säulenszenario mit 8 Agenten mit SXCS und einem Zielobjekt mit einfacher Richtungsänderung) eine Qualität von \(39,15\%\) im Vergleich zur originalen Implementierung von \(39,95\%\) bei 500 Schritten bzw. \(35,42\%\) zu \(35,01\%\) bei 2000 Schritten. Der Fehler scheint sich also eher langfristig auszuwirken, wenn auch der Unterschied so klein ist, dass man ihn vernachlässigen kann. Problematisch wird es, wenn Modifikationen von XCS darauf aufbauen, dass der \emph{fitness} Wert für jeden \emph{micro classifier} immer kleiner gleich \emph{1.0} ist.\\
+Möglicherweise kann man diesen Fehler durch Veränderung der Parameter oder längere Laufzeiten kompensieren. Es ergibt jedoch keinen Sinn, dass beim Subsummieren bzw. Löschen eines \emph{micro classifier} der \emph{fitness} Wert verändert wird. In Tests haben sich nur minimale Unterschiede ergeben. Beispielsweise ergab sich (auf dem Säulenszenario mit 8 Agenten mit SXCS und einem Zielobjekt mit einfacher Richtungsänderung) eine Qualität von \(39,15\%\) im Vergleich zur originalen Implementierung von \(39,95\%\) bei 500 Schritten bzw. \(35,42\%\) zu \(35,01\%\) bei 2000 Schritten. Der Fehler scheint sich also eher langfristig auszuwirken, wenn auch der Unterschied so klein ist, dass man ihn vernachlässigen kann. Problematisch wird es, wenn Modifikationen von XCS darauf aufbauen, dass der \emph{fitness} Wert für jeden \emph{micro classifier} immer kleiner gleich \emph{1.0} ist.\\
 
 Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fassung benutzt werden.
 
@@ -474,8 +472,9 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 \newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des \emph{reward} Werts auf die \emph{action set} Listen)}{sxcs_collect_reward:pro}
 /**
- * Diese Funktion verarbeitet den übergebenen reward und gibt ihn an 
- * die zugehörigen action set Listen weiter.
+ * Diese Funktion verarbeitet den übergebenen base reward Wert und 
+ * gibt ihn an die zugehörigen action set Listen weiter. Es wird
+ * kein maxPrediction Wert berechnet oder weitergegeben.
  *
  * @param reward Wahr wenn der Zielobjekt in Sicht war.
  * @param best_value Bester Wert des vorangegangenen action set Listen
@@ -486,10 +485,6 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
   public void collectReward(int start_index, int action_set_size, 
                 boolean reward, double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
-  /**
-   * Keine Weitergabe des reward Werts wie bei XCS
-   */
-    double max_prediction = 0.0;
 
   /**
    * Aktualisiere eine ganze Anzahl von action set Listen
@@ -503,8 +498,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
       if(is_event) {
         corrected_reward = reward ? 
           calculateReward(i, action_set_size) : 
-          calculateReward(action_set_size - i, 
-action_set_size);
+          calculateReward(action_set_size - i, action_set_size);
       }
   /**
    * Aktualisiere die action set Liste mit dem bestimmten reward Wert 
@@ -513,8 +507,7 @@ action_set_size);
    */
       ActionClassifierSet action_classifier_set = 
         historicActionSet.get(start_index - i);
-      action_classifier_set.updateReward(
-        corrected_reward, max_prediction, factor);
+      action_classifier_set.updateReward(corrected_reward, 0.0, 1.0);
     }
   }
 \end{lstlisting}
@@ -535,8 +528,8 @@ action_set_size);
   public void calculateNextMove(long gaTimestep) {
 
  /**
-  * Überdecke das classifierSet mit zum Status passenden Classifiern
-  * welche insgesamt alle möglichen Aktionen abdecken.
+  * Überdecke die classifier set Liste mit zum Status passenden 
+  * classifier welche insgesamt alle möglichen Aktionen abdecken.
   */
     classifierSet.coverAllValidActions(
                     lastState, getPosition(), gaTimestep);
@@ -568,182 +561,3 @@ action_set_size);
     }
   }
 \end{lstlisting}
-
-\clearpage
-
-
-\section{Implementation des DSXCS Algorithmus}
-
-\newlisting{Erstes Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()} - Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
-/**
- * Diese Funktion verarbeitet den übergebenen reward Wert und gibt ihn an 
- * die zugehörigen action set Listen weiter. Wesentlicher Unterschied zum 
- * SXCS Algorithmus ist, dass der maxPrediction Wert erst bei der 
- * endgültigen Verarbeitung des historicActionSet Listen ermittelt wird.
- *
- * @param reward Wahr wenn das Zielobjekt in Sicht war.
- * @param best_value Bester Wert des vorangegangenen action set Listen
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
- *          d.h. einem positiven reward Wert, aufgerufen wurde
- */
-
-  public void collectReward(int start_index, int action_set_size, 
-                boolean reward, double best_value, boolean is_event) {
-    double corrected_reward = reward ? 1.0 : 0.0;
-
-  /**
-   * Aktualisiere eine ganze Anzahl von Einträgen im historicActionSet
-   */
-     for(int i = 0; i < action_set_size; i++) {
-
-  /**
-   * Benutze aufsteigenden bzw. absteigenden reward Wert bei 
-   * einem positiven bzw. negativen Ereignis
-   */
-       if(is_event) {
-         corrected_reward = reward ? 
-           calculateReward(i, action_set_size) : 
-           calculateReward(action_set_size - i, action_set_size);
-       } else {
-         if(corrected_reward == 1.0 && factor == 1.0) {
-           historicActionSet.get(start_index - i).rewardPrematurely();
-         }
-       }
-
-  /**
-   * Füge den ermittelten reward Wert zur historicActionSet Liste
-   */
-       historicActionSet.get(start_index - i).
-         addReward(corrected_reward, factor);
-
-    }
-  }
-\end{lstlisting}
-
-
-\newlisting{Auszug aus dem zweiten Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
-
-/**
- * Der erste Teil der Funktion ist identisch mit der calculateNextMove()
- * Funktion der SXCS Variante ohne Kommunikation. Der Zusatz ist, dass beim 
- * Überlauf die in der historicActionSet Liste gespeicherte reward Werte
- * verarbeitet werden.
- */
-
-  public void calculateNextMove(long gaTimestep) {
-
-  // ... 
-
-  /**
-   * historicActionSet voll? Dann verarbeite den dortigen reward Wert
-   */
-     if (historicActionSet.size() > Configuration.getMaxStackSize()) {
-       historicActionSet.pop().processReward();
-    }
-  }
-\end{lstlisting}
-
-
-\newlisting{Drittes Kernstück des verzögerten SXCS Algorithmus DSXCS  (Verarbeitung des jeweiligen reward Werts, \emph{processReward()})}{process_reward_dsxcs1:pro}
-/**
- * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
- * eingegangenen reward Werte bis zu diesem Punkt.
- */
-
-  public void processReward() {
-  /**
-   * Finde das größte reward / factor Paar
-   */
-    for(RewardHelper r : reward) {
-    /**
-     * Dieser Eintrag wurde schon in collectReward() verwertet
-     */
-      if(r.reward == 1.0 && r.factor == 1.0) {
-        continue;
-      }
-    /**
-     * Aktualisiere den Eintrag mit den entsprechenden Werten
-     */
-      actionClassifierSet.updateReward(r.reward, 0.0, r.factor);
-    }
-  }
-\end{lstlisting}
-
-
-\newlisting{Verbesserte Variante des dritten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
-/**
- * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
- * eingegangenen reward Wert bis zu diesem Punkt.
- */
-
-  public void processReward() {
-
-    double max_value = 0.0;
-    double max_reward = 0.0;
-  /**
-   * Finde das größte reward / factor Paar
-   */
-    for(RewardHelper r : reward) {
-    /**
-     * Dieser Eintrag wurde schon in collectReward() verwertet
-     */
-      if(r.reward == 1.0 && r.factor == 1.0) {
-        return;
-      }
-      
-      if(r.reward * r.factor > max_value) {
-        max_value = r.reward * r.factor;
-        max_reward = r.reward;
-      }
-    }
-    /**
-     * Aktualisiere den Eintrag mit dem ermittelten Werten
-     */
-    actionClassifierSet.updateReward(max_reward, 0.0, 1.0);
-  }
-\end{lstlisting}
-
-\clearpage
-
-
-\section{Implementation des egoistischen \emph{reward}}
-
-\newlisting{"'Egoistische Relation"', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem erwarteten Verhalten des Agenten gegenüber anderen Agenten}{egoistic_relationship:pro}
-/**
- * Ähnlichkeit dieser classifier set Liste zu der übergebenen Liste im
- * Hinblick auf die Wahrscheinlichkeit, auf andere Agenten zuzugehen
- * @param other Die andere Liste mit der verglichen werden soll
- * @return Grad der Ähnlichkeit bzw. der Kommunikationsfaktor (0,0 - 1,0)
- */
-  public double checkEgoisticDegreeOfRelationship(
-                    final MainClassifierSet other) {
-    double ego_factor = getEgoisticFactor() - other.getEgoisticFactor();
-    if(ego_factor == 0.0) {
-      return 0.0;
-    } else {
-      return 1.0 - ego_factor * ego_factor;
-    }
-  }
-
-  public double getEgoisticFactor() throws Exception {
-    double factor = 0.0;
-    double pred_sum = 0.0;
-    for(Classifier c : getClassifiers()) {
-      if(!c.isPossibleSubsumer()) {
-        continue;
-      }
-      factor += c.getEgoFactor();
-      pred_sum += c.getFitness() * c.getPrediction();
-    }
-    if(pred_sum > 0.0) {
-      factor /= pred_sum;
-    } else {
-      factor = 0.0;
-    }
-    return factor;
-  }
-\end{lstlisting}
-
-
-
-\end{appendix}

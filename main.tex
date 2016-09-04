@@ -10,6 +10,8 @@
 \usepackage{theorem}
 \usepackage{url}
 \usepackage[british, german]{babel}
+\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc} 
 \usepackage{german}
 \usepackage{wrapfig}
 \usepackage{setspace}
@@ -23,7 +25,33 @@
 % wegen deutschen Umlauten
 \usepackage[ansinew]{inputenc}
 
-
+% The hyperref package is used to handle cross-referencing commands in LaTeX to produce hypertext links in the document. The package provides backends for the \special set defined for HyperTeX DVI processors; for embedded pdfmark commands for processing by Acrobat Distiller (dvips and Y&Y's dvipsone); for Y&Y's dviwindo; for PDF control within pdfTeX and dvipdfm; for TeX4ht; and for VTeX's pdf and HTML backends.
+\usepackage[
+	anchorcolor=black,
+	backref=false,
+	bookmarks=true,
+	bookmarksnumbered=true,
+	breaklinks=true,
+	citecolor=green,
+	colorlinks=true,
+	draft=false,
+	filecolor=cyan,
+	final=true,
+	hyperfigures=false,
+	hyperfootnotes=true,
+	linkcolor=red,
+	menucolor=red,
+	pagebackref=false,
+	pdfauthor={Clemens Lode},
+	% pdfcreater={LaTeX with hyperref package}
+	pdfkeywords={Learning Classifier System},
+	pdfstartview=FitH,
+	% pdfsubject={},
+	pdftex,
+  	pdftitle={XCS in dynamischen Multiagenten-Überwachungsszenarien ohne globale Kommunikation},
+	plainpages=false,
+  urlcolor=magenta  
+]{hyperref}
 
 \pagestyle{headings}
 
@@ -62,7 +90,7 @@
 \renewcommand\lstlistlistingname{Programmverzeichnis}
 
 \newcommand{\newlisting}[2]{\begin{lstlisting}[frame=trbl,caption={#1},label={#2},numbers=left,captionpos=b,float={htbp}]{}}
-
+\hyphenation{Ziel-ob-jekt S\"au-len-sze-nario} 
 \begin{document}
 \lstset{basicstyle=\footnotesize, numberstyle=\tiny}
 
@@ -93,14 +121,18 @@
 \include{exploration}
 \include{parameter}
 \include{lcs_variant}
-\include{variante_com}
+%\include{variante_com}
 
 \include{ohne_lcs_analysis}
 \include{lcs_analysis}
 
 \include{conclusion}
 
+\begin{appendix}
 \include{appendix}
+%\include{appendix_com}
+\end{appendix}
+\clearpage
 \backmatter
 \clearemptydoublepage
 \bibliography{main}

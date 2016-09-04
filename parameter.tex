@@ -4,7 +4,7 @@ Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen w
 
 Liegt beim Test die erreichte Qualität unter der des zufälligen Algorithmus, ist beim Vergleich der Parameterwerte Vorsicht angebracht. Die Ursache für die Verbesserung kann sein, dass der Algorithmus nicht besser lernt, sondern sich umgekehrt eher wie der zufällige Algorithmus verhält. Deswegen ist stets der Vergleich mit der Qualität des sich zufällig bewegenden Algorithmus anzugeben.\\
 
-Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Mit dem Ziel, synchronisierte und vergleichbare Daten zu haben, wurden die Tests in mehreren Etappen durchgeführt. Damit entsprechen die hier aufgeführten Testergebnisse nur den endgültigen Ergebnissen. Der hohe Aufwand dieses Kapitels war notwendig, da der Unterschied zwischen den Qualitäten der verschiedenen Algorithmen sehr gering war und keine Vergleichsarbeiten existieren, wenn, was bestimmte Standardwerte betrifft, auch auf die Literatur zurückgegriffen wurde und diese sich meist als sinnvoll erwiesen.
+Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Mit dem Ziel, synchronisierte und vergleichbare Daten zu haben, wurden die Tests in mehreren Etappen durchgeführt. Damit entsprechen die hier aufgeführten Testergebnisse nur den endgültigen Ergebnissen. Der hohe Aufwand dieses Kapitels war notwendig, da der Unterschied zwischen den Qualitäten der verschiedenen Algorithmen eher gering war und keine Vergleichsarbeiten mit der hier verwendeten Problemstellung existieren.
 
 
 \subsection{Parameter \emph{max population N}}\label{sec:max_population_parameter}
@@ -35,7 +35,7 @@ Für den Overhead (d.h. die Zeit, die 8 Agenten mit zufälliger Bewegung benötigen
 
 Die wichtigsten \emph{classifier} sind mit Populationsgröße 256 (bzw. 128 im leeren Szenario) bereits abgedeckt. Eine Erhöhung der Populationsgröße führt daher lediglich zu einer Erhöhung der Laufzeit. Da den Agenten das Szenario unbekannt ist, soll für alle Szenarien der selbe Wert benutzt werden soll. Alles in allem scheint somit \(N = 256\) die schnellste Parametereinstellung zu sein, die gleichzeitig auch ausreichend Platz für \emph{classifier} für die Abdeckung der Möglichkeiten der betrachteten Szenarien bietet.\\
 
-Die Tests liefen auf einem T7500, \(2,2\) GHz in einem einzelnen Thread. Als Vergleich hierzu wurde auch der Einfluss der Kartengröße auf die Laufzeit betrachtet, wie in Abbildung~\ref{time_map_size_correlation:fig} zu sehen, ist der Einfluss auf die Laufzeit im getesteten Bereich (16x16 - 64x64) ohne Bedeutung.\\
+Die Tests liefen auf einem T7500, \(2,2\) GHz in einem einzelnen Thread. Als Vergleich hierzu wurde auch der Einfluss der Torusgröße auf die Laufzeit betrachtet, wie in Abbildung~\ref{time_map_size_correlation:fig} zu sehen, ist der Einfluss auf die Laufzeit im getesteten Bereich (16x16 bis 64x64) ohne Bedeutung.\\
 
 
 \begin{figure}[htbp]
@@ -65,9 +65,9 @@ Die Tests liefen auf einem T7500, \(2,2\) GHz in einem einzelnen Thread. Als Ver
 
 \subsection{Zufällige Initialisierung der \emph{classifier set} Liste}\label{sec:random_init}
 
-Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt \cite{Butz2006}, bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälligen \emph{action} Werten und \emph{condition} Vektoren gefüllt wird. Dort wird aber auch angemerkt, dass sich beide Varianten in ihrer Qualität nur wenig unterscheiden. Da zum einen gewisser Zeitaufwand nötig ist, die Liste zu füllen und zum anderen nicht sichergestellt ist, dass die generierten \emph{classifier} in dem jeweiligen Szenario überhaupt aktiviert werden können, scheint es sinnvoll zu sein mit einer leeren \emph{classifier set} Liste zu starten.\\
+Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt \cite{Butz2006}, bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifier} mit zufälligen \emph{action} Werten und \emph{condition} Vektoren gefüllt wird. Dort wird aber auch angemerkt, dass sich beide Varianten in ihrer Qualität nur wenig unterscheiden. Da zum einen gewisser Zeitaufwand nötig ist, die Liste zu füllen und zum anderen nicht sichergestellt ist, dass die generierten \emph{classifier} in dem jeweiligen Szenario überhaupt aktiviert werden können, scheint es sinnvoll zu sein mit einer leeren \emph{classifier set} Liste zu starten.\\
 
-Dies bestätigen auch Tests, in denen man die Anzahl durch \emph{covering} neu erstellter \emph{classifier} ohne zufällige Initialisierung der \emph{classifier set} Liste (Abbildung~\ref{neuerstellte_classifier_maxpop_not_initialized:fig}) mit der mit Initialisierung (Abbildung~\ref{neuerstellte_classifier_maxpop:fig}) verglichen hat. Hier erkennt man, dass zwar anfangs weniger neue \emph{classifier} generiert werden müssen, umgekehrt aber einige der generierten \emph{classifier} kaum mehr aus dem \emph{classifier set} zu bekommen sind. Beispielsweise stagniert die Anzahl der generierten \emph{classifier} im Fall mit vorinitialisierter \emph{classifier set} Liste bei einer Populationsgröße von 128 bei etwa 2000 pro 500 Schritte und 8 Agenten, während sie im Fall ohne Initialisierung gegen 0 geht.\\
+Dies bestätigen auch Tests, in denen man die Anzahl durch \emph{covering} neu erstellter \emph{classifier} ohne zufällige Initialisierung der \emph{classifier set} Liste (Abbildung~\ref{neuerstellte_classifier_maxpop_not_initialized:fig}) mit der Anzahl mit Initialisierung (Abbildung~\ref{neuerstellte_classifier_maxpop:fig}) verglichen hat. Hier erkennt man, dass zwar anfangs weniger neue \emph{classifier} generiert werden müssen, umgekehrt aber einige der generierten \emph{classifier} kaum mehr aus dem \emph{classifier set} zu bekommen sind. Beispielsweise stagniert die Anzahl der generierten \emph{classifier} im Fall mit vorinitialisierter \emph{classifier set} Liste bei einer Populationsgröße von 128 bei etwa 2000 pro 500 Schritte und 8 Agenten, während sie im Fall ohne Initialisierung gegen 0 geht.\\
 
 Entsprechend müssen im zweiten Fall mit vorinitialisierter Liste die überflüssigen \emph{classifier} erst mühsam erkannt und entfernt werden, was im Grunde die Populationsgröße bis dahin verringert. Es müsste also ein größeres \(N\) benutzt werden, was wiederum die Laufzeit erhöht. Aus diesen Gründen sollen alle Agenten mit leerer Liste starten.
 
@@ -83,15 +83,15 @@ Entsprechend müssen im zweiten Fall mit vorinitialisierter Liste die überflüssig
 \subsection{Parameter \emph{reward prediction discount} $\gamma$}
 
 In der Literatur in~\cite{butz01algorithmic} wird ein Standardwert von \(0,71\) genannt, es seien je nach Szenario aber auch größere und kleinere Werte möglich. 
-Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifiers} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.\\
-Abbildung~\ref{prediction_discount:fig} zeigt einen Vergleich der Qualität bei unterschiedlichen Werten für \(\gamma\) beim XCS Algorithmus im Säulenszenario. Wie vorgeschlagen wird hier jeweils \(\gamma = 0,71\) verwendet werden.
+Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{base reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{base reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifier} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.\\
 
+Abbildung~\ref{prediction_discount:fig} zeigt einen Vergleich der Qualität bei unterschiedlichen Werten für \(\gamma\) beim XCS Algorithmus im Säulenszenario. "`Intelligent"', "`Einfache Richtungsänderung"' und "`Geschwindigkeit"' beziehen sich jeweils auf die Eigenschaften des Zielobjekts. Ein konkretes Muster ist nicht zu erkennen und die Fluktuationen sind minimal, weshalb wie vorgeschlagen hier jeweils \(\gamma = 0,71\) verwendet wird. Diese Tatsache ist ein Hinweis darauf, dass die Weitergabe des \emph{base reward} grundsätzlich erfolgen sollte (Abfall der Qualitätsdifferenz auf 0), jedoch sonst keinen Einfluss hat, also wahrscheinlich keine zusammenhänhenden Aktions-Ketten gebildet werden. Diese Tatsache unterstreicht auch, dass im Überwachungsszenario das Finden von "`Wegen"' (wie beim einführenden Beispiel zum \emph{multi step} Verfahren in Kapitel~\ref{multi_step_intro:sec}) nicht zum Erfolg führt. Mit einer Erweiterung der Sensoren, prägnanteren Hindernissstrukturen und Aufenthaltswahrscheinlichkeiten des Zielobjekts auf dem Torus mit hoher Varianz würde dies wahrscheinlich anders aussehen.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{prediction_discount.eps}
 }
-\caption[Auswirkung verschiedener \emph{reward prediction discount} $\gamma$ Werte auf die Qualität]{Auswirkung verschiedener \emph{reward prediction discount} $\gamma$ Werte auf die Qualität (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung und Geschwindigkeit 1, Agenten mit XCS)}
+\caption[Auswirkung verschiedener \emph{reward prediction discount} $\gamma$ Werte auf die Qualität]{Auswirkung verschiedener \emph{reward prediction discount} $\gamma$ Werte auf die Qualität (Säulenszenario, Agenten mit XCS, 2000 Schritte)}
 \label{prediction_discount:fig}
 \end{figure}
 
@@ -99,22 +99,15 @@ Abbildung~\ref{prediction_discount:fig} zeigt einen Vergleich der Qualität bei u
 
 \subsection{Parameter Lernrate $\beta$}\label{sec:learnrate_parameter}
 
-Die Lernrate \(\beta\) hatte in den Tests kaum Auswirkungen auf die Qualität. Da eine ausreichend hohe Populationsgröße gewählt wurde (es werden nicht dauernd neue \emph{classifier} erstellt) und die Schrittzahl groß genug war, pendelten sich die entsprechenden Werte ein. Die Lernrate bestimmt, wie stark ein ermittelter \emph{reward} Wert den \emph{reward prediction}, \emph{reward prediction error}, \emph{fitness} und \emph{action set size} Wert bei jeder Aktualisierung beeinflusst. Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig}) lassen einen leichten Abwärtstrend bei größeren Werten feststellen, signifikante Unterschiede, vom zusätzlich dargestellten Extremwert bei \(0,00001\) abgesehen, gibt es aber keine, weshalb die Wahl im Grunde beliebig ist.\\
+Die Lernrate \(\beta\) hatte in den Tests kaum Auswirkungen auf die Qualität. Da eine ausreichend hohe Populationsgröße gewählt wurde (es werden nicht dauernd neue \emph{classifier} erstellt) und die Schrittzahl groß genug war, pendelten sich die entsprechenden Werte ein. Die Lernrate bestimmt u.a., wie stark ein ermittelter \emph{reward} Wert den \emph{reward prediction}, \emph{reward prediction error} und \emph{fitness} Wert bei jeder Aktualisierung beeinflusst.\\ 
 
-Ein Unterschied ist erst in schwierigen Szenarien zu bemerken (siehe Abbildung~\ref{difficult_learning_rate_quality:fig}), dort soll \(0,1\) als Lernrate \(\beta\) gewählt werden. XCS hat hier Probleme das Gelernte zu behalten, umgekehrt scheint niedrigere Lernraten
-
-
-Der Grund für diesen Unterschied ist schwierig zu erkennen. Nötig war hierzu die Betrachung des laufenden Durchschnitts der Qualität des Algorithmus (siehe Abbildung~\ref{plot_100_goal_agent_observed-16-03-09--15-07-16-989:fig}). Während XCS und SXCS 
-TODO
- Varianten im ersten Problem bis 2000 Schritte gleichauf sind, dann die Variante mit vergleichsweise großer Lernrate bei niedrigem Level stehenbleibt.
-
-TODO falsch gelernt!
+Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig}) lassen ab etwa \(\beta = 0,01\) einen leichten Abwärtstrend bei größeren Werten feststellen, bei kleineren Werten für \(\beta\) gibt es jedoch keine signifikante Unterschiede. Nur im schwierigen Szenario ist ein Unterschied zu bemerken (siehe Abbildung~\ref{difficult_learning_rate_quality:fig}), dort soll \(0,1\) als Lernrate \(\beta\) gewählt werden. XCS hat hier Probleme das Gelernte zu behalten, verlernt also, Öffnungen zu finden. SXCS profitiert umgekehrt von einer großen Lernrate. Durch die direkte Verknüpfung der \emph{classifier} wird der Weg durch die Öffnungen beim Erreichen des Ziels belohnt. Weiter Aufschluss gibt die Betrachtung des laufenden Durchschnitts der Qualität des Algorithmus (siehe Abbildung~\ref{plot_100_goal_agent_observed-16-03-09--15-07-16-989:fig}). SXCS scheint mit \(\beta = 0,1\) einen stabilen Wert erreicht zu haben, während SXCS mit \(\beta = 0,001\) nicht viel besser abschneidet als der Agent mit zufälliger Bewegung. XCS scheint dagegen zu Beginn mit SXCS mit \(\beta = 0,1\) mithalten zu können. Ab etwa der Hälfte fällt es jedoch sogar unter die Qualität des Algorithmus mit zufälliger Bewegung, scheint also konkret etwas falsches gelernt zu haben. TODO, neues Bild mit random
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{lernrate_beta.eps}
 }
-\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Säulenszenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im Säulenszenario, intelligente Bewegung des Zielobjekts, Agenten mit SXCS Algorithmus, 2000 Schritte}
+\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Säulenszenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im Säulenszenario, intelligente Bewegung des Zielobjekts, Geschwindigkeit 1, Agenten mit SXCS Algorithmus, 2000 Schritte}
 \label{pillar_learning_rate_quality:fig}
 \end{figure}
 
@@ -122,7 +115,7 @@ TODO falsch gelernt!
 \centerline{	
 \includegraphics{difficult_learnrate.eps}
 }
-\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Schwieriges Szenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im schwierigen Szenario, Bewegung des Zielobjekts ohne Richtungsänderung, Geschwindigkeit 1, Agenten mit SXCS Algorithmus, 2000 Schritte}
+\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Schwieriges Szenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im schwierigen Szenario, Bewegung des Zielobjekts ohne Richtungsänderung, Geschwindigkeit 2, Agenten mit SXCS Algorithmus, 2000 Schritte}
 \label{difficult_learning_rate_quality:fig}
 \end{figure}
 
@@ -130,17 +123,17 @@ TODO falsch gelernt!
 \centerline{	
 \includegraphics{plot_100_goal_agent_observed-16-03-09--15-07-16-989.eps}
 }
-\caption[Zeitlicher Verlauf des gleitenden Durchschnitts der Qualität (schwieriges Szenario, SXCS und XCS mit Lernrate 0,1)]{Zeitlicher Verlauf des gleitenden Durchschnitts der Qualität (schwieriges Szenario, SXCS und XCS mit Lernrate 0,1)}
+\caption[Zeitlicher Verlauf des gleitenden Durchschnitts der Qualität (schwieriges Szenario, SXCS und XCS mit Lernrate $0,1$)]{Zeitlicher Verlauf des gleitenden Durchschnitts der Qualität (schwieriges Szenario, Bewegung des Zielobjekts ohne Richtungsänderung, Geschwindigkeit 2, SXCS und XCS mit Lernrate $0,1$, 2000 Schritte)}
 \label{plot_100_goal_agent_observed-16-03-09--15-07-16-989:fig}
 \end{figure}
 
 
 \subsection{Parameter \emph{accuracy equality} $\epsilon_{0}$}\label{epsilon0:sec}
 
-Der Parameter \(\epsilon_{0}\) gibt an, unter welchem \emph{reward prediction error} Wert ein \emph{classifier} als exakt gilt (und als \emph{subsumer} auftreten kann, siehe Kapitel~\ref{subsummation:sec}) und wie stark dieser Wert in die Berechnung der \emph{fitness} einfliesst. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts des \emph{base reward} Werts (\(\rho\)) gesetzt werden soll, welcher beliebig wählbar ist und lediglich ästhetische Auswirkungen hat. Somit wird dieser auf \(1,0\) gesetzt und \(\epsilon_{0}\) auf \(0,01\).
+Der Parameter \(\epsilon_{0}\) gibt an, unter welchem \emph{reward prediction error} Wert ein \emph{classifier} als exakt gilt (und als \emph{subsumer} auftreten kann, siehe Kapitel~\ref{subsummation:sec}) und wie stark dieser Wert in die Berechnung der \emph{fitness} einfließt. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts des \emph{base reward} Werts (\(\rho\)) gesetzt werden soll, welcher beliebig wählbar ist und lediglich ästhetische Auswirkungen hat. Somit wird dieser auf \(1,0\) gesetzt und \(\epsilon_{0}\) auf \(0,01\).
+
 
 \subsection{Parameter \emph{tournament factor p}}\label{tournament_factor_test:sec}
-
 
 In Abbildung~\ref{test_tournament_selection_direction_1:fig} und Abbildung~\ref{test_tournament_selection_direction_2:fig} sind die Ergebnisse im Säulenszenario mit einem Zielobjekt mit einfacher Richtungsänderung, einmal mit Geschwindigkeit 1, das andere Mal mit Geschwindigkeit 2, dargestellt. Was den \emph{tournament factor p} betrifft, ist für XCS das Maximum bei \(0,88\) (Geschwindigkeit 1) bzw. \emph{0,80} (Geschwindigkeit 2).\\
 
@@ -181,7 +174,10 @@ Im Falle eines Zielobjekts mit intelligenter Bewegung (Abbildung~\ref{test_tourn
 \end{figure}
 
 Insgesamt bestätigt die Untersuchung also, dass \(p = 0,84\) für diese Szenarien sinnvoll ist und somit die beste Aktion also mit \(84\%\) Wahrscheinlichkeit, die zweitbeste mit ca. \((1,0-p)p \approx 13\%\) Wahrscheinlichkeit, die drittbeste mit ca. \((1,0-p)^{2}p \approx 2\%\) Wahrscheinlichkeit und die schlechteste Aktion mit ca. \((1,0-p)^{3}p \approx 1\%\) Wahrscheinlichkeit gewählt werden.\\
+
 Außerdem kann man erkennen, dass bei einem sich intelligent verhaltenden Zielobjekt eine andauernde \emph{exploit} Phase die beste Wahl ist. Dies wird in Kapitel~\ref{test_auswahlarten:sec} relevant und dort auch näher diskutiert.\\
+
+Anzumerken ist weiterhin, dass, weil nicht eine andauernde \emph{exploit} Phase mit \emph{best selection} gewählt wurde, die hier benutzten auf XCS basierenden Agenten nicht die Qualität von Heuristiken erreichen können. Kann beispielsweise die einfache Heuristik fast problemlos ein Zielobjekt, was sich mit einer Geschwindigkeit von \(1,0\) bewegt,  unendlich lange verfolgen, bricht ein XCS Algorithmus diese Verfolgung in jedem Schritt mit einer Wahrscheinlichkeit von mindestens \(100\% - 84\% = 16\%\) ab.\\
 
 
 \subsection{Übersicht über alle Parameterwerte}
@@ -225,9 +221,3 @@ tournament factor & 0,84 (siehe Kapitel~\ref{tournament_factor_test:sec}) & [-]\
 \end{tabular}
 \label{table:lcs_parameter}
 \end{table}
-
-
-
-
-
-
