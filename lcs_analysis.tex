@@ -6,6 +6,8 @@ In diesem Abschnitt sollen erste Analysen bezüglich der verwendeten Szenarien an
 
 
 
+TODO erwähnen, dass 8 Agenten ok sind
+
 \subsection{Zielobjekt mit zufälligem Sprung}\label{zielobjekt_analyse_zufall_sprung:sec}
 
 Im folgenden sollen alle TODO
@@ -86,7 +88,7 @@ Im Vergleich zur einfachen Heuristik scheint insbesondere die intelligente Heuri
 
 Schließlich ist zu sehen, dass die Agenten in einem Szenario mit höherem Verknüpfungsfaktor (der Fall mit \(\lambda_{h} = 0,1\) und \(\lambda_{p} = 0,99\) im Vergleich zum Fall mit \(\lambda_{h} = 0,1\) und \(\lambda_{p} = 0,5\)) besser abschneiden. Dies liegt daran, dass Szenarien mit hohem Verknüpfungsfaktor bedeuten, dass viele Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernisse ähnlich sind, da es eher größere zusammenhängende Flächen gibt.\\
 
-Insgesamt ist zu sagen, dass keine der Szenarien mit zufälligem Sprung des Zielobjekts sich als zu lernende Aufgabe lohnt, der Unterschied zwischen der zufälligen Bewegung und der intelligenten Heuristik ist zu gering, die Aufgabe somit zu schwierig und soll in Verbindung mit XCS nicht weiter betrachtet werden.
+Insgesamt ist zu sagen, dass keine der Szenarien mit zufälligem Sprung des Zielobjekts sich als zu lernende Aufgabe lohnt, der Unterschied zwischen der zufälligen Bewegung und der intelligenten Heuristik ist zu gering, die Aufgabe somit zu schwierig und soll in Verbindung mit XCS nicht weiter betrachtet werden.\\
 
 
 \begin{table}[ht]
@@ -210,7 +212,7 @@ In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnis
 \centerline{	
 \includegraphics{speed_random_goal.eps}
 }
-\caption[Auswirkung der Zielgeschwindigkeit auf Agenten mit zufälliger Bewegung]{Auswirkung der Zielgeschwindigkeit auf Agenten mit zufälliger Bewegung (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario)}
+\caption[Auswirkung der Zielgeschwindigkeit (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario) auf Agenten mit zufälliger Bewegung]{Auswirkung der Zielgeschwindigkeit auf Agenten mit zufälliger Bewegung (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario)}
 \label{speed_random_goal:fig}
 \end{figure}
 
@@ -218,7 +220,7 @@ In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnis
 \centerline{	
 \includegraphics{speed_random_goal_heuristik.eps}
 }
-\caption[Auswirkung der Zielgeschwindigkeit auf Agenten mit Heuristik]{Auswirkung der Zielgeschwindigkeit auf Agenten mit Heuristik (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario)}
+\caption[Auswirkung der Zielgeschwindigkeit (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario) auf Agenten mit bestimmten Heuristiken]{Auswirkung der Zielgeschwindigkeit auf Agenten mit bestimmten Heuristiken (Zielobjekt mit einfacher Richtungsänderung, Säulenszenario)}
 \label{speed_random_goal_heuristik:fig}
 \end{figure}
 
@@ -231,7 +233,7 @@ In Abbildung~\ref{speed_intelligent_goal:fig} und Abbildung~\ref{speed_intellige
 \centerline{	
 \includegraphics{speed_intelligent_goal.eps}
 }
-\caption[Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt, Säulenszenario) auf Agenten mit Heuristik]{Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt) auf Agenten mit Heuristik}
+\caption[Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt, Säulenszenario) auf Agenten mit Heuristiken]{Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt) auf Agenten mit Heuristik}
 \label{speed_intelligent_goal:fig}
 \end{figure}
 
@@ -357,6 +359,10 @@ Abwechselnd, zuerst \emph{explore}      &  5,63\% & 71,37\% & 26,30\% \\
 
 XCS + switch wirkungslos!
 
+TODO discuss Kapitel~\ref{tournament_selection:sec} exploit+intelligent besser als switch explore/exploit
+
+
+
 
 \section{Auswirkung unterschiedlicher Geschwindigkeiten des Zielobjekts}
 
@@ -395,11 +401,10 @@ evtl viele Probleme testen
 
 \section{Von den Agenten nicht schaffbare Szenarien TODO Titel}
 
+Hindernisse 2-99
+
 TODO im schwierigen Szenario, Intelligent speed 2...
 weder XCS noch SXCS schaffen es. ?
-
-Säulenszenario:
-XCS mit unterschiedlichem gamma (prediction discount)!!
 
 Schwieriges Szenario:
 Populationsgrößen mit und ohne zufälliger Initialisierung (covered actions)?

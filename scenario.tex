@@ -1,24 +1,24 @@
 \chapter{Beschreibung des Szenarios}\label{scenario_description:cha}
 
-Im Wesentlichen sollen die Algorithmen, die in dieser Arbeit besprochen werden, in einem Szenario getestet werden, in dem mehrere Agenten ein sich bewegendes Zielobjekt überwachen sollen. Dies soll im folgenden als Überwachungsszenario bezeichnet werden. Die Qualität eines Algorithmus in einem solchen Überwachungsszenario wird anhand des Anteils der Zeit bewertet, in der er mit Hilfe der Agenten das Zielobjekt überwachen konnte, relativ zur Gesamtzeit (siehe Kapitel~\ref{qualitaet:sec}).\\
+Im Wesentlichen werden die im folgenden besprochenen Algorithmen in einem Szenario getestet, in dem mehrere Agenten ein sich bewegendes Zielobjekt überwachen sollen. Dies wird im folgenden als Überwachungsszenario bezeichnet. Die Qualität eines Algorithmus in einem solchen Überwachungsszenario wird anhand des Anteils der Zeit bewertet, in der er mit Hilfe der Agenten das Zielobjekt überwachen konnte, relativ zur Gesamtzeit (siehe Kapitel~\ref{qualitaet:sec}).\\
 
-Verwendetes Umfeld wird ein quadratischer Torus sein, der aus quadratischen Feldern besteht. Jedes bewegliche Objekt auf einem Feld des Torus kann sich in einem Zeitschritt nur auf eines der vier Nachbarfelder bewegen (mit Ausnahme des Zielobjekts, welches mehrere Bewegungen in einem Zeitschritt durchführen kann, Näheres dazu im Kapitel~\ref{zielobjekt:sec}).\\
+Als Umfeld wird ein quadratischer Torus verwendet, der aus quadratischen Feldern besteht. Für jedes bewegliche Objekt auf einem Feld des Torus gilt, dass es sich in einem Zeitschritt nur auf eines der vier Nachbarfelder bewegen kann. Eine Ausnahme stellt hier Zielobjekts, welches mehrere Bewegungen in einem Zeitschritt durchführen kann, Näheres dazu im Kapitel~\ref{zielobjekt:sec}.\\
 
 Die Felder können entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder können nicht betreten werden, eine Bewegung auf ein solches Feld schlägt ohne weitere Konsequenzen fehl.\\
 
 Es gibt drei verschiedene Arten von Objekten: Unbewegliche Hindernisse, ein zu überwachendes Zielobjekt und Agenten. Sowohl das Zielobjekt als auch die Agenten bewegen sich jeweils anhand eines bestimmten Algorithmus und bestimmter Sensordaten. Eine nähere Beschreibung der Agenten findet sich in Kapitel~\ref{agents:cha}, während die Eigenschaften des Zielobjekts in Kapitel~\ref{zielobjekt:sec} beschrieben werden.\\
 
-Ziel dieses Kapitels wird vor allem sein, auf Kapitel~\ref{analysis_sans_lcs:cha} vorzubereiten, in dem anhand von Tests herausgefunden werden soll, welche der hier vorgestellten Szenarien brauchbare Ergebnisse liefern kann, um zum einen das gestellte Problem an sich, als auch die jeweils erforderlichen Eigenschaften besser verstehen zu können.\\
+Ziel dieses Kapitels ist es, auf Kapitel~\ref{analysis_sans_lcs:cha} vorzubereiten, in dem anhand von Tests herausgefunden werden soll, welche der hier vorgestellten Szenarien brauchbare Ergebnisse liefern kann, um zum einen das gestellte Problem an sich, als auch die jeweils erforderlichen Eigenschaften besser verstehen zu können.\\
 
 Eine separate Beschäftigung mit diesen - relativ einfachen - Szenarien war notwendig, um zum einen das eigene Simulationsprogramm zu testen und zum anderen um vergleichbare Ergebnisse zu erhalten. Ein Rückgriff auf die Literatur war deshalb nicht möglich, insbesondere gibt es keine Arbeiten in Bezug auf XCS mit einer solchen Problemstellung. Zwar entspricht das Standardszenario bei XCS einem Feld, einem Agenten, Hindernissen und einem Ziel, es fehlen jedoch Arbeiten, in denen Sichtbarkeit (die Sichtweite beschränkte sich in der Literatur meist auf angrenzende Felder), Kollaboration (meist war nur ein einzelner Agenten Gegenstand der Untersuchung), Dynamik (meist gab es feste Start- und Zielpunkte) und die Messung der durchschnittlichen Qualität (meist ging es um die Anzahl der Schritte zum Ziel) gemeinsam in einem Szenario betrachtet werden.\\
 
-Im folgenden sollen nun also auf diese einzelnen Punkte näher eingegangen werden und eine Abgrenzung zu Arbeiten in der Literatur aufgezeigt werden.
 
+Im Folgenden wird nun auf die einzelnen Punkte eingegangen und eine Abgrenzung zu Arbeiten in der Literatur aufgezeigt:
 
 
 \section{Dynamische, kollaborative Szenarien}\label{dynamisch_kollaborativ:sec}
 
-Wesentliches Hauptaugenmerk der Gestaltung der Szenarien soll Kollaboration sein, d.h. die Aufgabe soll mit Hilfe mehrerer Agenten gemeinsam gelöst werden. Nach einem der Standardwerke zu Multiagentensystemen~\cite{collaborative} ist Kollaboration im Allgemeinen definiert als 
+Wesentliches Hauptaugenmerk der Gestaltung der Szenarien wird Kollaboration sein, d.h. die Aufgabe soll mit Hilfe mehrerer Agenten gemeinsam gelöst werden. Nach einem der Standardwerke zu Multiagentensystemen~\cite{collaborative} ist Kollaboration im Allgemeinen definiert als 
 
 "`Zusammenarbeit"' und bezieht sich oft auf Kooperation auf hohem Niveau welche (die Entwicklung) ein gegenseitiges Verständnis und eine gemeinsame Sicht auf die Problemstellung, welche durch mehrere, miteinander agierende Entitäten gelöst werden soll, teilen. Manchmal werden die Begriffe Kollaboration und Kooperation auch im gleichen Sinne benutzt.
 
@@ -78,7 +78,7 @@ In Abbildung~(\ref{empty_grid:fig}) ist ein Szenario ohne Hindernisse und mit zu
 
 \subsection{Szenario mit zufällig verteilten Hindernissen}\label{random_scenario_definition:sec}
 
-Zwei Parameter bestimmen das Aussehen des Szenarios mit zufällig verteilten Hindernissen, zum einen der Prozentsatz an Hindernissen an der Gesamtzahl der Felder des Torus (Hindernissanteil~\(\lambda_{h}\)), zum anderen der Grad inwieweit die Hindernisse zusammenhängen (Verknüpfungsfaktor~\(\lambda_{p}\)).\\
+Für das Szenario mit zufällig verteilten Hindernissen sind zwei Parameter prägend. So bestimmt der erste Parameter (Hindernissanteil~\(\lambda_{h}\)) den Prozentsatz an Hindernissen an der Gesamtzahl der Felder des Torus und der zweite Parameter (Verknüpfungsfaktor~\(\lambda_{p}\)) den Grad inwieweit die Hindernisse zusammenhängen.\\
 
 Bei der Erstellung des Szenarios bestimmt \(\lambda_{p}\) die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass beim Verteilen der Hindernisse nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. \(\lambda_{p} = 0,0\) ergäbe somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert von \(1,0\) eine oder mehrere stark zusammenhängende Strukturen schafft. Wird der Prozentsatz an Hindernissen \(\lambda_{h}\) auf \(0,0\) gesetzt, dann entspricht diesem dem oben erwähnten leeren Szenario. Ein Wert von \(1,0\) würde eine völlige Abdeckung des Torus bedeuten und wäre für einen Test somit unbrauchbar. Hier sollen nur geringe Werte bis \(0,4\) betrachtet werden, wobei später in Tests sich auf Werte bis \(0,2\) beschränkt wird, da bei großen Hindernissanteil die lokalen Entscheidungen einzelner Agenten zu wichtig werden, da das Zielobjekt sich eher  in einem kleinen Bereich aufhält.\\
 
@@ -127,7 +127,7 @@ In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), 
 
 \subsection{Säulenszenario}
 
-In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinander,  Hindernisse auf dem Torus verteilt. Idee ist, dass die Agenten eine kleine Orientierungshilfe besitzen sollen, aber gleichzeitig möglichst wenig Hindernisse verteilt werden. Das Zielobjekt startet an zufälliger Position, die Agenten starten mit möglichst großem Abstand zum Zielobjekt.\\ Abbildung~\ref{pillar_grid:fig} zeigt ein Beispiel für den Startzustand eines solchen Szenarios, bei der das Zielobjekt sich in der Mitte und die Agenten am Rand befinden.
+In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinander,  Hindernisse auf dem Torus verteilt. Tragende Idee dieses Szenarios ist es, dass die Agenten eine kleine Orientierungshilfe besitzen sollen, aber gleichzeitig möglichst wenig Hindernisse verteilt werden. Das Zielobjekt startet an zufälliger Position, die Agenten starten mit möglichst großem Abstand zum Zielobjekt.\\ Abbildung~\ref{pillar_grid:fig} zeigt ein Beispiel für den Startzustand eines solchen Szenarios, bei der das Zielobjekt sich in der Mitte und die Agenten am Rand befinden.
 
 \begin{figure}[htbp]
 \centerline{	

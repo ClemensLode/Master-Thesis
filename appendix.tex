@@ -41,7 +41,7 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 \newlisting{Zentrale Schleife für einzelne Probleme}{mainProblem:pro}
 /**
  * Führt eine Anzahl von Schritten auf dem aktuellen Torus aus
- * @param stepCounter Aktuelle Zeitschritt
+ * @param stepCounter Der aktuelle Zeitschritt
  * @return Der Zeitschritt nach der Ausführung
  */
   private int doOneMultiStepProblem(int stepCounter) {
@@ -324,8 +324,8 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
   public void calculateReward(final long gaTimestep) {
   /**
-   * checkRewardPoints liefert "wahr" wenn sich das Zielobjekt in
-   * Überwachungsreichweite befindet
+   * checkRewardPoints() liefert "wahr" wenn sich das Zielobjekt in
+   * Sichtweite befindet
    */
     boolean reward = checkRewardPoints();
 
@@ -444,7 +444,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
   public void calculateReward(final long gaTimestep) {
   /**
    * checkRewardPoints() liefert "wahr" wenn sich das Zielobjekt in
-   * Überwachungsreichweite befindet
+   * Sichtweite befindet
    */
     boolean reward = checkRewardPoints();
 
@@ -572,7 +572,7 @@ action_set_size);
 
 \section{Implementation des DSXCS Algorithmus}
 
-\newlisting{Zweites Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()} - Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
+\newlisting{Erstes Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()} - Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen reward Wert und gibt ihn an 
  * die zugehörigen action set Listen weiter. Wesentlicher Unterschied zum 
@@ -619,7 +619,7 @@ action_set_size);
 \end{lstlisting}
 
 
-\newlisting{Auszug aus dem dritten Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
+\newlisting{Auszug aus dem zweiten Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
 
 /**
  * Der erste Teil der Funktion ist identisch mit der calculateNextMove()
@@ -642,7 +642,7 @@ action_set_size);
 \end{lstlisting}
 
 
-\newlisting{Viertes Kernstück des verzögerten SXCS Algorithmus DSXCS  (Verarbeitung des jeweiligen reward Werts, \emph{processReward()})}{process_reward_dsxcs1:pro}
+\newlisting{Drittes Kernstück des verzögerten SXCS Algorithmus DSXCS  (Verarbeitung des jeweiligen reward Werts, \emph{processReward()})}{process_reward_dsxcs1:pro}
 /**
  * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
  * eingegangenen reward Werte bis zu diesem Punkt.
@@ -668,7 +668,7 @@ action_set_size);
 \end{lstlisting}
 
 
-\newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
+\newlisting{Verbesserte Variante des dritten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
 /**
  * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
  * eingegangenen reward Wert bis zu diesem Punkt.

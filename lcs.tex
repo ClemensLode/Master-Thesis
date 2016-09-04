@@ -1,5 +1,8 @@
 \chapter{XCS}\label{lcs:cha}
 
+TODO die ausführliche DIskussion der Parameter ist notwendig, da der Unterschied zum zufälligen Agenten so gering ist und keine Vergleichsarbeiten existieren!
+
+
 Jeder Agent besitzt ein unabhängiges, sogenanntes \emph{eXtended Classifier System} (XCS), welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
 Im Folgenden soll sich also auf den Teil konzentriert werden, der relevant für das Verständnis der in Kapitel~\ref{lcs_variants:cha} vorgestellten XCS Varianten ist (für eine umfassende Beschreibung von XCS soll auf \cite{Butz2006} verwiesen werden). Im Wesentlichen besteht ein XCS aus folgenden Elementen:
 
@@ -151,7 +154,9 @@ Die optimale Darstellung der \emph{reward} Funktion bei XCS in der \emph{multi s
 
 Der selbe Gedankengang muss bei einem Überwachungsszenario ausgeführt werden. Beim zweiten Teil der Frage (Darstellung des Gesamtproblems aus lokaler Information) kann man zwar, wie es in Kapitel~\ref{standardxcs:sec} getan wird, XCS einfach auf das Szenario fast ohne Änderung übertragen, die Ergebnisse, wie sie in Kapitel~\ref{lcs_analysis:cha} gezeigt werden, sind dann aber nicht viel besser als ein sich zufällig bewegender Agent. Ein alternativer Weg, der dann in Kapitel~\ref{lcs_variants:cha} vorgestellt und in Kapitel~\ref{lcs_analysis:cha} signifikant bessere Ergebnisse erbringt, ist, den \emph{base reward} Werts nicht sukzessive weiterzugeben, sondern bei jedem Auftreten eines positiven \emph{base reward} Werts direkt alle bisherigen Aktionen (seit dem letzten Auftreten) absteigend mit dem Wert zu aktualisieren.\\
 
-Übrig bleibt dann nur noch die Frage nach dem ersten Teil der Frage, also wie der \emph{base reward} selbst berechnet wird. Hierzu wurden verschiedene Ansätze ausprobiert, da aber weder ein Qualitätsgewinn festgestellt wurde, noch eine Verkomplizierung bei der Berechnung für die weitere Untersuchung hilfreich erschien, blieb es bei der einfachst möglichen Implementation. Diese bestand aus einer einfachen Abfrage, ob das Zielobjekt in Sichtweite ist oder nicht. Die Einbeziehung von Agenten und Hindernissen führte nicht zum Erfolg, vermutlich deshalb, weil die durch die Sensoren wahrgenommen Positionen zu unklar waren. Mit Sensoren, die exakte Positionen bestimmen können, wäre vorstellbar, dass z.B. kein positiver \emph{base reward} vergeben wird, wenn andere Agenten sich näher am Zielobjekt befinden.
+Übrig bleibt dann nur noch die Frage nach dem ersten Teil der Frage, also wie der \emph{base reward} selbst berechnet wird. Hierzu wurden verschiedene Ansätze ausprobiert, da aber weder ein Qualitätsgewinn festgestellt wurde, noch eine Verkomplizierung bei der Berechnung für die weitere Untersuchung hilfreich erschien, blieb es bei der einfachst möglichen Implementation. Diese bestand aus einer einfachen Abfrage, ob das Zielobjekt in Sichtweite ist oder nicht. Die Einbeziehung von Agenten und Hindernissen führte nicht zum Erfolg, vermutlich deshalb, weil die durch die Sensoren wahrgenommen Positionen zu unklar waren. Mit Sensoren, die exakte Positionen bestimmen können, wäre vorstellbar, dass z.B. kein positiver \emph{base reward} vergeben wird, wenn andere Agenten sich näher am Zielobjekt befinden.\\
+
+Was die Implementierung betrifft, wird die mit der Bewertung zusammenhängende Funktion \emph{checkRewardPoints()} in Programm~\ref{multistep_calc_reward:pro} (Zeile 15) bzw. in Programm~\ref{sxcs_calc_reward:pro} (Zeile 16) aufgerufen.
 
 
 %Foundations of Learning Classifier Systems By Larry Bull, Tim Kovacs

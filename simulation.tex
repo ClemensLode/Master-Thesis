@@ -1,10 +1,16 @@
 \section{Simulation und erfasste Statistiken}
 
-Beim Testen selbst war es durch die Verwendung der in Kapitel~\ref{qualitaet:sec} erwähnten (und im Simulator berechneten) Halbzeitqualitäten sehr einfach, festzustellen, ob ein Algorithmus noch Potential hatte, d.h. ob eine Erhöhung der Schrittzahl die Qualität weiter steigern würde. Da (im Gegensatz zu den später in Kapitel~\ref{lcs_variants:cha} erwähnten lernenden Algorithmen) keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen. Die Zahl der Zeitschritte wird somit für alle Tests, soweit nicht anders angegeben, standardmäßig auf 500 festgesetzt.\\
+Beim Testen selbst war es durch die Verwendung der in Kapitel~\ref{qualitaet:sec} erwähnten (und im Simulator berechneten) Halbzeitqualitäten sehr einfach, festzustellen, ob ein Algorithmus noch Potential hatte, d.h. ob eine Erhöhung der Schrittzahl die Qualität weiter steigern würde. Da (im Gegensatz zu den später in Kapitel~\ref{lcs_variants:cha} erwähnten lernenden Algorithmen) keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen. Die Zahl der Zeitschritte wird somit für alle Tests, soweit nicht anders angegeben, standardmäßig auf 500 festgesetzt. Wie in Kapitel~\ref{analysis_sans_lcs:cha} festgestellt wird, hat die Agentenzahl selbst wenig Einfluss, die Verhältnisse zwischen den Agententypen ist ähnlich. Deshalb werden, soweit nicht anders angegeben, hier immer 8 Agenten getestet. Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Probleminstanzen (siehe Kapitel~\ref{definition_probleminstanz:sec}) ermittelt und gemittelt werden. 10 Experimente reichen aus um ausreichend akkurate Ergebnisse zu erhalten, wie man in Abbildung~\ref{statistic_varianz:fig} sehen kann. Dabei wurde jeweils die Varianz von 10 Durchläufen mit aufsteigender Anzahl von Experimenten berechnet. Jeder der 10 Durchläufe wurde mit einem zufälligen \emph{random seed} Wert gestartet.
 
-Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Probleminstanzen (siehe Kapitel~\ref{definition_probleminstanz:sec}) ermittelt und gemittelt werden, was erfahrungsgemäß ausreicht um ausreichend genaue Ergebnisse zu erhalten.\\
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{statistic_varianz.eps}
+}
+\caption[Varianz der Testergebnisse bei unterschiedlicher Anzahl von Experimenten]{Varianz der Testergebnisse bei unterschiedlicher Anzahl von Experimenten (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung und Geschwindigkeit 2, Agenten mit zufälliger Bewegung)}
+\label{statistic_varianz:fig}
+\end{figure}
+
 Im Folgenden sollen nun allgemeine Eigenschaften der Simulation erläutert werden.\\
-
 
 \subsection{Definition einer Probleminstanz}\label{definition_probleminstanz:sec}
 

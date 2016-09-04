@@ -79,7 +79,7 @@ Die schematische Abbildung~\ref{positive_negative_reward:fig} demonstriert diese
 
 In XCS wird lediglich das jeweils letzte \emph{action set} Liste aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zum Wert \emph{maxStackSize}) von \emph{action set} Listen gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des \emph{reward} anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von \emph{action set} Listen und zum anderen die zeitliche Relativierung einer \emph{action set} Liste zu einem Ereignis. Die \emph{classifier} werden dann jeweils rückwirkend anhand des jeweiligen \emph{reward} Werts aktualisiert, sobald bestimmte Bedingungen eingetreten sind.\\
 
-Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{base reward} im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn das Zielobjekt sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).\\
+Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{base reward} im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn das Zielobjekt sich in Überwachungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).\\
 
 \begin{figure}[htbp]
 \centerline{	
@@ -97,46 +97,28 @@ Alle diese Einträge werden vorher dabei mit diesem \emph{base reward} Wert aktua
 \centerline{	
 \includegraphics{neutral_reward.eps}
 }
-\caption[Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis (mit \emph{base reward} = 0)}
+\caption[Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis] {Schematische Darstellung der Bewertung von \emph{action set} Listen bei einem neutralen Ereignis (mit \emph{base reward} = 1)}
 \label{neutral_reward:fig}
 \end{figure}
 
 
-Wählt man den Stack zu groß, dann werden eher am Ergebnis unbeteiligte (d.h. vom Ereignis weit weg liegende) \emph{action set} Listen bewertet. Auch nimmt die Reaktionsgeschwindigkeit des Systems ab, d.h. zum einen bewegen sich die Agenten zu Beginn, bis sie das erste Mal das Zielobjekt in Sichtweite haben, zufällig. Wählt man den Stack zu klein, kann es sein, dass ein Überlauf und somit u.U. ein gewisser Fehler auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar. Wie Abbildung~\ref{max_stack_size:fig} zeigt, ist dies bei größerer Schrittzahl aber vernachlässigbar, die erreichten Qualitäten unterscheiden sich bis zu einer Größe kaum voneinander. 
-Dass der \emph{maxStackSize} Wert zwar für einen großen Wertebereich gleich gute Qualität liefert, es aber doch vom Szenario abhängt, zeigt ein Vergleich mit einem 32x32 großen Säulenszenario (siehe Abbildung~\ref{max_stack_size_large:fig}). Hier trifft der Agent deutlich weniger häufig auf das Zielobjekt, es kommt also eher zu einem Überlauf des Stacks.
-Auch beim schwierigen Szenario ist die Lage ähnlich. Insbesondere bei relativ wenigen Schritten nimmt der \emph{maxStackSize} Wert aber eine zentrale Rolle ein. Abbildung~\ref{max_stack_size_difficult:fig} zeigt, dass ein Wert von 
-TODO 
-Insgesamt, scheint ein 
-, ein Wert von 128 erscheint sinnvoll.\\
+\subsection{Größe des Stacks (\emph{maxStackSize})}
 
-Vergleich prediction error!
-Wasted movements
+Offen bleibt die Frage nach der Größe des Stacks. Mangels theoretischem Fundament muss man zwischen den drei wirkenden Faktoren einen Kompromiss finden. Erstens gibt es die Verzögerung zu Beginn eines Problems und insbesondere zu Beginn eines Experiments, es kann u.U. bis zu \(\frac{maxStackSize}{2}\) Schritte dauern, bis das erste Mal ein \emph{classifier} aktualisiert wird. Auch werden bei einem großen \emph{maxStackSize} Wert womöglich Aktionen positiv (oder negativ) bewertet, die an der Situation nicht beteiligt waren, vor allem wenn es sich um kurze lokale Entscheidungen handelt. Umgekehrt, wählt man den Stack zu klein, kann es sein, dass ein Überlauf und somit u.U. ein gewisser Fehler auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.\\
 
+
+Wie Abbildung~\ref{max_stack_size:fig} zeigt, ist dies bei größerer Schrittzahl (2000 Schritte) aber vernachlässigbar, die erreichten Qualitäten unterscheiden sich im betrachteten Wertebereich kaum voneinander. Es gibt bei geringen Werten einen kleinen Anstieg, außerdem einen kleinen Abfall beim schwierigen Szenario. Da während der Entwicklung die meisten Tests mit dem Wert 128 durchgeführt wurden, wird dieser Wert belassen. Nur für das schwierige Szenario ist womöglich ein Wert von 64 vorzuziehen.
 
 \begin{figure}[htbp]
 \centerline{	
-%\includegraphics{max_stack_size.eps}
+\includegraphics{max_stack_size.eps}
 }
-\caption[Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario)] {Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 2, SXCS Agenten)}
+\caption[Vergleich verschiedener Werte für \emph{maxStackSize}] {Vergleich verschiedener Werte für \emph{maxStackSize} (2000 Schritte, SXCS Agenten)}
 \label{max_stack_size:fig}
 \end{figure}
 
-\begin{figure}[htbp]
-\centerline{	
-%\includegraphics{max_stack_size_large.eps}
-}
-\caption[Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario)] {Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario mit 32x32 Feldern, Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 2, 8 SXCS Agenten)}
-\label{max_stack_size_large:fig}
-\end{figure}
 
-\begin{figure}[htbp]
-\centerline{	
-%\includegraphics{max_stack_size_difficult.eps}
-}
-\caption[Vergleich verschiedener Werte für \emph{maxStackSize} (schwieriges Szenario)] {Vergleich verschiedener Werte für \emph{maxStackSize} (schwierigen Szenario, Zielobjekt bewegt sich nur in eine Richtung, Geschwindigkeit 2, SXCS Agenten)}
-\label{max_stack_size_difficult:fig}
-\end{figure}
-
+\subsection{Zusammenfassung der Ereignisse}
 
 Zusammengefasst ergeben sich also folgende Ereignisse:
 
@@ -163,30 +145,9 @@ Im Wesentlichen entspricht die Implementierung von SXCS der bekannten Implementi
 
 \subsection{Zielobjekt mit XCS und SXCS}\label{variant_zielobjekt_xcs_sxcs:sec}
 
-Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von XCS und SXCS für das Zielobjekt diskutiert werden. Der Grund für die Untersuchung liegt mehr darin, eine weitere Anwendungsmöglichkeit aufzuzeigen und XCS und SXCS nochmals zu vergleichen, anstatt konkrete neue Erkenntnisse zu gewinnen. Insbesondere handelt es sich hierbei nicht mehr um ein Multiagentensystem, obwohl auch mit weitere Zielobjekten sich kein kollaboratives Szenario ergeben würde, da die Zielobjekte keinen Vorteil von einer gemeinsamen Flucht haben (im Gegensatz zum gemeinsamen Einfangen seitens der Agenten). Die Ergebnisse der Analyse folgt in Kapitel~\ref{goal_agent_with_xcs:sec}, auch hier ist der Ansatz von SXCS überlegen.\\
+Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von XCS und SXCS für das Zielobjekt diskutiert werden. Der Grund für die Untersuchung liegt mehr darin, eine weitere Anwendungsmöglichkeit aufzuzeigen und XCS und SXCS nochmals zu vergleichen, anstatt konkrete neue Erkenntnisse zu gewinnen. Insbesondere handelt es sich hierbei nicht mehr um ein kollaboratives Multiagentensystem, da es zum einen nur ein einziges Zielobjekt im Szenario gibt und zum anderen die Aufgabe, anderen Agenten auszuweichen, durch Zusammenarbeit nicht besser gelöst werden kann (mal von hochentwickelten Verhaltensweisen abgesehen, bei der ein Zielobjekt das andere dadurch "`rettet"', dass es einen Agent weglocken kann). Die Ergebnisse der Analyse folgt in Kapitel~\ref{goal_agent_with_xcs:sec}, auch hier ist der Ansatz von SXCS gegenüber dem von XCS überlegen.\\
 
-Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{goal_check_reward:pro}) ist die Implementierung für das Zielobjekt fast identisch. Die einzige zweite Änderung ist in der Funktion \emph{calculateNextMove()} (siehe Programm~\ref{multistep_calc_move:pro} (XCS) bzw. Programm~\ref{sxcs_calc_move:pro} (SXCS)), bei der die zusätzliche Sprungeigenschaft des Zielobjekts hinzugefügt ist (siehe Kapitel~\ref{zielobjekt:sec}).\\
-
-Die abgeänderte Version ist in Programm~\ref{goal_check_reward:pro} aufgelistet, sie unterscheidet sich in den Zeilen 6 und 9, in der Sensordaten über andere Agenten anstatt über das Zielobjekt geholt und geprüft werden, also ein Rollentausch zwischen Zielobjekt und Agenten stattfindet.\\
-
-\newlisting{Bestimmung des \emph{base rewards} für das Zielobjekt}{goal_check_reward:pro}
-    /**
-     * @return true Falls das Zielobjekt von keinem Agenten überwacht wird
-     */
-    @Override
-    public boolean checkRewardPoints() {
-      boolean[] sensor_agent = lastState.getSensorAgent();
-
-      for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
-        if(sensor_agent[2*i+1]) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-\end{lstlisting}
-
+Was die Implementierung betrifft ist sie, bis auf die Funktion \emph{checkRewardPoints()}, für das Zielobjekt fast identisch. Dort wird ein positiver \emph{base reward} Wert dann vergeben, wenn kein Agent in Sicht ist (während bei den Agenten ein positiver \emph{base reward} Wert dann vergeben wurde, wenn das Zielobjekt in Sicht ist). Die einzige zweite Änderung ist in der Funktion \emph{calculateNextMove()} (siehe Programm~\ref{multistep_calc_move:pro} (XCS) bzw. Programm~\ref{sxcs_calc_move:pro} (SXCS)), bei der die zusätzliche Sprungeigenschaft des Zielobjekts hinzugefügt ist (siehe Kapitel~\ref{zielobjekt:sec}).\\
 
 
 \section{SXCS Variante mit Kommunikation}\label{communication:cha}

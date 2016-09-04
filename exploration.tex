@@ -35,7 +35,8 @@ Bei dieser Auswahlart bestimmt der \emph{predictionFitnessProductSum} Wert (rela
 
 \subsection{Auswahlart \emph{tournament selection}}\label{tournament_selection:sec}
 
-Zu den oben erwähnten drei Möglichkeiten wurde in \cite{Butz2003} eine weitere vorgestellt und in Bezug auf XCS diskutiert, die sogenannte \emph{tournament selection}. Als Vorteile werden geringerer Selektionsdruck, höhere Effizienz, geringerer Einfluss von Störungen, wie auch Flexibilität der Anpassung über zwei Parameter, \(k\) und \(p\), genannt.\\
+Zu den oben erwähnten drei Möglichkeiten wurde in \cite{Butz2003} eine weitere vorgestellt und in Bezug auf XCS diskutiert, die sogenannte \emph{tournament selection}. Als Vorteile werden geringerer Selektionsdruck, höhere Effizienz und geringerer Einfluss von Störungen genannt, durch die Anpassung der Turniergröße ergibt sich außerdem eine flexible Anpassungsmöglichkeit. In den dort vorgestellten Experimenten mit einem \emph{single step} Problem wurden signifikante Vorteile dieser, auf proportionaler Selektion beruhender, Auswahlart gefunden, weshalb sie auch hier getestet werden soll. Da dort allerdings die Auswahl auf Basis von einzelnen \emph{classifier} stattfindet, während hier wie in der Standardimplementation von XCS in \cite{Butz_xcsclassifier} alle \emph{classifier} in nach \emph{action} Werten eingeteilten Gruppen sortiert und deren \emph{prediction} und \emph{fitness} Werte zusammengenommen werden, soll hier eine Implementation der Auswahlart \emph{tournament selection} gewählt werden, die näher am ursprünglichen Algorithmus aus dem Bereich der genetischen Algorithmen liegt \cite{Miller95geneticalgorithms}.\\
+
 Bei dieser Auswahlart werden allgemein gesagt \(k\) Elemente aus einer Menge zufällig ausgewählt, nach ihrem zugehörigen Wert sortiert und absteigend mit Wahrscheinlichkeit \(p\) das jeweilige Element gewählt (d.h. das erste mit \(p\), das zweite mit \((1,0-p)p\), das dritte mit \((1,0-p)^{2}p\) usw.).\\
 
 In dem hier besprochenen Fall wären die Mengen immer der Größe 4 (Anzahl der Aktionen) und die Elemente entsprechen jeweils den berechneten \emph{predictionFitnessProductSum} Werten. Der Einfachheit soll \(k\) auf den Maximalwert gesetzt werden, damit alle Aktionen zumindest eine geringe Wahrscheinlichkeit besitzen, ausgewählt zu werden.\\
@@ -44,53 +45,7 @@ Im Grunde entspricht diese Auswahlart also der \emph{roulette wheel selection}, 
 
 Bei der Implementierung dieser Auswahlart muss man aufpassen, dass bei der Sortierung Einträge mit gleichem Produkt aus \emph{fitness} und \emph{reward prediction} in zufälliger Reihenfolge aufgeführt werden. Insbesondere am Anfang kann es sonst dazu kommen, dass alle Agenten in die selbe Richtung laufen.\\
 
-Ein idealer Wert für \(p\) ergibt sich aus 
-
-TODO Erläuterung!!
-
-Abbildung~\ref{test_tournament_selection_direction_1:fig} 
-Abbildung~\ref{test_tournament_selection_direction_2:fig} 
-Abbildung~\ref{test_tournament_selection_intelligent_1:fig} 
-Abbildung~\ref{test_tournament_selection_intelligent_2:fig} 
-
-Dort zur besseren Übersicht jeweils die Differenz zum Agenten mit zufälliger Bewegung dargestellt. Beide Testreihen liefen auf dem Säulenszenario mit einem Zielobjekt mit Geschwindigkeit 1 bzw. 2 in 2000 Schritten, mit Zielobjekt mit einfacher Richtungsänderung bzw. mit einem sich intelligent verhaltendem Zielobjekt. Die Werte im Bereich von etwa \(0,75\) bis \(0,9\) erreichen sehr ähnliche Werte, da \(0,84\) etwa in der Mitte liegt und in vielen Fällen das beste Ergebnis erzielte, soll dieser Wert für die Tests genügen. Die beste Aktion wird also mit \(p = 84\%\) Wahrscheinlichkeit, die zweitbeste mit ca. \((1,0-p)p \approx 13\%\) Wahrscheinlichkeit, die drittbeste mit ca. \((1,0-p)^{2}p \approx 2\%\) Wahrscheinlichkeit und die schlechteste Aktion mit ca. \((1,0-p)^{3}p \approx 1\%\) Wahrscheinlichkeit gewählt.\\
-Außerdem kann man erkennen, dass bei einem sich intelligent verhaltenden Zielobjekt eine andauernde \emph{exploit} Phase die beste Wahl ist. Dies wird in Kapitel~\ref{test_auswahlarten:sec} relevant.\\
-
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{test_tournament_selection_direction_1.eps}
-}
-\caption[Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 1)]{Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 2, Säulenszenario, 2000 Schritte)}
-\label{test_tournament_selection_direction_1:fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{test_tournament_selection_direction_2.eps}
-}
-\caption[Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 1)]{Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 2, Säulenszenario, 2000 Schritte)}
-\label{test_tournament_selection_direction_2:fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{test_tournament_selection_intelligent_1.eps}
-}
-\caption[Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (intelligentes Zielobjekt, Geschwindigkeit 1)]{Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (intelligentes Zielobjekt, Geschwindigkeit 1, Säulenszenario, 2000 Schritte)}
-\label{test_tournament_selection_intelligent_1:fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{test_tournament_selection_intelligent_1.eps}
-}
-\caption[Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (intelligentes Zielobjekt, Geschwindigkeit 2)]{Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (intelligentes Zielobjekt, Geschwindigkeit 2, Säulenszenario, 2000 Schritte)}
-\label{test_tournament_selection_intelligent_2:fig}
-\end{figure}
-
-
-
+Bei der Bestimmung des idealen Werts für \(p\) ist es wichtig, verschiedene Szenarien und sowohl XCS als auch SXCS zu vergleichen, ansonsten ergibt ein späterer Vergleich von XCS und SXCS womöglich nur deshalb einen Vorteil für SXCS, da die Parameterwerte für XCS schlecht gewählt wurden. In den Tests in Kapitel~\ref{tournament_factor_test:sec} wurde der Wert \(0,84\) als für die hier betrachteten Szenarien optimaler Wert bestimmt.
 
 
 \subsection{Wechsel zwischen den \emph{explore} und \emph{exploit} Phasen}\label{exploreexploit:sec}
