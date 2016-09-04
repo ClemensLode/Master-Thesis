@@ -1,6 +1,91 @@
 \chapter{Analyse SXCS}\label{lcs_analysis:cha}
 
 
+
+
+
+TODO Tests:
+
+explore/exploit 
+
+Leeres Szenario:
+Populationsgrößen mit und ohne zufälliger Initialisierung (covered actions)
+Lernrate XCS/SXCS, 0,01-0,1
+
+Säulenszenario:
+Populationsgrößen mit und ohne zufälliger Initialisierung (covered actions)
+Laufzeit mit und ohne zufälliger Initialisierung
+XCS mit unterschiedlichem gamma (prediction discount)
+Lernrate XCS/SXCS, 0,01-0,1
+tournament selection Werte testen ~0.7 (XCS, SXCS)
+explore exploit testen (XCS, SXCS)
+
+Schwieriges Szenario:
+Populationsgrößen mit und ohne zufälliger Initialisierung (covered actions)
+Hybrid SXCS mit unterschiedlichem gamma
+Lernrate XCS/SXCS, 0,01-0,1
+
+% OK! TODO mit und ohne numerosity Korrektur
+
+
+SXCS+max prediction+always exploit
+SXCS+switch exploit
+dsxcs gut: alles an TODO maxpred überprüfen...
+TODO Reward prediction unnötig bei speed 2, pillar, random?
+auch mit Geschwindigkeit 0.1 oder so testen
+- pillar, 1 direction change, speed 1, max pred + GA, 0.01 prediction init, prediction init adaption
+- nur gering gg random
+- pillar, intelligent, low speed, maxpred aus, GA, SWITCH EXPLOIT, SEHR GUT!
+
+
+TODO 
+%if((sensor_goal[2*i])) {//  && (!sensor_agent[2*i+1])) { vergleichen. Ohne Sensoragent minimal schlechter
+
+\section{Vergleich unterschiedlicher Geschwindigkeiten des Zielobjekts} Säulenszenario
+random, simple, intelligent, xcs, sxcs 500, sxcs 2000
+
+Hybrid:
+sxcs 500, sxcs2000, hsxcs500, hsxcs2000
+auf Säulen und auf Schwieriges Szenario!
+
+
+Zielobjekt mit SXCS
+
+SXCS sehr gut bei NO DIRECTION CHANGE und speed 1!
+
+
+nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zufälliger
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SXCS+max prediction+always exploit
+SXCS+switch exploit
+dsxcs gut: alles an TODO maxpred überprüfen...
+TODO Reward prediction unnötig bei speed 2, pillar, random?
+auch mit Geschwindigkeit 0.1 oder so testen
+
+
+
+
 - pillar, 1 direction change, speed 1, max pred + GA, 0.01 prediction init, prediction init adaption
 
 nur gering gg random
@@ -166,13 +251,6 @@ TODO Problemzahl und Schrittzahl mit
 Kapitel~\ref{test_schwieriges_szenario:sec} vergleichen
 
 
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{corrected_reward.eps}
-}
-\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards]{Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
-\label{corrected_reward:fig}
-\end{figure}
 
 
 

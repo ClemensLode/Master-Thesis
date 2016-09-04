@@ -40,10 +40,8 @@ Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} darg
 \label{simple_scenario_multistep_classifier:fig}
 \end{figure}
 
+Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des \emph{multi step} Verfahrens von~\cite{Butz_xcsclassifier}. Die algorithmische Beschreibung des Algorithmus findet sich in~\cite{butz01algorithmic}, wo auch näher auf die Unterscheidung von \emph{single step} und \emph{multi step} Verfahren eingegangen wird.
 
-Eine nähere Beschreibung bezüglich der Implementierung von und dem Unterschied zwischen dem \emph{single step} und \emph{multi step} Verfahren findet sich in \cite{butz01algorithmic}.\\
-
-Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des \emph{multi step} Verfahrens von~\cite{Butz_xcsclassifier} (mit der algorithmischen Beschreibung des Algorithmus in~\cite{butz01algorithmic}), eine 
 
 Besonderheit stellt allerdings die Problemdefinition dar, da es kein Ziel zu erreichen gibt, sondern über die Zeit hinweg ein bestimmtes Verhalten erreicht werden soll (die Überwachung des Zielobjekts). Somit gibt es auch kein Neustart des Problems und keinen festen Start- oder Zielpunkt. Zusätzlich, durch die Bewegung der anderen Agenten und des Zielobjekts, verändert sich die Umwelt in jedem Schritt, ein Lernen durch Wiederholung gemachter Bewegungsabläufe ist deswegen deutlich schwieriger.\\
 
@@ -53,7 +51,7 @@ Die meisten Implementationen und Varianten von XCS beschäftigen sich mit Szenari
 Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama} basieren, also im Gegensatz zum Gegenstand dieser Arbeit auf eine übergeordnete Organisationseinheit bzw. auf globale Regeln oder globalem Regeltausch zwischen den Agenten zurückgreifen.\\
 Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll, während in dieser Arbeit alle Agenten dieselbe Rolle spielen sollen.\\
 
-Vielversprechend war der Titel der Arbeit~\cite{Lujan2008}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels einer \emph{reward} Funktion bewertet werden, da es globale Information gab. Dies vereinfacht ein solches Problem deutlich und macht einen Vergleich schwierig.\\
+Vielversprechend war der Titel der Arbeit~\cite{Lujan2008}, "`Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment"'. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels einer \emph{reward} Funktion bewertet werden, da es globale Information gab. Dies vereinfacht ein solches Problem deutlich und macht einen Vergleich schwierig.\\
 
 Eine weitere Arbeit in dieser Richtung~\cite{Hercog02socialsimulation} beschreibt das "`El Farol"' Bar Problem (EFBP), welches dort mit Hilfe eines Multiagenten XCS System erfolgreich gelöst wurde. Die Vergleichbarkeit ist hier auch eingeschränkt, da es sich bei dem EFBP um ein \emph{single step} Problem handelt.\\
 
@@ -83,41 +81,6 @@ Ein XCS ist ein regelbasiertes evolutionäres Lernsystem, das im Wesentlichen aus
 TODO ausfuehrlicher
 
 
-
-
-\section{Ablauf eines XCS}\label{ablauf_lcs:sec}
-
-\begin{enumerate}
-\item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe Kapitel~\ref{covering:sec})
-\item Auswahl auf die Sensordaten passender \emph{classifier} (\emph{match set} Liste, siehe Kapitel~\ref{matching:sec})
-\item Bestimmung der Auswahlart der Aktion (\emph{explore/exploit}, siehe Kapitel~\ref{auswahlart:sec})
-\item Auswahl der Aktion TODO
-\item Erstellung des zur Aktion zugehörigen Liste von \emph{classifier} (\emph{action set} Liste, siehe Kapitel~\ref{actionSet:sec})
-
-, so dass es in der Liste \emph{classifier} deren 
-
-TODO
-Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} Vektoren gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das \emph{matchSet}.
-\item Im nächsten Schritt wird ein \emph{classifier} aus diesem \emph{matchset} ausgewählt und dessen Aktion gespeichert.
-\item Schließlich wird anhand des \emph{match set} und der gewählten Aktion das \emph{action set} gebildet.
-\end{enumerate}
-
-\subsection{Covering}\label{covering:sec}
-
-TODO
-
-\subsection{Variable \emph{lastMatchSet}}\label{matching:sec}
-
-In der \emph{lastMatchSet} Variable werden jeweils alle \emph{classifier} gespeichert, die den letzten Sensordatenvektor erkannt haben. Sie entspricht dem \emph{predictionArray} in der originalen Implementierung von XCS in~\cite{Butz_xcsclassifier}, dort werden außerdem Vorberechnungen zur Auswahl des nächsten \emph{classifier} für die Bewegung durchgeführt und die Ergebnisse gespeichert.\\
-
-\subsection{Variable \emph{actionSet}}\label{actionSet:sec}
-
-Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt denselben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur das letzte \emph{actionSet} gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden.
-
-
-
-
-
 \begin{enumerate}
 
 \item Einer Menge an Regeln, sogenannte \emph{classifier} (siehe Kapitel~\ref{classifier:sec}), die zusammen ein \emph{classifier set} bilden
@@ -133,6 +96,7 @@ Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jewei
 \end{enumerate}
 
 Während die ersten drei Punkte bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei Punkte näher betrachtet werden.\\
+
 
 \section{Classifier}\label{classifier:sec}
 
@@ -161,9 +125,7 @@ Neben den zu den Sensordaten korrespondierenden Werten \(0\) und \(1\) soll es n
 
 \subsection{Vergleich des \emph{condition} Vektors mit den Sensordaten}
 
-Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In Kapitel~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt. Daraus folgt, dass auch das Datenpaar \((0/\#)\) zu \((\#/\#)\) äquivalent ist.
-
-Es ergeben sich also folgende Fälle:
+Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In Kapitel~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt. Daraus folgt, dass auch das Datenpaar \((0/\#)\) zu \((\#/\#)\) äquivalent ist, also beide Datenpaare die selben Sensordatenpaare erkennen. Es ergeben sich also folgende Fälle:
 
 \begin{enumerate}
 \item Sensorenpaar \((0/0)\) wird erkannt von \((0/0)\), \((\#, 0)\), \((0, \#)\), \((\#, \#)\)
@@ -213,7 +175,7 @@ Der \emph{experience} Wert des \emph{classifier} repräsentiert die Anzahl, wie o
 
 \subsection{Der \emph{numerosity} Wert}
 
-Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und Kapitel~\ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden.\\
+Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und Kapitel~\ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden. Was die Implementation betrifft sei Kapitel~\ref{implementierung_numerosity:sec} zu erwähnen, verglichen mit der originalen Implementierung wurden einige Änderungen vorgenommen.\\
 
 
 \section{Subsummation von \emph{classifier}}\label{subsummation:sec}
@@ -237,12 +199,34 @@ Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen 
 
 
 
+\section{Ablauf eines XCS}\label{ablauf_lcs:sec}
+
+\begin{enumerate}
+
+\item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe Kapitel~\ref{covering:sec})
+\item Auswahl auf die Sensordaten passender \emph{classifier} (\emph{match set} Liste, siehe Kapitel~\ref{matching:sec})
+\item Bestimmung der Auswahlart und Auswahl der Aktion (\emph{explore/exploit}, siehe Kapitel~\ref{auswahlart:sec})
+\item Erstellung der zur Aktion zugehörigen Liste von \emph{classifier} (\emph{action set} Liste, siehe Kapitel~\ref{actionSet:sec})
+\end{enumerate}
+
+\subsection{Covering}\label{covering:sec}
+
+TODO
+
+\subsection{Variable \emph{lastMatchSet}}\label{matching:sec}
+
+In der \emph{lastMatchSet} Variable werden jeweils alle \emph{classifier} gespeichert, die den letzten Sensordatenvektor erkannt haben. Sie entspricht dem \emph{predictionArray} in der originalen Implementierung von XCS in~\cite{Butz_xcsclassifier}, dort werden außerdem Vorberechnungen zur Auswahl der nächsten Aktion durchgeführt und die Ergebnisse gespeichert.\\
+
+\subsection{Variable \emph{actionSet}}\label{actionSet:sec}
+
+Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt denselben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur das letzte \emph{actionSet} gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden.
+
 
 
 
 \section{Bewertung der Aktionen (\emph{base reward})}\label{bewertung:sec}
 
-XCS ist darauf ausgelegt, dass es eine komplette, genaue und möglichst allgemeine Darstellung einer \emph{reward} Funktion darstellt. Bei einer Problemstellung, die mit dem \emph{single step} Verfahren gelöst werden kann, entspricht die optimale Darstellung der \emph{reward} Funktion durch das XCS gleichzeitig auch der Lösung des eigentlichen Problems. Beispielsweise beim oben erwähnten 6-Multiplexer Problem prüft die \emph{reward} Funktion, ob das XCS aus den 4 Datenbits anhand der 2 Steuerbits das richtige Datenbit gewählt hat, also ob das XCS so wie ein 6-Multiplexer funktioniert. Wesentliche Voraussetzung für das \emph{single step} Verfahren ist, dass der Agent globale Information besitzt, also in einem Schritt möglichst alle Informationen zur Lösung des Problems zur Verfügung hat, um die jeweilige Lösung zu bewerten.\\
+XCS ist darauf ausgelegt, dass es eine komplette, genaue und möglichst allgemeine Darstellung einer \emph{reward} Funktion darstellt. Bei einer Problemstellung, die mit dem \emph{single step} Verfahren gelöst werden kann, entspricht die optimale Darstellung der \emph{reward} Funktion durch das XCS gleichzeitig auch der Lösung des eigentlichen Problems. Beispielsweise beim oben erwähnten \emph{6-Multiplexer} Problem prüft die \emph{reward} Funktion, ob das XCS aus den 4 Datenbits anhand der 2 Steuerbits das richtige Datenbit gewählt hat, also ob das XCS so wie ein \emph{6-Multiplexer} funktioniert. Wesentliche Voraussetzung für das \emph{single step} Verfahren ist, dass der Agent globale Information besitzt, also in einem Schritt möglichst alle Informationen zur Lösung des Problems zur Verfügung hat, um die jeweilige Lösung zu bewerten.\\
 
 Bei komplexeren Problemen, bei denen ein Agent nur lokale Informationen zur Verfügung hat (beispielsweise bei \emph{Maze~\(N\)} die angrenzenden Felder), liefert die \emph{reward} Funktion nur eine Teilinformation, beispielsweise "`1"' beim letzten Schritt auf das Ziel und "`0"' sonst. Diese Art von Bewertung, die der Agent direkt aus den Sensordaten berechnet, soll in diesem Zusammenhang im folgenden \emph{base reward} genannt werden.\\
 
@@ -292,6 +276,8 @@ BESTES von oben + kein Agent in Sicht
 
 
 base reward
+
+TODO nein
 
 Programm~\ref{agent_check_reward:pro}
 

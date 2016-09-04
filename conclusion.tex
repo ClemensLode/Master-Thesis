@@ -17,6 +17,10 @@ Die alleinige Anpassung des XCS Multistepverfahrens, dass ein neues Problem gest
 Erst durch Verknüpfung des Rewards mit dem zeitlichen Abstand zu einer Änderung des Zustands führte zu deutlich besseren Ergebnissen.\\ TODO
 Desweiteren wurde untersucht, inwiefern sich der Austausch an minimaler Information unter den Agenten, ohne zentrale Steuerung oder globalem Regeltausch, auf die Qualität auswirkt. Zwar gab es vereinzelt positive Effekte, diese waren jedoch auf andere Faktoren zurückzuführen.
 
+
+
+empfindlich gegenüber Parameteränderungen
+
 \section{Ausblick}
 Ein 
 
@@ -36,10 +40,27 @@ Abnehmende Exploration LITERATUR
 Intelligent Exploration Method to Adapt Exploration Rate in XCS, Based on Adaptive Fuzzy Genetic Algorithm
 An Adaptive Approach for the Exploration-Exploitation Dilemma for Learning Agents 
 
+Vielversprechend war anfangs eine Funktion mit der neuerstellte \emph{classifier} mit dem Durchschnittswert aller \emph{reward prediction} Werte einer \emph{classifier set} Liste initialisiert werden. Der Vorteil zeigte sich jedoch nur bei einer zu gering gewählten Populationsgröße (unter 256, siehe Kapitel~\ref{sec:max_population_parameter}), also wenn andauernd neue \emph{classifier} durch \emph{covering} generiert werden müssen. Eine weitere Voraussetzung ist, dass sich die \emph{reward prediction} Werte ähneln. Im in dieser Arbeit untersuchten Fall, bei dem die Agenten nur begrenzte Sensorfähigkeiten besitzen, sich auf einem Torus frei bewegen können.
 
-Im Bereich der Kommunikation wurde neben der "`egoistischen Relation"' (siehe Kapitel~\ref{egoistic_relation:sec}) auch weitere Verfahren ausprobiert, mit welchen versucht wurde, gleichartige Gruppen zu finden. Hier wurden ganze \emph{classifier set} Listen unterschiedlicher Agenten miteinander auf Ähnlichkeit geprüft um daraus einen Faktor zu berechnen, der (wie bei der "`egoistischen Relation"') Einfluss auf die Weitergabe des \emph{reward} Werts haben sollte. Der dadurch deutlich erhöhte Kommunikations- und Berechnungsaufwand lag jedoch in keinem Verhältnis zu eventuell beobachteten Qualitätsverbesserungen, im Gegenteil wurden eher Qualitätsverschlechterungen beobachtet. Die Ergebnisse mit dem Test der "`egoistischen Relation"' zeigen jedoch, dass hier zumindest etwas Potential stecken könnte und für bestimmte Szenarien die zwei Grundideen, dass sich die Agenten zum einen an die Größe des Szenarios anpassen und zum anderen der \emph{reward} möglichst nur an sich ähnlich verhaltende Agenten weitergegeben wird, nicht ganz falsch sein können. Genauere, insbesondere theoretische, Untersuchungen sind hier aber nötig.\\
+TODO!
 
-Was die Szenarien selbst betrifft, wurden ebenfalls mehrere verworfen, da bei ihnen keine zusätzlichen Beobachtungen gemacht bzw. nur unbedeutende Teilaspekte betrachtet werden konnten. Unter anderem sind dies ein Labyrinth, dessen Umsetzung wahrscheinlich an den mangelnden Fähigkeiten der Sensoren scheiterte, ein vereinfachtes "`schwieriges Szenario"' mit einem "`Raum"' mit einer Öffnung in der Mitte, welches sich als zu einfach zu lösen herausstellte und ein Szenario mit einem Kreuz bestehend aus Hindernissen in der Mitte, welches keine bedeutend anderen Ergebnisse lieferte als das Szenario mit zufällig verteilten Hindernissen.
+dass sich die \emph{reward prediction} Werte der einzelnen \emph{classifier} untereinander wenig unterscheiden, während sie beispielsweise bei statischen Szenarien gegen feste, stark unterschiedliche Werte konvergieren. Beispielsweise im Einführungsbeispiel in Abbildung~\ref{simple_scenario_multistep:fig} würden die \emph{reward prediction} Werte der \emph{classifier} b), c), e) und g) eher gegen 1 und die der restlichen \emph{classifier} gegen 0 streben.\\
+Welchen Wert man für \(p_{i}\) nun als Durchschnittswert wählt, hängt vom jeweiligen Szenario ab. Beispielsweise würde ein Überwachungsszenario auf einem sehr größeren Torus mit relativ wenigen Agenten würde zu einem niedrigeren Durchschnittswert für die \emph{reward prediction} Variable führen und umgekehrt.\\
+
+
+In Kapitel TODO wurde eine SXCS Variante vorgestellt, die sowohl mit der Weitergabe des \emph{maxPrediction} wie bei XCS als auch mit der direkten linearen bzw. quadratischen Weitergabe des \emph{base reward} Werts arbeitet. Dadurch ergeben sich Werte für den Maximalwert des \emph{reward} \(\rho\) (siehe Kapitel~\ref{epsilon0:sec}) größer \(1.0\), womit auch die \emph{reward prediction} Werte der \emph{classifier} aktualisiert werden, wodurch auch diese Werte wiederum größer werden, usw. Hier ist noch theoretische Arbeit zu leisten, wie logisch beide Arten der Weitergabe des \emph{reward} sinnvoll miteinander verknüpft werden können. In dieser Arbeit konnte nur gezeigt werden, dass in bestimmten Szenarien diese Form der Weitergabe erfolgversprechend ist, wenn es auch für einen gewissen Grad der Verfälschung (und somit auch einer niedrigeren Qualität) in Szenarien sorgt, die wenig auf das Erkennen von bestimmten Mustern (wie z.B. beim schwierigen Szenario die Öffnungen) ausgerichtet sind.\\
+
+
+
+Sicher interessant ist auch der umgekehrte Ansatz, bei der das Zielobjekt das Objekt ist, das lernt, und den Agenten ausweichen muss. Dieser Aspekt konnte in der Arbeit nur kurz angesprochen werden.\\ TODO
+
+
+
+Im Bereich der Kommunikation wurde neben in dieser Arbeit besprochenen "`egoistischen Relation"' (siehe Kapitel~\ref{egoistic_relation:sec}) auch weitere Verfahren ausprobiert, mit welchen versucht wurde, gleichartige Gruppen zu finden. Hier wurden ganze \emph{classifier set} Listen unterschiedlicher Agenten miteinander auf Ähnlichkeit geprüft um daraus einen Faktor zu berechnen, der (wie bei der "`egoistischen Relation"') Einfluss auf die Weitergabe des \emph{reward} Werts haben sollte. Der dadurch deutlich erhöhte Kommunikations- und Berechnungsaufwand lag jedoch in keinem Verhältnis zu eventuell beobachteten Qualitätsverbesserungen, im Gegenteil wurden eher Qualitätsverschlechterungen beobachtet. Die Ergebnisse mit dem Test der "`egoistischen Relation"' zeigen jedoch, dass hier zumindest etwas Potential stecken könnte und für bestimmte Szenarien die zwei Grundideen, dass sich die Agenten zum einen an die Größe des Szenarios anpassen und zum anderen der \emph{reward} Wert möglichst nur an sich ähnlich verhaltende Agenten weitergegeben wird, nicht ganz falsch sein können. Genauere, insbesondere theoretische, Untersuchungen sind hier nötig.\\
+
+
+
+Was die Szenarien selbst betrifft, wurden ebenfalls mehrere verworfen, da bei ihnen keine zusätzlichen Beobachtungen gemacht bzw. nur unbedeutende Teilaspekte betrachtet werden konnten. Unter anderem sind dies ein Labyrinth, dessen Umsetzung wahrscheinlich an den mangelnden Fähigkeiten der Sensoren scheiterte, ein vereinfachtes "`schwieriges Szenario"' mit einem "`Raum"' mit einer Öffnung in der Mitte, welches sich als zu einfach zu lösen herausstellte und ein Szenario mit einem Kreuz bestehend aus Hindernissen in der Mitte, welches keine bedeutend anderen Ergebnisse lieferte als das Szenario mit zufällig verteilten Hindernissen.\\
 
 
 

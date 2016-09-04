@@ -1,16 +1,11 @@
 \chapter{XCS Varianten}\label{lcs_variants:cha}
 
-TODO, evtl maxprediction komplett raus bei SXCS, testen!
+Ziel der Arbeit war es, wie man den XCS Algorithmus auf ein Überwachungsszenario anwenden kann. Notwendig dafür war es, die XCS Implementierung vollständig nachzuvollziehen, um für jeden Bestandteil entscheiden zu können, welche Rolle es bezüglich eines solchen Szenarios spielt. Für die Tests wurde nicht auf bestehende Pakete (z.B. XCSlib~\cite{xcslib}) zurückgegriffen, wenn auch der Quelltext von \cite{Butz_xcsclassifier} Modell stand und aus ihm große Teile entnommen wurden.\\
 
-TODO!!
+Im Vordergrund stand zum einen die grundsätzliche Frage, ob XCS in einem solchen Szenario überhaupt besser als ein Algorithmus sein kann, der sich rein zufällig verhält und wie mögliche Ansätze aussehen können, den Algorithmus zu verbessern.\\
+Neben den in Kapitel~\ref{allgemeine_anpassungen:sec} aufgeführten Punkten, welche allgemeine Anpassungen des Algorithmus und der Implementation betreffen, soll im ersten Teil der XCS Varienten in Kapitel~\ref{standardxcs:sec} XCS selbst besprochen werden, insbesondere die Behandlung des Neustarts eines Problems.\\
+Im nächsten Teil soll dann die erste Variante, der sogenannte SXCS Algorithmus vorgestellt werden. Dieser Algorithmus wurde unter dem Gesichtspunkt des Problems einer kontinuierlichen Überwachung eines Zielobjekts entwickelt, also nicht, wie der originale XCS Algorithmus, einen Weg zu einem Ziel finden.\\
 
-Ziel der Arbeit war es, wie man den XCS Algorithmus auf ein Überwachungsszenario anwenden kann. Notwendig dafür war es, die XCS Implementierung vollständig nachzuvollziehen, um für jeden Bestandteil entscheiden zu können, welche Rolle es bezüglich eines solchen Szenarios spielt. Für die Tests wurde nicht auf bestehende Pakete (z.B. XCSlib~\cite{xcslib}) zurückgegriffen, wenn auch der Quelltext von \cite{Butz_xcsclassifier} Modell stand. 
-
-Bild mit rückwirkender Rewardvergabe
-
-Im Vordergrund stand zum einen die grundsätzliche Frage, ob XCS in einem solchen Szenario überhaupt besser als ein Algorithmus sein kann, der sich rein zufällig verhält und wie mögliche Ansätze aussehen können, den Algorithmus zu verbessern.
-
-Der hier entwickelte Algorithmus muss primär nicht einen Weg zum Ziel erkennen, sondern eine möglichst optimale (und auch an andere Agenten angepasste) Verhaltensstrategie finden.
 
 
 In Kapitel~\ref{cha:parameter} wurden mögliche Optimierungen zu den Parametern vorgestellt, in Kapitel~\ref{ablauf_lcs:sec} wurde diskutiert, in welcher Reihenfolge bei einem Multiagentensystem auf einem diskreten Torus die einzelnen Teile ausgeführt werden sollen.
@@ -19,94 +14,62 @@ Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction ber
 
 Das Multistepverfahren baut darauf auf, dass die Qualität der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
 
-
 Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht zum Erfolg führen. Eine einfache Implementation mit einem simplen Agenten der auf das Ziel zugeht, wenn es in Sicht ist und sich sonst wie ein sich zufällig bewegender Agent verhält, schneidet grundsätzlich schlechter ab.
 
 TODO!
 
-\section{Allgemeine Anpassungen und Verbesserungen}
+\section{Allgemeine Anpassungen und Verbesserungen}\label{allgemeine_anpassungen:sec}
 
-\subsection{Verschiedenes, Numerosity, TODO}
+Eine Anzahl allgemeine Änderungen an der Implementation und am Algorithmus waren notwendig, um XCS in einem Überwachungsszenario laufen zu lassen. Unter anderen sind dies:
 
-Durch die Benutzung von \emph{macro classifiers} ergibt sich allerdings das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifiers} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifiers} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz_xcsclassifier} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einer einzelnen \emph{action set} Liste optimiert, während die hier verwendete Implementierung jeweils mit bis über 100 \emph{action set} Listen programmiert wurde, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{action set} Listen zur Folge, in der der \emph{classifier} Mitglied ist.\\
+\begin{enumerate}
+\item Die Berechnung der Summe der \emph{numerosity} Werte wurde vollständig neuorganisiert wie auch ein Fehler bei der Aktualisierung des \emph{numerosity} Werts in der Implementierung korrigiert (siehe Kapitel~\ref{corrected_numerosity_function:sec})
 
-Wird also z.B. ein \emph{micro classifier} entfernt, dann wird lediglich die Änderungsfunktion des \emph{classifiers} aufgerufen, der dann wiederum den \emph{numerositySum} Wert der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viel Umstände, den \emph{numerositySum} der Eltern immer auf den aktuellen Stand zu halten und einzelne \emph{classifiers} zu löschen.\\
+\item Der genetischer Operator wird hier zwei feste anstatt zufällige Schnittpunkte für das \emph{two point crossover} verwenden (siehe Kapitel~\ref{genetische_operatoren:sec}).
 
-Positiver Nebeneffekt durch die verbesserte Struktur ist, dass man dadurch leicht auf die Menge der \emph{action set} Listen zugreifen kann, denen ein \emph{classifier} angehört, hierfür wurde aber im Rahmen dieser Arbeit keine Verwendung gefunden.\\
+\item Die Qualität des Algorithmus wird nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird (siehe Kapitel~\ref{exploreexploit:sec}).
 
-Ein weiteres Problem der Standardimplementierung ist, dass der \emph{fitness} Wert eines \emph{classifiers} als Optimierung bereits den \emph{numerosity} Wert als Faktor enthält, während bei der Aktualisierung des \emph{numerosity} Werts der \emph{fitness} Wert nicht aktualisiert wurde. Das hat zur Folge, dass theoretisch \emph{fitness} Werte von \emph{classifiers} fast den \emph{max population} Wert annehmen kann, wenn ein \emph{classifier} mit \emph{numerosity} und \emph{fitness} Wert in der Höhe von \emph{max population} auf einen \emph{numerosity} Wert von 1 reduziert wird.\\
-Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die korrigierte Fassung ist in Programm~\ref{corrected_numerosity_function:pro} gelistet, ein Vergleich der Qualität, mit und ohne Korrektur, ist in Abbildung~\ref{correct_numerosity_graph:fig} dargestellt.
+\item Mehrere XCS Parameter wurden angepasst (siehe Kapitel~\ref{cha:parameter}).
 
-\newlisting{Korrigierte Version der \emph{addNumerosity()} Funktion}{corrected_numerosity_function:pro}
-/**
- * Adds to the numerosity of the classifier.
- * @param num The added numerosity (can be negative!).
- */
-  public void addNumerosity(int num) {
-    int old_num = numerosity;
-   
-    numerosity += num;
+\item Das Erreichen des Ziels wurde für das Überwachungsszenario neu verfasst wie auch der Neustart von Probleminstanzen neu geregelt wurde (siehe Kapitel~\ref{bewertung:sec}).
 
-  /**
-   * Korrektur der fitness
-   */
-    fitness = fitness * (double)numerosity / (double)old_num;
+\end{enumerate}
 
-  /**
-   * Aktualisierung der Eltern
-   */
-    for (ClassifierSet p : parents) {
-      p.changeNumerositySum(num);
-      if (numerosity == 0) {
-        p.removeClassifier(this);
-      }
-    }
-  }
-\end{lstlisting}
 
-TODO Vergleich!
-TODO wenig Unterschied sensoragent, evtl wieder raus
 
 
 
 \section{Standard XCS Multistepverfahren}\label{standardxcs:sec}
 
-Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. der jeweils zugehörigen \emph{action set} Liste und die dortigen \emph{classifier}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängt. Somit wird, rückführend vom letzten Schritt auf das Ziel, der \emph{reward} Wert schrittweise an vorgehende Aktionen verteilt, mit der Annahme, dass dann, durch mehrfache Wiederholung des Lernprozesses, mit dem sich dadurch ergebenen Regelsatz mit höherer Wahrscheinlichkeit das Ziel gefunden wird.\\
+Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. der jeweils zugehörigen \emph{action set} Liste und die dortigen \emph{classifier}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängen soll. Somit wird, rückführend vom letzten Schritt auf das Ziel, der \emph{reward} Wert schrittweise (mit jeder neuen Probleminstanz) an vorgehende Aktionen verteilt. Die Annahme ist, dass dann, durch mehrfache Wiederholung des Lernprozesses, mit dem sich dadurch ergebenen Regelsatz mit höherer Wahrscheinlichkeit das Ziel gefunden wird.\\
 
-Kern des Verfahrens ist die Vergabe des \emph{base rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an die letzte \emph{action set} Liste gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an die letzte \emph{action set} Liste gegeben.\\
+Dies entspricht dem aus \cite{butz01algorithmic} bekannten XCS \emph{multi step} Verfahren. Der wesentliche Unterschied der Implementierung in dieser Arbeit ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Dies zeigt sich in Programm~\ref{multistep_calc_reward:pro} (Zeile 22-27), zwar wird die \emph{action set} Liste gelöscht, das Szenario selbst läuft aber weiter. In der originalen Implementierung in~\cite{Butz_xcsclassifier} wird an dieser Stelle im Algorithmus die aktuelle Probleminstanz abgebrochen (in \emph{XCS.java} in der Funktion \emph{doOneMultiStepProblemExploit()} bzw. \emph{doOneMultiStepProblemExplore()}). Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an die letzte \emph{action set} Liste gegeben.\\
 
-Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverändert übernommen. Der wesentliche Unterschied ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Außerdem, wie schon in Kapitel~\ref{exploreexploit:sec} erwähnt, soll die Qualität des Algorithmus nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird. Schließlich sollen, neben den Parametereinstellungen im Kapitel~\ref{cha:parameter}, feste anstatt zufällige Schnittpunkte für das \emph{two point crossover} beim genetischen Operator (siehe Kapitel~\ref{genetische_operatoren:sec}) verwendet werden.\\
-
-TODO Programm~\ref{multistep_collect_reward:pro}
-TODO Programm~\ref{multistep_calc_move:pro}
-TODO Programm~\ref{multistep_calc_reward:pro}
+In den Programmen~\ref{multistep_collect_reward:pro} und \ref{multistep_calc_move:pro} finden sich, neben Anpassungen an den Simulator, keine wesentlichen Änderungen. In Programm~\ref{multistep_collect_reward:pro} wird der ermittelte \emph{base reward} zusammen mit dem ermittelten \emph{maxPrediction} Wert an die Aktualisierungsfunktion der jeweiligen \emph{action set} Liste weitergegeben und in Programm~\ref{multistep_calc_move:pro} wird eine Aktion ausgewählt und entsprechende \emph{match set} und \emph{action set} Listen erstellt.
 
 
+\section{XCS Variante für Überwachungsszenarien (SXCS)}\label{sxcs_variant:sec}
 
-\section{XCS Variante für Überwachungsszenarien (SXCS)}
-
-Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde dieselbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{action set} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{action set} Listen über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{reward prediction} Wert) für die \emph{classifier} gefunden werden.\\
-Bei der veränderten XCS Variante SXCS soll die Verbindung zwischen den \emph{action set} Listen zusätzlich direkt durch die zeitliche Nähe zum Ziel gegeben sein. Es wird in jedem Schritt die jeweilige \emph{action set} Liste gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
-\(r(a)\) bezeichnet den \emph{reward} Wert für die \emph{action set} Liste mit Alter \(a\).
-
-Bei linearer Vergabe des \emph{reward}:
+Die Hypothese bei der Aufstellung dieser XCS Variante ist im Grunde dieselbe wie beim XCS \emph{multi step} Verfahren selbst, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim \emph{multi step} Verfahren besteht die wesentliche Verbindung zwischen den \emph{action set} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{action set} Listen über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (des \emph{fitness} und \emph{reward prediction} Werts) für die \emph{classifier} gefunden werden.\\
+Bei der veränderten XCS Variante \emph{Supervising eXtended Classifier System} SXCS soll die Verbindung zwischen den \emph{action set} Listen direkt durch die zeitliche Nähe zur Vergabe des \emph{base reward} gegeben sein. Es wird in jedem Schritt die jeweilige \emph{action set} Liste gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
+Bezeichne \(r(a)\) den \emph{reward} Wert für die \emph{action set} Liste mit Alter \(a\), bei linearer Verteilung des \emph{base reward} ergibt sich dann:
 $$
 r(a) = \left\{ \begin{array}{rl}
-  \frac{a}{\mathrm{size(actionSet)}} &\mbox{, falls reward = $1$} \\
-  \frac{1 - a}{\mathrm{size(actionSet)}} &\mbox{, falls reward = $0$}
+  \frac{a}{\mathrm{size(actionSet)}} &\mbox{, falls base reward = $1$} \\
+  \frac{1 - a}{\mathrm{size(actionSet)}} &\mbox{, falls base reward = $0$}
        \end{array} \right.
 $$
 
-bzw. bei quadratischer Vergabe des \emph{reward}:
+bzw. bei quadratischer Verteilung des \emph{base reward}:
 
 $$
 r(a) = \left\{ \begin{array}{rl}
-  \frac{{a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls reward = $1$} \\
-  \frac{{1 - a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls reward = $0$}
+  \frac{{a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls base reward = $1$} \\
+  \frac{{1 - a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls base reward = $0$}
        \end{array} \right.
 $$
 
-In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal besseres Ergebnis (TODO zeigen), weitere Grafiken werden auf die lineare Vergabe des \emph{reward} beschränkt sein, um eine verständliche Darstellung zu ermöglichen, während in den Simulationen die quadratische Vergabe des \emph{reward} benutzt wird.
+Die schematische Abbildung~\ref{positive_negative_reward:fig} demonstriert diesen Sachverhalt nochmals anschaulich. In Tests ergab sich für die quadratische Verteilung des \emph{base reward} ein minimal besseres Ergebnis, weitere Grafiken werden auf die lineare Verteilung des \emph{base reward} beschränkt sein, um eine verständliche Darstellung zu ermöglichen, während in den Simulationen die quadratische Vergabe des \emph{base reward} benutzt wird.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -116,13 +79,13 @@ In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal b
 \label{positive_negative_reward:fig}
 \end{figure}
 
+TODO, evtl maxprediction komplett raus bei SXCS, testen!?
+
 \subsection{Ereignisse}\label{sec:events}
 
-TODO
+In XCS wird lediglich das jeweils letzte \emph{action set} Liste aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zum Wert \emph{maxStackSize}) von \emph{action set} Listen gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des \emph{reward} anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von \emph{action set} Listen und zum anderen die zeitliche Relativierung einer \emph{action set} Liste zu einem Ereignis. Die \emph{classifier} werden dann jeweils rückwirkend anhand des jeweiligen \emph{reward} Werts aktualisiert, sobald bestimmte Bedingungen eingetreten sind.\\
 
-In XCS wird lediglich das jeweils letzte \emph{action set} Liste aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zum Wert \emph{maxStackSize}) von \emph{action set} Listen gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des \emph{reward} anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von \emph{action set} Listen und zum anderen die zeitliche Relativierung einer \emph{action set} Liste zu einem Ereignis. Die \emph{classifier} werden dann jeweils rückwirkend anhand des \emph{reward} Werts aktualisiert, sobald bestimmte Bedingungen eingetreten sind.\\
-
-Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn das Zielobjekt sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).\\
+Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{base reward} im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn das Zielobjekt sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).\\
 
 Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die \emph{classifier} besitzen jeweils Information, die bis zu \emph{maxStackSize} Schritte zu alt sind. Wählt man den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählt man ihn zu klein, kann es sein, dass ein Überlauf auftritt, also \emph{maxStackSize} Schritte lang keine Änderung des \emph{base reward} aufgetreten ist. Im letzteren Fall wird deswegen abgebrochen, die \emph{action set} Listen der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten \emph{base reward} Wert (welcher dem aktuellen \emph{base reward} Wert entspricht, es ist ja keine Änderung des \emph{base reward} eingetreten) aktualisiert und vom Stack genommen (siehe Abbildung~\ref{neutral_reward:fig}). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
 Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
@@ -302,6 +265,18 @@ TODO
 Ist kein Event aufgetreten und liegt ein 1-Reward vor, dann stellt sich die Frage, ob bereits andere Agenten diesen Reward weitergereicht haben. Befinden sich andere Agenten in Reichweite soll nur ein Agent den Reward weiterreichen.
 TODO Test
 
+Abbildung~\ref{corrected_reward:fig}
+
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{corrected_reward.eps}
+}
+\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards]{Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
+\label{corrected_reward:fig}
+\end{figure}
+
+
 
 \subsection{Kommunikationsvariante "`Einzelne Gruppe"'}\label{kommunikationsvarianten:sec}
 
@@ -380,3 +355,4 @@ TODO Programm~\ref{egoistic_relationship:pro}
 
 
 
+Unstetigkeit Raum für Verbesserung

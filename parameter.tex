@@ -1,13 +1,15 @@
 \chapter{Beschreibung und Analyse der XCS Parameter}\label{cha:parameter}
 
-Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen weitgehend den Vorschlägen in~\cite{butz01algorithmic} ("`Commonly Used Parameter Settings"'). Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. Im Folgenden sollen Parameter besprochen werden, die entweder in der Empfehlung offen gelassen sind, also klar vom jeweiligen Szenario abhängen, und solche, bei denen von der Empfehlung abgewichen wurde.\\
+Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen weitgehend den Vorschlägen in~\cite{butz01algorithmic} ("`Commonly Used Parameter Settings"'). Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. Im Folgenden sollen Parameter besprochen werden, die entweder in der Empfehlung offen gelassen sind, also klar vom jeweiligen Szenario abhängen, und solche, bei denen von der Empfehlung abgewichen wurde. Es wurden viele weitere Veränderungen getestet, in den meisten Fällen war die Standardeinstellung jedoch passend.\\
+
 Mitunter führen andere Parametereinstellungen auch zu wesentlich besseren Ergebnissen. Dies muss man aber vorsichtig bewerten, wenn die erreichte Qualität unter der des zufälligen Algorithmus liegt, da eine Auswirkung sein kann, dass der Algorithmus nicht besser lernt, sondern sich umgekehrt eher wie der zufällige Algorithmus verhält. Ein Vergleich mit der Qualität des zufälligen Algorithmus wird deswegen jeweils immer angegeben.\\
+
 Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Um synchronisierte und vergleichbare Daten zu haben, wurden die Tests deshalb in mehreren Etappen durchgeführt, die angegebenen Testergebnisse entsprechen jeweils den endgültigen Ergebnissen.\\
 
 
 \section{Parameter \emph{max population N}}\label{sec:max_population_parameter}
 
-Der Wert von \emph{max population N} bezeichnet die maximalen Größe der \emph{classifier set} Liste. Nach~\cite{butz01algorithmic} sollte \(N\) so groß gewählt werden, dass \emph{covering} nur zu Beginn eines Durchlaufs stattfindet, also die Anzahl der neuerstellten \emph{classifier} gegen Null geht. In Abbildung~\ref{neuerstellte_classifier_maxpop:fig} ist dies für das angegebene Szenario ab einer Populationsgröße von 256 erfüllt. Der niedrigere Wert bei größeren Populationsgrößen erklärt sich dadurch, dass wie in~\ref{sec:random_init} mit einem vorinitialisierten \emph{classifier set} begonnen wird.
+Der Wert von \emph{max population N} bezeichnet die maximalen Größe der \emph{classifier set} Liste. Nach~\cite{butz01algorithmic} sollte \(N\) so groß gewählt werden, dass \emph{covering} nur zu Beginn eines Durchlaufs stattfindet, also die Anzahl der neuerstellten \emph{classifier} gegen Null geht. In Abbildung~\ref{neuerstellte_classifier_maxpop:fig} ist dies für das angegebene Szenario ab einer Populationsgröße von 256 erfüllt.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -17,7 +19,8 @@ Der Wert von \emph{max population N} bezeichnet die maximalen Größe der \emph{cl
 \label{neuerstellte_classifier_maxpop:fig}
 \end{figure}
 
-Bei der Wahl eines geeigneten Werts spielen außerdem die Konvergenzgeschwindigkeit und die Laufzeit eine Rolle. Einen allgemein besten Wert für \(N\) gibt es nicht, denn er hängt insbesondere von der durch das Szenario und der durch die Länge des \emph{condition} Vektors gegebenen Möglichkeiten ab, also wieviele \emph{classifier} mit verschiedenen \emph{condition} Vektoren und verschiedenem \emph{action} Wert in der \emph{covering} Funktion konstruiert werden können. Würde man beispielsweise weitere Zielobjekte auf das Feld setzen, könnten eine Reihe weiterer Situationen auftreten, beispielsweise könnten Zielobjekte in Sicht in zwei unterschiedlichen Richtungen auftauchen. Selbiges gilt für das Szenario ohne Hindernisse, hier fällt eine ganze Anzahl von Möglichkeiten heraus, was man in Abbildung~\ref{neuerstellte_classifier_maxpop_empty:fig} als Vergleich sehen kann....  Letztlich weiß der Agent nicht, in was für einem Szenario er sich befindet, also wie groß die Menge der \emph{classifier} ist, die das Problem abdecken. Die Lösung wäre eine Populationsgröße \(N\) die sich flexibel anpasst, dieser Ansatz soll aber hier nicht weiter untersucht werden, stattdessen soll erst ein Blick auf die Laufzeit geworfen werden.\\
+Bei der Wahl eines geeigneten Werts spielen außerdem die Konvergenzgeschwindigkeit und die Laufzeit eine Rolle. Einen allgemein besten Wert für \(N\) gibt es nicht, denn er hängt insbesondere von der durch das Szenario und der durch die Länge des \emph{condition} Vektors gegebenen Möglichkeiten ab, also wieviele \emph{classifier} mit verschiedenen \emph{condition} Vektoren und verschiedenem \emph{action} Wert in der \emph{covering} Funktion konstruiert werden können. Würde man beispielsweise weitere Zielobjekte auf das Feld setzen, könnten eine Reihe weiterer Situationen auftreten, beispielsweise könnten Zielobjekte in Sicht in zwei unterschiedlichen Richtungen auftauchen. Selbiges gilt für das Szenario ohne Hindernisse, hier fällt eine ganze Anzahl von Möglichkeiten heraus, was man in Abbildung~\ref{neuerstellte_classifier_maxpop_empty:fig} als Vergleich sehen kann.\\
+
 
 \begin{figure}[htbp]
 \centerline{	
@@ -26,6 +29,8 @@ Bei der Wahl eines geeigneten Werts spielen außerdem die Konvergenzgeschwindigke
 \caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (leeres Szenario)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (leeres Szenario ohne Hindernisse, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS)}
 \label{neuerstellte_classifier_maxpop_empty:fig}
 \end{figure}
+
+
 
 Für den Overhead (d.h. die Zeit, die 8 Agenten mit zufälliger Bewegung benötigen) ergab sich eine mittlere Laufzeit von \(1,67\)s pro Experiment bei 500 Schritten (bzw. \(6,50\)s bei 2000 Schritten), was die anfängliche Stagnation bis \(N = 32\) erklärt. Zieht man diesen von den Messwerten (siehe Abbildung~\ref{empty_grid_time_maxpop:fig}) ab, erhält man im betrachteten Wertebereich einen nahezu linearen Verlauf (siehe Abbildung~\ref{linear_pop_time:fig}, ab \(N > 128\)). Der fallende Verlauf bis 128 erklärt sich durch den Overhead des XCS Algorithmus selbst.\\
 
@@ -59,28 +64,36 @@ Die Tests liefen auf einem T7500, 2.2 GHz in einem einzelnen Thread. Als Verglei
 \end{figure}
 
 
+\section{Zufällige Initialisierung der \emph{classifier set} Liste}\label{sec:random_init}
+
+Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt~(\cite{Butz2006}), bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälligen \emph{action} Werten und \emph{condition} Vektoren gefüllt wird. Dort wird aber auch angemerkt, dass beide Varianten in ihrer Qualität sich nur wenig unterscheiden. Da zum einen gewisser Zeitaufwand nötig ist, die Liste zu füllen und zum anderen nicht sichergestellt ist, dass die generierten \emph{classifier} in dem jeweiligen Szenario überhaupt aktiviert werden können, scheint es sinnvoll zu sein mit einer leeren \emph{classifier set} Liste zu starten.\\
+Dies bestätigen auch Tests, vergleicht man die Anzahl durch \emph{covering} neu erstellter \emph{classifier} ohne zufällige Initialisierung der \emph{classifier set} Liste (Abbildung~\ref{neuerstellte_classifier_maxpop_not_initialized:fig}) mit der mit Initialisierung (Abbildung~\ref{neuerstellte_classifier_maxpop:fig}) erkennt man, dass zwar anfangs weniger neue \emph{classifier} generiert werden müssen, umgekehrt aber einige der generierten \emph{classifier} kaum mehr aus dem \emph{classifier set} zu bekommen sind. Beispielsweise stagniert die Anzahl der generierten \emph{classifier} im Fall mit vorinitialisierter \emph{classifier set} Liste bei einer Populationsgröße von 128 bei etwa 2000 pro 500 Schritte und 8 Agenten, während sie im Fall ohne Initialisierung gegen 0 geht.\\
+Im zweiten Fall mit vorinitialisierter Liste müssen die überflüssigen \emph{classifier} also erst mühsam erkannt und entfernt werden, was im Grunde die Populationsgröße bis dahin verringert. Es müsste also ein größeres \(N\) benutzt werden, was wiederum die Laufzeit erhöht. Aus diesen Gründen sollen alle Agenten mit leerer Liste starten.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{neuerstellte_classifier_maxpop_not_initialized.eps}
+}
+\caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (Säulenszenario, ohne Initialisierung der \emph{classifier set} Liste)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS, ohne Initialisierung der \emph{classifier set} Liste)}
+\label{neuerstellte_classifier_maxpop_not_initialized:fig}
+\end{figure}
+
+
 \section{Parameter \emph{reward prediction discount} $\gamma$}
 
+In der Literatur in~\cite{butz01algorithmic} wird ein Standardwert von \(0,71\) genannt, es seien je nach Szenario aber auch größere und kleinere Werte möglich. 
+Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifiers} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.\\
+Abbildung~\ref{prediction_discount:fig} zeigt einen Vergleich der Qualität bei unterschiedlichen Werten für \(\gamma\) beim XCS Algorithmus im Säulenszenario. Wie vorgeschlagen wird hier jeweils \(\gamma = 0,71\) verwendet werden.
 
-%%sxcs gut: 0.4 p#, kein random start, kein GA
-dsxcs gut: alles an TODO maxpred überprüfen...
 
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{prediction_discount.eps}
+}
+\caption[Auswirkung verschiedener \emph{prediction discount} $\gamma$ Werte auf die Qualität]{Auswirkung verschiedener \emph{prediction discount} $\gamma$ Werte auf die Qualität (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung und Geschwindigkeit 1, 8 Agenten mit XCS)}
+\label{prediction_discount:fig}
+\end{figure}
 
-Der Einfluss von \(\gamma\) ist zwar vorhanden, aber sehr gering. 
-TODO
-
-TODO Reward prediction unnötig bei speed 2, pillar, random
-
-TODO Abschnitt entfernen
-Auch für den Wert \emph{reward prediction discount} \(\gamma\) hat sich ein etwas höherer Wert als sinnvoll erwiesen, als standardmäßig benutzt wird. Laut~\cite{butz01algorithmic} hängt der Wert auch vom verwendeten Szenario ab. Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe des Werts, der über \emph{maxPrediction} weitergegeben wird, mit zeitlichem Abstand zur ursprünglichen Bewertung mit einem \emph{reward}, weniger schnell abfällt, wodurch eine längere Verkettung von \emph{reward} Werten möglich ist. Umgekehrt führen zu hohe Werte für \(\gamma\) zu der positiven Bewertung von \emph{classifiers} die am Erfolg gar nicht beteiligt waren, was sich negativ auf die Qualität auswirken kann.
-
-Tabelle~\ref{table:prediction_discount} zeigt einen Vergleich der Qualität mit dem Standardwert \(\gamma = 0.71\) und dem für die in dieser Arbeit verwendeten Testszenarien gewählten Wert \(\gamma = 0.95\).\\
-
-TODO 0.71 lassen
-
-auch mit Geschwindigkeit 0.1 oder so testen
-
-TODOTabelle prediction discount
 
 
 \section{Parameter Lernrate $\beta$}\label{sec:learnrate_parameter}
@@ -100,77 +113,9 @@ Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig} mit 
 \end{figure}
 
 
-
-\section{Parameter \emph{reward prediction init} $p_{i}$}\label{prediction_init:sec}
-
-In der Literatur werden Werte nahe Null bzw. 1\% von \(\rho\) als Initialisierung für den \emph{reward prediction} Wert eines \emph{classifiers} angegeben. Im in dieser Arbeit untersuchten Fall, bei dem die Agenten nur begrenzte Sensorfähigkeiten besitzen, sich auf einem Torus frei bewegen können und keine festen Pfade suchen müssen, ist zu erwarten, dass sich die \emph{reward prediction} Werte der einzelnen \emph{classifier} untereinander wenig unterscheiden, während sie beispielsweise bei statischen Szenarien gegen feste, stark unterschiedliche Werte konvergieren. Beispielsweise im Einführungsbeispiel in Abbildung~\ref{simple_scenario_multistep:fig} würden die \emph{reward prediction} Werte der \emph{classifier} b), c), e) und g) eher gegen 1 und die der restlichen \emph{classifier} gegen 0 streben.\\
-Welchen Wert man für \(p_{i}\) nun als Durchschnittswert wählt, hängt vom jeweiligen Szenario ab. Beispielsweise würde ein Überwachungsszenario auf einem sehr größeren Torus mit relativ wenigen Agenten würde zu einem niedrigeren Durchschnittswert für die \emph{reward prediction} Variable führen und umgekehrt.\\
-Einfache Idee ist deshalb, auszunutzen, dass im jeweiligen \emph{classifier set} bereits die Information enthalten ist, was der Durchschnittswert für das aktuelle Szenario ist, nämlich der Durchschnittswert aller \emph{reward prediction} Werte. Dies kann man noch dadurch erweitern, dass man bei der Durchschnittsbildung nur solche \emph{classifier} miteinbezieht, welche einen ausreichend großen \emph{experience} Wert besitzen.\\
-
-Tests haben gezeigt, dass dadurch ein deutlich schnelleres Konvergenzverhalten erreicht werden konnte
-
-TODO Test
-
-TODO raus unten
-Wählt man einen Wert, der näher am Durchschnitt der \emph{reward prediction} Werte der \emph{classifier} liegt, die sich in den besten Lösungen am Ende eines Testdurchlaufs befinden, so ist zu erwarten, dass die Anzahl der benötigten Aktualisierungen des \emph{reward prediction} Werts geringer ausfällt, das System also schneller konvergiert. Diese Überlegung wird bestätigt durch entsprechende Tests (siehe~\ref{pillar_lcs_prediction_init_quality:fig}).\\
-Wir setzen somit für SXCS den Parameter auf \(p_{i} = 1.0\).\\
-Zu beachten ist, dass diese Überlegung primär deswegen gilt, weil die 
-
-
-TODO Standardverfahren?
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{pillar_lcs_prediction_init_quality.eps}
-}
-\caption[Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf Qualität (Säulenszenario)] {Darstellung Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus}
-\label{pillar_lcs_prediction_init_quality:fig}
-\end{figure}
-
-
-\section{Zufällige Initialisierung der \emph{classifier set} Liste}\label{sec:random_init}
-
-Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt~(\cite{Butz2006}), bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälligen \emph{action} Werten und \emph{condition} Vektoren gefüllt wird. Dort wird aber auch angemerkt, dass beide Varianten in ihrer Qualität sich nur minimal unterscheiden.\\
-
-Tests für das Überwachungsszenario haben gezeigt (siehe Tabelle~\ref{table:lcs_initialization}), dass dadurch sowohl für den XCS Algorithmus als auch für den SXCS Algorithmus minimal bessere Ergebnisse erzielt werden. Voraussetzung hierfür ist selbstverständlich ein Szenario mit ausreichender Schrittzahl (\(>100\)), da anfänglich gefüllte \emph{classifier set} Listen die \emph{matchSet} Listen relativ groß lassen werden, somit die Auswirkungen anfänglichen Lernens geringer ausfallen und sich die Agenten zu Beginn eher wie sich zufällig bewegende Agenten verhalten. Da hier durchgeführten Tests über 500 bzw. 2000 Schritte laufen, sollen somit die \emph{classifier set} Listen mit zufällig generierten \emph{classifiers} gefüllt werden.\\
-
-\begin{table}[ht]
-\caption{Vergleichende Tests für den den Start mit und ohne zufällig gefüllten \emph{classifier set} Listen (Säulenszenario, 8 Agenten)}
-\centering
-\begin{tabular}{c c c}
-\hline
-Algorithmus & Schrittzahl & Qualität \\ [0.5ex]
-\hline
-Zufälliger Agent &  500 & 61.54\% \\
-Zufälliger Agent & 2000 & 61.54\% \\[1ex]
-\hline
-Beginn mit leerem \emph{classifier set} \\ [0.5ex]
-\hline
-XCS & & \\
-SXCS & & \\ [0.5ex]
-
-XCS  & & \\
-SXCS & &  \\ [0.5ex]
-
-\hline
-Beginn mit zufällig gefülltem \emph{classifier set} \\ [0.5ex]
-\hline
-
-XCS & &  \\
-SXCS & & \\ [0.5ex]
-
-XCS & &  \\
-SXCS & & \\ [0.5ex]
-\hline
-\end{tabular}
-\label{table:lcs_initialization}
-\end{table}
-
-
-
 \section{Parameter \emph{accuracy equality} $\epsilon_{0}$}\label{epsilon0:sec}
 
-Der Parameter \(\epsilon_{0}\) gibt an, unter welchem \emph{reward prediction error} Wert ein \emph{classifier} als exakt gilt (und als \emph{subsumer} auftreten kann, siehe Kapitel~\ref{subsummation:sec}) und wie stark dieser Wert in die Berechnung der \emph{fitness} einfliesst. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts des \emph{base reward} Werts (\(\rho\)) gesetzt werden soll, welcher beliebig wählbar ist und lediglich ästhetische Auswirkungen hat. Somit wird dieser auf \(1.0\) gesetzt und \(\epsilon_{0}\) auf \(0,01\).
+Der Parameter \(\epsilon_{0}\) gibt an, unter welchem \emph{reward prediction error} Wert ein \emph{classifier} als exakt gilt (und als \emph{subsumer} auftreten kann, siehe Kapitel~\ref{subsummation:sec}) und wie stark dieser Wert in die Berechnung der \emph{fitness} einfliesst. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts des \emph{base reward} Werts (\(\rho\)) gesetzt werden soll, welcher beliebig wählbar ist und lediglich ästhetische Auswirkungen hat. Somit wird dieser auf \(1,0\) gesetzt und \(\epsilon_{0}\) auf \(0,01\).
 
 
 \section{Übersicht über alle Parameterwerte}
@@ -193,7 +138,7 @@ Mutation probability \(\mu\) & \(0.05\) & [0.01-0.05]\\
 Prediction error reduction & 0.25 & [0.25]\\
 Fitness reduction & \(0.1\) & [0.1]\\
 
-Reward prediction init \(p_{i}\) & \textbf{0.5, 1.0} (siehe~\ref{prediction_init:sec}) & [\(\sim\) 0]\\
+Reward prediction init \(p_{i}\) & 0.01 (siehe~\ref{prediction_init:sec}) & [\(\sim\) 0]\\
 Prediction error init \(\epsilon_{i}\) & 0.0 & [0.0]\\
 Fitness init \(F_{i}\) & \(0.01\) &  [0.01]\\
 Condition vector & \textbf{zufällig} (siehe Kapitel~\ref{sec:random_init}) &  [zufällig oder leer]\\
@@ -205,7 +150,7 @@ Accuracy calculation \(\alpha\) & 0.1 & [0.1]\\
 Accuracy power \(\nu\) & 5.0 & [5.0]\\
 Reward prediction discount \(\gamma\) & 0.71 & [0.71]\\
 
-Learning rate \(\beta\) & \textbf{0.01} (siehe~\ref{sec:learnrate_parameter}) & [0.1-0.2]\\
+Learning rate \(\beta\) & \textbf{0.01-0.1} (siehe~\ref{sec:learnrate_parameter}) & [0.1-0.2]\\
 
 exploration probability & 0.5 (siehe~\ref{subsummation:sec}) & [\(\sim\) 0.5]\\ [0.5ex]
 
@@ -213,6 +158,8 @@ exploration probability & 0.5 (siehe~\ref{subsummation:sec}) & [\(\sim\) 0.5]\\ 
 \end{tabular}
 \label{table:lcs_parameter}
 \end{table}
+
+
 
 
 
