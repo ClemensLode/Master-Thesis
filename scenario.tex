@@ -134,18 +134,6 @@ In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinan
 \label{pillar_grid:fig}
 \end{figure}
 
-\subsection{"`Kreuz Szenario"'}
-TODO raus
-Hier gibt eine horizontale Reihe aus Hindernissen halber Gesamtbreite welche durch eine vertikale Reihe aus Hindernissen halber Gesamthöhe in der Mitte geschnitten wird. Agenten und das Zielobjekt werden zufällig verteilt. Abbildung~\ref{cross_grid:fig} zeigt ein Beispiel für ein solches Szenario.
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{cross_grid.eps}
-}
-\caption[Kreuz Szenario]{Kreuz Szenario mit kreuzförmiger Anordnung der Hindernisse und zufälliger Verteilung der Agenten und des Zielobjekts}
-\label{cross_grid:fig}
-\end{figure}
-
 \subsection{"`Raum Szenario"'}
 Auf dem Torus wird ein Rechteck der halben Gesamthöhe und -breite des Torus erstellt, welches im Norden eine Öffnung von 4 Feldern Breite aufweist. Der Zielagent startet in der Mitte des Raums, alle Agenten starten mit maximaler Distanz zu den Hindernissen an zufälliger Position. Abbildung~\ref{room_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines solchen Szenarios.\\
 
@@ -159,9 +147,12 @@ Auf dem Torus wird ein Rechteck der halben Gesamthöhe und -breite des Torus erst
 
 
 \subsection{Schwieriges Szenario}
+
 Hier wird der Torus an der rechten Seite vollständig durch Hindernisse blockiert, um den Torus zu halbieren. Alle Agenten starten (zufällig verteilt) am linken Rand, der Zielagent startet auf der rechten Seite.\\
 In regelmäßigen Abständen (7 Felder Zwischenraum) befindet sich eine vertikale Reihe von Hindernissen mit Öffnungen von 4 Feldern Breite abwechselnd im oberen Viertel und dem unteren Viertel.\\
-Idee dieses Szenarios ist es, zu testen, inwieweit die Agenten durch die Öffnungen zum Ziel finden können. Ohne Orientierung an den Öffnungen und anderen Agenten ist es sehr schwierig, sich durch das Szenario zu bewegen. Abbildung~\ref{difficult_grid:fig} zeigt die Startkonfiguration des Szenarios.
+Idee dieses Szenarios ist es, zu testen, inwieweit die Agenten durch die Öffnungen zum Ziel finden können. Ohne Orientierung an den Öffnungen und anderen Agenten ist es sehr schwierig, sich durch das Szenario zu bewegen. Die später besprochenen Tests in Kapitel~\ref{test_schwieriges_szenario:sec} werden zeigen, dass dieses Szenario besonders schwierig für sich zufällig bewegende Agenten und Agenten mit einfacher Heuristik ist. Später in Kapitel~\
+
+Abbildung~\ref{difficult_grid:fig} zeigt die Startkonfiguration des Szenarios.
 
 \begin{figure}[htbp]
 \centerline{	

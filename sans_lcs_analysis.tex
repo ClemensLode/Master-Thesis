@@ -248,6 +248,27 @@ In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnis
 
 \section{Zielobjekt mit intelligenter Bewegung}
 
+Abbildung~\ref{speed_intelligent_goal:fig}
+
+Abbildung~\ref{speed_intelligent_goal_obst2:fig}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{speed_intelligent_goal.eps}
+}
+\caption[Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt) auf Agenten mit Heuristik]{Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt) auf Agenten mit Heuristik}
+\label{speed_intelligent_goal:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{speed_intelligent_goal_obst2.eps}
+}
+\caption[Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt, $\lambda_{h}=0.2$, $\lambda_{p}=0.99$) auf Agenten mit Heuristik]{Auswirkung der Zielgeschwindigkeit (intelligentes Zielobjekt, $\lambda_{h}=0.2$, $\lambda_{p}=0.99$) auf Agenten mit Heuristik}
+\label{speed_intelligent_goal_obst2:fig}
+\end{figure}
+
+
 Ein sich schnell bewegender, intelligenter Agent 
 
 Dass dies doch nicht stimmt... TODO
@@ -260,6 +281,7 @@ TODO: Erläuterung!
 
 Zu beachten sei, dass im Fall von ``Intelligent Hide'' eine relativ große Nummer an Sprüngen des Zielobjekts (siehe Kapitel~\ref{base_properties_goal:sec}) stattgefunden hat, was die Ergebnisse etwas verzerrt, die Zahl hält sich aber noch in Grenzen (bis zu ca. 0.5\% im Fall der einfachen und intelligenten Heuristik im Fall mit vielen Hindernissen).
 
+TODO neu, weg
 \begin{table}[ht]
 \caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, ohne Hindernisse)}
 \centering
@@ -330,14 +352,33 @@ Intelligente Heuristik & 65.65\% & 86.38\% \\ [1ex]
 \end{table}
 
 
-\section{Always Same Direction}
 
-TODO
-
-leeres Szenario
+TODO difficult scenario!
 
 
+\section{Zielobjekt ohne Richtungsänderung}
+
+\subsection{Säulenszenario}
+
+\subsection{Schwieriges Szenario}\label{test_schwieriges_szenario:sec}
+
+
+Schwieriges Szenario !!
+
+Egoist sehr gut!
+
+Abbildung~\ref{steps_direction_difficult_heuristics:fig}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{steps_direction_difficult_heuristics.eps}
+}
+\caption[Auswirkung der Anzahl der Schritte (schwieriges Szenario, Geschwindigkeit 2, ohne Richtungsänderung) auf Qualität von Agenten mit Heuristik]{Auswirkung der Anzahl der Schritte (schwieriges Szenario, Geschwindigkeit 2, ohne Richtungsänderung) auf Qualität von Agenten mit Heuristik}
+\label{steps_direction_difficult_heuristics:fig}
+\end{figure}
 
 \section{Zusammenfassung}
 
-Wie wir gesehen haben gibt es also Szenarien in denen Abdeckung kaum eine Rolle spielt und lokale Entscheidungen eine wesentliche Rolle spielen. Dies wird es erleichtern, geeignete Szenarien im Kapitel~\ref{communication:cha} ``Kommunikation'' zu finden.
+Wie wir gesehen haben gibt es also Szenarien in denen Abdeckung kaum eine Rolle spielt und lokale Entscheidungen eine wesentliche Rolle spielen. Dies wird es erleichtern, geeignete Szenarien im Kapitel~\ref{communication:cha}  zu finden.
+
+TODO

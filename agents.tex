@@ -1,6 +1,6 @@
 \chapter{Eigenschaften der Agenten}\label{agents:cha}
 
-Ein Agent kann in jedem Schritt zwischen vier verschiedenen Aktionen wählen, die den vier Richtungen (Norden, Osten, Süden, Westen) entsprechen. Während ein Agent pro Zeiteinheit genau einen Schritt durchführen kann, kann das Zielobjekt je nach Szenarioparameter mehrere Schritte ausführen, was in Kapitel~\ref{base_properties_goal:sec} erläutert wird.\\
+Ein Agent kann in jedem Schritt zwischen vier verschiedenen Aktionen wählen, die den vier Richtungen (Norden, Osten, Süden, Westen) entsprechen. Während ein Agent pro Zeiteinheit genau einen Schritt durchführen kann, kann das Zielobjekt je nach Szenarioparameter auch mehrere Schritte ausführen, was in Kapitel~\ref{base_properties_goal:sec} erläutert wird.\\
 
 Da wir ein Multiagentensystem auf einem diskreten Feld betrachten, werden alle Agenten werden nacheinander in der Art abgearbeitet, dass jeder Agent die aktuellen Sensordaten (siehe Kapitel~\ref{sensoren:sec}) aus der Umgebung holt und auf deren Basis die nächste Aktion bestimmt.\\
 Wurden alle Aktionen bestimmt, können die Agenten in zufälliger Reihenfolge versuchen, sie auszuführen. Ungültige Aktionen, d.h. der Versuch sich auf ein besetztes Feld zu bewegen, schlagen fehl und der Agent führt in diesem Schritt keine Aktion aus, wird aber auch nicht weiter bestraft. Eine detaillierte Beschreibung der Bewegung im Kontext anderer Agenten und Programmteile wird in Kapitel~\ref{reihenfolge:sec} gegeben.\\
@@ -139,13 +139,13 @@ Programm~\ref{calculateNextMove_SimpleHeuristic:pro} zeigt den zugehörigen Quell
 
 \subsection{Intelligente Heuristik}\label{intelligent_heuristik:sec}
 
-Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~\ref{intelligent_agent:fig} ist das Zielobjekt nicht im Sichtbereich des Agenten und dieser wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigt, in diesem Fall Norden.\\ Programm~\ref{calculateNextMove_IntelligentHeuristic:pro} zeigt den zugehörigen Quelltext.
+Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~\ref{intelligent_agent:fig} ist das Zielobjekt nicht im Sichtbereich des Agenten und dieser wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigen, in diesem Fall Norden.\\ Programm~\ref{calculateNextMove_IntelligentHeuristic:pro} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{intelligent_agent.eps}
 }
-\caption[Agent mit intelligenter Heuristik]{Agent mit intelligenter Heuristik: Falls das Zielobjekt nicht sichtbar ist bewegt sich der Agent von anderen Agenten weg.}
+\caption[Agent mit intelligenter Heuristik]{Agent mit intelligenter Heuristik: Falls das Zielobjekt nicht sichtbar ist, bewegt sich der Agent von anderen Agenten weg.}
 \label{intelligent_agent:fig}
 \end{figure}
 
