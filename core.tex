@@ -1,0 +1,739 @@
+\chapter{Szenario}
+
+Im Wesentlichen sollen die hier besprochenen Algorithmen in einem \"uberwachungsszenario getestet werden, d.h. die Qualit\"at eines Algorithmus wird anhand des Anteils der Zeit bewertet, die er das Zielobjekt \"uberwachen konnte, relativ zur Gesamtzeit. 
+
+Verwendetes Umfeld wird ein quadratischer Torus sein, der aus quadratischen Feldern besteht.
+Jedes bewegliche Objekt auf einem Feld kann sich nur auf eines der vier Nachbarfelder bewegen oder stehenbleiben. 
+Die Felder k\"onnen entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder k\"onnen nicht betreten werden. Es gibt drei verschiedene Arten von Objekten, unbewegliche Hindernisse, ein zu \"uberwachende Zielagent und Agenten. Zielagent und Agent bewegen sich anhand eines bestimmten Algorithmus anhand bestimmter Sensordaten.
+
+TODO Aufl\"osen
+
+\section{Problem-Instanzen}
+
+Eine einzelne Probleminstanz entspricht einem Torus mit einer (abh\"angig vom verwendeten Random-Seed-Wert) bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. Die Parameter bestimmen, ob und wie Objekte andere Objekte die Sicht versperren und bis zu welcher Distanz der Zielagent von einem Agenten als „\"uberwacht“ gilt, sofern die Sicht durch andere Objekte nicht versperrt ist.
+
+Ein Experiment entspricht dem Test einer Anzahl von Probleminstanzen mit einer Reihe von Random-Seed-Werten.
+In einem Durchlauf werden mehrere Experimente (jeweils mit unterschiedlichen Random-Seed-Wert-Reihen) durchgef\"uhrt.
+
+\section{Qualit"at}
+
+Problem-Qualit\"at eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt w\"ahrend des Problems \"uberwachen konnte, relativ zur Gesamtzeit. 
+Experiment-Qualit\"at eines Algorithmus zu einer Anzahl von Problemen (einem Experiment) wird Anhand des Gesamtanteilder Zeit berechnet, die er das Zielobjekt w\"ahrend aller Probleme \"uberwachen konnte, relativ zur Gesamtzeit aller Probleme.
+Qualit\"at eines Algorithmus entspricht dem Durchschnitt aller Experimentqualit\"aten des Algorithmus.
+
+Halbzeit-Problem-Qualit\"at eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt w\"ahrend jeweils der zweiten H\"alfte des Problems \"uberwachen konnte, relativ zur halben Gesamtzeit.
+Halbzeit-Experiment-Qualit\"at eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt w\"ahrend jeweils der zweiten H\"alfte des Problems \"uberwachen konnte, relativ zur halben Gesamtzeit aller Probleme.
+Die Halbzeitqualit\"at eines Algorithmus entspricht dem Durchschnitt aller Halbzeit-Experiment-Qualit\"aten eines Algorithmus.
+
+
+
+
+
+
+
+\chapter{Agenten}
+
+\section{Sensoren}
+
+Jeder Agent besitzt 3 Gruppen mit jeweils 4 Bin\"arsensoren. Alle Sensoren sind visuelle Sensoren mit begrenzter Reichweite. Je nach Parameter des Szenarios wird die Sicht durch andere Objekten blockiert. Sichtlinien werden durch einen einfachen Bresenham-Linienalgorithmus bestimmt.
+Jede Gruppe von Sensoren nimmt einen anderen Typ von Objekt wahr. Die erste Gruppe nimmt den Zielagenten, die zweite andere Agenten und die dritte Hindernisse.
+Ein Sensor ist jeweils in eine bestimmte Richtung ausgerichtet (Norden, Osten, S\"uden, Westen) und wird auf ``wahr'' gesetzt, wenn sich in dem von der Sichtweite bestimmten Kegel ein entsprechendes Objekt befindet.
+
+\section{F\"ahigkeiten}
+
+Jeder Agent kann in jedem Schritt zwischen 5 verschiedenen Aktionen w\"ahlen, die den vier Richtungen plus einer Aktion, bei der der Agent sich nicht bewegt, entsprechen. Agenten k\"onnen pro Zeiteinheit genau einen Schritt durchf\"uhren. Der Zielagent kann je nach Szenario mehrere Schritte ausf\"uhren.
+K\"onnte der Zielagent ebenfalls nur einen Schritt ausf\"uhren, w\"are das Problem sehr simpel, da der Zielagent Schwierigkeiten h\"atte, Agenten abzusch\"utteln, deren einzige Strategie es ist, sich in Richtung des Zielagenten zu bewegen.
+
+\section{Ablauf der Bewegung}
+Alle Agenten werden nacheinander in der Art abgearbeitet, dass der jeweilige Agent die aktuellen Sensordaten aus der Umgebung holt und anhand dieser die n\"achste Aktion bestimmt. Ung\"ultige Aktionen, d.h. der Versuch sich auf ein besetztes Feld zu bewegen, schlagen fehl und der Agent f\"uhrt in diesem Schritt keine Aktion aus, wird aber nicht weiter bestraft. Eine detaillierte Beschreibung wird weiter unten geliefert (``Ablauf der Simulation'').
+
+
+\section{Grunds\"atzliche Algorithmen der Agenten}
+
+Neben denjenigen Algorithmen die auf LCS basieren und weiter untern besprochen werden, gibt es folgende Grundtypen, die dazu dienen, die Qualit\"at der anderen Algorithmen einzuordnen. Wesentliches Merkmal im Vergleich zu auf LCS basierenden Algorithmen ist, dass sie statische Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren.
+
+\subsection{``Randomized''}
+In jedem Schritt wird eine zuf\"allige Aktion ausgef\"uhrt.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{agent_random.eps}
+}
+\caption[Caption as shown in list of figures]{Agent bewegt sich in eine zuf\"allige Richtung (oder bleibt stehen)}
+\label{agent_random:fig}
+\end{figure}
+
+\subsection{``Simple AI Agent''}
+Ist der Zielagent in Sichtweite, bewegt sich dieser Agent auf das Ziel zu. Ist das Ziel nicht in Sichtweite, f\"uhrt er eine zuf\"allige Aktion aus.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{simple_agent_to_goal.eps}
+}
+\caption[Caption as shown in list of figures]{Agent bewegt sich auf Zielagent zu (sofern sichtbar)}
+\label{simple_agent_to_goal:fig}
+\end{figure}
+
+\subsection{``Intelligent AI Agent''}
+Ist der Zielagent in Sicht, verhält sich dieser Algorithmus wie ``Simple AI Agent''. Ist der Zielagent dagegen nicht in Sicht, wird versucht anderen Agenten auszuweichen um ein m\"oglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation hei\ss{}t das, dass unter allen Richtungen, in denen kein anderer Agent geortet wurde, eine zuf\"allig ausgew\"ahlt wird. Falls alle Richtungen belegt (oder alle frei) sind, aus allen Richtungen eine zuf\"allig ausgew\"ahlt wird.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{intelligent_agent.eps}
+}
+\caption[Caption as shown in list of figures]{Agent bewegt sich von anderen Agenten weg (falls Zielagent nicht sichtbar)}
+\label{intelligent_agent:fig}
+\end{figure}
+
+\section{Grunds\"atzliche Zielagententypen}
+
+Die Art der Bewegung des Zielagenten tr\"agt grunds\"atzlich zur Schwierigkeit eines Szenarios bei. Gemeinsam haben alle Arten von Bewegungen des Zielagenten, dass, wenn kein freies Feld zur Verf\"ugung steht, springt der Zielagent auf ein zuf\"alliges freies Feld auf dem Grid springt. Dies kommt einem Neustart gleich und ist notwendig um einer Verf\"alschung des Ergebnisses zu verhindern, das dadurch r\"uhren kann, dass ein oder mehrere Agenten (zusammen mit eventuellen Hindernissen) bis zum Ende des Problems alle vier Bewegungsrichtungen des Zielagenten blockieren.
+
+
+\subsection{``Random Movement''}
+Wie ``Randomized''. Sind alle m\"oglichen Felder belegt, wird wie oben beschrieben auf ein zuf\"alliges Feld gesprungen.
+
+\subsection{``Total Random''}
+Der Zielagent springt zu einem zuf\"alligen (freien) Feld auf dem Grid. Mit dieser Einstellung kann die Abdeckung des Algorithmus gepr\"uft werden, d.h. inwieweit die Agenten jeweils au\ss{}erhalb der \"Uberwachungsreichweite anderer Agenten bleiben. Jegliche Anpassung an die Bewegung des Zielagenten ist hier wenig hilfreich, ein Agent kann nicht einmal davon ausgehen, dass sich der Zielagent in der N\"ahe seiner Position der letzten Zeiteinheit befindet.
+
+\subsection{``One direction change''}
+Mit dieser Einstellung wird die der letzten Richtung entgegengesetzten Richtung aus der Menge der Auswahlm\"oglichkeiten entfernt und von den verbleibenden drei Richtungen (plus der Aktion ``Stehenbleiben'') eine zuf\"allig ausgew\"ahlt. Sind alle drei Richtungen versperrt, wird stehengeblieben.
+War die letzte Aktion nicht eine Bewegungsrichtung sondern die Aktion ``Stehenbleiben'', so wird eine zuf\"allige Richtung ausgew\"ahlt. Sind alle Richtungen versperrt wird auch hier wie bei ``Random Movement'' auf ein zuf\"alliges Feld gesprungen.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{goal_direction_change.eps}
+}
+\caption[Caption as shown in list of figures]{Zielagent macht pro Schritt maximal eine Richtungs\"anderung}
+\label{goal_agent_one_direction_change:fig}
+\end{figure}
+
+\subsection{``Always same direction''}
+Der Zielagent versucht immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, w\"ahlt er ein zuf\"alliges, angrenzendes, freies Feld im Westen oder Osten. Sind auch diese belegt, springt er wie oben auf ein zuf\"alliges freies Feld. Schafft es der Zielagent innerhalb von einer bestimmten Zahl (Breite des Spielfelds) von Schritten nicht, einen weiteren Schritt nach Norden zu gehen, wird ebenfalls gesprungen um ein Festh\"angen an einem Hindernis zu vermeiden.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{goal_always_same_direction.eps}
+}
+\caption[Caption as shown in list of figures]{Zielagent bewegt sich, wenn m\"oglich, immer nach Norden}
+\label{goal_agent_always_same_direction:fig}
+\end{figure}
+
+\subsection{``Intelligent (Open)''}
+Der Zielagent versucht andere Agenten zu vermeiden. Bei der Wahl der Richtung werden alle Richtungen gestrichen, in denen sich ein anderer Agent befindet. Von den verbleibenden Richtungen werden mit 20\% Wahrscheinlichkeit alle Richtungen gestrichen, in denen sich ein Hindernis befindet. Sind alle Richtungen gestrichen worden, bewegt der Zielagent sich zuf\"allig. Sind alle Richtungen blockiert, springt er wie in den anderen Einstellungen auch.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{goal_intelligent_open.eps}
+}
+\caption[Caption as shown in list of figures]{Zielagent bewegt sich von Agenten und mit bestimmter Wahrscheinlichkeit von Hindernissen weg}
+\label{goal_agent_intelligent_open:fig}
+\end{figure}
+
+\subsection{``Intelligent (Hide)''}
+Der Zielagent vermeidet andere Agenten wie bei ``Intelligent (Open)'', streicht aber statt Richtungen mit Hindernissen Richtungen ohne Hindernisse mit 20\% Wahrscheinlichkeit.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{goal_intelligent_hide.eps}
+}
+\caption[Caption as shown in list of figures]{Zielagent bewegt sich von Agenten weg und mit bestimmter Wahrscheinlichkeit auf Hindernissen zu}
+\label{goal_agent_intelligent_hide:fig}
+\end{figure}
+
+\subsection{``LCS''}
+Eine LCS Implementierung. Das Ziel des Zielagenten ist es hier aber, m\"oglichst nicht andere Agenten zu \"uberwachen (bzw. umgekehrt sich von anderen nicht \"uberwachen zu lassen, d.h. nicht in die \"Uberwachungsreichweite anderer Agenten zu geraten). Eine genaue Beschreibung folgt weiter unten.
+
+
+\chapter{Szenarien}
+
+
+Getestet werden eine Reihe von Szenarien (in Verbindung mit unterschiedlichen Werte f\"ur die Anzahl der Agenten, Gr\"o\ss{}e des Spielfelds und Art und Geschwindigkeit der Zielagentenbewegung). Wesentliche Rolle spielt hier die Verteilung der Hindernisse.
+
+\section{Random Scenario}
+Zwei Parameter bestimmen, wie das zuf\"allige Szenario auszusehen hat, zum einen der Prozentsatz an Hindernissen an der Gesamtzahl der Felder, zum anderen der Grad  inwieweit die Hindernisse zusammenh\"angen. Dieser Grad bestimmt nach Setzen eines Hindernisses die Wahrscheinlichkeit f\"ur jedes einzelne angrenzende freie Feld, dass dort sofort ein weiteres Hindernis gesetzt wird. Ein Wert von 0.0 ergibt somit ein v\"ollig zuf\"allig verteilte Menge an Hindernissen w\"ahrend ein Wert nahe eine oder mehrere stark zusammenh\"angende Strukturen schafft.
+Wird der Prozentsatz an Hindernissen auf Null gesetzt, dann werden Hindernisse vollst\"andig deaktiviert. Als Optimierung werden in diesem Fall auch alle Sensorinformationen diesbez\"uglich deaktiviert. TODO optional
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{random_grid.eps}
+}
+\caption[Caption as shown in list of figures]{``Random Scenario'' : Zuf\"allige Verteilung von Hindernissen (rot), Agenten (weiss) und dem Zielagenten (gr\"un)}
+\label{random_grid:fig}
+\end{figure}
+
+
+\section{Pillar Scenario}
+Hier werden mit jeweils 7 Feldern Zwischenraum zwischen den Hindernissen (und mindestens 3 Feldern Zwischenraum zwischen Rand und den Hindernissen) Hindernisse verteilt. Idee ist, dass die Agenten eine kleine Orientierungshilfe besitzen aber gleichzeitig m\"oglichst wenig Hindernisse verteilt werden. TODO
+Der Zielagent startet in der Mitte.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{pillar_grid.eps}
+}
+\caption[Caption as shown in list of figures]{``Pillar Scenario'' : Regelm\"a\ss{}ig angeordnete Hindernisse (rot), zuf\"allige Verteilung von Agenten am Rand (weiss) und feste Startposition des Zielagenten in der Mitte(gr\"un)}
+\label{pillar_grid:fig}
+\end{figure}
+
+\section{Cross Scenario}
+Hier gibt es in der Mitte eine horizontale Reihe aus Hindernissen halber Gesamtbreite welche durch eine vertikale Reihe aus Hindernissen halber Gesamth\"ohe geschnitten wird.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{cross_grid.eps}
+}
+\caption[Caption as shown in list of figures]{``Cross scenario'' : Zentrierte, kreuzf\"ormige Anordnung der Hindernisse (rot), zuf\"allige Verteilung der Agenten (weiss) und dem Zielagenten (gr\"un) mit fester Startposition in der Mitte}
+\label{cross_grid:fig}
+\end{figure}
+
+\section{Room scenario}
+In der Mitte des Grids wird ein Rechteck der halben Gesamth\"ohe und -breite des Grids erstellt, welches eine \"Offnung von 4 Feldern Breite aufweist. Der Zielagent startet wie im Pillar Scenario in der Mitte, alle Agenten starten am Rand des Grids.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{room_grid.eps}
+}
+\caption[Caption as shown in list of figures]{``Room Scenario'' : Zentrierte, quaderf\"ormige Anordnung der Hindernisse (rot) mit \"Offnung oben, zuf\"allige Verteilung der Agenten (weiss) am Rand und der Zielagenten (gr\"un) mit festem Startpunkt in der Mitte}
+\label{room_grid:fig}
+\end{figure}
+
+
+\section{Difficult Scenario}
+Hier wird das Grid zum einen an der rechten Seite vollst\"andig durch Hindernisse blockiert um den Torus zu halbieren. Alle Agenten starten am linken Rand, der Zielagent startet auf der rechten Seite.
+In regelm\"a\ss{}igen Abst\"anden (7 Felder Zwischenraum) befindet sich eine vertikale Reihe von Hindernissen mit \"Offnungen von 4 Feldern Breite abwechselnd im oberen Viertel und dem unteren Viertel.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics[width=0.45\columnwidth]{difficult_grid.eps}
+}
+\caption[Caption as shown in list of figures]{``Difficult Scenario'' : Feste, wandartige Verteilung von Hindernissen (rot) in regelm\"a\ss{}igen Abst\"anden mit \"Offnungen, Agenten (weiss) mit zuf\"alligem Startpunkt am linken Rand und dem Zielagenten (gr\"un) mit festem Startpunkt rechts oben}
+\label{difficult_grid:fig}
+\end{figure}
+
+
+TODO vielleicht Agentenl\"osungen eines Szenarios in das andere einsetzen?
+
+\chapter{Ablauf der Simulation}
+
+Bei Simulationen am Computer stellt sich sofort die Frage nach der Genauigkeit. Die Agenten werden bei dieser Simulation nacheinander abgearbeitet und bewegen sich auf einem diskreten Grid. Dies kann u.U. dazu f\"uhren, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen \"uber die Umgebung unterschiedlich alt sind. Die gro\ss{}e Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualit\"at gemessen wird.
+Einzige Restriktionen sind, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss und eine Bewertung einer Aktion nach dessen Ausf\"uhrung stattfinden muss. Ansonsten gibt es folgende M\"oglichkeiten:
+
+\begin{enumerate}
+\item F\"ur alle Agenten werden erst einmal die neuen Sensordaten erfasst und sich f\"ur eine Aktion entschieden. Sind alle Agenten abgearbeitet werden die Aktionen ausgef\"uhrt.
+\item Die Agenten werden nacheinander abgearbeitet, es werden jeweils neue Sensordaten erfasst und sich sofort f\"ur eine neue Aktion entschieden. 
+\end{enumerate}
+
+Bei der ersten M\"oglichkeit haben alle Agenten die Sensordaten vom Beginn der Zeiteinheit, w\"ahrend bei der zweiten M\"oglichkeit sp\"ater verarbeitetere Agenten bereits die Aktionen der bereits berechneten Agenten miteinbeziehen k\"onnen. Umgekehrt k\"onnen dann fr\"uhere Agenten bessere Positionen fr\"uher besetzen. Da aufgrund der primitiven Sensoren nicht davon auszugehen ist, dass Agenten beginnende Bewegungen (und somit deren Zielposition) anderer Agenten einbeziehen k\"onnen, soll jeder Agent von den Sensorinformationen zu Beginn der Zeiteinheit ausgehen.
+Die Reihenfolge der Ausf\"uhrung der Aktionen spielt eine Rolle, wenn mehrere Agenten sich auf das selbe Feld bewegen wollen. Arbeiten wir die Liste unserer Agenten einfach linear ab, haben vorne stehende Agenten eine h\"ohere Wahrscheinlichkeit, dass ihre Aktion ausgef\"uhrt wird. Da es keine Veranlassung gibt, ihnen diesen Vorteil zu geben, werden Aktionen in zuf\"alliger Reihenfolge abgearbeitet. Bez\"uglich der Bewegung ergibt sich hierbei eine weitere Frage, n\"amlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen. Alle Agenten haben eine Einheitsgeschwindigkeit von maximal einem Feld pro Zeiteinheit, w\"ahrend sich der Zielagent je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann. Auch hier habe ich mich f\"ur eine zuf\"allige Verteilung entschieden. Kann sich der Zielagent um n Schritte bewegen, so wird seine Bewegung in n Einzelschritte unterteilt, die nacheinander mit zuf\"alligen Abst\"anden (d.h. Bewegungen anderer Agenten) ausgef\"uhrt werden.
+Eine weitere Frage ist, wie der Zielagent diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingef\"uhrt, so dass der Zielagent in einer Zeiteinheit mehrmals (n-mal) neue Sensordaten erfassen und sich f\"ur eine neue Aktion entscheiden kann.
+
+Schlie\ss{}lich bleibt die Frage danach, wann gepr\"uft werden soll, ob der Zielagent in Sicht ist, und wann somit der Reward verteilt wird. Da XCS in der Standardimplementation darauf ausgelegt ist, den Reward jeweils genau einer Aktion zuzuordnen, sollte der Reward nicht bei jeder einzelnen Bewegung des Zielagenten \"uberpr\"uft und verteilt werden, sondern nur einmal pro Zeiteinheit. Au\ss{}erdem soll der Einfachheit halber der Reward auch von bin\"arer Natur sein („Zielagent in \"uberwachungsreichweite“ oder „Zielagent nicht in \"uberwachungsreichweite“), weshalb Zwischenzust\"ande f\"ur den Reward (z.B. „War zwei von drei Zeitschritten in der \"uberwachungsreichweite“ => 2/3 Reward) ausgeschlossen werden sollen. F\"ur den Reward gibt es somit folgende M\"oglichkeiten:
+
+\begin{enumerate}
+\item Rewards werden direkt nach der Ausf\"uhrung einer einzelnen Aktion vergeben
+\item Rewards werden nach Ausf\"uhrung aller Aktionen der Agenten vergeben
+\item Rewards werden nach Ausf\"uhrung aller Aktionen des Zielagenten vergeben
+\end{enumerate}
+
+Werden die Rewards sofort vergeben (Punkt 1), dann werden sich sp\"ater noch weg-bewegende bzw. sich sp\"ater noch hin-bewegende Agenten nicht beachtet. Da die Agenten in zuf\"alliger Reihenfolge abgearbeitet werden, w\"urde das bedeuten, dass die Bewegung der restlichen (zuf\"alligen) Anzahl von Agenten in den Reward nicht miteinbezogen wird. Selbiges gilt f\"ur Punkt 3. 
+Auch der Zielagent kann Reward erhalten. Hierbei gibt es ebenfalls drei M\"oglichkeiten:
+\begin{enumerate}
+\item Reward direkt nach Ausf\"uhrung des letzten Schritts
+\item Reward nach Ausf\"uhrung aller Agenten
+\end{enumerate}
+
+Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie h\"angt n\"amlich davon ab, was man denn nun eigentlich erreichen m\"ochte, also auf welche Weise die Qualit\"at des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist nachdem sich alle Agenten bewegt haben. Da wir Agenten und Zielagenten in einem Durchlauf gemeinsam bewegen, stellt sich die Frage nicht, ob wir wom\"oglich vor der Bewegung des Zielagenten die Qualit\"at messen sollen. Eine Messung nach der Bewegung des Zielagenten w\"urde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualit\"at f\"ur den Algorithmus resultiert, da sich der Zielagent aus der \"Uberwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielagenten bedeutet letztlich, dass ein Agent, einen gerade aus seiner \"Uberwachungsreichweite heraus laufenden Zielagenten in diesem Schritt nicht mehr \"uberwachen kann.
+Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Spielfelds anstatt dem Verfolgen des Zielagenten) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielagenten minimiert werden soll. Auch findet, wenn wir vom realistischen Fall ausgehen, die Bewegung des Zielagenten gleichzeitig mit allen anderen Agenten statt. Die Qualit\"at wird somit nach der Bewegung des Zielagenten gemessen. Die \"Uberlegung unterstreicht auch nochmal, dass es besser ist, den Zielagenten insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.
+Was den Zeitpunkt des Rewards betrifft, lautet die Hypothese, dass wir ein besseres Ergebnis erreichen, wenn man den Reward anhand der selben Momentaufnahme verteilt, anhand der wir auch die Qualit\"at testen, d.h. dass Punkt 2 Punkt 1 \"uberlegen ist. Dies best\"atigt sich in Tests siehe TODO.
+
+Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielagenten) also wie folgt aus:
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+\begin{enumerate}
+\item Erfassung aller Sensordaten
+\item Wahl der Aktion anhand der Regeln des jeweiligen Agenten
+\item Ausf\"uhrung der Aktion (in zuf\"alliger Reihenfolge, der Zielagent f\"uhrt nach dem ersten Schritt au\ss{}erdem Schritt 1. und 2. f\"ur alle weiteren Schritte nochmals durch)
+\item Bestimmung des Rewards
+\item Bestimmen der Qualit\"at dieser Zeiteinheit
+\end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
+
+
+\chapter{LCS}
+
+Jeder Agent besitzt ein Learning Classifier System. Das LCS besteht aus einer Reihe von Classifiern. 
+
+TODO anfaengliche Initialisierung?
+
+\section{Classifier}
+Ein Classifier besteht im Wesentlichen aus f\"unf Teilen:
+
+\subsection{Fitness}
+Der Fitness Wert soll die allgemeine Genauigkeit des Classifiers 
+repr\"asentieren. TODO Wilson. Der Wertebereich verl\"auft zwischen \(0.0\) und \(1.0\) (maximale Genauigkeit).
+
+\subsection{Prediction}
+Der ``Prediction''-Wert des Classifiers stellt die H\"ohe des Rewards dar, von dem der Classifier vermutet, dass er ihn bei der n\"achsten Vergabe des Rewards erhalten wird.
+
+\subsection{Prediction Error}
+Der „Prediction-Error“-Wert soll die Genauigkeit des Classifiers bzgl. der Reward-Prediction (durchschnittliche Differenz zwischen Prediction und tats\"achlichem Reward) repr\"asentieren.
+
+\subsection{Aktion}
+Wird ein Classifier ausgew\"ahlt, wird eine bestimmte Aktion ausgef\"uhrt. In unserem Szenario entsprechen die Aktionsm\"oglichkeiten die der anderen Agenten, also 4 Bewegungsrichtungen plus eine ``nichts-tun''-Aktion.
+
+\subsection{Kondition}
+Die Kondition gibt an, bei welchem Sensor-Input dieser Classifier ausgew\"ahlt werden kann. 
+
+\section{Sensoren und Matching}
+
+In der hier verwendeten Implementierung gibt es zwar eine gewisse Vorverarbeitung der Sensordaten, im Wesentlichen m\"ussen aber Kondition und Sensordaten \"ubereinstimmen, damit der Classifier ausgew\"ahlt wird. Konkret besteht die Kondition ebenfalls aus einem 9-stelligen Vektor, der allerdings nicht nur bin\"are, sondern auch trin\"are Werte besitzen kann. 
+
+\subsection{Wildcards}
+
+Neben den zu den Sensordaten korrespondierenden Werten 0 und 1 gibt es noch einen dritten ``dont-care''-Zustand ``\#'', der anzeigen soll, dass beim Vergleich zwischen Kondition und Sensordaten diese Stelle ignoriert werden soll. Eine nur aus ``dont-care'' Werten bestehende Kondition w\"urde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle Sensor-Inputs passt.
+
+Beispiel:
+Kondition \(1.\#010.1\#01\) matched Sensordaten \(1.0010.1001\), \(1.1010.1001\), \(1.0010.1101\) und \(1.1010.1101\).
+
+Die Benutzung von Wildcards erlaubt es dem LCS mehrere Classifier zu subsummieren, wodurch die Gesamtzahl der Classifier sinkt und somit die Erfahrungen, die ein LCS Agent sammelt, nicht unbedingt doppelt gemacht werden m\"ussen.
+
+\section{Drehungen}
+
+Ein Classifier besteht aus dem Bedingungsvektor \[(g x_{0} x_{1} x_{2} x_{3})\] (bzw. \[(g x_{0} x_{1} x_{2} x_{3} y_{0} y_{1} y_{2} y_{3})\] f\"ur den Fall mit Hindernissen) und der Aktion \(a\).
+
+Eine wesentliche Vereinfachung, die angenommen wird, ist, dass angenommen wird, dass eine Aktion in einer anderen, in 90 Grad Schritten gedrehten Umwelt, gleiche G\"ute besitzt.
+In einer statischen Umgebung ist dies nicht unbedingt der Fall, ohne diese Vereinfachung k\"onnte sich ein Agent einfacher zurechtfinden, wie TODO (keine Drehung, 1 Problem pro Experiment) diese Testl\"aufe zeigen.
+Da wir uns aber auf den dynamischen Fall konzentrieren und durch diese Vereinfachung eine signifikante Verkleinerung des Suchraums erreichen, benutzen wir die Vereinfachung.
+
+Im Algorithmus betrifft dies prim\"ar den Vergleich von Classifiern untereinander und mit dem Sensorstatus. Ein Classifier A ist identisch mit einem Classifier B wenn gilt:
+
+\begin{enumerate}
+\item \[A_{g} = B_{g}\]
+\item Falls \[A_{g} = 0\]:
+
+\begin{enumerate}
+\item Es gibt ein \(i\) f\"ur das gilt: \[(A_{x_{0+i \bmod 4}} A_{x_{1+i \bmod 4}} A_{x_{2+i \bmod 4}} A_{x_{3+i \bmod 4}}) = (B_{x_{0}} B_{x_{1}} B_{x_{2}} B_{x_{3}})\]
+\item Mit Hindernissen muss f\"ur dieses \(i\) au\ss{}erdem gelten: 
+
+\begin{enumerate}
+\item \[(A_{y_{0+i \bmod 4}} A_{y_{1+i \bmod 4}} A_{y_{2+i \bmod 4}} A_{y_{3+i \bmod 4}}) = (B_{y_{0}} B_{y_{1}} B_{y_{2}} B_{y_{3}}\]
+\item Falls \(A_{a} = \mathrm{NO_ACTION}\): \[A_{a} = B_{a}\]
+\item Falls \(A_{a} \neq \mathrm{NO_ACTION}\): \[(A_{a}+i) \bmod 4 = B_{a}\]
+\end{enumerate}
+\end{enumerate}
+
+\item Falls \(A_{g} = 1\):
+
+\begin{enumerate}
+\item \[(A_{x_{0}} A_{x_{1}} A_{x_{2}} A_{x_{3}}) = (B_{x_{0}} B_{x_{1}} B_{x_{2}} B_{x_{3}})\]
+\item Mit Hindernisse muss au\ss{}erdem gelten: \[(A_{y_{0}} A_{y_{1}} A_{y_{2}} A_{y_{3}}) = (B_{y_{0}} B_{y_{1}} B_{y_{2}} B_{y_{3}})\]
+\item \[A_{a} = B_{a}\]
+\end{enumerate}
+
+\end{enumerate}
+
+Die Gleichheit zwischen Vektoren gilt, wenn paarweise Gleichheit zwischen den Elementen besteht, also \(A_{x_{i}} = B_{x_{i}}\) f\"ur \(i = 0 \dots 3\) und \(A_{y_{i}} = B_{y_{i}}\) f\"ur \(i = 0 \dots 3\) im Fall mit Hindernissen.
+
+Beim Vergleich mit Sensordaten wir ebenfalls mit einem Vektor wie bei \(B\) erglichen. Entscheidend beim Vergleich ist hier aber nicht, dass beide Vektoren identisch sind, sondern, dass der Classifier ``matched''. Ein Element des Bedingungsvektors kann 3 Zust\"ande einnehmen. \(0\), \(1\) und \(\#\). \(\#\) beinhaltet beide Zust\"ande \(0\) und \(1\).
+
+Den dritten verwendeten Vergleich zwischen Bedingungsvektoren gibt es bei der Subsumation (der Kinder zu ihren Eltern und des gesamten ActionSets siehe TODO). Ein Classifier subsumiert einen anderen Classifier, wenn er ihn beinhaltet, aber nicht identisch mit ihm ist, also allgemeiner ist.
+
+Die Drehung spielt au\ss{}erdem eine Rolle beim ``Covering''. In der Originalversion von XCS kann aus einem Classifier die tats\"achliche (ph\"anotypische) Aktion direkt abgelesen werden. In dieser neuen Version mit Drehung muss f\"ur jeden Classifier alle m\"oglichen Drehungen bestimmt werden. Ein einzelner Classifier kann mehrere Aktionen abdecken, beispielsweise 0-0000-0 etc. TODO
+
+F\"ur die Auswahl der tats\"achlich auszuf\"uhrenden Aktion m\"ussen dann alle (genotypischen) Classifier in AppliedClassifier umgewandelt werden, die jeweils genau auf eine bestimmte Aktion verweisen.
+Sichtwe
+
+
+\section{Ablauf}
+
+\begin{enumerate}
+\item Bei der Auswahl einer Aktion werden zuerst einmal alle Classifier mit denjenigen Konditionen gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das MatchSet.
+\item Im n\"achsten Schritt w\"ahlen wir einen Classifier aus diesem MatchSet aus und speichern dessen Aktion.
+\item Schlie\ss{}lich bilden wir anhand des MatchSets und der gew\"ahlten Aktion das ActionSet
+\end{enumerate}
+
+\subsection{Exploration and Exploitation}
+
+Die Auswahl in Punkt 2 h\"angt von einem Szenarioparameter ab, der im wesentlichen unterscheidet, ob entweder der beste Classifier gew\"ahlt wird (``exploit'') oder ein zuf\"alliger anhand der roulette selection (``explore''). Qualit\"at eines Classifiers soll durch das Produkt aus Fitness * Prediction sein.
+Hierbei gibt es 5 verschiedene M\"oglichkeiten:
+
+\begin{enumerate}
+\item Immer ``exploit''
+\item Immer ``explore''
+\item Abwechselnd ``explore'' und ``exploit''
+\item Zuf\"allig entweder ``explore'' oder ``exploit'' (50\% Wahrscheinlichkeit jeweils)
+\item Erste H\"alfte eines jeden Problems nur ``explore'', dann nur ``exploit''
+\item Wie (4.), w\"ahrend des Problems allerdings eine lineare Abnahme der Wahrscheinlichkeit von ``explore'' und eine lineare Zunahme der Wahrscheinlichkeit von ``exploit''
+\item ``exploit'' wenn Ziel in Sichtweite, ``explore'' sonst
+\end{enumerate}
+
+M\"oglichkeit (3.) entspricht dem Fall in der Standardimplementierung von XCS. Dabei wird bei jedem Erreichen eines positiven Rewards zwischen ``explore'' und ``exploit'' hin und hergeschaltet, was in der Standardimplementierung dem Beginn eines neuen Problems entspricht.
+
+TODO Vergleich
+
+
+
+
+TODO Kommunikation
+
+Wurde die Aktion ausgew\"ahlt und sp\"ater schlie\ss{}lich ausgef\"uhrt, kommen wir nun zur Rewardvergabe.
+
+
+
+
+
+\section{Implementation}
+
+Als erster Schritt wird der aus der Literatur bekannte Algorithmus XCS n\"aher untersucht. In der Literatur gibt es keine bekannte Implementierung von XCS in einem \"uberwachungsszenario dieser oder \"ahnlicher Art. TODO
+
+Alle Agenten haben dabei ein eigenes, unabh\"angiges ClassifierSet und k\"onnen keine Regeln untereinander austauschen. Jeder Agent muss also selbst lernen.
+
+Die Implementierung entspricht der Standardimplementation von Butz 2000, eine wesentliche Besonderheit stellt allerdings die Problemdefinition dar. Im Multistepverfahren l\"auft ein Problem so lange bis ein positiver Reward aufgetreten ist. Dann wird das selbe Szenario neu gestartet.
+Bei einem \"uberwachungsszenario ist dies nicht m\"oglich, das Szenario kann nicht neugestartet werden. Ziel ist hier ja nicht, einen bestimmten Weg zu einem festen Ziel zu finden (wie z.B. bei WOODS TODO), sondern eine bestimmte Regelmenge zu erlernen, mit der eine m\"oglichst gute, dauerhafte \"uberwachung stattfinden kann.
+In der Implementierung hier l\"auft das Problem deshalb einfach weiter. In jedem Schritt, in dem der Agent den Zielagenten sieht, wird also ein neues Multistep-Problem gestartet. TODO
+
+
+
+
+
+
+\subsection{Verwendeter Algorithmus: XCS}
+
+Bei einem \"uberwachungsszenario mit kontinuierlichem Reward ist das in der Literatur (TODO Literaturverweis) Multistepverfahren nicht anwendbar.
+Desweiteren fehlen Arbeiten, in denen untersucht wird, inwieweit Kooperation zwischen Agenten (ohne globale Steuerungseinheit, ohne Regelaustausch) in diesem Zusammenhang angewendet wird.
+Diese Arbeit soll diese L\"ucke schlie\ss{}en und die Basis f\"ur weitere Arbeiten in dieser Richtung liefern.
+
+
+\subsection{Wesentliche Ver\"anderungen zu XCS:}
+
+ActionSets werden \"uber eine ganze Probleminstanz hinweg gespeichert. Rewards werden direkt r\"uckwirkend vergeben, sobald ein Event eintritt.
+
+Weitere Anpassung: \"Ahnlichkeit von Classifiern \"uber die Drehung und Aktion
+EA wenig Einflu\ss{}, Crossing over lediglich auf 2 Stellen (Zielagent, Hindernisse)
+
+Definition „Event“:
+Reward\"anderung (Zielagent in Sicht ? Zielagent nicht in Sicht)
+
+
+Wesentliches G\"utekriterium war die Zahl der Zeitschritte, in denen der Zielagent sich in Reward-Reichweite eines beliebigen Agenten befand, geteilt durch die Gesamtzahl der Zeitschritte.
+Zeitschritte in denen gelernt wird, d.h. Exploration betrieben wird, werden nicht gesondert behandelt.
+
+
+Zur Durchf\"uhrung und Forschung war es notwendig, den kompletten XCS Algorithmus nachvollziehen zu k\"onnen. TODO
+
+Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction TODO
+
+
+Das Multistepverfahren baut darauf auf, dass die Qualit\"at der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
+
+Der hier entwickelte Algorithmus muss prim\"ar nicht einen Weg zum Ziel erkennen, sondern eine m\"oglichst optimale (und auch an andere Agenten angepasste) Verhaltensstrategie finden.
+
+Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht zum Erfolg f\"uhren. Eine einfache Implementation mit einem simplen Agenten der auf das Ziel zugeht, wenn es in Sicht ist und sich sonst wie ein sich zuf\"allig bewegender Agent verh\"alt, schneidet grunds\"atzlich schlechter ab.
+
+
+
+\subsection{Numerosity}
+
+TODO Beschreibung
+In der originalen Implementierung von Butz 2000 TODO war die Behandlung der Numerosity stark optimiert auf den Fall des einmaligen Rewards ohne Protokollierung der bisherigen ActionSets. Nach einer missgl\"uckten ersten Implementierung – der Wert der numerositySum eines ClassifierSets stimmte nicht mehr mit der Summe der numerosity-Werte der enthaltenen Classifiers \"uberein – entschloss ich mich den entsprechenden Code neuzuschreiben. Hierbei wurde jedem Classifier eine Liste der Eltern, d.h. der jeweiligen ActionSets, zugewiesen.
+Wird ein Microclassifier entfernt, wird dann lediglich die \"Anderungsfunktion der Numerosity des Classifiers aufgerufen, der dann wiederum die NumerositySum der jeweiligen Eltern anpasst. Dies macht einige Optimierungen r\"uckg\"angig, erspart aber sehr viel Umst\"ande, die NumerositySum immer auf den aktuellen Stand zu halten.
+Positiver Nebeneffekt ist, dass man dadurch leicht auf die Menge der ActionSets zugreifen kann, denen ein Classifier angeh\"ort. Inwiefern das tats\"achlich von Nutzen sein kann ist offen. TODO
+
+
+Kernst\"uck des LCS Agenten:
+
+
+
+
+
+\subsection{Covering:}
+
+Covering ist fast identisch mit der originalen Version von XCS. 
+
+In meiner ersten Version hatte ich alle ung\"ultigen Aktionen von vornherein f\"ur das Covern ausgeschlossen. Eine ung\"ultige Aktion ist beispielsweise ein Laufen gegen ein Hindernis oder einen Agenten. Alleine dadurch verbesserte sich die Leistung um etwa 0.5\%. Das l\"asst sich darauf zur\"uckf\"uhren, dass die Sensoren eines Agenten eigentlich nur feststellen k\"onnen, ob ein anderer Agent in Sichtweite ist, nicht aber in welcher Entfernung. F\"ur die eigentlichen Ergebnisse wurde die daf\"ur verantwortliche Methode wieder entfernt.
+
+Au\ss{}erdem ist ein Fehler der originalen XCS Implementation behoben. Wenn neue Classifier beim Covering hinzugef\"ugt werden, wird ihre anf\"angliche ActionSetSize auf die numerositySum des matchSets gesetzt. Einen Grund daf\"ur gibt es nicht, in meiner Implementation setze ich deshalb den Wert auf die anf\"angliche Gr\"o\ss{}e des actionSets.
+Beim Aufruf des Covering-Algorithmus weiss man schon, wie gro\ss{}
+
+TODO nein!
+
+
+In der Implementation habe ich den Vorgang in zwei Schritte aufgeteilt, zuerst wird \"uberpr\"uft, ob das momentane ClassifierSet alle m\"oglichen Aktionen abdeckt, im zweiten Schritt baue ich dann separat das matchSet auf. Neben besserer Programmlogik (es ist nicht intuitiv, wenn ein Konstruktor die \"ubergebenen Parameter ver\"andert) ist es auch \"ubersichtlicher. TODO
+
+\subsection{Subsummation}
+
+Ein Problem ist hier nat\"urlich die Sicherstellung, dass Informationen nicht verloren gehen. Andere Arbeiten befassen sich mit der Untersuchung von der Benutzung von Wildcards. In der hier verwendeten Implementation \"ubernehme ich unver\"andert die Implementation aus der Literatur.
+
+
+
+\subsection{Verteilung des Rewards}
+
+Im Rahmen der Diplomarbeit wurden drei wesentliche Arten der Rewardverteilung getestet. 
+
+Rewardfunktion:
+1 wenn Zielagent in Reichweite dieses Agenten
+0 wenn nicht
+
+Multistepverfahren:
+Idee ist, dass der Reward, den eine Aktion (bzw. das jeweils zugeh\"orige ActionSet) erh\"alt, vom erwarteten Reward der folgenden Aktion abh\"angt. Somit wird, r\"uckf\"uhrend vom Ziel, der Reward schrittweise an vorgehende Aktionen verteilt und somit das Ziel schneller gefunden
+
+TODO Quelle
+
+
+
+
+reward = 0 ? Gebe maxPrediction des n\"achsten Zugs
+reward = 1 ? Gebe maxPrediction 0, reward = 1
+
+
+In jedem Schritt wird das vorherige ActionSet durch maxPrediction bzw. reward belohnt
+
+\section{LCS Varianten}
+
+\subsection{LCS Variante 1}
+Die Hypothese bei der Aufstellung des Algorithmus ist im Grunde die selbe wie beim einfachen Multistepverfahren, dass die Kombination mehrerer Aktionen zum Ziel f\"uhrt. Die wesentliche Verbindung beim Multistepverfahren zwischen den ActionSets der einzelnen Zeitschritte war die zeitliche N\"ahe, ein einem hoch bewerteten ActionSet folgendem ActionSet wird ebenfalls hoch bewertet.
+Bei der ver\"anderten LCS Variante ist die Verbindung zwischen den ActionSets direkt die zeitliche N\"ahe zu einem Ereignis. ActionSets von jedem Schritt werden gespeichert bis ein Event auftritt und dann in Abh\"angigkeit des Alters bewertet.
+
+\[r(a)\] bezeichnet den Reward f\"ur das ActionSet mit Alter \[a\].
+
+$r(a) = \begin{cases}
+\mathrm{MAX_REWARD} \frac{a}{\mathrm{size(ActionSet)}}\mathrm{ f\ddot{u}r reward} = 1\\
+\mathrm{MAX_REWARD} \frac{1 - a}{\mathrm{size(ActionSet)}}\mathrm{ f\ddot{u}r reward} = 0
+\end{cases}$
+
+TODO Vergleich mit quadratischem Abstieg 
+
+
+
+Es wird auf ein Event gewartet. Ein Event ist eine \"Anderung des Rewards zwischen zwei Zeitschritten. Tritt ein solches Event auf, werden alle Aktionen seit der letzten \"Anderung absteigend belohnt bzw. bestraft.
+
+Sonderfall:
+Es tritt f\"ur einen Agenten kein Event auf.
+
+Eine Konstante ``maxStackSize'' bestimmt, wann das Warten auf ein neues Event abgebrochen werden soll. Im Fall eines Abbruchs wird die H\"alfte des Stacks (also die \"altesten Eintr\"age) mit dem damals vergebenem Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Reward\"anderung, d.h. Ein Event, eingetreten) kreditiert und vom Stack genommen. Anschlie\ss{}end wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis ein Event auftritt.
+
+
+
+
+Wesentliche Ergebnisse (Fall ohne Kommunikation)
+
+
+
+LCS Agenten schneiden auch ohne Kommunikation (bei ausreichender Anzahl von Schritten) immer besser ab als zuf\"allige Agenten.
+
+<Grafiken>
+
+
+
+Test verschiedener Exploration-Modi
+Bis auf wenige Ausnahmen (Liste) irrelevant ob man nun 50\%/50\%, absteigend o.\"a. macht.
+Nur ausschlie\ss{}lich Exploration bzw. ausschlie\ss{}lich Exploitation k\"onnen gewisse Schwankungen auftreten.
+
+
+\subsection{Evolution\"arer Algorithmus}
+
+Der genetische Algorithmus wurde im Wesentlichen nicht ver\"andert. Da aber die Bin\"arsensoren eng zusammenh\"angen werden beim Crossing Over 2 feste Stellen f\"ur Crossing Over benutzt. Die Stellen markieren die 3 Gene (Zielagent, Agenten, feste Hindernisse).
+
+Im Test erbrachte die Benutzung des Algorithmus wenig Unterschied.
+
+\chapter{Kommunikation}
+
+Da wir ein Multiagentensystem betrachten, stellt sich nat\"urlich die Frage nach der Kommunikation. In der Literatur gibt es Multiagentensysteme die auf Learning Classifier Systemen aufbauen, wie z.B. TODO Literatur. 
+Alle Ans\"atze in der Literatur erlauben jedoch globale Kommunikation, z.T. Gibt es globale Classifier auf die alle Agenten zur\"uckgreifen k\"onnen, z.T. gibt es globale Steuerung. 
+
+In dieser Arbeit betrachte ich das Szenario ohne globale Steuerung oder globale Classifier, also mit der Restriktion einer begrenzten, lokalen Kommunikation.
+Geht man davon aus, dass \"uber die Zeit hinweg jeder Agent indirekt mit jedem anderen Agenten in Kontakt treten kann, Nachrichten also mit Zeitverz\"ogerung weitergeleitet werden k\"onnen, ist eine Form der globalen, wenn auch zeitverz\"ogerten, Kommunikation m\"oglich. TODO 
+Eine spezielle Implementierung f\"ur diesen Fall werde ich weiter unten besprechen TODO
+
+
+
+Ohne Kommunikation wird jeder Agent versuchen, den Agenten selbst m\"oglichst in Sichtweite zu bekommen. Je schwieriger die Zielagentenbewegung nachzuvollziehen ist, also je zuf\"alliger und schneller sie abl\"auft, desto wi
+
+
+TODO Weitergabe an alle Agenten: Keinen tieferen Sinn. Wenn nicht anhand von Verhaltensmerkmalen diskriminiert wird, entspricht diese Form der Weitergabe des Rewards einer zuf\"alligen Bewertung der Classifier anderer Agenten. In Tests hat sich gezeigt, dass dadurch in bestimmten F\"allen deutlich bessere Ergebnisse erreicht werden k\"onnen als im Fall ohne Kommunikation. Dies ist darauf zur\"uckzuf\"uhren, dass in dem Fall die Kartengr\"o\ss{}e und Zielagentengeschwindigkeit relativ zur Sichtweite und Lerngeschwindigkeit zu gro\ss{} war, die Agenten also annahmen, dass ihr Verhalten schlecht ist, weil sie den Zielagenten relativ selten in Sicht bekamen. Eine Weitergabe des Rewards an alle Agenten kann hier zu einer Verbesserung f\"uhren, dabei ist der Punkt aber nicht, dass Informationen ausgetauscht werden, sondern, dass obiges Verh\"altnis gedreht wird.
+
+TODO Factor
+
+Eine zweite Implementation berechnet erst einmal f\"ur jeden Agenten einen ``Egoismus-Faktor'', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein gro\ss{}er Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, den Zielagenten in Sicht zu bekommen und nicht kooperiert. TODO
+Die Hypothese ist, dass Agenten mit \"anhlichem Egoismus-Faktor auch einen \"ahnlichen Classifiersatz besitzen und der Reward nicht an alle Agenten gleichm\"a\ss{}ig weitergegeben wird, sondern bevorzugt an \"ahnliche Agenten. Damit g\"abe es einen Druck in Richtung eines bestimmten Egoismus-Faktors.
+TODO
+
+Der Kommunikationsaufwand ist hier nur minimal gr\"o\ss{}er, neben dem Reward muss der Faktor \"ubertragen werden.
+
+Eine dritte Implementation vergleicht die Classifiers direkt. Alle Classifier des Agenten, der den Reward weitergibt, die ausreichend Erfahrung gesammelt haben und ausreichend genau ist (Experience und geringes PredictionError, identisch mit isPossibleSubsumer), werden mit einem identischen Classifier (d.h. mit gleicher Condition und gleicher Action) verglichen. Die Differenz der Produkte aus Fitness und Prediction geteilt durch den gr\"o\ss{}eren Prediction-Wert der beiden Classifier stellt hier den Faktor dar.
+
+TODO Formel
+
+
+
+Weitere Implementationen sind denkbar, bei denen komplexere Vergleiche und Analysen durchgef\"uhrt werden. TODO
+
+
+
+
+
+Durch eine gemeinsame Schnittstelle erh\"alt jeder Agent dann den Reward zusammen mit dem Factor. Dabei ergibt sich das Problem, dass sich Rewards \"uberschneiden k\"onnen, da jeder Reward sich r\"uckwirkend auf die vergangenen ActionClassifierSets auswirkt. Es k\"onnen mehrere externe Rewards eintreffen als auch ein eigener lokaler Reward aufgetreten sein. W\"urden die Rewards nach ihrer Eingangsreihenfolge abgearbeitet, kann es passieren, dass das selbe ActionClassifierSet sowohl einen guten als auch einen schlechten Reward erh\"alt. Dies macht aber wenig Sinn, da nur der beste Reward von Bedeutung ist. Befindet sich das Ziel in \"Uberwachungsreichweite und verliert ein anderer Agent das Ziel aus der Sicht, sollte der Agent, der das Ziel in Sicht hat, deswegen nicht bestraft werden.
+
+In Kapitel TODO wurden 4 verschiedene m\"ogliche Situationen f\"ur einen einzelnen Agenten dargestellt. 
+
+
+ Bezieht man den Zustand anderer Agenten mit ein, ergeben sich insgesamt 16 verschiedene Situationen, n\"amlich, dass keine Ver\"anderung aufgetreten ist und der Zielagent sich in diesem wie auch im vorherigen Schritt in bzw. au\ss{}er \"Uberwachungsreichweite anderer Agenten befindet, oder, dass eine Ver\"anderung (in Sicht ? nicht in Sicht bzw. nicht in Sicht ? in Sicht) aufgetreten ist.
+
+
+
+
+
+
+Hier die erweiterte \"Ubersicht, welche Arten von Events im Rahmen eines Multiagentensszenarios auftreten k\"onnen:
+
+
+
+
+
+Ziel befindet sich von anderen Agenten in Sicht:
+Time-out (Ziel in Sicht)
+Time-out (Ziel nicht in Sicht)
+
+Ziel kommt in Sicht
+Ziel verschwindet aus Sicht
+
+
+Gebe keinen Reward an andere Agenten weiter. Es ist nicht relevant, ob ein Agent das Ziel aus den Augen verliert oder nicht, es ist nur relevant, ob der Zielagent weiterhin von anderen Agenten beobachtet wird.
+Ein Sonderfall ist, wenn im vorherigen Schritt der Zielagent nicht in Sichtweite eines anderen Agenten stand, also in diesem Schritt auf einmal mehrere Agenten den Zielagenten sehen k\"onnen. In diesem Fall gibt nur der erste Agent den Reward weiter und setzt ein Flag.
+
+
+Ziel befindet sich von anderen Agenten nicht in Sicht:
+Time-out (Ziel in Sicht)
+Time-out (Ziel nicht in Sicht)
+
+Ziel verschwindet aus Sicht
+War der Zielagent von keinem anderen Agenten in Sicht, dann hat sich der Zielagent hiermit aus der Sichtweite aller Agenten bewegt. Somit haben alle Agenten versagt und der negative Reward wird weitergegeben.
+
+
+
+
+
+Selbiges wenn das Ziel in Sicht kommt und von keinem anderen Agenten in Sicht ist. Die Agenten waren offensichtlich erfolgreich und k\"onnen belohnt werden.
+
+
+
+
+Kommunikation
+
+Wann immer ein Reward an einen Agenten verteilt wird, kann es sinnvoll sein, diesen Reward an andere Agenten weiterzugeben.
+Im Rahmen der Diplomarbeit soll Kommunikationsreichweite und -bandbreite keine Rolle spielen. Mit diesen Restriktionen kann man erwarten, dass die Effektivit\"at nicht viel geringer ist, sofern eine Kommunikationsreichweite gr\"o\ss{}er der Sichtweite gegeben ist, ein Agent (mit anderen Agenten als Proxy) mit fast jedem anderen Agenten in Kontakt treten kann.
+
+Ist kein Event aufgetreten und leeren wir die H\"alfte des Stacks ist es nicht sinnvoll, einen 0-Reward weiterzugeben, da zwangsl\"aufig immer mehrere Agenten eine l\"angere Zeit den Zielagenten nicht sehen, selbst wenn sie sich optimal verteilen / bewegen. TODO
+
+Dies zeigt auch der Test:
+TODO
+
+Ist kein Event aufgetreten und haben wir einen 1-Reward vorliegen, dann stellt sich die Frage, ob bereits andere Agenten diesen Reward weitergereicht haben. Befinden sich andere Agenten in Reichweite soll nur ein Agent den Reward weiterreichen.
+TODO Test
+
+
+Bei einem Event geben wir den Reward weiter. Allerdings muss hier der Spezialfall ber\"ucksichtigt werden, dass andere Agenten das Ziel ebenfalls in Sichtweite haben. Es gibt keinen Grund, weshalb Agenten n-fach bestraft werden, wenn der Zielagent sich aus dem Sichtfeld von n Agenten bewegt. Umgekehrt macht es keinen Sinn, dass andere Agenten daf\"ur belohnt werden, dass der Zielagent mehrfach in Sicht kommt TODO.
+
+
+
+Verz\"ogerter Reward
+
+Wird der Reward an andere Agenten verteilt, kann es dazu kommen, dass ActionSets mehrfach Reward erhalten.
+
+
+
+
+\section{Verwandtschaftsgrad}
+
+Vergleich reward-all reward simple
+
+
+
+
+Bewertung Kommunikation:
+
+Die Vorteile, die man durch Kommunikation erzielen kann, h\"angt stark durch das Szenario ab. Beispielsweise in dem Fall, bei dem zuf\"allige Agenten bereits fast 100% Abdeckung erreichen, also so viele Agenten auf dem Feld sind, dass der Gewinn durch Absprache minimal ist. Auch ist, weil wir nur mit Bin\"arsensoren arbeiten, die Sensorik gest\"ort, wenn sich sehr viele Agenten auf dem Feld befinden, weil die Sensoren sehr oft gesetzt sind und somit wenig Aussagekraft haben. Erweiterungen wie zus\"atzliche Sensoren die die Abst\"ande bestimmen w\"urde hier wahrscheinlich klarere Ergebnisse liefern.
+Umgekehrt ist der Einfluss bei sehr wenigen Agenten gering. TODO
+
+Vergleich unterschiedliche Agentenanzahl, unterschiedliche Kommunikationsmittel
+Vergleich mit LCS?
+
+
+
+Old LCS Agent
+New LCS Agent
+
+Multistep LCS Agent
+Dieser Algorithmus stellt eine Implementation des Standard XCS Algorithmus dar. Unterschied zur Standardimplementation ist, dass die Probleminstanz bei Erreichen des tempor\"aren Ziels (d.h. den Zielagenten in Sicht zu bekommen) nicht tats\"achlich neugestartet wird.
+Events, wie bei den neuen LCS Implementationen gibt es nicht, ist das Ziel in Sicht wird Reward 1.0 weitergegeben.
+
+Single LCS Agent
+
+Mehrere LCS Agenten („Old LCS Agent“) teilen sich ein gemeinsames ClassifierSet, das sie entsprechend updaten.
+Entspricht dem Extremfall der Kommunikation
+Sight range/Kommunikationsrange
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Verwendete Hilfsmittel und Software}
+
+Zu Beginn stellte sich die Frage, welche Software zu benutzen ist, da es sich um ein recht komplexe Problemstellung handelt. Begonnen habe ich mit der YCS Implementierung von TODO. Sie ist in der Literatur wenig vertreten, die Implementierung bot aber einen guten Einstieg in das Thema, da sie sich auf das Wesentliche beschr\"ankte und keine Optimierungen enthielt.
+
+Der n\"achste Schritt war zu entscheiden, auf welchem System die Agenten simuliert werden sollen. Unter einer Reihe von vorhandenen Implementierungen entschied ich mich f\"ur eine eigene Implementation. 
+Wesentlicher Grund war die Unerfahrenheit mit den L\"osungen (und der damit verbundenen Einarbeitungszeit) wie auch \"Uberlegungen bzgl. der Geschwindigkeit, dem Speicherverbrauch und der Kompatibilit\"at. TODO
+
+Das Programm und die zugeh\"orige Oberfl\"ache zum Erstellen von Test-Jobs wurden in Netbeans 6.5 programmiert.
+
+Grafiken wurden mittels GnuPlot erstellt.
+
+Grafiken der Grid-Konfiguration wurden im Programm mittels GifEncode TODO erste
+ * @version 0.90 beta (15-Jul-2000)
+ * @author J. M. G. Elliott (tep@jmge.net)
+
+Wesentlicher Bestandteil der Konfigurationsoberfl\"ache war auch eine Automatisierung der Erstellung von Konfigurationsdateien, Batchdateien (f\"ur ein Einzelsystem und f\"ur JoSchKA) zum Testen einer ganzen Reihe von Szenarien und auch GnuPlot Skripts.
+
+Speicherverbrauch
+
+Speicherung der Agentenpositionen und des Grids verbrauchen fast keinen Speicher TODO
+Wesentlicher Faktor waren die LCS Systeme mit ihren ClassifierSets TODO
+
+
+
+
+
+Beschreibung des Konfigurationsprogramms
+
+
+\begin{thebibliography}{99}
+\bibitem{Butz} {\sc Butz, M. \& Wilson, S.W.:}  \textit{An Algorithmic Description of XCS}, 2001.
+In P-L. Lanzi, W. Stolzmann \& S.W. Wilson (eds) Advances in Learning Classifier Systems: IWLCS 2000. Springer, pp253-272.
+
+\bibitem{Bull} {\sc Larry Bull:}  \textit{A Simple Accuracy-Based Learning Classifier System}, 
+\url{http://www2.cmp.uea.ac.uk/~it/ycs/ycs.pdf}
+
+\end{thebibliography}

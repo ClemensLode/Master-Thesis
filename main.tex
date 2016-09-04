@@ -1,0 +1,81 @@
+\documentclass[12pt,a4paper,bibtotoc,]{book}
+
+%\usepackage{fancyheadings}
+%\pagestyle{fancy}
+%\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+%\renewcommand{\subsectionmark}[1]{\markright{#1}}
+%\rfoot{\leftmark\\rightmark}
+
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+
+\usepackage[dvips]{graphicx} 
+\usepackage{epsfig}
+\usepackage{algorithmic}
+\usepackage[plain]{algorithm}
+\usepackage{amsmath,amsfonts}
+\usepackage{mathrsfs}
+\usepackage{subfigure}
+\usepackage{theorem}
+\usepackage{url}
+\usepackage[german]{babel}
+
+
+\pagestyle{headings}
+
+\graphicspath{{graphics/}}
+
+%\paperwidth 18cm
+
+\textheight 21.5cm
+\textwidth 16cm
+\oddsidemargin 0cm
+\evensidemargin 0cm
+\topmargin 2.5cm
+\headsep 0.8cm
+
+%\footskip 3.0cm
+
+\renewcommand{\baselinestretch}{1.6}
+\renewcommand{\textfraction}{0.0}
+\renewcommand{\bottomfraction}{1.0}
+\renewcommand{\topfraction}{1.0}
+
+\theoremstyle{break}
+\newtheorem{Definition}{Definition}[section]
+
+\def\rz{\ifmmode{I\hskip -3pt R}
+    \else{\hbox{$I\hskip -3pt R$}}\fi} %reelle Zahlen
+
+
+\bibliographystyle{unsrt}
+
+\begin{document}
+
+
+\frontmatter
+\include{frontpage}
+ 
+\tableofcontents
+\clearemptydoublepage
+\listoffigures
+\clearemptydoublepage
+\listoftables
+\clearemptydoublepage
+\pagestyle{plain}
+\include{preface}
+\clearemptydoublepage
+\pagestyle{headings}
+\mainmatter
+
+\include{introduction}
+\include{core}
+\include{conclusion}
+
+\include{appendix}
+\backmatter
+\clearemptydoublepage
+\bibliography{main}
+\clearemptydoublepage
+\include{erklaerung} 
+
+\end{document}
