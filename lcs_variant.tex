@@ -72,11 +72,8 @@ Die schematische Abbildung~\ref{positive_negative_reward:fig} demonstriert diese
 \label{positive_negative_reward:fig}
 \end{figure}
 
-TODO, evtl maxprediction komplett raus bei SXCS, testen!?
 
-TODO explore/exploit, nur bei explore lernen, erwähnen dass immer gelernt werden muss
 
-TODO oberes Limit der Genauigkeit, 84\%, da ja geswitched wird.
 
 \subsection{Ereignisse}\label{sec:events}
 
@@ -94,9 +91,7 @@ Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der \emph{bas
 
 Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die \emph{classifier} erhalten jeweils Information, die bis zu \emph{maxStackSize} Schritte zu alt sein kann. Tritt beim Stack ein Überlauf ein, gab es also \emph{maxStackSize} Schritte lang keine Änderung des \emph{base reward} Werts, wird abgebrochen und die \(\frac{maxStackSize}{2}\) ältesten Einträge vom Stack genommen.\\
 
-Beträgt der \emph{base reward} den Wert \(0\) so werden diese Einträge verworfen. Idee ist, dass ein Agent, der es längere Zeit nicht schafft, das Zielobjekt in Sichtweite zu bekommen, nicht unbedingt falsch, was das globale Ziel betrifft, gehandelt haben muss, da er trotzdem ein Gebiet überwacht, das vom Zielobjekt passiert hätte können. Es ist anzunehmen, dass (nach der erwarteten Verteilung der zukünftigen Positionen des Zielobjekts) selbst bei einer optimalen Verteilung der Agenten, einige Agenten das Zielobjekt nie in Sicht bekommen.\\
-
-Beträgt der \emph{base reward} den Wert \(1\) werden alle diese Einträge mit diesem Wert aktualisiert. Abbildung~\ref{neutral_reward:fig} zeigt die Bewertung bei einem solchen neutralen Ereignis, bei dem nach Überlauf die erste Hälfte mit \(1\) bewertet wurde. Außerdem ist dort der maximale Fehler dargestellt, welcher eintreten würde, wenn direkt beim Schritt nach dem Abbruch eine Änderung des \emph{base reward} Werts auftritt, im dargestellten Fall also der \emph{base reward} sich beim aktuellen Zeitpunkt auf \(0\) verändern würde.\\
+Alle diese Einträge werden vorher dabei mit diesem \emph{base reward} Wert aktualisiert. Abbildung~\ref{neutral_reward:fig} zeigt die Bewertung bei einem solchen neutralen Ereignis, bei dem nach Überlauf die erste Hälfte mit \(1\) bewertet wurde. Außerdem ist dort der maximale Fehler dargestellt, welcher eintreten würde, wenn direkt beim Schritt nach dem Abbruch eine Änderung des \emph{base reward} Werts auftritt, im dargestellten Fall also der \emph{base reward} sich beim aktuellen Zeitpunkt auf \(0\) verändern würde.\\
 
 \begin{figure}[htbp]
 \centerline{	
@@ -107,15 +102,41 @@ Beträgt der \emph{base reward} den Wert \(1\) werden alle diese Einträge mit die
 \end{figure}
 
 
-Wählt man den Stack zu groß, dann werden eher am Ergebnis unbeteiligte (d.h. vom Ereignis weit weg liegende) \emph{action set} Listen bewertet. Auch nimmt die Reaktionsgeschwindigkeit des Systems ab, d.h. zum einen bewegen sich die Agenten zu Beginn, bis sie das erste Mal das Zielobjekt in Sichtweite haben, zufällig. Wählt man den Stack zu klein, kann es sein, dass ein Überlauf und somit u.U. ein gewisser Fehler auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar. Wie Abbildung~\ref{max_stack_size} TODO zeigt, ist dies bei größerer Schrittzahl aber vernachlässigbar, ein Wert von 128 erscheint sinnvoll.\\
+Wählt man den Stack zu groß, dann werden eher am Ergebnis unbeteiligte (d.h. vom Ereignis weit weg liegende) \emph{action set} Listen bewertet. Auch nimmt die Reaktionsgeschwindigkeit des Systems ab, d.h. zum einen bewegen sich die Agenten zu Beginn, bis sie das erste Mal das Zielobjekt in Sichtweite haben, zufällig. Wählt man den Stack zu klein, kann es sein, dass ein Überlauf und somit u.U. ein gewisser Fehler auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar. Wie Abbildung~\ref{max_stack_size:fig} zeigt, ist dies bei größerer Schrittzahl aber vernachlässigbar, die erreichten Qualitäten unterscheiden sich bis zu einer Größe kaum voneinander. 
+Dass der \emph{maxStackSize} Wert zwar für einen großen Wertebereich gleich gute Qualität liefert, es aber doch vom Szenario abhängt, zeigt ein Vergleich mit einem 32x32 großen Säulenszenario (siehe Abbildung~\ref{max_stack_size_large:fig}). Hier trifft der Agent deutlich weniger häufig auf das Zielobjekt, es kommt also eher zu einem Überlauf des Stacks.
+Auch beim schwierigen Szenario ist die Lage ähnlich. Insbesondere bei relativ wenigen Schritten nimmt der \emph{maxStackSize} Wert aber eine zentrale Rolle ein. Abbildung~\ref{max_stack_size_difficult:fig} zeigt, dass ein Wert von 
+TODO 
+Insgesamt, scheint ein 
+, ein Wert von 128 erscheint sinnvoll.\\
+
+Vergleich prediction error!
+Wasted movements
+
 
 \begin{figure}[htbp]
 \centerline{	
 %\includegraphics{max_stack_size.eps}
 }
-\caption[Vergleich verschiedener Werte für \emph{maxStackSize}] {Vergleich verschiedener Werte für \emph{maxStackSize}}
+\caption[Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario)] {Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 2, SXCS Agenten)}
 \label{max_stack_size:fig}
 \end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+%\includegraphics{max_stack_size_large.eps}
+}
+\caption[Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario)] {Vergleich verschiedener Werte für \emph{maxStackSize} (Säulenszenario mit 32x32 Feldern, Zielobjekt mit einfacher Richtungsänderung, Geschwindigkeit 2, 8 SXCS Agenten)}
+\label{max_stack_size_large:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+%\includegraphics{max_stack_size_difficult.eps}
+}
+\caption[Vergleich verschiedener Werte für \emph{maxStackSize} (schwieriges Szenario)] {Vergleich verschiedener Werte für \emph{maxStackSize} (schwierigen Szenario, Zielobjekt bewegt sich nur in eine Richtung, Geschwindigkeit 2, SXCS Agenten)}
+\label{max_stack_size_difficult:fig}
+\end{figure}
+
 
 Zusammengefasst ergeben sich also folgende Ereignisse:
 
@@ -144,7 +165,7 @@ Im Wesentlichen entspricht die Implementierung von SXCS der bekannten Implementi
 
 Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von XCS und SXCS für das Zielobjekt diskutiert werden. Der Grund für die Untersuchung liegt mehr darin, eine weitere Anwendungsmöglichkeit aufzuzeigen und XCS und SXCS nochmals zu vergleichen, anstatt konkrete neue Erkenntnisse zu gewinnen. Insbesondere handelt es sich hierbei nicht mehr um ein Multiagentensystem, obwohl auch mit weitere Zielobjekten sich kein kollaboratives Szenario ergeben würde, da die Zielobjekte keinen Vorteil von einer gemeinsamen Flucht haben (im Gegensatz zum gemeinsamen Einfangen seitens der Agenten). Die Ergebnisse der Analyse folgt in Kapitel~\ref{goal_agent_with_xcs:sec}, auch hier ist der Ansatz von SXCS überlegen.\\
 
-Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{agent_check_reward:pro}) ist die Implementierung für das Zielobjekt fast identisch. Die einzige zweite Änderung ist in der Funktion \emph{calculateNextMove()} (siehe Programm~\ref{multistep_calc_move:pro} (XCS) bzw. Programm~\ref{sxcs_calc_move:pro} (SXCS)), bei der die zusätzliche Sprungeigenschaft des Zielobjekts hinzugefügt ist (siehe Kapitel~\ref{zielobjekt:sec}).\\
+Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{goal_check_reward:pro}) ist die Implementierung für das Zielobjekt fast identisch. Die einzige zweite Änderung ist in der Funktion \emph{calculateNextMove()} (siehe Programm~\ref{multistep_calc_move:pro} (XCS) bzw. Programm~\ref{sxcs_calc_move:pro} (SXCS)), bei der die zusätzliche Sprungeigenschaft des Zielobjekts hinzugefügt ist (siehe Kapitel~\ref{zielobjekt:sec}).\\
 
 Die abgeänderte Version ist in Programm~\ref{goal_check_reward:pro} aufgelistet, sie unterscheidet sich in den Zeilen 6 und 9, in der Sensordaten über andere Agenten anstatt über das Zielobjekt geholt und geprüft werden, also ein Rollentausch zwischen Zielobjekt und Agenten stattfindet.\\
 
@@ -224,7 +245,7 @@ Wann immer ein \emph{base reward} Wert an einen Agenten verteilt wird, kann es s
 
 
 
-Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes "`externes Ereignis"' von diesen Agenten aufgefasst wird, hängt von den jeweiligen Kommunikationsvarianten ab, die in Kapitel~\ref{kommunikationsvarianten:sec} besprochen werden.
+Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes "`externes Ereignis"' von diesen Agenten aufgefasst wird, hängt von den jeweiligen Kommunikationsvarianten ab, die weiter unten besprochen werden.
 
 Durch eine gemeinsame Schnittstelle erhält jeder Agent den \emph{reward} zusammen mit dem Kommunikationsfaktor. Dabei ergibt sich das Problem, dass sich \emph{reward} überschneiden können, da jeder \emph{reward} sich rückwirkend auf die vergangenen \emph{action set} Listen auswirken kann. Auch können mehrere externe \emph{reward} Werte eintreffen, als auch ein eigener positiver lokaler \emph{reward} Wert aufgetreten sein. Würden die \emph{reward} Werte nach ihrer Eingangsreihenfolge abgearbeitet werden, kann es passieren, dass dieselbe \emph{action set} Liste sowohl mit einem hohen als auch einem niedrigen \emph{reward} aktualisiert wird. Da das globale Ziel ist, das Zielobjekt durch \emph{irgendeinen} Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein \emph{einzelner} Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
 

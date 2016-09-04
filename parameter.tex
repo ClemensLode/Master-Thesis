@@ -4,7 +4,7 @@ Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen w
 
 Mitunter führen andere Parametereinstellungen auch zu wesentlich besseren Ergebnissen. Dies muss man aber vorsichtig bewerten, wenn die erreichte Qualität unter der des zufälligen Algorithmus liegt, da eine Auswirkung sein kann, dass der Algorithmus nicht besser lernt, sondern sich umgekehrt eher wie der zufällige Algorithmus verhält. Ein Vergleich mit der Qualität des zufälligen Algorithmus wird deswegen jeweils immer angegeben.\\
 
-Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Um synchronisierte und vergleichbare Daten zu haben, wurden die Tests deshalb in mehreren Etappen durchgeführt, die angegebenen Testergebnisse entsprechen jeweils den endgültigen Ergebnissen.\\
+Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Um synchronisierte und vergleichbare Daten zu haben, wurden die Tests deshalb in vielen Etappen durchgeführt, die angegebenen Testergebnisse entsprechen jeweils nur den endgültigen Ergebnissen.\\
 
 
 \subsection{Parameter \emph{max population N}}\label{sec:max_population_parameter}
@@ -100,7 +100,10 @@ Abbildung~\ref{prediction_discount:fig} zeigt einen Vergleich der Qualität bei u
 
 \subsection{Parameter Lernrate $\beta$}\label{sec:learnrate_parameter}
 
-Die Lernrate \(\beta\) hatte in den Tests kaum Auswirkungen auf die Qualität. Da eine ausreichend hohe Populationsgröße gewählt wurde (es werden nicht dauernd neue \emph{classifier} erstellt) und die Schrittzahl groß genug war, pendelten sich die entsprechenden Werte ein. Die Lernrate bestimmt, wie stark ein ermittelter \emph{reward} Wert den \emph{reward prediction}, \emph{reward prediction error}, \emph{fitness} und \emph{action set size} Wert bei jeder Aktualisierung beeinflusst. Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig}) lassen einen leichten Abwärtstrend bei größeren Werten feststellen, signifikante Unterschiede, vom zusätzlich dargestellten Extremwert bei \(0,00001\) abgesehen, gibt es aber keine, weshalb die Wahl im Grunde beliebig ist. Ein Unterschied ist erst in schwierigen Szenarien zu bemerken (siehe Abbildung~\ref{difficult_learning_rate_quality:fig}), dort soll \(0,001\) als Lernrate \(\beta\) gewählt werden. TODO
+Die Lernrate \(\beta\) hatte in den Tests kaum Auswirkungen auf die Qualität. Da eine ausreichend hohe Populationsgröße gewählt wurde (es werden nicht dauernd neue \emph{classifier} erstellt) und die Schrittzahl groß genug war, pendelten sich die entsprechenden Werte ein. Die Lernrate bestimmt, wie stark ein ermittelter \emph{reward} Wert den \emph{reward prediction}, \emph{reward prediction error}, \emph{fitness} und \emph{action set size} Wert bei jeder Aktualisierung beeinflusst. Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig}) lassen einen leichten Abwärtstrend bei größeren Werten feststellen, signifikante Unterschiede, vom zusätzlich dargestellten Extremwert bei \(0,00001\) abgesehen, gibt es aber keine, weshalb die Wahl im Grunde beliebig ist. \\
+
+TODO!
+Ein Unterschied ist erst in schwierigen Szenarien zu bemerken (siehe Abbildung~\ref{difficult_learning_rate_quality:fig}), dort soll \(0,001\) als Lernrate \(\beta\) gewählt werden. Der Grund für diesen Unterschied ist schwierig zu erkennen. Nötig war hierzu die Betrachung des laufenden Durchschnitts der Qualität des Algorithmus (siehe Abbildung~\ref{difficult_learning_rate_continous_quality:fig}), bei der beide Varianten im ersten Problem bis 2000 Schritte gleichauf sind, dann die Variante mit vergleichsweise großer Lernrate bei niedrigem Level stehenbleibt. Ein weiterer Test mit einer leicht modifizierten SXCS Version (die Option 
 
 \begin{figure}[htbp]
 \centerline{	
@@ -112,11 +115,12 @@ Die Lernrate \(\beta\) hatte in den Tests kaum Auswirkungen auf die Qualität. Da
 
 \begin{figure}[htbp]
 \centerline{	
-\includegraphics{lernrate_beta.eps}
+\includegraphics{difficult_learnrate.eps}
 }
-\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Säulenszenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im Säulenszenario, intelligente Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus, 2000 Schritte}
+\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Schwieriges Szenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im schwierigen Szenario, Bewegung des Zielobjekts ohne Richtungsänderung, Geschwindigkeit 1, 8 Agenten mit SXCS Algorithmus, 2000 Schritte}
 \label{difficult_learning_rate_quality:fig}
 \end{figure}
+
 
 
 \subsection{Parameter \emph{accuracy equality} $\epsilon_{0}$}\label{epsilon0:sec}
@@ -127,36 +131,36 @@ Der Parameter \(\epsilon_{0}\) gibt an, unter welchem \emph{reward prediction er
 \subsection{Übersicht über alle Parameterwerte}
 
 \begin{table}[ht]
-\caption{Verwendete Parameter (soweit nicht anders angegeben) und Standardparameter, TODO englisch/deutsch}
+\caption{Verwendete Parameter (soweit nicht anders angegeben) und Standardparameter}
 \centering
 \begin{tabular}{c c c}
 \hline\hline
 Parameter & Wert & Standardwert (siehe~\cite{butz01algorithmic})\\ [0.5ex]
 \hline
-Max population \(N\) & \textbf{256} (siehe Kapitel~\ref{sec:max_population_parameter}) & [so, dass kein \emph{covering} nötig]\\
-Max value \(\rho\) & \textbf{1,0} (siehe Kapitel~\ref{epsilon0:sec}) & [10000]\\
-Fraction mean fitness \(\delta\) & 0,1 & [0,1]\\
-Deletion threshold \(\theta_{\mathrm{del}}\) & 20,0 & [\(\sim\) 20,0]\\
-Subsumption threshold \(\theta_{\mathrm{sub}}\) & 20,0 & [20,0+]\\
-Covering \(\#\) probability \(P_{\#}\) & 0,33 & [\(\sim\) 0,33]\\
-GAthreshold \(\theta_{\mathrm{GA}}\) & 25 & [25-50]\\
-Mutation probability \(\mu\) & \(0,05\) & [0,01-0,05]\\
-Prediction error reduction & 0,25 & [0,25]\\
-Fitness reduction & \(0,1\) & [0,1]\\
+max population \(N\) & \textbf{256} (siehe Kapitel~\ref{sec:max_population_parameter}) & [so, dass kein \emph{covering} nötig]\\
+max value \(\rho\) & \textbf{1,0} (siehe Kapitel~\ref{epsilon0:sec}) & [10000]\\
+fraction mean fitness \(\delta\) & 0,1 & [0,1]\\
+deletion threshold \(\theta_{\mathrm{del}}\) & 20,0 & [\(\sim\) 20,0]\\
+subsumption threshold \(\theta_{\mathrm{sub}}\) & 20,0 & [20,0+]\\
+covering \(\#\) probability \(P_{\#}\) & 0,33 & [\(\sim\) 0,33]\\
+GA threshold \(\theta_{\mathrm{GA}}\) & 25 & [25-50]\\
+mutation probability \(\mu\) & \(0,05\) & [0,01-0,05]\\
+prediction error reduction & 0,25 & [0,25]\\
+fitness reduction & \(0,1\) & [0,1]\\
 
-Reward prediction init \(p_{i}\) & 0,01 & [\(\sim\) 0]\\
-Prediction error init \(\epsilon_{i}\) & 0,0 & [0,0]\\
-Fitness init \(F_{i}\) & \(0,01\) &  [0,01]\\
-Condition vector & \textbf{leer} (siehe Kapitel~\ref{sec:random_init}) &  [zufällig oder leer]\\
-Numerosity & 1 & [1]\\
-Experience & 0 & [0]\\
+reward prediction init \(p_{i}\) & 0,01 & [\(\sim\) 0]\\
+prediction error init \(\epsilon_{i}\) & 0,0 & [0,0]\\
+fitness init \(F_{i}\) & \(0,01\) &  [0,01]\\
+condition vector & \textbf{leer} (siehe Kapitel~\ref{sec:random_init}) &  [zufällig oder leer]\\
+numerosity & 1 & [1]\\
+experience & 0 & [0]\\
 
-Accuracy equality \(\epsilon_{0}\) & \textbf{0,01} (siehe Kapitel~\ref{epsilon0:sec}) & [\emph{1\% des größten Werts}]\\
-Accuracy calculation \(\alpha\) & 0,1 & [0,1]\\
-Accuracy power \(\nu\) & 5,0 & [5,0]\\
-Reward prediction discount \(\gamma\) & 0,71 & [0,71]\\
+accuracy equality \(\epsilon_{0}\) & \textbf{0,01} (siehe Kapitel~\ref{epsilon0:sec}) & [\emph{1\% des größten Werts}]\\
+accuracy calculation \(\alpha\) & 0,1 & [0,1]\\
+accuracy power \(\nu\) & 5,0 & [5,0]\\
+reward prediction discount \(\gamma\) & 0,71 & [0,71]\\
 
-Learning rate \(\beta\) & \textbf{0,001 - 0,01} (siehe Kapitel~\ref{sec:learnrate_parameter}) & [0,1-0,2]\\
+learning rate \(\beta\) & \textbf{0,001 - 0,01} (siehe Kapitel~\ref{sec:learnrate_parameter}) & [0,1-0,2]\\
 
 exploration probability & 0,5 (siehe Kapitel~\ref{subsummation:sec}) & [\(\sim\) 0,5]\\ [0.5ex]
 

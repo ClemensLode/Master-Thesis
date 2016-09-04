@@ -1,0 +1,113 @@
+\section{Simulation und erfasste Statistiken}
+
+Beim Testen selbst war es durch die Verwendung der in Kapitel~\ref{qualitaet:sec} erwähnten (und im Simulator berechneten) Halbzeitqualitäten sehr einfach, festzustellen, ob ein Algorithmus noch Potential hatte, d.h. ob eine Erhöhung der Schrittzahl die Qualität weiter steigern würde. Da (im Gegensatz zu den später in Kapitel~\ref{lcs_variants:cha} erwähnten lernenden Algorithmen) keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen. Die Zahl der Zeitschritte wird somit für alle Tests, soweit nicht anders angegeben, standardmäßig auf 500 festgesetzt.\\
+
+Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Probleminstanzen (siehe Kapitel~\ref{definition_probleminstanz:sec}) ermittelt und gemittelt werden, was erfahrungsgemäß ausreicht um ausreichend genaue Ergebnisse zu erhalten.\\
+Im Folgenden sollen nun allgemeine Eigenschaften der Simulation erläutert werden.\\
+
+
+\subsection{Definition einer Probleminstanz}\label{definition_probleminstanz:sec}
+
+Eine einzelne Probleminstanz entspricht hier einem Torus mit einer bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit, auf dem über die erwähnte Anzahl von Schritten die Simulation abläuft. Die Anfangsbelegung ist über einen \emph{random seed} Wert bestimmt, wobei bei jeder Probleminstanz mit einem neuen Wert initialisiert wird, der sich aus der Nummer des Experiments und der Nummer des Problems berechnet. Die Probleminstanzen sind also untereinander unterschiedlich, jedoch vergleichbar mit anderen Testdurchläufen mit einer anderen Konfiguration. Soweit nicht anders angegeben, sollen hier Probleminstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall. Die in den Tabellen jeweils angegebenen Werte sind auf zwei Stellen nach dem Komma gerundet.\\
+
+Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfasst. Wesentliches Merkmal zum Vergleich der Algorithmen ist der Wert der Qualität (siehe Kapitel~\ref{qualitaet:sec}), weitere Merkmale dienen zur Erklärung, warum z.B. ein Algorithmus bei einem Durchlauf schlechte Ergebnisse lieferte, bzw. dienten zum Testen und Finden von Fehlern oder Schwächen des Simulationsprogramms. Im Einzelnen sind hier zu nennen:
+
+\begin{enumerate}
+
+\item Anteil Sprünge des Zielobjekts (siehe Kapitel~\ref{zielobjekt:sec}), Durchläufe mit hohen Werte müssten verworfen werden
+\item Anteil blockierter Bewegungen der Agenten
+\item Halbzeitqualität (siehe Kapitel~\ref{qualitaet:sec}), größere Unterschiede zur ermittelten Qualität deuten darauf hin, dass sich der Algorithmus noch nicht stabilisiert hat und das Szenario mit höherer Schrittzahl erneut durchgeführt werden sollte
+\item Abdeckung
+\item Varianz der individuellen Punkte, ungefähres Maß, inwieweit einzelne Agenten an der Gesamtqualität beteiligt waren 
+
+\end{enumerate}
+
+
+\subsection{Abdeckung}
+
+Die theoretisch maximal mögliche Anzahl an Felder, die die Agenten innerhalb ihrer Überwachungsreichweite zu einem Zeitpunkt haben können, entspricht der Zahl der Agenten multipliziert mit der Zahl der Felder, die ein Agent in seiner Übertragungsreichweite haben kann. Ist dieser Wert größer als die Gesamtzahl aller freien Felder, wird stattdessen dieser Wert benutzt.\\
+Teilt man nun die Anzahl der momentan tatsächlich überwachten Felder durch die eben ermittelte maximal mögliche Anzahl an überwachten Felder, erhält man die Abdeckung, die die Agenten momentan erreichen.\\
+
+
+\subsection{Qualität eines Algorithmus}\label{qualitaet:sec}
+Die Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen (d.h. das Zielobjekt innerhalb einer Distanz von höchstens \emph{reward range} halten) konnte, relativ zur Gesamtzeit.\\
+Die Qualität eines Algorithmus zu einer Anzahl von Problemen (also einem Experiment) wird Anhand des Gesamtanteil der Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.\\
+Die Qualität eines Algorithmus entspricht dem Durchschnitt der Qualitäten des Algorithmus mehrerer Experimente.\\
+Die Halbzeitqualität eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit.\\
+Die Halbzeitqualität eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit aller Probleme.\\
+Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeitqualitäten des Algorithmus mehrerer Experimente.\\
+Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus ermöglicht einen Einblick, wie gut sich der Algorithmus verhält, nachdem er sich auf das Problem bereits eine Zeit lang einstellen konnte.\\
+
+
+\subsection{Ablauf der Simulation}\label{reihenfolge:sec}
+
+Die Simulation selbst läuft in ineinander geschachtelten Schleifen ab. Jede Konfiguration (in den abgedruckten Programmen jeweils über die globale Variable \emph{Configuration} angesprochen) wird über eine Reihe von Experimenten getestet (10 soweit nicht anders angegeben). Für einen Test wird die Funktion \emph{doOneMultiStepExperiment()} (siehe Programm~\ref{mainExperiment:pro}) mit der aktuellen Nummer des Experiments als Parameter aufgerufen. In der Funktion wird ein neuer \emph{random seed} Wert initialisiert, der Torus auf den Startzustand gesetzt und schließlich das eigentliche Problem mit der Funktion \emph{doOneMultiStepProblem()} aufgerufen, welche in Programm~\ref{mainProblem:pro} abgebildet ist. Dort werden in einer Schleife alle Schritte durchlaufen und jeweils die Objekte abgearbeitet.\\
+
+In welcher Reihenfolge dies geschieht, soll im Folgenden geklärt werden. Zusammenfassend ist zu sagen, dass zuerst die aktuelle Qualität und die aktuellen Sensordaten bestimmt werden. Daraus ermittelt jeder Agent die Bewertung für den letzten Schritt und bestimmt eine neue Aktion. Haben Agenten und das Zielobjekt diese Schritte abgeschlossen, werden ihre ermittelten Aktionen in zufälliger Reihenfolge ausgeführt.\\
+
+
+Bei der Berechnung eines einzelnen Problems in der Funktion \emph{doOneMultiStepProblem()} stellt sich die Frage nach der Genauigkeit und der Reihenfolge der Abarbeitung, da die Simulation nicht parallel, sondern schrittweise auf einem diskreten Torus abläuft. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
+
+Da eine Aktion auf Basis der Sensordaten ausgewählt wird, ist die erste Restriktion, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss. Da außerdem Aktionen bewertet werden sollen, also jeweils der Zustand nach der Bewegung mit dem gewünschten Zustand verglichen werden soll, ist die zweite Restriktion, dass die Bewertung einer Aktion nach dessen Ausführung stattfinden muss.\\
+
+Unter diesen Voraussetzungen ergeben sich folgende zwei Möglichkeiten:
+
+\begin{enumerate}
+\item Für alle Agenten werden erst einmal die neuen Sensordaten erfasst und sich für eine Aktion entschieden. Sind alle Agenten abgearbeitet, werden die Aktionen ausgeführt.
+\item Die Agenten werden nacheinander abgearbeitet, es werden jeweils neue Sensordaten erfasst und sich sofort für eine neue Aktion entschieden. 
+\end{enumerate}
+
+Bei der ersten Möglichkeit haben alle Agenten die Sensordaten vom Beginn der Zeiteinheit, während bei der zweiten Möglichkeit später verarbeitete Agenten bereits die Aktionen der bereits berechneten Agenten miteinbeziehen können. Umgekehrt können dann frühere Agenten bessere Positionen früher besetzen. Da aufgrund der primitiven Sensoren nicht davon auszugehen ist, dass Agenten beginnende Bewegungen (und somit deren jeweilige Zielposition) anderer Agenten einbeziehen können, soll jeder Agent von den Sensorinformationen zu Beginn der Zeiteinheit ausgehen.\\
+
+Wenn sich mehrere Agenten auf dasselbe Feld bewegen wollen, dann spielt die Reihenfolge der Ausführung der Aktionen eine Rolle. Wird die Liste der Agenten einfach linear abgearbeitet, können Agenten mit niedriger Position in der Liste die Aktion auf Basis jüngerer Sensordaten fällen. Dies kann dazu führen, dass Aktionen von Agenten mit höherer Position in der Liste eher fehlschlagen, da das als frei angenommene Feld nun bereits besetzt ist. Da es keinen Grund gibt, Agenten mit niedrigerer Position zu bevorteilen, werden die Aktionen der Agenten in zufälliger Reihenfolge abgearbeitet.\\
+
+Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann (siehe auch Kapitel~\ref{zielobjekt:sec}).\\
+
+Die Entscheidung fiel hier auf eine zufällige Verteilung. Kann sich das Zielobjekt um \(n\) Schritte bewegen, so wird seine Bewegung in \(n\) Einzelschritte unterteilt, die nacheinander mit zufälligen Abständen (d.h. Bewegungen anderer Agenten) ausgeführt werden.\\
+
+Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingeführt werden, sodass das Zielobjekt in einer Zeiteinheit mehrmals (\(n\)-mal) neue Sensordaten erfassen und sich für eine neue Aktion entscheiden kann.
+
+
+
+\subsection{Messung der Qualität}\label{qualitaetsmessung:sec}
+
+Bei der Betrachtung der oben betrachteten Reihenfolge stellt sich die Frage, wann man die Qualität des Algorithmus messen sollte. Die Antwort hängt davon ab, was man denn nun eigentlich erreichen möchte. 
+Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da die Agenten und das Zielobjekt in einem Durchlauf gemeinsam nacheinander bewegt werden, stellt sich die Frage nicht, ob womöglich vor der Bewegung des Zielobjekts die Qualität gemessen werden sollen.
+Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
+
+Da ein wesentlicher Bestandteil die Kollaboration (und somit die Abdeckung des Torus anstatt dem dauernden Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn man vom realistischen Fall ausgeht, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
+
+
+\subsection{Reihenfolge der Ermittlung des \emph{base reward}}
+
+Hat man sich für die Art entschieden, wie die Qualität des Algorithmus bewertet wird, kann man damit fortfahren, sich zu überlegen, wie der einzelne Agent aus der lokalen Sichtweise heraus bestimmt, wie gut sein Verhalten war. Bei den bisher vorgestellten Agenten in Kapitel~\ref{base_agent_types:sec} haben die Agenten nicht gelernt, d.h. es gab keine Rückkopplung zwischen erfassten Sensordaten und den Regeln, nach denen die nächsten Aktionen entschieden werden. Die Agenten, die im Kapitel~\ref{lcs:cha} vorgestellt werden, besitzen dagegen eine solche Rückkopplung. Deshalb stellt sich die Frage, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein sogenannter \emph{base reward} ergeben soll.\\
+Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der \emph{base reward} Wert jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der \emph{base reward} von binärer Natur ("`Zielobjekt in Überwachungsreichweite"' oder "`Zielobjekt nicht in Überwachungsreichweite"') ist, weshalb Zwischenzustände für diesen Wert, der sich aus der mehrfachen Bewegung des Zielobjekts ergeben könnte (z.B. "`War zwei von drei Schritten in der Überwachungsreichweite"' \(\Rightarrow \frac{2}{3}\) \emph{base reward}), ausgeschlossen werden soll. Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.\\
+
+Für den \emph{base reward} ergeben sich somit folgende Möglichkeiten:
+
+\begin{enumerate}
+\item Ermittlung der einzelnen \emph{base reward} Werte jeweils direkt nach der Ausführung einer einzelnen Aktion
+\item Ermittlung aller \emph{base reward} Werte nach Ausführung aller Aktionen der Agenten und des Zielobjekts
+\end{enumerate}
+
+Werden die \emph{base reward} Werte sofort ermittelt (Punkt 1), dann bezieht sich der Wert auf die veralteten Sensordaten vor der Aktion, die Aktion selbst würde bei der Ermittlung des \emph{base reward} Werts also ignoriert werden. Bei Punkt 2 müsste man bis zum neuen Zeitschritt warten, bis neue Sensordaten ermittelt wurden.
+
+
+\subsection{Zusammenfassung des Simulationsablaufs}
+
+Im Folgenden ist der Ablauf aller Agenten (inklusive des Zielobjekts) dargestellt. Anzumerken ist, dass für das Zielobjekt zu Beginn in Schritt 2 und 3 nur der erste Schritt berechnet wird. Falls die Geschwindigkeit des Zielobjekts größer als 1 ist, werden (wie am Ende in Kapitel~\ref{reihenfolge:sec} angemerkt) in Schritt 5 nach der Ausführung der Aktion direkt neue Sensordaten erfasst und eine neue Aktion berechnet. Insgesamt ergibt sich also folgender Ablauf:
+
+\begin{enumerate}
+\item Bestimmen der aktuellen \textbf{Qualität}
+
+\item Erfassung der \textbf{Sensordaten} aller Agenten und des Zielobjekts
+
+\item Bestimmung der jeweiligen {\bfseries {\em base reward} Werte} für die einzelnen Objekte für den letzten Schritt (für lernende Agenten)
+
+\item Aktualisierung der Regeln anhand des \emph{base reward} Werts (für lernende Agenten)
+
+\item \textbf{Wahl der Aktion} anhand der Regeln des jeweiligen Agenten bzw. Zielobjekts
+
+\item \textbf{Ausführung der Aktion} aller (in zufälliger Reihenfolge, Zielobjekt wiederholt u.U. Schritte 2 und 3 zwischen zwei eigenen Bewegungen)
+
+\end{enumerate}

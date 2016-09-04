@@ -1,5 +1,5 @@
 \begin{appendix}
-\chapter{Implementation}
+\chapter{Implementation}\label{implementation:cha}
 
 \section{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
 
@@ -111,7 +111,7 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 
 
-\newlisting{Zentrale Bearbeitung (Verteilung des Rewards) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainReward:pro}
+\newlisting{Zentrale Bearbeitung (Verteilung des \emph{reward} Werts) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainReward:pro}
 /**
  * Verteilt den Reward an alle Agenten
  */
@@ -127,7 +127,8 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 \newlisting{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainMove:pro}
 /**
- * Führt die berechnete Bewegungen der Agenten in zufälliger Reihenfolge aus
+ * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
+ * @param gaTimestep der aktuelle Zeitschritt
  */
   private void moveAgents(long gaTimestep) {
   /**
@@ -347,13 +348,13 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 \newlisting{Zweites Kernstück des XCS \emph{multi step} Verfahrens (\emph{collectReward()} - Verteilung des \emph{reward} Werts auf die \emph{action set} Listen), angepasst an ein dynamisches Überwachungsszenario}{multistep_collect_reward:pro}
 /**
- * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
- * zugehörigen action set Listen weiter.
+ * Diese Funktion verarbeitet den übergebenen reward Wert und 
+ * gibt ihn an die zugehörigen action set Listen weiter.
  *
  * @param reward Wahr wenn das Zielobjekt in Sicht war.
  * @param best_value Bester Wert des vorangegangenen action set Listen
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven Reward, aufgerufen wurde
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
+ *          d.h. einem positiven reward Wert, aufgerufen wurde
  */
 
   public void collectReward(boolean reward, 
@@ -361,7 +362,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
     double corrected_reward = reward ? 1.0 : 0.0;
 
   /**
-   * Falls der Reward von einem Ereignis rührt, aktualisiere die 
+   * Falls der reward Wert von einem Ereignis rührt, aktualisiere die 
    * aktuelle action set Liste und lösche das vorherige
    */
     if(is_event) {
@@ -385,7 +386,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 
 
-\newlisting{Drittes Kernstück des XCS \emph{multi step} Verfahrens (\emph{calculateNextMove()}, Auswahl der nächsten Aktion und Ermittlung der zugehörigen action set Liste), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_move:pro}
+\newlisting{Drittes Kernstück des XCS \emph{multi step} Verfahrens (\emph{calculateNextMove()}, Auswahl der nächsten Aktion und Ermittlung der zugehörigen \emph{action set} Liste), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_move:pro}
 /**
  * Bestimmt die zum letzten bekannten Status passenden classifier und
  * wählt aus dieser Menge eine Aktion. Außerdem wird die aktuelle 
@@ -432,9 +433,10 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 \newlisting{Erstes Kernstück des SXCS-Algorithmus (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten)}{sxcs_calc_reward:pro}
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
- * reward zu bestimmen und positive, negative und neutrale Ereignisse 
- * den besten Wert der ermittelten match set Liste weiterzugeben und, bei 
- * aktuell positivem reward, die aktuelle action set Liste zu belohnen.
+ * reward Wert zu bestimmen und positive, negative und neutrale 
+ * Ereignisse den besten Wert der ermittelten match set Liste 
+ * weiterzugeben und, bei aktuell positivem reward Wert, die 
+ * aktuelle action set Liste zu belohnen.
  *
  * @param gaTimestep Der aktuelle Zeitschritt
  */
@@ -468,26 +470,24 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 
 
-\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des reward Wert auf die action set Listen)}{sxcs_collect_reward:pro}
+\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des \emph{reward} Werts auf die \emph{action set} Listen)}{sxcs_collect_reward:pro}
 /**
- * Diese Funktion verarbeitet den übergebenen reward und gibt ihn an die
- * zugehörigen action set Listen weiter.
+ * Diese Funktion verarbeitet den übergebenen reward und gibt ihn an 
+ * die zugehörigen action set Listen weiter.
  *
  * @param reward Wahr wenn der Zielobjekt in Sicht war.
  * @param best_value Bester Wert des vorangegangenen action set Listen
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven reward Wert, aufgerufen wurde
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
+ *          d.h. einem positiven reward Wert, aufgerufen wurde
  */
 
   public void collectReward(int start_index, int action_set_size, 
                 boolean reward, double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
   /**
-   * Wenn es kein Event ist, dann gebe den Reward weiter wie beim 
-   * Multistepverfahren
+   * Keine Weitergabe des reward Werts wie bei XCS
    */
-    double max_prediction = is_event ? 0.0 : 
-      historicActionSet.get(start_index+1).getMatchSet().getBestValue();
+    double max_prediction = 0.0;
 
   /**
    * Aktualisiere eine ganze Anzahl von action set Listen
@@ -495,26 +495,24 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
     for(int i = 0; i < action_set_size; i++) {
 
   /**
-   * Benutze aufsteigenden bzw. absteigenden reward Wert bei einem positiven 
-   * bzw. negativen Ereignis
+   * Benutze aufsteigenden bzw. absteigenden reward Wert bei einem 
+   * positiven bzw. negativen Ereignis
    */
       if(is_event) {
         corrected_reward = reward ? 
           calculateReward(i, action_set_size) : 
-          calculateReward(action_set_size - i, action_set_size);
+          calculateReward(action_set_size - i, 
+action_set_size);
       }
   /**
-   * Aktualisiere die action set Liste mit dem bestimmten reward Wert und
-   * gebe bei allen anderen action set Listen den reward Wert weiter wie 
-   * beim multi step Verfahren 
+   * Aktualisiere die action set Liste mit dem bestimmten reward Wert 
+   * und gebe bei allen anderen action set Listen den reward Wert 
+   * weiter wie beim multi step Verfahren 
    */
       ActionClassifierSet action_classifier_set = 
         historicActionSet.get(start_index - i);
       action_classifier_set.updateReward(
         corrected_reward, max_prediction, factor);
-
-      max_prediction = 
-        action_classifier_set.getMatchSet().getBestValue();
     }
   }
 \end{lstlisting}
@@ -558,7 +556,8 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
                                                       calculatedAction);
 
  /**
-  * Speichere die action set Liste und passe den Stack bei einem Überlauf an
+  * Speichere die action set Liste, erhöhe die Größe des Stacks und
+  * und passe den Stack bei einem Überlauf an
   */
     actionSetSize++;
     historicActionSet.addLast(lastActionSet);
@@ -575,15 +574,15 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 \newlisting{Zweites Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()} - Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
 /**
- * Diese Funktion verarbeitet den übergebenen reward Wert und gibt ihn an die
- * zugehörigen action set Listen weiter. Wesentlicher Unterschied zum SXCS 
- * Algorithmus ist, dass der maxPrediction Wert erst bei der endgültigen 
- * Verarbeitung des historicActionSet Listen ermittelt wird.
+ * Diese Funktion verarbeitet den übergebenen reward Wert und gibt ihn an 
+ * die zugehörigen action set Listen weiter. Wesentlicher Unterschied zum 
+ * SXCS Algorithmus ist, dass der maxPrediction Wert erst bei der 
+ * endgültigen Verarbeitung des historicActionSet Listen ermittelt wird.
  *
  * @param reward Wahr wenn das Zielobjekt in Sicht war.
  * @param best_value Bester Wert des vorangegangenen action set Listen
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven reward Wert, aufgerufen wurde
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
+ *          d.h. einem positiven reward Wert, aufgerufen wurde
  */
 
   public void collectReward(int start_index, int action_set_size, 
@@ -596,8 +595,8 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
      for(int i = 0; i < action_set_size; i++) {
 
   /**
-   * Benutze aufsteigenden bzw. absteigenden reward Wert bei einem positiven 
-   * bzw. negativen Ereignis
+   * Benutze aufsteigenden bzw. absteigenden reward Wert bei 
+   * einem positiven bzw. negativen Ereignis
    */
        if(is_event) {
          corrected_reward = reward ? 
@@ -636,7 +635,8 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
   // ... 
 
   /**
-   * historyActionSet voll? Dann verarbeite den dort gespeicherten reward Wert
+   * historyActionSet voll? Dann verarbeite den dort gespeicherten 
+   * reward Wert
    */
      if (historicActionSet.size() > Configuration.getMaxStackSize()) {
       HistoryActionClassifierSet first = historicActionSet.pop();
