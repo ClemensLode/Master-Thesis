@@ -9,13 +9,10 @@ In jedem Zeitschritt gilt es zu entscheiden, welche Bewegung ein Agent ausführen
 \end{enumerate}
 
 Bei einem dynamischen Überwachungsszenario ist es im Vergleich zu standardmäßigen statischen Szenarien weder nötig noch hilfreich \emph{random selection} zu nutzen. Die Idee für diese Auswahlart in einem statischen Szenario ist, dass man möchte, dass das XCS möglichst vielen verschiedenen Situationen ausgesetzt ist. Da in einem statischen Szenario Start- und Zielposition wie auch die Hindernisse fest sind, ist es wichtig, durch \emph{random selection} dem XCS einen gewissen Spielraum zu geben.\\
-Bei einem dynamischen Szenario ergibt sich dieses Problem nicht, andere Agenten und das Zielobjekt sind in stetiger Bewegung, der eigene Startpunkt ist nicht fixiert und das Problem wird bei Erreichen des Ziels nicht neugestartet. Aufgrund der Natur der Aufgabenstellung ist es in einem Überwachungsszenario außerdem wichtig, dass das XCS über eine längere Zeit hinweg eine gute Leistung liefert, also stetig gute Entscheidungen trifft, eine zufällige Auswahl kann deshalb nicht sinnvoll sein. Dies bestätigen später auch Tests TODO Tests
-
-Online, Offline Lernen?
-Qualität wird (im Gegensatz zu XCS) nicht nur bei exploit gemessen
-
+Bei einem dynamischen Szenario ergibt sich dieses Problem nicht, andere Agenten und das Zielobjekt sind in stetiger Bewegung, der eigene Startpunkt ist nicht fixiert und das Problem wird bei Erreichen des Ziels nicht neugestartet. Aufgrund der Natur der Aufgabenstellung ist es in einem Überwachungsszenario außerdem wichtig, dass das XCS über eine längere Zeit hinweg eine gute Leistung liefert, also stetig gute Entscheidungen trifft, eine zufällige Auswahl scheint also wenig hilfreich zu sein.\\
 Außerdem wird in XCS zwischen den verschiedenen Auswahlarten hin und her geschalten. Die Auswahlarten werden in zwei Gruppen geteilt, in die sogenannte \emph{explore} Phase und in die \emph{exploit} Phase. In der \emph{exploit} Phase soll bevorzugt eine Auswahlart ausgeführt werden, die das Produkt aus den Werten \emph{fitness} und \emph{reward prediction} möglichst stark gewichten, beispielsweise wäre \emph{best selection} ein Kandidat für die \emph{exploit} Phase, während z.B. \emph{random selection} ein Kandidat für die \emph{explore} Phase wäre.\\
 
+Dies bestätigen später auch Tests TODO Tests
 
 \subsection{Auswahlart \emph{tournament selection}}
 

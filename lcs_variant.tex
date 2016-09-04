@@ -56,9 +56,9 @@ TODO
 Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. das jeweils zugehörige \emph{actionSet}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängt. Somit wird, rückführend vom Zielpunkt, der \emph{reward} Wert schrittweise an vorgehende Aktionen verteilt, mit der Annahme, dass dann mit höherer Wahrscheinlichkeit das Ziel gefunden wird.
 TODO Quelle?\\
 
-Kern des Verfahrens ist die Vergabe des \emph{rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an das letzte \emph{actionSet} gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (\emph{maxPrediction}) an das letzte \emph{actionSet} gegeben.\\
+Kern des Verfahrens ist die Vergabe des \emph{base rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an das letzte \emph{actionSet} gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an das letzte \emph{actionSet} gegeben.\\
 
-Als Vergleich wurde das bekannte Verfahren \cite{Butz2000} fast unverändert übernommen. Der wesentliche Unterschied ist, dass das Szenario bei einem positiven Reward nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Außerdem, wie schon in Kapitel~\ref{exploreexploit:sec} erwähnt, soll die Qualität des Algorithmus nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird. Schließlich gibt es, neben den Parametereinstellungen im Kapitel~\ref{cha:parameter}, feste Schnittpunkte für das \emph{two point crossover} beim genetischen Operator (siehe~\ref{genetische_operatoren:sec}).\\
+Als Vergleich wurde das bekannte Verfahren \cite{Butz2000} fast unverändert übernommen. Der wesentliche Unterschied ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Außerdem, wie schon in Kapitel~\ref{exploreexploit:sec} erwähnt, soll die Qualität des Algorithmus nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird. Schließlich gibt es, neben den Parametereinstellungen im Kapitel~\ref{cha:parameter}, feste Schnittpunkte für das \emph{two point crossover} beim genetischen Operator (siehe~\ref{genetische_operatoren:sec}).\\
 
 \begin{program}
   \begin{verbatim}
@@ -186,40 +186,7 @@ Als Vergleich wurde das bekannte Verfahren \cite{Butz2000} fast unverändert über
 
 \section{XCS Variante für Überwachungsszenarien (SXCS)}
 
-
-
-
-
-Im einfachsten Fall, im sogenannten ``Single-Step''-Verfahren erfolgt die Regelbewertung sofort nach Aufruf jeder einzelnen Regel, während im sogenannten ``Multi-Step''-Verfahren mehrere aufeinanderfolgende Regeln bewertet werden. Ein klassisches Beispiel für den Test ``Single-Step''-Verfahren ist das 6-Multiplexer Problem (z.B. in ~\cite{Butz2006}), bei dem mit 2 Adressbits und 4 Datenbits das den Adressbits entsprechende ausgegeben werden soll. Hier ist offensichtlich, dass nach der Klassifizierung sofort bestimmbar ist, ob sie ein korrektes Ergebnis geliefert hat.\\
-Ein klassisches Beispiel für ``Multi-Step''-Verfahren ist das ``Maze~\(N\)'' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird die zuletzt aktivierte Regel positiv bewertet und das Problem wiederholt. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung der folgenden Regel. Somit wird eine ganze Kette von Regeln bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind.\\
-
-Eine wesentliche Erweiterung des LCS ist das sogenannte ``accuracy-based classifier system XCS'', zuerst beschrieben in \cite{Wilson1995}. Neben neuer  Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich der Anwendung des GA) ist im Vergleich zum einfachen LCS der wesentliche Unterschied, auf welche Weise der \emph{fitness} Wert berechnet wird. Während  \emph{fitness} bei einfachen LCS lediglich entweder auf dem \emph{prediction error} basierten, basiert bei XCS \emph{fitness} auf der Genauigkeit der jeweiligen Regel. Eine genaue Beschreibung findet sich in~\cite{Butz2006}.\\
-
-Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des Multistep-Verfahrens von~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in ~\cite{Butz}), eine Besonderheit stellt allerdings die Problemdefinition dar, da es kein festes Ziel gibt und somit auch keinen Neustart des Problems.\\
-Keine der gefundenen Implementationen und Varianten von XCS beschäftigen sich mit dynamischen Überwachungsszenarios, sondern mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}). Insbesondere zeigen Ergebnisse aus der Literatur, dass XCS in der Standardimplementierung Schwierigkeiten mit Problemen mit größerer Schrittzahl zwischen Start und Ziel hat \cite{Barry} \cite{Banzhaf} und bisherige Arbeiten sich auf einfache Probleme konzentrierten \cite{xcs1} \cite{xcs2}.\\
-
-TODO \cite{Butz2005} gradient descent 
-
-
-Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf  auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama}, also einer übergeordneten Organisationseinheit bzw. globaler Regeln oder globalem Regeltausch zwischen den Agenten, basieren.\\
-Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll.\\
-Vielversprechend war der Titel der Arbeit~\cite{Lujan}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels Reward-Funktion bewertet werden, da es globale Information gab, was das Problem deutlich vereinfacht und es mit dem Gegenstand dieser Arbeit kaum vergleichbar macht.\\
-
-Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{Hiroyashu} vorgestellt, bei der der \emph{reward} unter den (zwei) Agenten aufgeteilt wurde. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in~\ref{communication:cha} diskutiert.\\
-
-Im XCS-Multistepverfahren läuft ein Problem so lange bis ein positiver Reward aufgetreten ist und startet dann das Szenario neu. Bei einem Überwachungsszenario mit kontinuierlichem Reward ist das Multistepverfahren nicht anwendbar, das Szenario kann nicht neu gestartet werden, da sich die Agenten während des Laufs anpassen sollen. Ziel ist hier ja nicht, einen bestimmten Weg zu einem festen Ziel zu finden (wie z.B. bei WOODS TODO), sondern eine bestimmte Regelmenge zu erlernen, mit der eine möglichst gute, dauerhafte Überwachung stattfinden kann. 
-
-In der hier verwendeten Implementierung läuft das Problem deshalb einfach weiter. Wesentlicher Unterschied zu XCS wird deshalb die Behandlung des Rewards sein.
-
-TODO Einordnen, evtl raus
-Es gibt desweiteren eine Arbeit über Szenarien mit kontinuierlichen Umgebungen \cite{Lanzi}. Damit ist gemeint, dass es keine diskreten FElder gibt.
-
-
-
-
-
-Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets} über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{prediction} Wert) für die \emph{classifier} gefunden werden.\\
-TODO Quelle?
+Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets} über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{reward prediction} Wert) für die \emph{classifier} gefunden werden.\\
 Bei der veränderten XCS Variante SXCS soll die Verbindung zwischen den \emph{actionSets} zusätzlich direkt durch die zeitliche Nähe zum Ziel gegeben sein. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
 \(r(a)\) bezeichnet den \emph{reward} Wert für das \emph{actionSet} mit Alter \(a\).
 
@@ -250,14 +217,14 @@ In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal b
 \label{positive_negative_reward:fig}
 \end{figure}
 
-\section{Ereignisse}\label{sec:events}
+\subsection{Ereignisse}\label{sec:events}
 
-TODO
+TODO Anpassen!
 In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
 
 Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe ~(\ref{saved_rewards:fig})).
 
-Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. W\"ahlen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe ~(\ref{neutral_reward:fig})). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
+Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. Wählen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe ~(\ref{neutral_reward:fig})). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
 Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. ``maxStackSize'' stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
 
 \begin{figure}[H]
@@ -288,6 +255,10 @@ Ein Ereignis tritt auf, wenn:
 \caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
 \label{neutral_reward:fig}
 \end{figure}
+
+\subsection{Implementierung von SXCS}\label{sxcs_implementation:sec}
+
+TODO Erläuterung
 
 \begin{program}
   \begin{verbatim}
@@ -437,7 +408,7 @@ Ein Ereignis tritt auf, wenn:
 
 
 
-\section{Zielobjekt mit SXCS}
+\subsection{Zielobjekt mit SXCS}
 
 Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von SXCS für das Zielobjekt diskutiert werden. Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{bewertung:sec}) ist die Implementierung für das Zielobjekt identisch. Die abgeänderte Version ist in Programm~\ref{goal_checkRewardPoints:fig} aufgelistet.
 
