@@ -114,7 +114,7 @@ Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig} mit 
 
 
 
-\section{Parameter \emph{reward prediction init} $p_{i}$}\label{sec:prediction_init}
+\section{Parameter \emph{reward prediction init} $p_{i}$}\label{prediction_init:sec}
 
 In der Literatur werden Werte nahe Null bzw. 1\% von \(\rho\) als Initialisierung für den \emph{reward prediction} Wert eines \emph{classifiers} angegeben. Im in dieser Arbeit untersuchten Fall, bei dem die Agenten nur begrenzte Sensorfähigkeiten besitzen, sich auf einem Torus frei bewegen können und keine festen Pfade suchen müssen, ist zu erwarten, dass sich die \emph{reward prediction} Werte der einzelnen \emph{classifier} untereinander wenig unterscheiden, während sie beispielsweise bei statischen Szenarien gegen feste, stark unterschiedliche Werte konvergieren. Beispielsweise im Einführungsbeispiel in Abbildung~\ref{simple_scenario_multistep:fig} würden die \emph{reward prediction} Werte der \emph{classifier} b), c), e) und g) eher gegen 1 und die der restlichen \emph{classifier} gegen 0 streben.\\
 Welchen Wert man für \(p_{i}\) nun als Durchschnittswert wählt, hängt vom jeweiligen Szenario ab. Beispielsweise würde ein Überwachungsszenario auf einem sehr größeren Torus mit relativ wenigen Agenten würde zu einem niedrigeren Durchschnittswert für die \emph{reward prediction} Variable führen und umgekehrt.\\
@@ -206,7 +206,7 @@ Mutation probability \(\mu\) & \(0.05\) & [0.01-0.05]\\
 Prediction error reduction & 0.25 & [0.25]\\
 Fitness reduction & \(0.1\) & [0.1]\\
 
-Reward prediction init \(p_{i}\) & \textbf{0.5, 1.0} (siehe~\ref{sec:prediction_init}) & [\(\sim\) 0]\\
+Reward prediction init \(p_{i}\) & \textbf{0.5, 1.0} (siehe~\ref{prediction_init:sec}) & [\(\sim\) 0]\\
 Prediction error init \(\epsilon_{i}\) & 0.0 & [0.0]\\
 Fitness init \(F_{i}\) & \(0.01\) &  [0.01]\\
 Condition vector & \textbf{zufällig} (siehe Kapitel~\ref{sec:random_init}) &  [zufällig oder leer]\\
