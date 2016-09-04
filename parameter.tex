@@ -13,7 +13,7 @@ Der Wert von \emph{max population N} bezeichnet die maximalen Größe der \emph{cl
 \centerline{	
 \includegraphics{neuerstellte_classifier_maxpop.eps}
 }
-\caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (Säulenszenario)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden} (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS)}
+\caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (Säulenszenario)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS)}
 \label{neuerstellte_classifier_maxpop:fig}
 \end{figure}
 
@@ -23,7 +23,7 @@ Bei der Wahl eines geeigneten Werts spielen außerdem die Konvergenzgeschwindigke
 \centerline{	
 \includegraphics{neuerstellte_classifier_maxpop_empty.eps}
 }
-\caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (leeres Szenario)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden} (leeres Szenario ohne Hindernisse, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS)}
+\caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (leeres Szenario)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (leeres Szenario ohne Hindernisse, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS)}
 \label{neuerstellte_classifier_maxpop_empty:fig}
 \end{figure}
 
@@ -56,28 +56,6 @@ Die Tests liefen auf einem T7500, 2.2 GHz in einem einzelnen Thread. Als Verglei
 }
 \caption[Verhältnis Laufzeit zu \emph{max population N} (leeres Szenario)] {Darstellung der Auswirkung des Parameters \emph{max population N} auf das Verhältnis der Laufzeit zu \(N\) im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus}
 \label{linear_pop_time:fig}
-\end{figure}
-
-
-\section{Maximalwert \emph{reward}}\label{sec:maximalwert_rho}
-
-TODO
-Der Wert der bei der Bewertung als \emph{reward} vergeben wird hat lediglich ästhetische Auswirkungen und wurde auf \(1.0\) gesetzt. In der Standardimplementation von XCS (siehe Abbildung~\ref{multistep_calc_reward:fig}) ist der maximale \emph{reward} äquivalent mit dem Maximalwert von \(\rho\), da das Problem bei jedem positiven \emph{reward} Wert neugestartet wird, also entweder der \emph{reward} Wert aus dem letzten Schritt also immer \(0\) ist oder \emph{maxPrediction} auf \(0\) gesetzt wurde, und \(\rho = \) \emph{reward} \(+~\gamma \) \emph{maxPrediction} gilt.\\
-
-In den hier vorgestellten XCS Varianten wird dagegen der \emph{reward} Wert absteigend, zusammen mit dem \emph{maxPrediction} Wert, an frühere \emph{actionSet} Listen verteilt, \(\rho\) kann also größer als \(1.0\) werden. In diesem Bereich ist noch Bedarf an theoretischer Forschung, in Tests haben sich Werte bis \(3.0\) ergeben, welche aber vom jeweiligen Szenario abhängen. Wird das Zielobjekt (z.B. wegen Hindernissen oder großen Torusdimensionen) eher selten gesehen, fällt der Wert geringer aus.\\
-
-
-\section{Parameter \emph{accuracy equality} $\epsilon_{0}$}
-
-TODO 
-Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der \emph{subsummation} Funktion und der Berechnung des \emph{accuracy} Werts von Bedeutung. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete \emph{reward} annehmen kann. Aufgrund der Überlegungen in~\ref{sec:maximalwert_rho} wird \(\epsilon_{0}\) für die neuen XCS Varianten auf \(0.02\) gesetzt, während es für die Standardimplementation von XCS auf \(0.01\) gesetzt wird. Ein Testdurchlauf auf dem Säulenszenario (siehe Abbildung~\ref{pillar_epsilon0:fig}) ergibt aber, dass der Parameter keine besondere Auswirkung hat, weshalb der Wert auf \(0.01\) belassen wird.
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{pillar_epsilon0.eps}
-}
-\caption[Auswirkung des Parameters \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität (Säulenszenario)] {Auswirkung des Parameters  \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus}
-\label{pillar_epsilon0:fig}
 \end{figure}
 
 
@@ -154,49 +132,49 @@ TODO Standardverfahren?
 
 Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt~(\cite{Butz2006}), bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälligen \emph{action} Werten und \emph{condition} Vektoren gefüllt wird. Dort wird aber auch angemerkt, dass beide Varianten in ihrer Qualität sich nur minimal unterscheiden.\\
 
-Tests für das Überwachungsszenario haben gezeigt (siehe Tabelle~\ref{table:lcs_initialization}), dass dadurch minimal bessere Ergebnisse erzielt werden, allerdings nur in Szenarien mit ausreichender Schrittzahl (\(>100\)). Dies lässt sich darauf zurückführen, dass  anfänglich gefüllte \emph{classifier set} Listen die \emph{matchSet} Listen relativ groß lassen werden, somit die Auswirkungen anfänglichen Lernens geringer ausfallen und sich die Agenten eher wie sich zufällig bewegende Agenten verhalten. Da hier durchgeführten Tests über 500 bzw. 2000 Schritte laufen, sollen somit die \emph{classifier set} Listen mit zufällig generierten \emph{classifiers} gefüllt werden.\\
-
-Außerdem hat eine Analyse der sich am Schluss ergebenen \emph{classifier set} Listen ergeben, dass sich dort in bestimmten Szenarien eine ganze Reihe von \emph{classifier} mit einem \emph{experience} Wert von 0 befinden. Eine genauere Betrachtung des \emph{condition} Vektors zeigte den Grund dafür, die dort beschriebene Situation konnte in dem Szenario nicht auftreten (z.B. im schwierigen Szenario eine Situation ohne Hindernisse in Sicht). Tritt die Situation nie auf, kann der \emph{classifier} auch keine Erfahrung gewinnen und wird mangels ausreichend hohem \emph{experience} Wert auch nicht bei der Löschung berücksichtigt, der \emph{classifier} bleibt also für immer im \emph{classifier set}. Um dieses Problem in Verbindung mit der zufälligen Initialisierung zu umgehen, sollen alle
-TODO nein
+Tests für das Überwachungsszenario haben gezeigt (siehe Tabelle~\ref{table:lcs_initialization}), dass dadurch sowohl für den XCS Algorithmus als auch für den SXCS Algorithmus minimal bessere Ergebnisse erzielt werden. Voraussetzung hierfür ist selbstverständlich ein Szenario mit ausreichender Schrittzahl (\(>100\)), da anfänglich gefüllte \emph{classifier set} Listen die \emph{matchSet} Listen relativ groß lassen werden, somit die Auswirkungen anfänglichen Lernens geringer ausfallen und sich die Agenten zu Beginn eher wie sich zufällig bewegende Agenten verhalten. Da hier durchgeführten Tests über 500 bzw. 2000 Schritte laufen, sollen somit die \emph{classifier set} Listen mit zufällig generierten \emph{classifiers} gefüllt werden.\\
 
 \begin{table}[ht]
-\caption{Vergleichende Tests für den den Start mit und ohne zufällig gefüllten \emph{classifier set} Listen}
+\caption{Vergleichende Tests für den den Start mit und ohne zufällig gefüllten \emph{classifier set} Listen (Säulenszenario, 8 Agenten)}
 \centering
-\begin{tabular}{c c c c c}
+\begin{tabular}{c c c}
 \hline
-Algorithmus & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
+Algorithmus & Schrittzahl & Qualität \\ [0.5ex]
 \hline
-Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
-Multistep & 8 & 500 & 60.64\% & 61.54\% \\
-LCS & 8 & 500 & 60.64\% & 61.54\% \\
-NewLCS & 8 & 500 & 60.64\% & 61.54\% \\
-Zufälliges Szenario  & 8 & 500 & 60.64\% & 61.54\% \\
-Säulenszenario & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+Zufälliger Agent &  500 & 61.54\% \\
+Zufälliger Agent & 2000 & 61.54\% \\[1ex]
+\hline
+Beginn mit leerem \emph{classifier set} \\ [0.5ex]
+\hline
+XCS & & \\
+SXCS & & \\ [0.5ex]
 
-LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+XCS  & & \\
+SXCS & &  \\ [0.5ex]
 
-Zufälliger Agent & 12 & 500 & 76.03\% & 76.59\% \\
-Einfacher Agent & 12 & 500 & 67.30\% & 96.86\% \\
-Intelligenter Agent & 12 & 500 & 86.85\% & 95.08\% \\ [0.5ex]
+\hline
+Beginn mit zufällig gefülltem \emph{classifier set} \\ [0.5ex]
+\hline
 
-LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+XCS & &  \\
+SXCS & & \\ [0.5ex]
 
-LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
+XCS & &  \\
+SXCS & & \\ [0.5ex]
 \hline
 \end{tabular}
 \label{table:lcs_initialization}
 \end{table}
 
 
+
+\section{Parameter \emph{accuracy equality} $\epsilon_{0}$}\label{epsilon0:sec}
+
+Der Parameter \(\epsilon_{0}\) gibt an, unter welchem \emph{reward prediction error} Wert ein \emph{classifier} als exakt gilt (und als \emph{subsumer} auftreten kann, siehe Kapitel~\ref{subsummation:sec}) und wie stark dieser Wert in die Berechnung der \emph{fitness} einfliesst. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts des \emph{base reward} Werts (\(\rho\)) gesetzt werden soll, welcher beliebig wählbar ist und lediglich ästhetische Auswirkungen hat. Somit wird dieser auf \(1.0\) gesetzt und \(\epsilon_{0}\) auf \(0,01\).
+
+
 \section{Übersicht über alle Parameterwerte}
+
 \begin{table}[ht]
 \caption{Verwendete Parameter (soweit nicht anders angegeben) und Standardparameter, TODO englisch/deutsch}
 \centering
@@ -205,11 +183,11 @@ LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
 Parameter & Wert & Standardwert (siehe~\cite{butz01algorithmic})\\ [0.5ex]
 \hline
 Max population \(N\) & \textbf{128} (siehe Kapitel~\ref{sec:max_population_parameter})\\
-Max value \(\rho\) & \textbf{1.0} (siehe Kapitel~\ref{sec:maximalwert_rho}) & [10000]\\
+Max value \(\rho\) & \textbf{1.0} (siehe Kapitel~\ref{epsilon0:sec}) & [10000]\\
 Fraction mean fitness \(\delta\) & 0.1 & [0.1]\\
 Deletion threshold \(\theta_{\mathrm{del}}\) & 20.0 & [\(\sim\) 20.0]\\
 Subsumption threshold \(\theta_{\mathrm{sub}}\) & 20.0 & [20.0+]\\
-Covering \(\#\) probability \(P_{\#}\) & 0.5 & [\(\sim\) 0.33]\\
+Covering \(\#\) probability \(P_{\#}\) & 0.33 & [\(\sim\) 0.33]\\
 GAthreshold \(\theta_{\mathrm{GA}}\) & 25.0 & [25-50]\\
 Mutation probability \(\mu\) & \(0.05\) & [0.01-0.05]\\
 Prediction error reduction & 0.25 & [0.25]\\
@@ -222,7 +200,7 @@ Condition vector & \textbf{zufällig} (siehe Kapitel~\ref{sec:random_init}) &  [z
 Numerosity & 1 & [1]\\
 Experience & 0 & [0]\\
 
-Accuracy equality \(\epsilon_{0}\) & \textbf{0.05} & [\emph{1\% des größten Werts}]\\
+Accuracy equality \(\epsilon_{0}\) & \textbf{0.01} (siehe Kapitel~\ref{epsilon0:sec}) & [\emph{1\% des größten Werts}]\\
 Accuracy calculation \(\alpha\) & 0.1 & [0.1]\\
 Accuracy power \(\nu\) & 5.0 & [5.0]\\
 Reward prediction discount \(\gamma\) & 0.71 & [0.71]\\
