@@ -1,4 +1,4 @@
-\chapter{XCS Parameter}\label{cha:parameter}
+\chapter{Beschreibung und Analyse der XCS Parameter}\label{cha:parameter}
 
 Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen weitgehend den Vorschlägen in~\cite{butz01algorithmic} ("`Commonly Used Parameter Settings"'). Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. Im Folgenden sollen Parameter besprochen werden, die entweder in der Empfehlung offen gelassen sind, also klar vom jeweiligen Szenario abhängen, und solche, bei denen von der Empfehlung abgewichen wurde.\\
 Mitunter führen andere Parametereinstellungen auch zu wesentlich besseren Ergebnissen. Dies muss man aber vorsichtig bewerten, wenn die erreichte Qualität unter der des zufälligen Algorithmus liegt, da eine Auswirkung sein kann, dass der Algorithmus nicht besser lernt, sondern sich umgekehrt eher wie der zufällige Algorithmus verhält. Ein Vergleich mit der Qualität des zufälligen Algorithmus wird deswegen jeweils immer angegeben.\\
@@ -7,14 +7,32 @@ Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parame
 
 \section{Parameter \emph{max population N}}\label{sec:max_population_parameter}
 
-Der Wert von \emph{max population N} bezeichnet die maximalen Größe der \emph{classifier set} Liste. Bei der Wahl eines geeigneten Werts spielt insbesondere die Laufzeit eine Rolle. Für den Overhead (d.h. die Zeit, die 8 Agenten mit zufälliger Bewegung benötigen) ergab sich eine mittlere Laufzeit von \(1,67\)s pro Experiment bei 500 Schritten (bzw. \(6,50\)s bei 2000 Schritten), was die anfängliche Stagnierung bis \(N = 32\) erklärt. Zieht man diesen von den Messwerten (siehe Abbildung~\ref{empty_grid_time_maxpop:fig}) ab, erhält man im betrachteten Wertebereich einen nahezu linearen Verlauf (siehe~\ref{linear_pop_time:fig}, ab \(N > 128\)). Der fallende Verlauf bis 128 erklärt sich durch den Overhead des XCS Algorithmus selbst.\\
+Der Wert von \emph{max population N} bezeichnet die maximalen Größe der \emph{classifier set} Liste. Nach~\cite{butz01algorithmic} sollte \(N\) so groß gewählt werden, dass \emph{covering} nur zu Beginn eines Durchlaufs stattfindet, also die Anzahl der neuerstellten \emph{classifier} gegen Null geht. In Abbildung~\ref{neuerstellte_classifier_maxpop:fig} ist dies für das angegebene Szenario ab einer Populationsgröße von 256 erfüllt. Der niedrigere Wert bei größeren Populationsgrößen erklärt sich dadurch, dass wie in~\ref{sec:random_init} mit einem vorinitialisierten \emph{classifier set} begonnen wird.
 
-Größere Werte für \(N\) erlauben eine bessere Anpassung, da weniger \emph{classifier} während eines Laufs gelöscht werden müssen und mehr Plätze zur Speicherung der Erfahrungen zur Verfügung steht. Auf der anderen Seite werden mehr Schritte benötigt um die für die jeweiligen \emph{classifier} ausreichend Erfahrung zu sammeln (siehe Abbildung~\ref{empty_grid_quality_maxpop:fig}) und, wie oben demonstriert, auch eine längere Laufzeit.\\
-Ein zu kleiner Wert erhöht dagegen die Konkurrenz zwischen den \emph{classifier}, da einzelne \emph{classifier} mit höherer Wahrscheinlichkeit von besseren \emph{classifier} verdrängt und somit gelöscht werden.\\
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{neuerstellte_classifier_maxpop.eps}
+}
+\caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (Säulenszenario)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden} (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS)}
+\label{neuerstellte_classifier_maxpop:fig}
+\end{figure}
+
+Bei der Wahl eines geeigneten Werts spielen außerdem die Konvergenzgeschwindigkeit und die Laufzeit eine Rolle. Einen allgemein besten Wert für \(N\) gibt es nicht, denn er hängt insbesondere von der durch das Szenario und der durch die Länge des \emph{condition} Vektors gegebenen Möglichkeiten ab, also wieviele \emph{classifier} mit verschiedenen \emph{condition} Vektoren und verschiedenem \emph{action} Wert in der \emph{covering} Funktion konstruiert werden können. Würde man beispielsweise weitere Zielobjekte auf das Feld setzen, könnten eine Reihe weiterer Situationen auftreten, beispielsweise könnten Zielobjekte in Sicht in zwei unterschiedlichen Richtungen auftauchen. Selbiges gilt für das Szenario ohne Hindernisse, hier fällt eine ganze Anzahl von Möglichkeiten heraus, was man in Abbildung~\ref{neuerstellte_classifier_maxpop_empty:fig} als Vergleich sehen kann....  Letztlich weiß der Agent nicht, in was für einem Szenario er sich befindet, also wie groß die Menge der \emph{classifier} ist, die das Problem abdecken. Die Lösung wäre eine Populationsgröße \(N\) die sich flexibel anpasst, dieser Ansatz soll aber hier nicht weiter untersucht werden, stattdessen soll erst ein Blick auf die Laufzeit geworfen werden.\\
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{neuerstellte_classifier_maxpop_empty.eps}
+}
+\caption[Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden (leeres Szenario)]{Auswirkung der maximalen Populationsgröße auf die Anzahl der \emph{classifier} die durch \emph{covering} neuerstellt werden} (leeres Szenario ohne Hindernisse, Zielobjekt mit einfacher Richtungsänderung, 8 Agenten mit SXCS)}
+\label{neuerstellte_classifier_maxpop_empty:fig}
+\end{figure}
+
+Für den Overhead (d.h. die Zeit, die 8 Agenten mit zufälliger Bewegung benötigen) ergab sich eine mittlere Laufzeit von \(1,67\)s pro Experiment bei 500 Schritten (bzw. \(6,50\)s bei 2000 Schritten), was die anfängliche Stagnation bis \(N = 32\) erklärt. Zieht man diesen von den Messwerten (siehe Abbildung~\ref{empty_grid_time_maxpop:fig}) ab, erhält man im betrachteten Wertebereich einen nahezu linearen Verlauf (siehe Abbildung~\ref{linear_pop_time:fig}, ab \(N > 128\)). Der fallende Verlauf bis 128 erklärt sich durch den Overhead des XCS Algorithmus selbst.\\
+
+Da also die wichtigsten \emph{classifier} mit Populationsgröße 256 (bzw. 128 im leeren Szenario) bereits abgedeckt sind, führt eine Erhöhung der Populationsgröße nur zu einer Erhöhung der Laufzeit. Da den Agenten das Szenario unbekannt ist, soll für alle Szenarien der selbe Wert benutzt werden soll. Alles in allem scheint somit \(N = 256\) die schnellste Parametereinstellung zu sein, die gleichzeitig auch ausreichend Platz für \emph{classifier} für die Abdeckung der Möglichkeiten der betrachteten Szenarien bietet.\\
 
 Die Tests liefen auf einem T7500, 2.2 GHz in einem einzelnen Thread. Als Vergleich hierzu wurde auch der Einfluss der Kartengröße auf die Laufzeit betrachtet, wie in Abbildung~\ref{time_map_size_correlation:fig} zu sehen, ist der Einfluss auf die Laufzeit im getesteten Bereich (256 - 1024) ohne Bedeutung.\\
 
-In den Tests wird somit \textbf{\(N = 128\)} gesetzt, was als ausreichender Kompromiss zwischen den erwähnten Faktoren erscheint.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -41,15 +59,6 @@ In den Tests wird somit \textbf{\(N = 128\)} gesetzt, was als ausreichender Komp
 \end{figure}
 
 
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{empty_grid_quality_maxpop.eps}
-}
-\caption[Auswirkung des Parameters \emph{max population N} auf Qualität (leeres Szenario)] {Darstellung der Auswirkung des Parameters \emph{max population N} auf die Qualität im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus}
-\label{empty_grid_quality_maxpop:fig}
-\end{figure}
-
-
 \section{Maximalwert \emph{reward}}\label{sec:maximalwert_rho}
 
 TODO
@@ -61,7 +70,7 @@ In den hier vorgestellten XCS Varianten wird dagegen der \emph{reward} Wert abst
 \section{Parameter \emph{accuracy equality} $\epsilon_{0}$}
 
 TODO 
-Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der \emph{subsummation} Funktion und der Berechnung des \emph{accuracy} Werts von Bedeutung. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete Reward annehmen kann. Aufgrund der Überlegungen in~\ref{sec:maximalwert_rho} wird \(\epsilon_{0}\) für die neuen XCS Varianten auf \(0.02\) gesetzt, während es für die Standardimplementation von XCS auf \(0.01\) gesetzt wird. Ein Testdurchlauf auf dem Säulenszenario (siehe Abbildung~\ref{pillar_epsilon0:fig}) ergibt aber, dass der Parameter keine besondere Auswirkung hat, weshalb der Wert auf \(0.01\) belassen wird.
+Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der \emph{subsummation} Funktion und der Berechnung des \emph{accuracy} Werts von Bedeutung. In der Literatur~\cite{butz01algorithmic} wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete \emph{reward} annehmen kann. Aufgrund der Überlegungen in~\ref{sec:maximalwert_rho} wird \(\epsilon_{0}\) für die neuen XCS Varianten auf \(0.02\) gesetzt, während es für die Standardimplementation von XCS auf \(0.01\) gesetzt wird. Ein Testdurchlauf auf dem Säulenszenario (siehe Abbildung~\ref{pillar_epsilon0:fig}) ergibt aber, dass der Parameter keine besondere Auswirkung hat, weshalb der Wert auf \(0.01\) belassen wird.
 
 \begin{figure}[htbp]
 \centerline{	

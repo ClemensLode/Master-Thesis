@@ -1,52 +1,25 @@
-\chapter{Ablauf der Simulation}\
-TODO
-TODO auf Agenten bzw. Szenario Bezug nehmen
-\section{Hauptschleife}
+\section{Bestimmung der Qualität eines Algorithmus}\label{qualitaet:sec}
 
-In der Hauptschleife (siehe Programm~\ref{mainExperiment:pro}) wird ein Experiment mit vorgegebener Konfiguration ("`\emph{Configuration}"') TODO durchgeführt. Dabei werden eine Anzahl von Problemen abgearbeitet, bei denen jeweils der Torus auf den Startzustand gesetzt, das eigentliche Problem berechnet und ein neuer \emph{random seed} Wert gesetzt werden.
+Die Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen (d.h. das Zielobjekt innerhalb einer Distanz von höchstens \emph{reward range} halten) konnte, relativ zur Gesamtzeit.\\
+Die Qualität eines Algorithmus zu einer Anzahl von Problemen (also einem Experiment) wird Anhand des Gesamtanteil der Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.\\
+Die Qualität eines Algorithmus entspricht dem Durchschnitt der Qualitäten des Algorithmus mehrerer Experimente.\\
+Die Halbzeitqualität eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit.\\
+Die Halbzeitqualität eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit aller Probleme.\\
+Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeitqualitäten des Algorithmus mehrerer Experimente.\\
+Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus ermöglicht einen Einblick, wie gut sich der Algorithmus verhält, nachdem er sich auf das Problem bereits eine Zeit lang einstellen konnte.\\
 
+\section{Ablauf der Simulation}\label{reihenfolge:sec}
 
-\newlisting{Zentrale Schleife für einzelne Experimente}{mainExperiment:pro}
-/**
- * Führt eine Anzahl von Problemen aus
- * @param experiment_nr Nummer des auszuführenden Experiments
- */
-  public void doOneMultiStepExperiment(int experiment_nr) {
-    int currentTimestep = 0;
+Die Simulation selbst läuft in ineinander geschachtelten Schleifen ab. Jede Konfiguration (in den abgedruckten Programmen jeweils über die globale Variable \emph{Configuration} angesprochen) wird über eine Reihe von Experimenten getestet (10 soweit nicht anders angegeben). Für einen Test wird die Funktion \emph{doOneMultiStepExperiment()} (siehe Programm~\ref{mainExperiment:pro}) mit der aktuellen Nummer des Experiments als Parameter aufgerufen. In der Funktion wird ein neuer \emph{random seed} Wert initialisierung, der Torus auf den Startzustand gesetzt und schließlich das eigentliche Problem mit der Funktion \emph{doOneMultiStepProblem()} aufgerufen, welche in Programm~\ref{mainProblem:pro} abgebildet ist. Dort werden in einer Schleife alle Schritte durchlaufen und jeweils die Objekte abgearbeitet.\\
 
-  /**
-   * number of problems for the same population
-   */
-    for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
-
-    /**
-     * Erstellt einen neuen Torus und verteilt Agenten und 
-     *   das Zielobjekt neu
-     */
-      BaseAgent.grid.resetState();
-
-    /**
-     * Führe Problem aus und aktualisiere aktuellen Zeitschritt
-     */
-      currentTimestep = doOneMultiStepProblem(currentTimestep);
-
-    /**
-     * Initialisiere neuen "Random Seed" Wert
-     */
-      Misc.initSeed(Configuration.getRandomSeed() + 
-        experiment_nr * Configuration.getNumberOfProblems() + 1 + i);
-    }
-  }
-\end{lstlisting}
+In welcher Reihenfolge dies geschieht, soll im Folgenden geklärt werden. Zusammenfassend ist zu sagen, dass zuerst die aktuelle Qualität und die aktuellen Sensordaten bestimmt werden. Daraus ermittelt jeder Agent die Bewertung für den letzten Schritt und bestimmt eine neue Aktion. Haben Agenten und das Zielobjekt diese Schritte abgeschlossen, werden ihre ermittelten Aktionen in zufälliger Reihenfolge ausgeführt.\\
 
 
-\section{Reihenfolge der Ausführung (\emph{doOneMultiStepProblem()})}\label{reihenfolge:sec}
+Bei der Berechnung eines einzelnen Problems in der Funktion \emph{doOneMultiStepProblem()} stellt sich die Frage nach der Genauigkeit und der Reihenfolge der Abarbeitung, da die Simulation nicht parallel, sondern schrittweise auf einem diskreten Torus abläuft. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
 
-TODO vielleicht erst noch eine allgemeine Übersicht geben
-TODO besser
-Für die Berechnung eines einzelnen Problems ("`\emph{doOneMultiStepProblem()}"') stellt sich die Frage nach der Genauigkeit und der Reihenfolge der Abarbeitung, da die Simulation nicht parallel, sondern schrittweise auf einem diskreten Torus abläuft. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
-Da eine Aktion auf Basis der Sensordaten ausgewählt wird, ist die erste Restriktion, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss. Und da Aktionen bewertet werden sollen, also jeweils der Zustand nach der Bewegung mit dem gewünschten Zustand verglichen werden soll, ist die zweite Restriktion, dass die Bewertung einer Aktion nach dessen Ausführung stattfinden muss.\\
-Ansonsten ergeben sich folgende Möglichkeiten:
+Da eine Aktion auf Basis der Sensordaten ausgewählt wird, ist die erste Restriktion, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss. Da außerdem Aktionen bewertet werden sollen, also jeweils der Zustand nach der Bewegung mit dem gewünschten Zustand verglichen werden soll, ist die zweite Restriktion, dass die Bewertung einer Aktion nach dessen Ausführung stattfinden muss.\\
+
+Unter diesen Voraussetzungen ergeben sich folgende zwei Möglichkeiten:
 
 \begin{enumerate}
 \item Für alle Agenten werden erst einmal die neuen Sensordaten erfasst und sich für eine Aktion entschieden. Sind alle Agenten abgearbeitet, werden die Aktionen ausgeführt.
@@ -54,18 +27,26 @@ Ansonsten ergeben sich folgende Möglichkeiten:
 \end{enumerate}
 
 Bei der ersten Möglichkeit haben alle Agenten die Sensordaten vom Beginn der Zeiteinheit, während bei der zweiten Möglichkeit später verarbeitete Agenten bereits die Aktionen der bereits berechneten Agenten miteinbeziehen können. Umgekehrt können dann frühere Agenten bessere Positionen früher besetzen. Da aufgrund der primitiven Sensoren nicht davon auszugehen ist, dass Agenten beginnende Bewegungen (und somit deren jeweilige Zielposition) anderer Agenten einbeziehen können, soll jeder Agent von den Sensorinformationen zu Beginn der Zeiteinheit ausgehen.\\
+
 Wenn sich mehrere Agenten auf dasselbe Feld bewegen wollen, dann spielt die Reihenfolge der Ausführung der Aktionen eine Rolle. Wird die Liste der Agenten einfach linear abgearbeitet, können Agenten mit niedriger Position in der Liste die Aktion auf Basis jüngerer Sensordaten fällen. Dies kann dazu führen, dass Aktionen von Agenten mit höherer Position in der Liste eher fehlschlagen, da das als frei angenommene Feld nun bereits besetzt ist. Da es keinen Grund gibt, Agenten mit niedrigerer Position zu bevorteilen, werden die Aktionen der Agenten in zufälliger Reihenfolge abgearbeitet.\\
-Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von maximal einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann (siehe auch Kapitel~\ref{zielobjekt:sec}).
+
+Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann (siehe auch Kapitel~\ref{zielobjekt:sec}).\\
+
 Die Entscheidung fiel hier auf eine zufällige Verteilung. Kann sich das Zielobjekt um \(n\) Schritte bewegen, so wird seine Bewegung in \(n\) Einzelschritte unterteilt, die nacheinander mit zufälligen Abständen (d.h. Bewegungen anderer Agenten) ausgeführt werden.\\
+
 Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingeführt werden, sodass das Zielobjekt in einer Zeiteinheit mehrmals (\(n\)-mal) neue Sensordaten erfassen und sich für eine neue Aktion entscheiden kann.
 
 
-\section{Messung der Qualität}\label{qualitaetsmessung:sec}
+
+\subsection{Messung der Qualität}\label{qualitaetsmessung:sec}
+
 TODO welche zwei Fragen?
 Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da die Agenten und das Zielobjekt in einem Durchlauf gemeinsam nacheinander bewegt werden, stellt sich die Frage nicht, ob womöglich vor der Bewegung des Zielobjekts die Qualität gemessen werden sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
 Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Torus anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn man vom realistischen Fall ausgeht, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
 
-\section{Reihenfolge der Ermittlung des \emph{base reward}}
+
+\subsection{Reihenfolge der Ermittlung des \emph{base reward}}
+TODO
 
 Keine der bisher vorgestellten Varianten machen Gebrauch von einem sogenannten \emph{base reward}, d.h.  TODO
 
@@ -83,7 +64,8 @@ Für den Reward ergeben sich somit folgende Möglichkeiten:
 Werden die \emph{reward} Werte sofort ermittelt (Punkt 1), dann bezieht sich der Wert auf die veralteten Sensordaten vor der Aktion, die Aktion selbst würde bei der Ermittlung des \emph{reward} Werts also ignoriert werden. Bei Punkt 2 müsste man bis zum neuen Zeitschritt warten, bis neue Sensordaten ermittelt wurden.
 
 
-\section{Zusammenfassung}
+\subsection{Zusammenfassung des Simulationsablaufs}
+
 Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also wie folgt aus:
 
 \begin{figure}[H]
@@ -99,10 +81,43 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 \centerline{\fbox{\box0}}
 \end{figure}
 
-\section{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
 
-In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird, in einer weiteren Schleife über die Anzahl der maximalen Schritte, die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha} was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
+\subsection{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
 
+In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird in einer weiteren Schleife über die Anzahl der maximalen Schritte die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich werden die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha}, was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
+
+\newlisting{Zentrale Schleife für einzelne Experimente}{mainExperiment:pro}
+/**
+ * Führt eine Anzahl von Problemen aus
+ * @param experiment_nr Nummer des auszuführenden Experiments
+ */
+  public void doOneMultiStepExperiment(int experiment_nr) {
+    int currentTimestep = 0;
+
+  /**
+   * number of problems for the same population
+   */
+    for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
+
+    /**
+     * Initialisierung des neuen "Random Seed" Wert
+     */
+      Misc.initSeed(Configuration.getRandomSeed() + 
+        experiment_nr * Configuration.getNumberOfProblems() + i);
+
+    /**
+     * Erstellt einen neuen Torus und verteilt Agenten und 
+     *   das Zielobjekt neu
+     */
+      BaseAgent.grid.resetState();
+
+    /**
+     * Führe Problem aus und aktualisiere aktuellen Zeitschritt
+     */
+      currentTimestep = doOneMultiStepProblem(currentTimestep);
+    }
+  }
+\end{lstlisting}
 
 \newlisting{Zentrale Schleife für einzelne Probleme}{mainProblem:pro}
 /**

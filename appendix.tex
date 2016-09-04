@@ -1,9 +1,602 @@
-\begin{appendix}
-\chapter{Statistical significance tests}
-\label{app1:cha}
-This is the first appendix
-
-
 \chapter{Implementation}
-The second appendix...
+
+\section{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
+
+In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird in einer weiteren Schleife über die Anzahl der maximalen Schritte die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich werden die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha}, was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
+
+\newlisting{Zentrale Schleife für einzelne Experimente}{mainExperiment:pro}
+/**
+ * Führt eine Anzahl von Problemen aus
+ * @param experiment_nr Nummer des auszuführenden Experiments
+ */
+  public void doOneMultiStepExperiment(int experiment_nr) {
+    int currentTimestep = 0;
+
+  /**
+   * number of problems for the same population
+   */
+    for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
+
+    /**
+     * Initialisierung des neuen "Random Seed" Wert
+     */
+      Misc.initSeed(Configuration.getRandomSeed() + 
+        experiment_nr * Configuration.getNumberOfProblems() + i);
+
+    /**
+     * Erstellt einen neuen Torus und verteilt Agenten und 
+     *   das Zielobjekt neu
+     */
+      BaseAgent.grid.resetState();
+
+    /**
+     * Führe Problem aus und aktualisiere aktuellen Zeitschritt
+     */
+      currentTimestep = doOneMultiStepProblem(currentTimestep);
+    }
+  }
+\end{lstlisting}
+
+\newlisting{Zentrale Schleife für einzelne Probleme}{mainProblem:pro}
+/**
+ * Führt eine Anzahl von Schritten auf dem aktuellen Torus aus
+ * @param stepCounter Aktuelle Zeitschritt
+ * @return Der Zeitschritt nach der Ausführung
+ */
+  private int doOneMultiStepProblem(int stepCounter) {
+  /**
+   * Zeitpunkt bis zu dem das Problem ausgeführt wird
+   */
+    int steps_next_problem = 
+      Configuration.getNumberOfSteps() + stepCounter;    
+    for (int currentTimestep = stepCounter; 
+         currentTimestep < steps_next_problem; currentTimestep++) {
+
+    /**
+     * Ermittle die Sichtbarkeit und erhebe Statistiken
+     */
+      BaseAgent.grid.updateSight();
+      BaseAgent.grid.updateStatistics(currentTimestep);
+
+    /**
+     * Ermittle neue Sensordaten und berechne Aktionen der Agenten
+     */
+      calculateAgents(currentTimestep);
+
+    /**
+     * Ermittle den Reward für alle Agenten (nach dem ersten Schritt)
+     */
+      if(currentTimestep > stepCounter) {
+        rewardAgents(currentTimestep);
+      }
+
+    /**
+     * Führe zuvor berechnete Aktionen aus
+     */
+      moveAgents();
+    }
+
+    /**
+     * Abschließende Ermittlung des Rewards
+     */
+    BaseAgent.grid.updateSight();
+    rewardAgents(steps_next_problem);
+    return steps_next_problem;
+  }
+\end{lstlisting}
+
+
+
+\newlisting{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainCalculate:pro}
+/**
+ * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
+ * @param gaTimestep der aktuelle Zeitschritt
+ */
+  private void calculateAgents(final long gaTimestep) {
+
+  /**
+   * Ermittle Sensordaten und bestimme nächste Bewegung
+   */
+    for(BaseAgent a : agentList) {
+      a.aquireNewSensorData();
+      a.calculateNextMove(gaTimestep);
+    }
+    BaseAgent.goalAgent.aquireNewSensorData();
+    BaseAgent.goalAgent.calculateNextMove(gaTimestep);
+  }
+\end{lstlisting}
+
+
+
+\newlisting{Zentrale Bearbeitung (Verteilung des Rewards) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainReward:pro}
+/**
+ * Verteilt den Reward an alle Agenten
+ */
+  private void rewardAgents(final long gaTimestep) {
+    for(BaseAgent a : agentList) {
+      a.calculateReward(gaTimestep);
+    }
+    BaseAgent.goalAgent.calculateReward(gaTimestep);
+  }
+\end{lstlisting}
+
+
+
+\newlisting{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainMove:pro}
+/**
+ * Führt die berechnete Bewegungen der Agenten in zufälliger Reihenfolge aus
+ */
+  private void moveAgents(long gaTimestep) {
+  /**
+   * Erstelle Ausführungsliste für alle Objekte (Zielobjekt mehrfach)
+   */
+    int goal_speed = Configuration.getGoalAgentMovementSpeed();
+    ArrayList<BaseAgent> random_list = 
+      new ArrayList<BaseAgent>(agentList.size() + goal_speed);
+
+    random_list.addAll(agentList);
+    for(int i = 0; i < goal_speed; i++) {
+      random_list.add(BaseAgent.goalAgent);
+    }
+
+  /**
+   * Führe die ermittelten Aktionen in zufälliger Reihenfolge aus
+   *   (Zielobjekt kann mehrfach ausgeführt werden).
+   */
+    int[] array = Misc.getRandomArray(random_list.size());
+    for(int i = 0; i < array.length; i++) {
+      BaseAgent a = random_list.get(array[i]);
+      a.doNextMove();
+      if(a.isGoalAgent() && goal_speed > 1) {
+        goal_speed--;
+        a.aquireNewSensorData();
+        a.calculateNextMove(gaTimestep);
+        a.calculateReward(gaTimestep);
+      }
+    }
+  }
+\end{lstlisting}
+
+
+\clearpage
+
+\section{Implementierung XCS Multistepverfahrens }
+
+\newlisting{Erstes Kernstück des Standard XCS Multistepverfahrens (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_reward:pro}
+/**
+ * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
+ * reward zu bestimmen, den besten Wert der ermittelten match set Liste
+ * weiterzugeben und, bei aktuell positivem reward, die aktuelle
+ * action set Liste zu belohnen.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateReward(final long gaTimestep) {
+  /**
+   * checkRewardPoints liefert "wahr" wenn sich das Zielobjekt in
+   * Überwachungsreichweite befindet
+   */
+    boolean reward = checkRewardPoints();
+
+    if(prevActionSet != null){
+      collectReward(lastReward, lastMatchSet.getBestValue(), false);
+      prevActionSet.evolutionaryAlgorithm(classifierSet, gaTimestep);
+    }
+
+    if(reward) {
+      collectReward(reward, 0.0, true);
+      lastActionSet.evolutionaryAlgorithm(classifierSet, gaTimestep);
+      prevActionSet = null;
+      return;
+    }
+    prevActionSet = lastActionSet;
+    lastReward = reward;
+  }
+\end{lstlisting}
+
+
+\newlisting{Zweites Kernstück des Multistepverfahrens (\emph{collectReward()} - Verteilung des Rewards auf die \emph{action set} Listen), angepasst an ein dynamisches Überwachungsszenario}{multistep_collect_reward:pro}
+/**
+ * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
+ * zugehörigen action set Listen weiter.
+ *
+ * @param reward Wahr wenn das Zielobjekt in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen action set Listen
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
+ *        einem positiven Reward, aufgerufen wurde
+ */
+
+  public void collectReward(boolean reward, 
+                double best_value, boolean is_event) {
+    double corrected_reward = reward ? 1.0 : 0.0;
+
+  /**
+   * Falls der Reward von einem Ereignis rührt, aktualisiere die 
+   * aktuelle action set Liste und lösche das vorherige
+   */
+    if(is_event) {
+      if(lastActionSet != null) {
+        lastActionSet.updateReward(corrected_reward, best_value, factor);
+        prevActionSet = null;
+      }
+    } 
+
+  /**
+   * Kein Ereignis, also nur die letzte action set Liste aktualisieren
+   */
+    else 
+    {
+      if(prevActionSet != null) {
+        prevActionSet.updateReward(corrected_reward, best_value, factor);
+      }
+    }
+  }
+\end{lstlisting}
+
+
+
+\newlisting{Drittes Kernstück des Multistepverfahrens (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung der zugehörigen action set Liste), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_move:pro}
+/**
+ * Bestimmt die zum letzten bekannten Status passenden Classifier und
+ * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
+ * ActionClassifierSet mithilfe der gewählten Aktion ermittelt.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateNextMove(long gaTimestep) {
+
+ /**
+  * Überdecke das classifierSet mit zum Status passenden Classifiern
+  * welche insgesamt alle möglichen Aktionen abdecken.
+  */
+    classifierSet.coverAllValidActions(
+                    lastState, getPosition(), gaTimestep);
+
+ /**
+  * Bestimme alle zum Status passenden Classifier.
+  */
+    lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
+
+ /**
+  * Entscheide auf welche Weise die Aktion ausgewählt werden soll.
+  */
+    lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
+                                           lastExplore, gaTimestep);
+
+ /**
+  * Wähle Aktion und bestimme zugehörige action set Liste
+  */
+    calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
+    lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
+                                                      calculatedAction);
+  }
+\end{lstlisting}
+
+\clearpage
+
+\section{Implementierung des SXCS Verfahrens}
+
+\newlisting{Erstes Kernstück des SXCS-Algorithmus (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten)}{sxcs_calc_reward:pro}
+/**
+ * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
+ * reward zu bestimmen und positive, negative und neutrale Ereignisse 
+ * den besten Wert der ermittelten match set Liste weiterzugeben und, bei 
+ * aktuell positivem reward, die aktuelle action set Liste zu belohnen.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateReward(final long gaTimestep) {
+  /**
+   * checkRewardPoints liefert "wahr" wenn sich der Zielobjekt in
+   * Überwachungsreichweite befindet
+   */
+    boolean reward = checkRewardPoints();
+
+    if (reward != lastReward) {
+      int start_index = historicActionSet.size() - 1;
+      collectReward(start_index, actionSetSize, reward, 1.0, true);
+      actionSetSize = 0;
+    }
+    else 
+
+    if(actionSetSize >= Configuration.getMaxStackSize())
+    {
+      int start_index = Configuration.getMaxStackSize() / 2;
+      int length = actionSetSize - start_index;
+      collectReward(start_index, length, reward, 1.0, false);
+      actionSetSize = start_index;
+    }
+
+    lastReward = reward;
+  }
+\end{lstlisting}
+
+
+
+
+\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des reward auf die action set Listen)}{sxcs_collect_reward:pro}
+/**
+ * Diese Funktion verarbeitet den übergebenen reward und gibt ihn an die
+ * zugehörigen action set Listen weiter.
+ *
+ * @param reward Wahr wenn der Zielobjekt in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen action set Listen
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
+ *        einem positiven reward, aufgerufen wurde
+ */
+
+  public void collectReward(
+                boolean reward, double best_value, boolean is_event) {
+    double corrected_reward = reward ? 1.0 : 0.0;
+  /**
+   * Wenn es kein Event ist, dann gebe den Reward weiter wie beim 
+   * Multistepverfahren
+   */
+    double max_prediction = is_event ? 0.0 : 
+      historicActionSet.get(start_index+1).getMatchSet().getBestValue();
+
+  /**
+   * Aktualisiere eine ganze Anzahl von action set Listen
+   */
+    for(int i = 0; i < action_set_size; i++) {
+
+  /**
+   * Benutze aufsteigenden bzw. absteigenden Reward bei einem positiven 
+   * bzw. negativen Ereignis
+   */
+      if(is_event) {
+        corrected_reward = reward ? 
+          calculateReward(i, action_set_size) : 
+          calculateReward(action_set_size - i, action_set_size);
+      }
+  /**
+   * Aktualisiere die action set Liste mit dem bestimmten reward und
+   * gebe bei allen anderen action set Listen den reward weiter wie 
+   * beim Multistepverfahren 
+   */
+      ActionClassifierSet action_classifier_set = 
+        historicActionSet.get(start_index - i);
+      action_classifier_set.updateReward(
+        corrected_reward, max_prediction, factor);
+
+      max_prediction = 
+        action_classifier_set.getMatchSet().getBestValue();
+    }
+  }
+\end{lstlisting}
+
+
+
+\newlisting{Drittes Kernstück des SXCS-Algorithmus DSXCS (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung der zugehörigen \emph{action set} Liste)}{sxcs_calc_move:pro}
+/**
+ * Bestimmt die zum letzten bekannten Status passenden classifier und
+ * wählt aus dieser Menge eine Aktion. Außerdem wird die aktuelle 
+ * action set Liste mithilfe der gewählten Aktion ermittelt.
+ * Im Vergleich zum originalen multi step Verfahren wird am Schluss noch 
+ * die ermittelte action set Liste gespeichert.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateNextMove(long gaTimestep) {
+
+ /**
+  * Überdecke das classifierSet mit zum Status passenden Classifiern
+  * welche insgesamt alle möglichen Aktionen abdecken.
+  */
+    classifierSet.coverAllValidActions(
+                    lastState, getPosition(), gaTimestep);
+
+ /**
+  * Bestimme alle zum Status passenden classifier.
+  */
+    lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
+
+ /**
+  * Entscheide auf welche Weise die Aktion ausgewählt werden soll,
+  * wähle Aktion und bestimme zugehöriges action set Liste
+  */
+    lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
+                                           lastExplore, gaTimestep);
+
+    calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
+    lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
+                                                      calculatedAction);
+
+ /**
+  * Speichere die action set Liste und passe den Stack bei einem Überlauf an
+  */
+    actionSetSize++;
+    historicActionSet.addLast(lastActionSet);
+    if (historicActionSet.size() > Configuration.getMaxStackSize()) {
+      historicActionSet.removeFirst();
+    }
+  }
+\end{lstlisting}
+
+\clearpage
+
+\section{Implementation des DSXCS Algorithmus}
+
+\newlisting{Zweites Kernstück des verzögerten SXCS Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}{collect_reward_dsxcs:pro}
+/**
+ * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
+ * zugehörigen action sets weiter. Wesentlicher Unterschied zum SXCS 
+ * Algorithmus ist, dass der maxPrediction Wert erst bei der endgültigen 
+ * Verarbeitung des historicActionSets ermittelt wird.
+ *
+ * @param reward Wahr wenn das Zielobjekt in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen action sets
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
+ *        einem positiven Reward, aufgerufen wurde
+ */
+
+  public void collectReward(
+                boolean reward, double best_value, boolean is_event) {
+    double corrected_reward = reward ? 1.0 : 0.0;
+
+  /**
+   * Aktualisiere eine ganze Anzahl von Einträgen im historicActionSet
+   */
+     for(int i = 0; i < action_set_size; i++) {
+
+  /**
+   * Benutze aufsteigenden bzw. absteigenden reward bei einem positiven 
+   * bzw. negativen Ereignis
+   */
+       if(is_event) {
+         corrected_reward = reward ? 
+           calculateReward(i, action_set_size) : 
+           calculateReward(action_set_size - i, action_set_size);
+       } else {
+         if(corrected_reward == 1.0 && factor == 1.0) {
+           historicActionSet.get(start_index - i).
+             rewardPrematurely(
+               historicActionSet.get(start_index - i + 1).getBestValue());
+         }
+       }
+
+  /**
+   * Füge den ermittelten Reward zum historicActionSet
+   */
+       historicActionSet.get(start_index - i).
+         addReward(corrected_reward, factor);
+
+    }
+  }
+\end{lstlisting}
+
+
+\newlisting{Auszug aus dem dritten Kernstück des verzögerten SXCS-Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
+
+/**
+ * Der erste Teil der Funktion ist identisch mit dem calculateNextMove
+ * der SXCS Variante ohne Kommunikation. Der Zusatz ist, dass beim 
+ * Überlauf die im HistoricActionSet gespeicherte Rewards verarbeitet
+ * werden
+ */
+
+  public void calculateNextMove(long gaTimestep) {
+ 
+  // ... 
+
+  /**
+   * HistoryActionSet voll? Dann verarbeite den dort gespeicherten Reward
+   */
+     if (historicActionSet.size() > Configuration.getMaxStackSize()) {
+      HistoryActionClassifierSet first = historicActionSet.pop();
+      last.processReward(historicActionSet.getFirst().getBestValue());
+    }
+  }
+\end{lstlisting}
+
+
+\newlisting{Viertes Kernstück des verzögerten SXCS-Algorithmus DSXCS  (Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs1:pro}
+/**
+ * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
+ * eingegangenen Rewards bis zu diesem Punkt.
+ */
+
+  public void processReward(double max_prediction) {
+
+  /**
+   * Finde das größte reward / factor Paar TODO Verbessern
+   */
+    for(RewardHelper r : reward) {
+    /**
+     * Dieser Eintrag wurde schon in collectReward() verwertet
+     */
+      if(r.reward == 1.0 && r.factor == 1.0) {
+        continue;
+      }
+    /**
+     * Aktualisiere den Eintrag mit den entsprechenden Werten und dem
+     * übergebenen maxPrediction Wert
+     */
+      actionClassifierSet.updateReward(r.reward, max_prediction, r.factor);
+    }
+  }
+\end{lstlisting}
+
+
+\newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS-Algorithmus DSXCS (Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs2:pro}
+/**
+ * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
+ * eingegangenen Rewards bis zu diesem Punkt.
+ */
+
+  public void processReward(double max_prediction) {
+
+    double max_value = 0.0;
+    double max_reward = 0.0;
+  /**
+   * Finde das größte reward / factor Paar TODO Verbessern
+   */
+    for(RewardHelper r : reward) {
+    /**
+     * Dieser Eintrag wurde schon in collectReward() verwertet
+     */
+      if(r.reward == 1.0 && r.factor == 1.0) {
+        return;
+      }
+      
+      if(r.reward * r.factor > max_value) {
+        max_value = r.reward * r.factor;
+        max_reward = r.reward;
+      }
+    }
+    /**
+     * Aktualisiere den Eintrag mit dem ermittelten Wert und dem
+     * übergebenen maxPrediction Wert
+     */
+    actionClassifierSet.updateReward(max_reward, max_prediction, 1.0);
+  }
+\end{lstlisting}
+
+\clearpage
+
+
+\section{Implementation des egoistischen \emph{reward}}
+
+\newlisting{"'Egoistische Relation"', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem Verhalten des Agenten gegenüber anderen Agenten}{egoistic_relationship:pro}
+    /**
+     * Relation of this classifier set (the active agent classifier set,
+     * e.g. the set that received a reward) to another classifier set
+     * @param other The other set we want to compare with
+     * @return degree of relationship (0.0 - 1.0)
+     */
+    public double checkEgoisticDegreeOfRelationship(
+                    final MainClassifierSet other) {
+        double ego_factor = 
+                 getEgoisticFactor() - other.getEgoisticFactor();
+        if(ego_factor == 0.0) {
+            return 0.0;
+        }
+        return 1.0 - ego_factor * ego_factor;
+    }
+
+    public double getEgoisticFactor() throws Exception {
+        double factor = 0.0;
+        double pred_sum = 0.0;
+        for(Classifier c : getClassifiers()) {
+            if(!c.isPossibleSubsumer()) {
+                continue;
+            }
+            factor += c.getEgoFactor();
+            pred_sum += c.getFitness() * c.getPrediction();
+        }
+        if(pred_sum > 0.0) {
+            factor /= pred_sum;
+        } else {
+            factor = 0.0;
+        }
+        return factor;
+    }
+\end{lstlisting}
+
+
+
 \end{appendix}
