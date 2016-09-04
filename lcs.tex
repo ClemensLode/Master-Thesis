@@ -8,8 +8,8 @@ Ein XCS ist ein regelbasiertes evolutionäres Lernsystem, das im Wesentlichen aus
 \begin{enumerate}
 \item Einer Menge an Regeln, sogenannte \emph{classifier} (siehe~\ref{classifier:sec}
 \item Ein Mechanismus zur Auswahl der \emph{classifier} (siehe~\ref{auswahlart:sec}
-\item Einem Mechanismus zur Evolution der \emph{classifier} (mittels genetischer Operatoren) (siehe~\ref{genetische_operatoren:sec})
-\item Eine Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning})
+\item Einem Mechanismus zur Evolution der \emph{classifier} (mittels genetischer Operatoren, siehe~\ref{genetische_operatoren:sec})
+\item Eine Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning}, siehe~\ref{bewertung:sec})
 \end{enumerate}
 
 Während die ersten drei Punkten bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei Punkte näher betrachtet werden.
@@ -125,3 +125,28 @@ Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse 
 \end{program}
 
 TODO Vergleich!
+
+\section{Bewertung}\label{bewertung:sec}
+\begin{program}
+  \begin{verbatim}
+/**
+ * @return true Falls das Zielobjekt von diesem Agenten überwacht wird
+ *   und kein anderer Agent in dieser Richtung in 
+ *   Überwachungsreichweite steht
+ */
+  public boolean checkRewardPoints() {
+    boolean[] sensor_agent = lastState.getSensorAgent();
+    boolean[] sensor_goal = lastState.getSensorGoal();
+ 
+    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+      if((sensor_goal[2*i]) && (!sensor_agent[2*i+1])) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+\end{verbatim}
+\label{checkRewardPoints:fig}
+  \caption{Bestimmung des ``base rewards'' für Agenten}
+\end{program}

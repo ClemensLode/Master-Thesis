@@ -14,7 +14,7 @@ Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht
 
 
 
-\section{Ablauf eines LCS}\label{ablauf_lcs:sec}
+\section{Ablauf eines XCS}\label{ablauf_lcs:sec}
 
 \begin{enumerate}
 \item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe~\ref{covering:sec})
@@ -93,7 +93,7 @@ TODO
    * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
    * Überwachungsreichweite befindet
    */
-    boolean reward = grid.isGoalAgentInRewardRange(this);
+    boolean reward = checkRewardPoints();
 
     if(prevActionSet != null){
       collectReward(lastReward, lastMatchSet.getBestValue(), false);
@@ -320,7 +320,7 @@ Ein Ereignis tritt auf, wenn:
    * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
    * Überwachungsreichweite befindet
    */
-    boolean reward = grid.isGoalAgentInRewardRange(this);
+    boolean reward = checkRewardPoints();
 
     if (reward != lastReward) {
       int start_index = historicActionSet.size() - 1;
@@ -447,4 +447,29 @@ Ein Ereignis tritt auf, wenn:
   }
 \end{verbatim}
   \caption{Drittes Kernstück des SXCS-Algorithmus (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}
+\end{program}
+
+\section{Zielobjekt mit SXCS}
+
+Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von SXCS für das Zielobjekt diskutiert werden. Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{bewertung:sec}) ist die Implementierung für das Zielobjekt identisch. Die abgeänderte Version ist in Programm~\ref{goal_checkRewardPoints:fig} aufgelistet.
+
+\begin{program}
+  \begin{verbatim}
+    /**
+     * @return true Falls das Zielobjekt von keinem Agenten überwacht wird
+     */
+    @Override
+    public boolean checkRewardPoints() {
+      boolean[] sensor_agent = lastState.getSensorAgent();
+
+      for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+        if(sensor_agent[2*i+1]) {
+          return false;
+        }
+      }
+
+      return true;
+    }    \end{verbatim}
+  \label{goal_checkRewardPoints:fig}
+  \caption{Bestimmung des ``base rewards'' für Agenten}
 \end{program}

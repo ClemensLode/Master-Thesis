@@ -2,6 +2,8 @@
 
 In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des ``zufälligen Algorithmus''~\ref{randomized_movement:sec}, des Algorithmus mit ``einfacher Heuristik''~\ref{simple_heuristik:sec} und des Algorithmus mit ``intelligenter Heuristik''~\ref{intelligent_heuristik:sec} angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.
 
+TODO: Ziel: Schwere Szenarien finden
+
 \section{Statistische Merkmale}
 
 Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen, die Zahl der Zeitschritte wird somit auf 500 festgesetzt. Außerdem sollen in den Statistiken die Werte jeweils über einen Lauf von 10 Experimenten mit jeweils 10 Problemen ermittelt und gemittelt werden. Alle Werte sind auf 2 Stellen nach dem Komma gerundet. TODO
@@ -100,6 +102,31 @@ TODO
 Wesentlicher Punkt bei beiden Bewegungstypen (siehe~\ref{random_neighbor:sec},~\ref{direction_change:sec}) ist, dass der jetzige Ort des Zielobjekts maximal zwei Felder (die Standardgeschwindigkeit des Zielobjekts in den Tests) vom Ort in der vorangegangenen Zeiteinheit entfernt ist. Somit ist ein lokales Einfangen eher von Relevanz, wenn auch das Zielobjekt grundsätzlich schneller als andere Agenten ist.\\
 Wesentlicher Unterschied zwischen beiden Bewegungstypen ist, dass das Zielobjekt mit Bewegungstyp ``zufälliger Nachbar'' bei einer Bewegungsgeschwindigkeit von 2 mit einer Wahrscheinlichkeit von \(\frac{1}{4}\) auf das ursprüngliche Feld zurückkehrt, innerhalb eines Zeitschritts also stehenbleibt. Wie die Ergebnisse in Tabellen~\ref{table:neighbor_change_random} und ~\ref{table:neighbor_change_pillar} zeigen (TODO vielleicht noch näher darauf eingehen), ergibt sich dadurch ein leichteres Szenario. Ein mitunter stehenbleibender Agent kann mittels Heuristiken leichter überwacht werden, während es keine signifikante Veränderung bei der zufälligen Bewegung ergibt. In weiteren Tests soll deswegen immer nur die Bewegungsform ``Einfache Richtungsänderung'' getestet werden.
 
+TODO table:neighbor_change_no_obstacles
+
+\begin{table}[ht]
+\caption{Vergleich ``Zufälliger Nachbar'' und ``Einfache Richtungsänderung'' (12 Agenten, ohne Hindernisse)}
+\centering
+\begin{tabular}{c c c c}
+\hline\hline
+Algorithmus & Blockierte Bewegungen & Abdeckung & Qualität \\ [1ex]
+\hline
+``Zufälliger Nachbar'' \\ [1ex]
+\hline
+Zufällige Bewegung     &  4.26\% & 69.41\% & 45.75\% \\
+Einfache Heuristik     &  8.24\% & 61.77\% & 80.32\% \\
+Intelligente Heuristik &  5.20\% & 70.09\% & 84.20\% \\ [1ex]
+\hline
+``Einfache Richtungsänderung'' \\ [1ex]
+\hline
+Zufällige Bewegung     &  4.23\% & 69.63\% & 48.79\% \\
+Einfache Heuristik     &  7.20\% & 62.71\% & 69.78\% \\
+Intelligente Heuristik &  4.07\% & 71.24\% & 74.53\% \\ [1ex]
+\hline
+\end{tabular}
+\label{table:neighbor_change_no_obstacles}
+\end{table}
+
 \begin{table}[ht]
 \caption{Vergleich ``Zufälliger Nachbar'' und ``Einfache Richtungsänderung'' (12 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
 \centering
@@ -146,12 +173,13 @@ Intelligente Heuristik &  6.90\% & 68.75\% & 81.28\% \\ [1ex]
 \label{table:neighbor_change_pillar}
 \end{table}
 
-TODOvielleicht noch leeres Szenario ohne Hindernisse
 
 \section{``Intelligent Open'' und ``Intelligent Hide''}
 
 \ref{table:intelligent_open_hide_random}
 \ref{table:intelligent_open_hide_pillar}
+
+TODO: Erläuterung!
 
 \begin{table}[ht]
 \caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (12 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
@@ -162,15 +190,15 @@ Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
 ``Intelligent Open'' \\ [1ex]
 \hline
-Zufällige Bewegung     &  5.94\% & 67.75\% & 43.37\% \\
-Einfache Heuristik     & 10.41\% & 59.85\% & 85.61\% \\
-Intelligente Heuristik &  7.82\% & 68.10\% & 88.98\% \\ [1ex]
+Zufällige Bewegung     & 57.93\% & 38.92\% \\
+Einfache Heuristik     & 53.32\% & 77.44\% \\
+Intelligente Heuristik & 57.99\% & 80.65\% \\ [1ex]
 \hline
 ``Intelligent Hide'' \\ [1ex]
 \hline
-Zufällige Bewegung     &  6.02\% & 67.60\% & 45.83\% \\
-Einfache Heuristik     &  9.54\% & 60.34\% & 76.05\% \\
-Intelligente Heuristik &  6.90\% & 68.75\% & 81.28\% \\ [1ex]
+Zufällige Bewegung     & 57.87\% & 35.75\% \\
+Einfache Heuristik     & 53.27\% & 76.25\% \\
+Intelligente Heuristik & 58.09\% & 82.27\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_random}
@@ -185,15 +213,15 @@ Algorithmus & Abdeckung & Qualität \\ [1ex]
 \hline
 ``Intelligent Open'' \\ [1ex]
 \hline
-Zufällige Bewegung     &  5.94\% & 67.75\% & 43.37\% \\
-Einfache Heuristik     & 10.41\% & 59.85\% & 85.61\% \\
-Intelligente Heuristik &  7.82\% & 68.10\% & 88.98\% \\ [1ex]
+Zufällige Bewegung     & 67.79\% & 36.27\% \\
+Einfache Heuristik     & 61.89\% & 72.40\% \\
+Intelligente Heuristik & 69.68\% & 79.06\% \\ [1ex]
 \hline
 ``Intelligent Hide'' \\ [1ex]
 \hline
-Zufällige Bewegung     &  6.02\% & 67.60\% & 45.83\% \\
-Einfache Heuristik     &  9.54\% & 60.34\% & 76.05\% \\
-Intelligente Heuristik &  6.90\% & 68.75\% & 81.28\% \\ [1ex]
+Zufällige Bewegung     & 67.60\% & 34.64\% \\
+Einfache Heuristik     & 60.34\% & 72.77\% \\
+Intelligente Heuristik & 68.75\% & 79.52\% \\ [1ex]
 \hline
 \end{tabular}
 \label{table:intelligent_open_hide_pillar}

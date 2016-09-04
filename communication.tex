@@ -2,12 +2,10 @@
 
 \section{Verzögerter Reward}
 
-Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich zusammen mit den \emph{actionSets} in einer Liste (\emph{historicActionSet} TODO Bezeichnung) gespeichert werden und in jedem Schritt immer nur die \emph{classifiers} des \emph{actionSets} des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert wird. Somit haben wir also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, z.B. größere 
-
-TODO genauer... ist doch sehr ähnlich schon zu dem was wir haben... TODO... beim anderen gibts ja auch Verzögerung!
+Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich erst einmal zusammen mit den jeweiligen \emph{actionSets} in einer Liste (\emph{historicActionSet} TODO Bezeichnung) gespeichert werden und in jedem Schritt immer nur die \emph{classifiers} des \emph{actionSets} des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert wird. Somit haben wir also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, mehrere gleichzeitig stattgefundene (aber erst verzögert eintreffende, wegen z.B. Kommunikationsschwierigkeiten) Ereignisse zusammen auszuwerten. Dies ist eine wesentliche Voraussetzung für Kommunikation zwischen den Agenten. TODO
 
 
-Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calculateRewardLCS:fig}besprochenen Funktion  bei der LCS Variante ohne verzögerten Reward.
+Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel ~\ref{calculateRewardLCS:fig}besprochenen Funktion bei der SXCS Variante ohne verzögerten Reward.
 
 \begin{program}
   \begin{verbatim}
@@ -51,7 +49,7 @@ Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calcu
     }
 
 \end{verbatim}
-  \caption{Zweites Kernstück des verzögerten LCS-Algorithmus (collectReward - Verteilung des Rewards auf die ActionSets)}
+  \caption{Zweites Kernstück des verzögerten SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}
 \end{program}
 
 \begin{program}
@@ -77,7 +75,7 @@ Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calcu
     }
   }
 \end{verbatim}
-  \caption{Auszug aus dem dritten Kernstück des verzögerten LCS-Algorithmus (calculateNextMove)}
+  \caption{Auszug aus dem dritten Kernstück des verzögerten SXCS-Algorithmus (\emph{calculateNextMove()})}
 \end{program}
 
 \begin{program}
@@ -108,304 +106,7 @@ Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calcu
     actionClassifierSet.updateReward(max, max_prediction, max_factor);
   }
 \end{verbatim}
-  \caption{Auszug aus dem vierten Kernstück des verzögerten LCS-Algorithmus (Verarbeitung des Rewards)}
+  \caption{Auszug aus dem vierten Kernstück des verzögerten SXCS-Algorithmus (Verarbeitung des Rewards, \emph{processReward()})}
 \end{program}
 
 
-TODO eigenes Kapitel Kommunikation
-\chapter{Kommunikation}\label{communication:cha}
-
-pg. 286 Zentralisierung der Daten
-
-\chapter{LCS mit Kommunikation}
-
-bibitem Miyazaki
-
-\section{Lösungen aus der Literatur}
-
-Da wir ein Multiagentensystem betrachten, stellt sich natürlich die Frage nach der Kommunikation. In der Literatur gibt es Multiagentensysteme die auf Learning Classifier Systemen aufbauen, wie z.B. TODO Literatur. 
-Alle Ansätze in der Literatur erlauben jedoch globale Kommunikation, z.T. Gibt es globale Classifier auf die alle Agenten zurückgreifen können, z.T. gibt es globale Steuerung. 
-
-\cite{Takadama} OCS, centralized control system
-
-In dieser Arbeit betrachte ich das Szenario ohne globale Steuerung oder globale Classifier, also mit der Restriktion einer begrenzten, lokalen Kommunikation.
-Geht man davon aus, dass über die Zeit hinweg jeder Agent indirekt mit jedem anderen Agenten in Kontakt treten kann, Nachrichten also mit Zeitverzögerung weitergeleitet werden können, ist eine Form der globalen, wenn auch zeitverzögerten, Kommunikation möglich. TODO 
-Eine spezielle Implementierung für diesen Fall werde ich weiter unten besprechen TODO
-
-\section{Ablauf}
-
-Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes ``externes Ereignis'' von diesen Agenten aufgefasst wird, hängt von der jeweiligen Kommunikationsvariante ab, die in ~(\ref{sec:kommunikationsvarianten}) besprochen werden.
-
-Durch eine gemeinsame Schnittstelle erhält jeder Agent den Reward zusammen mit dem Kommunikationsfaktor. Dabei ergibt sich das Problem, dass sich Rewards überschneiden können, da jeder Reward sich rückwirkend auf die vergangenen ActionClassifierSets auswirken kann. Auch können mehrere externe Rewards eintreffen als auch ein eigener lokaler Reward aufgetreten sein. Würden die Rewards nach ihrer Eingangsreihenfolge abgearbeitet werden, kann es passieren, dass das selbe ActionClassifierSet sowohl mit einem hohen als auch einem niedrigen Reward aktualisiert wird. Da das globale Ziel ist, den Zielagenten durch \emph{irgendeinen} Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein \emph{einzelner} Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
-
-Befindet sich das Ziel beispielsweise gerade in Überwachungsreichweite mehrerer Agenten und verliert ein anderer Agent das Ziel aus der Sicht, sollte der Agent (und alle anderen Agenten), der das Ziel in Sicht hat, deswegen nicht bestraft werden, da das globale Ziel ja weiterhin erfüllt wurde.
-
-
-
-\subsection{Fälle}
-
-In ~(\ref{sec:events}) wurden 4 verschiedene mögliche Situationen für einen einzelnen Agenten dargestellt. In Verbindung mit externen Rewards ergeben sich einige neue Situationen, nämlich ob sich der Zielagent in Überwachungsreichweite anderer Agenten befindet und wie dies im letzten Zeitschritt ausgesehen hat. Zusammen mit den ursprünglichen vier Möglichkeiten ergeben sich folgende 16 Möglichkeiten:
-Hier die erweiterte Übersicht, welche Arten von Events im Rahmen eines Multiagentensszenarios auftreten können:
-
-\begin{itemize}
-\item 
-\item 
-\item 
-\end{itemize}
-
-TODO nochmal überlegen...
-
-Ziel befindet sich von anderen Agenten in Sicht:
-Time-out (Ziel in Sicht)
-Time-out (Ziel nicht in Sicht)
-
-Ziel kommt in Sicht
-Ziel verschwindet aus Sicht
-
-
-Gebe keinen Reward an andere Agenten weiter. Es ist nicht relevant, ob ein Agent das Ziel aus den Augen verliert oder nicht, es ist nur relevant, ob der Zielagent weiterhin von anderen Agenten beobachtet wird.
-Ein Sonderfall ist, wenn im vorherigen Schritt der Zielagent nicht in Sichtweite eines anderen Agenten stand, also in diesem Schritt auf einmal mehrere Agenten den Zielagenten sehen können. In diesem Fall gibt nur der erste Agent den Reward weiter und setzt ein Flag.
-
-
-Ziel verschwindet aus Sicht
-War der Zielagent von keinem anderen Agenten in Sicht, dann hat sich der Zielagent hiermit aus der Sichtweite aller Agenten bewegt. Somit haben alle Agenten versagt und der negative Reward wird weitergegeben.
-
-
-
-
-
-Selbiges wenn das Ziel in Sicht kommt und von keinem anderen Agenten in Sicht ist. Die Agenten waren offensichtlich erfolgreich und können belohnt werden.
-
-TODOTODOTODOTODO
-Ist kein Event aufgetreten und leeren wir die Hälfte des Stacks ist es nicht sinnvoll, einen 0-Reward weiterzugeben, da zwangsläufig immer mehrere Agenten eine längere Zeit den Zielagenten nicht sehen, selbst wenn sie sich optimal verteilen / bewegen. TODO
-
-Dies zeigt auch der Test:
-TODO
-
-Ist kein Event aufgetreten und haben wir einen 1-Reward vorliegen, dann stellt sich die Frage, ob bereits andere Agenten diesen Reward weitergereicht haben. Befinden sich andere Agenten in Reichweite soll nur ein Agent den Reward weiterreichen.
-TODO Test
-
-
-\section{Kommunikationsvarianten}
-\label{sec:kommunikationsvarianten}
-
-Allen hier vorgestellten Kommunikationsvarianten ist gemeinsam, dass sie einen Kommunikationsfaktor berechnen, nach denen sie den externen Reward, den ihnen ein anderer Agent übermittelt hat, bewerten. Der Kommunikationsfaktor gewichtet alle Verwendungen des Parameters \(\beta\) (welcher die Lernrate bestimmt). Ein Faktor von \(1.0\) hieße, dass der externe Reward wie ein normaler Reward behandelt wird, ein Faktor von \(0.0\) hieße, dass externe Rewards deaktiviert sein sollen.
-Die Idee ist, dass unterschiedliche Agenten unterschiedlich stark am Erfolg des anderen Agenten beteiligt sind, da ohne Kommunikation jeder Agent versuchen wird, selbst den Zielagenten möglichst in die eigene Überwachungsreichweite zu bekommen, anstatt mit anderen Agenten zu kooperieren, also das Gebiet des Grids möglichst großräumig abzudecken.
-
-\subsection{No external reward}
-
-Mit dieser Variante wird der Kommunikationsfaktor fest auf \(0.0\) gesetzt und Kommunikation ist deaktiviert.
-
-\subsection{Reward all equally}
-
-Mit dieser Variante wird der Kommunikationsfaktor fest auf \(1.0\) gesetzt und es werden alle Rewards in gleicher Weise weitergegeben. Dadurch wird zwischen den Agenten nicht diskriminiert, was letztlich bedeutet, dass zwar zum einen diejenigen Agenten korrekt mit einem externen Reward belohnt werden, die sich zielführend verhalten, aber zum anderen eben auch diejenigen, die es nicht tun. Deren Classifier werden somit zu einem gewissen Grad zufällig bewertet, denn es fehlt die Verbindung zwischen Classifier und Reward.
-In Tests (TODO) haben sich dennoch in bestimmten Fällen mit ``Reward all equally'' deutlich bessere Ergebnisse gezeigt als im Fall ohne Kommunikation. Dies ist wahrscheinlich darauf zurückzuführen, dass in diesen Fällen die Kartengröße und Geschwindigkeit des Zielagenten relativ zur Sichtweite und Lerngeschwindigkeit zu groß war, die Agenten also annahmen, dass ihr Verhalten schlecht ist, weil sie den Zielagenten relativ selten in Sicht bekamen. Eine Weitergabe des Rewards an alle Agenten kann hier also zu einer Verbesserung führen, dabei ist der Punkt aber nicht, dass Informationen ausgetauscht werden, sondern, dass obiges Verhältnis zugunsten der Sichtweite gedreht wird. Für die Auswahl geeigneter Tests sollten die Szenario-Parameter also möglichst so gewählt werden, dass ``Reward all equally'' keinen signifikanten Vorteil gegenüber ``No external reward'' bringt.
-Blickt man auf diesen Sachverhalt aus einer etwas anderen Perspektive ist es auch einleuchtend. Es scheint offensichtlich, dass es relevant ist, ob das Spielfeld z.B. 100x100 oder nur 10x10 Felder groß ist, wenn es darum geht, das Verhalten über die Zeit hinweg zu bewerten. In den Algorithmus für die Kommunikation bzw. für die Rewardvergabe müsste man deshalb einen weiteren (festen) Faktor einbauen, der zu Beginn in Abhängigkeit von Größe des zu überwachenden Feldes berechnet wird. Dies soll aber nicht Teil der Arbeit werden. TODO
-
-
-
-TODO Idee:
-Verteilt man den Reward an alle Agenten mit gleichem Faktor heisst das letztlich, dass jeder Agent in jedem Zeitschritt den selben Rewardwert erhält. Dann bildet das System der Agenten im Grunde als gemeinsames System von Agenten mit gemeinsamen Sensoren und gemeinsame, ClassifierSet TODO
-
-\subsection{Simple relation}
-
-Eine dritte Implementation vergleicht die Classifier jeweils beider bei der Kommunikation beteiligten Agenten direkt. Alle Classifier des Agenten, der den Reward weitergibt, die ausreichend Erfahrung gesammelt haben und ausreichend genau ist (\emph{experience} und geringes \emph{predictionError}, Bedingung ist identisch mit \emph{isPossibleSubsumer}), werden mit einem identischen Classifier (d.h. mit gleicher \emph{condition} und gleicher \emph{action}) verglichen. Die Differenz der Produkte aus \emph{fitness} und \emph{prediction} geteilt durch den größeren \emph{prediction}-Wert der beiden Classifier stellt hier den Faktor dar. 
-
-\emph{pSet1} sei eine Teilmenge (bestehend aus  Classifiern, deren \emph{experience} größer als \emph{thetaSubsumer} und dessen \emph{predictionError} kleiner als epsilon0 ist) des ClassifierSets des Agenten, der den Reward vergibt.
-\emph{pSet2} sei die gleiche Teilmenge, allerdings des Agenten, der den Reward empfängt.
-
-Nun werden Paare identischer Classifier aus \emph{pSet1} und \emph{pSet2} gebildet. Gibt es mehrere Kandidaten für den selben Classifier aus \emph{pSet1}, wird der mit dem ähnlichsten Produkt aus \emph{fitness} und \emph{prediction} gewählt. Die Differenz zwischen den beiden Classifiern eines jeden Paares wird anhand ihres \emph{prediction}-Werts auf einen Wert zwischen \(0.0\) und \(1.0\) skaliert und aufaddiert. Die resultierende Summe wird schließlich durch die Anzahl der Paare dividiert und man erhält den Kommunikationsfaktor.
-
-Ein wesentlicher Nachteil hierbei ist natürlich, dass Classifier-Daten direkt übertragen werden müssen, was bei großer \emph{maxPopulation} u.U. einen hohen Kommunikations- und Speicheraufwand darstellt.
-
-Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Vergleiche ausführen, auch unter Einbeziehung der restlichen Classifier beider ClassifierSets, deren \emph{condition} bzw. \emph{action} nicht übereinstimmen. Beispielsweise kann man alle möglichen Zustände der Sensordaten durchgehen, die passenden Classifier beider ClassifierSets auswählen und die Wahrscheinlichkeiten für gewählte Aktionen vergleichen, was aber hinsichtlich der benötigten Rechenzeit nur für kleine Mengen von Sensordaten sinnvoll erscheint.
-
-\begin{program}
-  \begin{verbatim}
-    /**
-     * Relation of this classifier set (the active agent classifier set,
-     * e.g. the set that received a reward) to another classifier set
-     * @param other The other set we want to compare with
-     * @return degree of relationship (0.0 - 1.0)
-     */
-    public double checkDegreeOfRelationship(
-                    final MainClassifierSet other) {
-        double degree = 0.0;
-        int size = 0;
-        ArrayList<Classifier> matched = new ArrayList<Classifier>();
-
-        for (Classifier c : getClassifiers()) {
-            if(!c.isPossibleSubsumer()) {
-                continue;
-            }
-
-            Classifier cl = other.getBestIdenticalClassifier(matched, c);
-            if (cl != null) {
-                matched.add(cl);
-
-                double div = c.getPrediction();
-                if(cl.getPrediction() > div) {
-                    div = cl.getPrediction();
-                }
-                if(div != 0.0) {
-                    double difference =
-                      1.0 - Math.abs(
-                        c.getFitness() * c.getPrediction() - 
-                        cl.getFitness() * cl.getPrediction()) / div;
-                    if(difference > 1.0) {
-                        difference = 1.0;
-                    } else
-                    if(difference < 0.0) {
-                        difference = 0.0;
-                    }
-                    degree += difference;
-                }
-            }
-            size++;
-        }
-
-        if(size == 0) {
-            return 0.0;
-        }
-
-        degree /= (double)size;
-\end{verbatim}
-  \caption{``Simple relation'', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf \emph{prediction} und \emph{fitness} der ClassifierSets}
-\end{program}
-
-
-
-
-\subsection{Egoism factor}
-
-Eine weitere Variante berechnet erst einmal für jeden Agenten einen ``Egoismus-Faktor'', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, den Zielagenten in Sicht zu bekommen anstatt ein möglichst großes Gebiet abzudecken.\\
-
-Die Hypothese ist, dass Agenten mit ähnlichem Egoismus-Faktor auch einen ähnlichen Classifiersatz besitzen und der Reward nicht an alle Agenten gleichmäßig weitergegeben wird, sondern bevorzugt an ähnliche Agenten. 
-
-Damit gäbe es einen Druck in Richtung eines bestimmten Egoismus-Faktors. TODO
-
-Der Vorteil gegenüber den anderen Verfahren liegt darin, dass der Kommunikationsaufwand hier nur minimal ist, neben dem \emph{reward} muss lediglich der Egoismus Faktor übertragen und pro Zeitschritt nur einmal berechnet werden.\\
-Ein Problem dieser Variante kann sein, dass der Ansatz das Problem selbst schon löst, indem er kooperatives Verhalten belohnt, unabhängig davon, ob Kooperation für das Problem sinnvoll ist.
-
-Die Variante müsste also zum einen in 
-
-
-schlecht abschneiden TODO
-
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{reward_range.eps}
-}
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
-\label{reward_range:fig}
-\end{figure}
-
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{reward_range_egoist.eps}
-}
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
-\label{reward_range_egoist:fig}
-\end{figure}
-
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{reward_range_egoist_block.eps}
-}
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
-\label{reward_range_egoist_block:fig}
-\end{figure}
-
-
-\begin{program}
-  \begin{verbatim}
-    /**
-     * Relation of this classifier set (the active agent classifier set,
-     * e.g. the set that received a reward) to another classifier set
-     * @param other The other set we want to compare with
-     * @return degree of relationship (0.0 - 1.0)
-     */
-    public double checkEgoisticDegreeOfRelationship(
-                    final MainClassifierSet other) {
-        double ego_factor = 
-                 getEgoisticFactor() - other.getEgoisticFactor();
-        if(ego_factor == 0.0) {
-            return 0.0;
-        }
-        return 1.0 - ego_factor * ego_factor;
-    }
-
-    public double getEgoisticFactor() throws Exception {
-        double factor = 0.0;
-        double pred_sum = 0.0;
-        for(Classifier c : getClassifiers()) {
-            if(!c.isPossibleSubsumer()) {
-                continue;
-            }
-            factor += c.getEgoFactor();
-            pred_sum += c.getFitness() * c.getPrediction();
-        }
-        if(pred_sum > 0.0) {
-            factor /= pred_sum;
-        } else {
-            factor = 0.0;
-        }
-        return factor;
-    }
-\end{verbatim}
-  \caption{``Egoistic relation'', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem Verhalten des Agenten gegenüber anderen Agenten}
-\end{program}
-
-\section{Realistischer Fall mit Kommunikationsrestriktionen}
-
-Wann immer ein Reward an einen Agenten verteilt wird, kann es sinnvoll sein, diesen Reward an andere Agenten weiterzugeben. Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite stattfinden kann. Dies ist natürlich kein realistisches Szenario. Geht man jedoch davon aus, dass die Kommunikationsreichweite zumindest ausreichend groß ist um nahe Agenten zu kontaktieren, so kann man argumentieren, dass man dadurch ein Kommunikationsnetzwerk aufbauen kann, in dem jeder Agent jeden anderen Agenten - mit einer gewissen Zeitverzögerung - erreichen kann. Bei ausreichender Agentenzahl relativ zur freien Fläche fallen dadurch nur vereinzelte Agenten aus dem Netz, was der Effektivität der Agentengruppe erwartungsgemäß nur geringfügig schadet (TODO zeigen?)
-Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muss die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls Zeit benötigt.
-Im realistischen Fall ist also davon auszugehen, dass jede Kommunikation erst mit einer gewissen Verzögerung ausgeführt wird, weshalb für Kommunikation nur der zuvor besprochene verzögerte LCS Algorithmus in Frage kommt.
-
-TODO lag einführen...
-
-\section{Weitergabe des Rewards}
-
-\section{Bewertung Kommunikation:}
-
-Die Vorteile, die man durch Kommunikation erzielen kann, hängt stark durch das Szenario ab. Beispielsweise in dem Fall, bei dem zufällige Agenten bereits fast 100\% Abdeckung erreichen, also so viele Agenten auf dem Feld sind, dass der Gewinn durch Absprache minimal ist. Auch ist, weil wir nur mit Binärsensoren arbeiten, die Sensorik gestört, wenn sich sehr viele Agenten auf dem Feld befinden, weil die Sensoren sehr oft gesetzt sind und somit wenig Aussagekraft haben. Erweiterungen wie zusätzliche Sensoren die die Abstände bestimmen würde hier wahrscheinlich klarere Ergebnisse liefern.
-Umgekehrt ist der Einfluss bei sehr wenigen Agenten gering. TODO
-
-Vergleich unterschiedliche Agentenanzahl, unterschiedliche Kommunikationsmittel
-Vergleich mit LCS?
-
-\subsection{Vergleich TODO}
-
-Old LCS Agent
-New LCS Agent
-
-Multistep LCS Agent
-Dieser Algorithmus stellt eine Implementation des Standard XCS Algorithmus dar. Unterschied zur Standardimplementation ist, dass die Probleminstanz bei Erreichen des temporären Ziels (d.h. den Zielagenten in Sicht zu bekommen) nicht tatsächlich neugestartet wird.
-Events, wie bei den neuen LCS Implementationen gibt es nicht, ist das Ziel in Sicht wird Reward 1.0 weitergegeben.
-
-Single LCS Agent
-
-Mehrere LCS Agenten (``Old LCS Agent'') teilen sich ein gemeinsames ClassifierSet, das sie entsprechend updaten.
-Entspricht dem Extremfall der Kommunikation
-Sight range/Kommunikationsrange
-
-
-
-
-
-LCS Agenten schneiden auch ohne Kommunikation (bei ausreichender Anzahl von Schritten) immer besser ab als zufällige Agenten.
-
-TODOGrafiken
-
-
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{corrected_reward.eps}
-}
-\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards] {Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
-\label{corrected_reward:fig}
-\end{figure}

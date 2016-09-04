@@ -42,7 +42,9 @@ In der Hauptschleife (Programm~\ref{mainExperiment:fig}) wird ein Experiment mit
 \end{program}
 
 
-\section{Reihenfolge der Ausführung}\label{reihenfolge:sec}
+\section{Reihenfolge der Ausführung (\emph{doOneMultiStepProblem()})}\label{reihenfolge:sec}
+
+TODO vielleicht erst noch eine allgemeine Übersicht geben
 
 Für die Berechnung eines einzelnen Problems (``\emph{doOneMultiStepProblem()}'') stellt sich die Frage nach der Genauigkeit und der Reihenfolge der Abarbeitung, da die Simulation nicht parallel, sondern schrittweise auf einem diskreten Torus abläuft. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
 Da eine Aktion auf Basis der Sensordaten ausgewählt wird, ist die erste Restriktion, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss. Und da Aktionen bewertet werden sollen, also jeweils der Zustand nach der Bewegung mit dem gewünschten Zustand verglichen werden soll, ist die zweite Restriktion, dass die Bewertung einer Aktion nach dessen Ausführung stattfinden muss.\\
@@ -64,7 +66,9 @@ Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen sol
 Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und das Zielobjekt in einem Durchlauf gemeinsam nacheinander bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
 Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Torus anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn man vom realistischen Fall ausgeht, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
 
-\section{Reihenfolge der Ermittlung des \emph{reward}}
+\section{Reihenfolge der Ermittlung des \emph{base reward}}
+
+Keine der bisher vorgestellten Varianten machen Gebrauch von einem sogenannten \emph{base reward}, d.h. 
 
 Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein \emph{reward} ergeben soll. Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der Reward jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der Reward von binärer Natur ist (``Zielobjekt in Überwachungsreichweite'' oder ``Zielobjekt nicht in Überwachungsreichweite''), weshalb Zwischenzustände für den Reward, der sich aus der mehrfachen Bewegung des Zielagenten ergeben könnte, ausgeschlossen werden soll (z.B. ``War zwei von drei Schritten in der Überwachungsreichweite'' \(\Rightarrow \frac{2}{3}\) Reward). Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.\\
 
