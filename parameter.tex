@@ -7,7 +7,7 @@ Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parame
 \section{Parameter \emph{max population N}}\label{sec:max_population_parameter}
 
 Der Wert von \emph{max population} bezeichnet die maximalen Größe der \emph{classifier set} Liste. Ein größerer Wert verlängert die Laufzeit linear (siehe~\ref{empty_grid_time_maxpop:fig}), ein kleinerer Wert erhöht die Konkurrenz zwischen den \emph{classifiers}. Größere Werte erlauben eine bessere Anpassung, da weniger \emph{classifier} während eines Laufs gelöscht werden müssen und mehr Plätze zur Speicherung der Erfahrungen zur Verfügung steht. Auf der anderen Seite werden mehr Schritte benötigt um die für die jeweiligen \emph{classifier} ausreichend Erfahrung zu sammeln (siehe~\ref{empty_grid_quality_maxpop:fig}).\\
-Für den Overhead (Benutzung des zufälligen Algorithmus ohne LCS) ergab sich eine mittlere Laufzeit von \(1.77\) Sekunden pro Experiment bei 500 Schritten (bzw. \(6.65\) Sekunden bei 2000 Schritten), was die anfängliche Stagnierung bis \(N = 32\) erklärt. Die Tests liefen auf einem T7500, 2.2 GHz in einem einzelnen Thread.\\
+Für den Overhead (Benutzung des zufälligen Algorithmus ohne XCS) ergab sich eine mittlere Laufzeit von \(1.77\) Sekunden pro Experiment bei 500 Schritten (bzw. \(6.65\) Sekunden bei 2000 Schritten), was die anfängliche Stagnierung bis \(N = 32\) erklärt. Die Tests liefen auf einem T7500, 2.2 GHz in einem einzelnen Thread.\\
 In den Tests wird \textbf{\(N = 128\)} gesetzt, was als ausreichender Kompromiss zwischen den erwähnten Faktoren erscheint.
 
  und über 10 Probleme, gemittelt über 10 Experimente
@@ -52,7 +52,7 @@ Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} 
 \centerline{	
 \includegraphics{pillar_epsilon0.eps}
 }
-\caption[Auswirkung des Parameters \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität (Säulenszenario)] {Auswirkung des Parameters  \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
+\caption[Auswirkung des Parameters \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität (Säulenszenario)] {Auswirkung des Parameters  \emph{accuracy equality} $\epsilon_{0}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus}
 \label{pillar_epsilon0:fig}
 \end{figure}
 
@@ -78,7 +78,7 @@ Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig} mit 
 \centerline{	
 \includegraphics{pillar_learning_rate_quality.eps}
 }
-\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Säulenszenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
+\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf Qualität (Säulenszenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus}
 \label{pillar_learning_rate_quality:fig}
 \end{figure}
 
@@ -87,14 +87,14 @@ Vergleichende Tests (siehe Abbildung~\ref{pillar_learning_rate_quality:fig} mit 
 \section{Parameter \emph{reward prediction init} $p_{i}$}\label{sec:prediction_init}
 
 In der Literatur werden Werte nahe Null bzw. 1\% von \(\rho\) als Initialisierung für den \emph{reward prediction} Wert eines \emph{classifiers} angegeben. Wählt man einen Wert, der näher am Durchschnitt der \emph{reward prediction} Werte der \emph{classifier} liegt, die sich in den besten Lösungen am Ende eines Testdurchlaufs befinden, so ist zu erwarten, dass die Anzahl der benötigten Aktualisierungen des \emph{reward prediction} Werts geringer ausfällt, das System also schneller konvergiert. Diese Überlegung wird bestätigt durch entsprechende Tests (siehe~\ref{pillar_lcs_prediction_init_quality:fig}).\\
-Wir setzen somit für LCS den Parameter auf \(p_{i} = 0.5\).\\
+Wir setzen somit für SXCS den Parameter auf \(p_{i} = 1.0\).\\
 TODO Standardverfahren?
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{pillar_lcs_prediction_init_quality.eps}
 }
-\caption[Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf Qualität (Säulenszenario)] {Darstellung Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus}
+\caption[Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf Qualität (Säulenszenario)] {Darstellung Auswirkung des Parameters \emph{reward prediction init} $p_{i}$ auf die Qualität im Säulenszenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit SXCS Algorithmus}
 \label{pillar_lcs_prediction_init_quality:fig}
 \end{figure}
 
@@ -159,7 +159,7 @@ Mutation probability \(\mu\) & \(0.05\) & [0.01-0.05]\\
 Prediction error reduction & 0.25 & [0.25]\\
 Fitness reduction & \(0.1\) & [0.1]\\
 
-Prediction init \(p_{i}\) & \textbf{0.5} (siehe~\ref{sec:prediction_init}) & [\(\sim\) 0]\\
+Prediction init \(p_{i}\) & \textbf{0.5, 1.0} (siehe~\ref{sec:prediction_init}) & [\(\sim\) 0]\\
 Prediction error init \(\epsilon_{i}\) & 0.0 & [0.0]\\
 Fitness init \(F_{i}\) & \(0.01\) &  [0.01]\\
 Random init & \textbf{ja} & [ja oder nein]\\

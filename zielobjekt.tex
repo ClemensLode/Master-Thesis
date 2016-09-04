@@ -6,8 +6,9 @@ Die Typen von Zielobjekten werden zum einen über ihre Geschwindigkeit und zum an
 
 Im wesentlichen entspricht ein Zielobjekt einem Agenten, d.h. das Zielobjekt kann sich bewegen und besitzt Sensoren. 
 
-Gemeinsam haben alle Arten von Bewegungen des Zielobjekts, dass, wenn dem Algorithmus kein freies Feld zur Verfügung steht, ein zufälliges, freies Feld in der Nähe ausgewählt und dorthin gesprungen wird. Dies kommt einem Neustart gleich und ist notwendig um eine Verfälschung des Ergebnisses zu verhindern, das daher rühren kann, dass ein oder mehrere Agenten (zusammen mit eventuellen Hindernissen) alle vier Bewegungsrichtungen des Zielobjekts blockieren. Andererseits ist auch der Sprung eine Verfälschung, falls bei einem Durchlauf eine ganze Anzahl von Sprüngen durchgeführt worden sein, sollte man deshalb das Ergebnis verwerfen und andere Random-Seed Werte benutzen.\\
-TODO erwähnen wie oft das aufgetreten ist\\
+TODO Zusammenhang
+
+Gemeinsam haben alle Arten von Bewegungen des Zielobjekts, dass, wenn dem Algorithmus kein freies Feld zur Verfügung steht, ein zufälliges, freies Feld in der Nähe ausgewählt und dorthin gesprungen wird. Dies kommt einem Neustart gleich und ist notwendig um eine Verfälschung des Ergebnisses zu verhindern, das daher rühren kann, dass ein oder mehrere Agenten (zusammen mit eventuellen Hindernissen) alle vier Bewegungsrichtungen des Zielobjekts blockieren. Andererseits ist auch der Sprung eine Verfälschung, falls bei einem Durchlauf eine ganze Anzahl von Sprüngen durchgeführt worden sein, sollte man deshalb das Ergebnis verwerfen und z.B. andere Random-Seed Werte oder einen anderen Algorithmus benutzen. Sofern nicht anders angegeben ist die Zahl solcher Sprünge jeweils unter 0.1\% und wird ignoriert.\\
 
 Das Zielobjekt kann sich außerdem in einem Schritt u.U. mehr als um ein Feld bewegen. Festgelegt wird die Bewegungsgeschwindigkeit über das Szenario (TODO Verweis?) und kann auch gebrochene Werte annehmen, wobei der gebrochene Rest dann die Wahrscheinlichkeit angibt, einen weiteren Schritt durchzuführen. Beispielsweise würde Geschwindigkeit \(1.4\) in \(40\%\) der Fälle zu zwei Schritten und in \(60\%\) der Fälle zu einem Schritt führen. Die Auswertung der Bewegungsgeschwindigkeit ist relevant in Kapitel~\ref{reihenfolge:sec}.
 

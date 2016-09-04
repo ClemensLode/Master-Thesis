@@ -14,9 +14,6 @@ Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite s
 Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muss die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls Zeit benötigt.
 Im realistischen Fall ist also davon auszugehen, dass jede Kommunikation erst mit einer gewissen Verzögerung ausgeführt wird, weshalb für Kommunikation nur der zuvor besprochene verzögerte LCS Algorithmus in Frage kommt.
 
-TODO lag einführen...
-
-
 pg. 286 Zentralisierung der Daten
 
 TODO bei Faktorberechnung Ranking
@@ -223,27 +220,7 @@ Durch eine gemeinsame Schnittstelle erhält jeder Agent den Reward zusammen mit d
 
 Befindet sich das Ziel beispielsweise gerade in Überwachungsreichweite mehrerer Agenten und verliert ein anderer Agent das Ziel aus der Sicht, sollte der Agent (und alle anderen Agenten), der das Ziel in Sicht hat, deswegen nicht bestraft werden, da das globale Ziel ja weiterhin erfüllt wurde.
 
-
-
-\subsection{Fälle}
-
-In ~(\ref{sec:events}) wurden 4 verschiedene mögliche Situationen für einen einzelnen Agenten dargestellt. In Verbindung mit externen Rewards ergeben sich einige neue Situationen, nämlich ob sich der Zielagent in Überwachungsreichweite anderer Agenten befindet und wie dies im letzten Zeitschritt ausgesehen hat. Zusammen mit den ursprünglichen vier Möglichkeiten ergeben sich folgende 16 Möglichkeiten:
-Hier die erweiterte Übersicht, welche Arten von Events im Rahmen eines Multiagentensszenarios auftreten können:
-
-\begin{itemize}
-\item 
-\item 
-\item 
-\end{itemize}
-
-TODO nochmal überlegen...
-
-Ziel befindet sich von anderen Agenten in Sicht:
-Time-out (Ziel in Sicht)
-Time-out (Ziel nicht in Sicht)
-
-Ziel kommt in Sicht
-Ziel verschwindet aus Sicht
+TODO überlegen ob das noch Sinn macht, inwieweit das erklärt werden musws
 
 
 Gebe keinen Reward an andere Agenten weiter. Es ist nicht relevant, ob ein Agent das Ziel aus den Augen verliert oder nicht, es ist nur relevant, ob der Zielagent weiterhin von anderen Agenten beobachtet wird.
@@ -306,6 +283,7 @@ Ein wesentlicher Nachteil hierbei ist natürlich, dass Classifier-Daten direkt üb
 
 Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Vergleiche ausführen, auch unter Einbeziehung der restlichen Classifier beider ClassifierSets, deren \emph{condition} bzw. \emph{action} nicht übereinstimmen. Beispielsweise kann man alle möglichen Zustände der Sensordaten durchgehen, die passenden Classifier beider ClassifierSets auswählen und die Wahrscheinlichkeiten für gewählte Aktionen vergleichen, was aber hinsichtlich der benötigten Rechenzeit nur für kleine Mengen von Sensordaten sinnvoll erscheint.
 
+TODO Format!
 \begin{program}
   \begin{verbatim}
     /**
@@ -314,8 +292,7 @@ Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Verglei
      * @param other The other set we want to compare with
      * @return degree of relationship (0.0 - 1.0)
      */
-    public double checkDegreeOfRelationship(
-                    final MainClassifierSet other) {
+    public double checkDegreeOfRelationship(MainClassifierSet other) {
         double degree = 0.0;
         int size = 0;
         ArrayList<Classifier> matched = new ArrayList<Classifier>();
@@ -354,7 +331,8 @@ Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Verglei
             return 0.0;
         }
 
-        degree /= (double)size;
+        return degree / (double)size;
+      }
 \end{verbatim}
   \caption{``Simple relation'', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf \emph{prediction} und \emph{fitness} der ClassifierSets}
 \end{program}

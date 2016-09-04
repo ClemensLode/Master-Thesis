@@ -39,22 +39,18 @@ Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} 
 \end{enumerate}
 
 
-\subsection{matching}\label{matching:sec}
-appliedClassifierSet
+\subsection{Variable \emph{lastMatchSet}}\label{matching:sec}
 
-\subsection{actionSet}
+In der \emph{lastMatchSet} Variable werden jeweils alle \emph{classifier} gespeichert, die den letzten Sensordatenvektor erkannt haben. Sie entspricht dem \emph{predictionArray} in der originalen Implementierung von XCS, dort werden nämlich außerdem Vorberechnungen zur Auswahl des nächsten \emph{classifier} für die Bewegung durchgeführt und die Ergebnisse gespeichert.
 
-TODO Wahrscheinlichkeiten über Parameter
-TODO
+\subsection{Variable \emph{actionSet}}\label{actionSet:sec}
 
-
-
+Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt den selben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur das letzte \emph{actionSet} gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden.
 
 
 \section{Standard XCS Multistepverfahren}\label{standardxcs:sec}
 
-Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. das jeweils zugehörige \emph{actionSet}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängt. Somit wird, rückführend vom Zielpunkt, der \emph{reward} Wert schrittweise an vorgehende Aktionen verteilt, mit der Annahme, dass dann mit höherer Wahrscheinlichkeit das Ziel gefunden wird.
-TODO Quelle?\\
+Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. das jeweils zugehörige \emph{actionSet} und die dortigen \emph{classifier}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängt. Somit wird, rückführend vom letzten Schritt auf das Ziel, der \emph{reward} Wert schrittweise an vorgehende Aktionen verteilt, mit der Annahme, dass dann, durch mehrfache Wiederholung des Lernprozesses, mit dem sich dadurch ergebenen Regelsatz mit höherer Wahrscheinlichkeit das Ziel gefunden wird.\\
 
 Kern des Verfahrens ist die Vergabe des \emph{base rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an das letzte \emph{actionSet} gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an das letzte \emph{actionSet} gegeben.\\
 
@@ -186,15 +182,15 @@ Als Vergleich wurde das bekannte Verfahren \cite{Butz2000} fast unverändert über
 
 \section{XCS Variante für Überwachungsszenarien (SXCS)}
 
-Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets} über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{reward prediction} Wert) für die \emph{classifier} gefunden werden.\\
+Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde dieselbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets} über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{reward prediction} Wert) für die \emph{classifier} gefunden werden.\\
 Bei der veränderten XCS Variante SXCS soll die Verbindung zwischen den \emph{actionSets} zusätzlich direkt durch die zeitliche Nähe zum Ziel gegeben sein. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
 \(r(a)\) bezeichnet den \emph{reward} Wert für das \emph{actionSet} mit Alter \(a\).
 
 Bei linearer Vergabe des \emph{reward}:
 $$
 r(a) = \left\{ \begin{array}{rl}
-  \frac{a}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $1$} \\
-  \frac{1 - a}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $0$}
+  \frac{a}{\mathrm{size(ActionSet)}} &\mbox{, falls reward = $1$} \\
+  \frac{1 - a}{\mathrm{size(ActionSet)}} &\mbox{, falls reward = $0$}
        \end{array} \right.
 $$
 
@@ -219,7 +215,6 @@ In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal b
 
 \subsection{Ereignisse}\label{sec:events}
 
-TODO Anpassen!
 In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
 
 Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe ~(\ref{saved_rewards:fig})).
