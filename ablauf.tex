@@ -2,11 +2,7 @@
 
 \section{Hauptschleife}
 
-
-In Programm~\ref{mainExperiment:fig}
-
-TODO9
-
+In der Hauptschleife (Programm~\ref{mainExperiment:fig}) wird ein Experiment mit vorgegebener Konfiguration (``\emph{Configuration}'') durchgeführt. Dabei werden eine Anzahl von Problemen abgearbeitet, bei denen jeweils der Torus auf den Startzustand gesetzt, das eigentliche Problem berechnet und ein neuer \emph{random seed} Wert gesetzt wird.
 
 
 \begin{program}
@@ -48,32 +44,32 @@ TODO9
 
 \section{Reihenfolge der Ausführung}\label{reihenfolge:sec}
 
-Bei Simulationen am Computer stellt sich sofort die Frage nach der Genauigkeit. Die Agenten werden bei dieser Simulation nacheinander abgearbeitet und bewegen sich auf einem Torus mit diskreten Feldern. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die große Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
+Für die Berechnung eines einzelnen Problems (``\emph{doOneMultiStepProblem()}'') stellt sich die Frage nach der Genauigkeit und der Reihenfolge der Abarbeitung, da die Simulation nicht parallel, sondern schrittweise auf einem diskreten Torus abläuft. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
 Da eine Aktion auf Basis der Sensordaten ausgewählt wird, ist die erste Restriktion, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss. Und da Aktionen bewertet werden sollen, also jeweils der Zustand nach der Bewegung mit dem gewünschten Zustand verglichen werden soll, ist die zweite Restriktion, dass die Bewertung einer Aktion nach dessen Ausführung stattfinden muss.\\
 Ansonsten gibt es folgende Möglichkeiten:
-
 
 \begin{enumerate}
 \item Für alle Agenten werden erst einmal die neuen Sensordaten erfasst und sich für eine Aktion entschieden. Sind alle Agenten abgearbeitet, werden die Aktionen ausgeführt.
 \item Die Agenten werden nacheinander abgearbeitet, es werden jeweils neue Sensordaten erfasst und sich sofort für eine neue Aktion entschieden. 
 \end{enumerate}
 
-Bei der ersten Möglichkeit haben alle Agenten die Sensordaten vom Beginn der Zeiteinheit, während bei der zweiten Möglichkeit später verarbeitete Agenten bereits die Aktionen der bereits berechneten Agenten miteinbeziehen können. Umgekehrt können dann frühere Agenten bessere Positionen früher besetzen. Da aufgrund der primitiven Sensoren nicht davon auszugehen ist, dass Agenten beginnende Bewegungen (und somit deren Zielposition) anderer Agenten einbeziehen können, soll jeder Agent von den Sensorinformationen zu Beginn der Zeiteinheit ausgehen.\\
+Bei der ersten Möglichkeit haben alle Agenten die Sensordaten vom Beginn der Zeiteinheit, während bei der zweiten Möglichkeit später verarbeitete Agenten bereits die Aktionen der bereits berechneten Agenten miteinbeziehen können. Umgekehrt können dann frühere Agenten bessere Positionen früher besetzen. Da aufgrund der primitiven Sensoren nicht davon auszugehen ist, dass Agenten beginnende Bewegungen (und somit deren jeweilige Zielposition) anderer Agenten einbeziehen können, soll jeder Agent von den Sensorinformationen zu Beginn der Zeiteinheit ausgehen.\\
 Wenn sich mehrere Agenten auf dasselbe Feld bewegen wollen, dann spielt die Reihenfolge der Ausführung der Aktionen eine Rolle. Wird die Liste der Agenten einfach linear abgearbeitet, können Agenten mit niedriger Position in der Liste die Aktion auf Basis jüngerer Sensordaten fällen. Dies kann dazu führen, dass Aktionen von Agenten mit höherer Position in der Liste eher fehlschlagen, da das als frei angenommene Feld nun bereits besetzt ist. Da es keinen Grund gibt, Agenten mit niedrigerer Position zu bevorteilen, werden die Aktionen der Agenten in zufälliger Reihenfolge abgearbeitet.\\
 Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von maximal einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann.\\
-
-Auch hier habe ich mich für eine zufällige Verteilung entschieden. Kann sich das Zielobjekt um \(n\) Schritte bewegen, so wird seine Bewegung in \(n\) Einzelschritte unterteilt, die nacheinander mit zufälligen Abständen (d.h. Bewegungen anderer Agenten) ausgeführt werden.\\
+Die Entscheidung fiel hier auf eine zufällige Verteilung. Kann sich das Zielobjekt um \(n\) Schritte bewegen, so wird seine Bewegung in \(n\) Einzelschritte unterteilt, die nacheinander mit zufälligen Abständen (d.h. Bewegungen anderer Agenten) ausgeführt werden.\\
 Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingeführt werden, so dass das Zielobjekt in einer Zeiteinheit mehrmals (\(n\)-mal) neue Sensordaten erfassen und sich für eine neue Aktion entscheiden kann.
-
-TODO Begründung
 
 \section{Messung der Qualität}\label{qualitaetsmessung:sec}
 
-Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und das Zielobjekt in einem Durchlauf gemeinsam bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
-Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Grids anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn wir vom realistischen Fall ausgehen, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, den Zielobjekts insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
+Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und das Zielobjekt in einem Durchlauf gemeinsam nacheinander bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
+Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Grids anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn man vom realistischen Fall ausgeht, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
 
 \section{Reihenfolge der Rewardermittlung}
-Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein Reward ergibt. Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der Reward jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der Reward von binärer Natur ist (``Zielobjekt in Überwachungsreichweite'' oder ``Zielobjekt nicht in Überwachungsreichweite''), weshalb Zwischenzustände für den Reward, der sich aus der mehrfachen Bewegung des Zielagenten ergeben könnte, ausgeschlossen werden soll (z.B. ``War zwei von drei Schritten in der Überwachungsreichweite'' \(\Rightarrow \frac{2}{3}\) Reward). Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.\\
+Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Überwachungsreichweite ist, und wann sich somit ein \emph{reward} ergeben soll. Wesentliche Punkte hierbei sind, dass der Algorithmus sich anhand der Sensordaten selbst bewertet und pro Zeitschritt die Sensordaten nur einmal erhoben werden. Letzteres folgt aus der Auslegung von XCS, der in der Standardimplementation darauf ausgelegt ist, dass der Reward jeweils genau einer Aktion zugeordnet ist. Daraus ergibt sich auch, dass der Reward von binärer Natur ist (``Zielobjekt in Überwachungsreichweite'' oder ``Zielobjekt nicht in Überwachungsreichweite''), weshalb Zwischenzustände für den Reward, der sich aus der mehrfachen Bewegung des Zielagenten ergeben könnte, ausgeschlossen werden soll (z.B. ``War zwei von drei Schritten in der Überwachungsreichweite'' \(\Rightarrow \frac{2}{3}\) Reward). Insbesondere würde dies eine mehrfache Erhebung der Sensordaten erfordern.\\
+
+TODO neue rewarderhebung...
+TODO Rewarderhebung für normale Agenten irrelevant, evtl teilen
+
 Für den Reward gibt es somit folgende Möglichkeiten:
 
 \begin{enumerate}
@@ -90,17 +86,21 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 \begin{figure}[H]
 \setbox0\vbox{\small
 \begin{enumerate}
-\item Erfassung aller Sensordaten
-\item Bestimmung des jeweiligen Rewards für die einzelnen Objekte für den letzten Schritt
-\item Bestimmen der aktuellen Qualität
-\item Wahl der Aktion anhand der Regeln des jeweiligen Agenten
-\item Ausführung der Aktion (in zufälliger Reihenfolge, das Zielobjekt führt nach dem ersten Schritt außerdem Schritt 1 und 2 für alle weiteren Schritte nochmals durch)
+\item Bestimmen der aktuellen \textbf{Qualität}
+\item Erfassung aller \textbf{Sensordaten}
+\item Bestimmung der jeweiligen {\bfseries {\em reward} Werte} für die einzelnen Objekte für den letzten Schritt
+\item \textbf{Wahl der Aktion} anhand der Regeln des jeweiligen Agenten
+\item \textbf{Ausführung der Aktion} (in zufälliger Reihenfolge, das Zielobjekt wiederholt Schritte 1 und 2 nach der Ausführung der Aktion)
 \end{enumerate}
 }
 \centerline{\fbox{\box0}}
 \end{figure}
 
-Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufgerufen von Programm~\ref{mainProblem:fig}, welches in der oben erwähnten Schleife 
+\section{Implementierung eines Problemablaufs}
+
+Wie in den vorangegangenen Abschnitten beschrieben wird in einer großen Schleife (Programm~\ref{mainProblem:fig}) die Qualität bestimmt (``\emph{updateStatistics()}'') und dann die Sensordaten und die nächste Aktion ermittelt (``\emph{calculateAgents()}'', Programm~\ref{mainCalculate:fig}).
+
+Die Implementierung der Berechnung eines Problems (Programm~\ref{mainCalculate:fig}) wird in einer Schleife von  aufgerufen, welches wiederum von der oben erwähnten Schleife~\ref{mainExperiment:fig} aufgerufen wird.
 
 \begin{program}
   \begin{verbatim}
@@ -114,32 +114,32 @@ Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufg
    * Zeitpunkt bis zu dem das Problem ausgeführt wird
    */
     int steps_next_problem = 
-      Configuration.getNumberOfSteps() + stepCounter;
-    
+      Configuration.getNumberOfSteps() + stepCounter;    
     for (int currentTimestep = stepCounter; 
          currentTimestep < steps_next_problem; currentTimestep++) {
 
     /**
-     * Ermittle die Sichtbarkeit aller Felder
+     * Ermittle die Sichtbarkeit und erhebe Statistiken
      */
       BaseAgent.grid.updateSight();
+      BaseAgent.grid.updateStatistics(currentTimestep);
 
     /**
-     * Ermittle die Statistiken (Abdeckung, Distanz, Qualität etc.)
-     */ 
-      BaseAgent.grid.updateStatistics(currentTimestep, findBestAgent());
+     * Ermittle neue Sensordaten und berechne Aktionen der Agenten
+     */
+      calculateAgents(currentTimestep);
 
     /**
-     * Ermittle den Reward für alle Objekte (nach dem ersten Schritt)
+     * Ermittle den Reward für alle Agenten (nach dem ersten Schritt)
      */
       if(currentTimestep > stepCounter) {
         rewardAgents(currentTimestep);
       }
 
     /**
-     * Berechne und bewege alle Agenten
+     * Führe zuvor berechnete Aktionen aus
      */
-      calculateAgents(currentTimestep);
+      moveAgents();
     }
 
     /**
@@ -154,6 +154,7 @@ Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufg
   \caption{Zentrale Schleife für einzelne Probleme}
 \end{program}
 
+
 \begin{program}
   \begin{verbatim}
 /**
@@ -162,6 +163,23 @@ Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufg
  */
   private void calculateAgents(final long gaTimestep) {
 
+  /**
+   * Ermittle Sensordaten und bestimme nächste Bewegung
+   */
+    for(BaseAgent a : agentList) {
+      a.aquireNewSensorData();
+      a.calculateNextMove(gaTimestep);
+    }
+
+  }
+\end{verbatim}
+ \label{mainCalculate:fig}
+  \caption{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}
+\end{program}
+
+\begin{program}
+  \begin{verbatim}
+  private void moveAgents(long gaTimestep) {
   /**
    * Erstelle Ausführungsliste für alle Objekte (Zielobjekt mehrfach)
    */
@@ -175,14 +193,6 @@ Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufg
     }
 
   /**
-   * Ermittle Sensordaten und bestimme nächste Bewegung
-   */
-    for(BaseAgent a : random_list) {
-      a.aquireNewSensorData();
-      a.calculateNextMove(gaTimestep);
-    }
-
-  /**
    * Führe die ermittelten Aktionen in zufälliger Reihenfolge aus
    *   (Zielobjekt kann mehrfach ausgeführt werden).
    */
@@ -190,13 +200,15 @@ Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufg
     for(int i = 0; i < array.length; i++) {
       BaseAgent a = random_list.get(array[i]);
       a.doNextMove();
-      if(a.isGoalAgent()) {
+      if(a.isGoalAgent() && goal_speed > 1) {
+        goal_speed--;
         a.aquireNewSensorData();
         a.calculateNextMove(0);
+        a.calculateReward(gaTimestep);
       }
     }
   }
   \end{verbatim}
- \label{mainCalculate:fig}
-  \caption{Zentrale Bearbeitung aller Agenten innerhalb eines Problems}
+ \label{mainMove:fig}
+  \caption{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb eines Problems}
 \end{program}

@@ -1,9 +1,7 @@
 \chapter{Erste Analyse der Agenten ohne LCS}
 
-In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des ``zufälligen Algorithmus'', des Algorithmus mit ``einfacher Heuristik'' und des Algorithmus mit ``intelligenter Heuristik'' angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.\\
-Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten.
-
-TODO, schwerere Probleme
+In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des ``zufälligen Algorithmus''~\ref{randomized_movement:sec}, des Algorithmus mit ``einfacher Heuristik''~\ref{simple_heuristik:sec} und des Algorithmus mit ``intelligenter Heuristik''~\ref{intelligent_heuristik:sec} angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.\\
+Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig, die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten und zu vergleichen.
 
 \section{``Total Random'' Zielobjekt}
 

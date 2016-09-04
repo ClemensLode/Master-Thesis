@@ -144,11 +144,17 @@ TODO
   \caption{Drittes Kernstück des Multistepverfahrens (calculateNextMove - Auswahl der nächsten Aktion und Ermittlung des zugehörigen ActionSets), angepasst an ein dynamisches Überwachungsszenario}
 \end{program}
 
-\section{LCS Variante ohne Kommunikation}
-Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim einfachen Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den ActionSets jeweils zwischen zwei direkt aufeinanderfolgenden ActionSets. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (fitness, prediction) für die Classifier gefunden werden.
-Bei der veränderten LCS Variante ist die Verbindung zwischen den ActionSets direkt die zeitliche Nähe zum Ziel. ActionSets von jedem Schritt seit dem Erreichen des letzten Ziels werden gespeichert bis das Ziel erreicht wurde und dann in Abhängigkeit des Alters mit absteigendem bzw. aufsteigendem Reward bewertet.
 
-\(r(a)\) bezeichnet den Reward für das ActionSet mit Alter \(a\).
+
+
+\section{LCS Variante ohne Kommunikation}
+Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets}. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{prediction} Wert) für die \emph{classifier} gefunden werden.\\
+Bei der veränderten LCS Variante ist die Verbindung zwischen den \emph{actionSets} direkt durch die zeitliche Nähe zum Ziel gegeben. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
+
+
+
+
+\(r(a)\) bezeichnet den \emph{reward} Wert für das \emph{actionSet} mit Alter \(a\).
 
 Bei linearer Rewardvergabe:
 $$
@@ -360,33 +366,3 @@ Ein Ereignis tritt auf, wenn:
 \end{verbatim}
   \caption{Drittes Kernstück des LCS-Algorithmus (calculateNextMove - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}
 \end{program}
-
-
-
-
-\subsection{Test der verschiedenen Exploration-Modi}
-
-\chapter{Analyse LCS}
-
-\subsection{LCS und Heuristiken}
-
-In allen Tests erreichten die Heuristiken deutlich bessere Ergebnisse. Diesen Nachteil hat sich LCS in diesen Szenarien durch deutlich überlegene Flexibilität erkauft
-Ein Großteil der einkommenden Informationen ist für die Auswertung nicht relevant und lokale Information ist zu ungenau.
-Bei einer komplexeren Implementierung mit Distanzen
-
-Insbesondere der Vergleich mit dem intelligenten Agenten, der anderen Agenten ausweicht, zeigt, dass die LCS Agenten unmöglich ein solches globales Ziel erreichen können, es ist also kein emergentes Verhalten zu beobachten. Dies ist dadurch zu begründen, dass bei der Berechnung des Rewards keine Information außer der eigenen, lokalen Information 
-
-der Abstand zu anderen Agenten nicht Teil der Berechnung des Rewards ist, noch gibt keine eingebaute Heuristik. Man könnte zwar 
-
-
-\subsection{Vergleich Multistep / LCS}
-
-Szenarien, Parameter.
-
-
-
-Prediction Error sehr hoch, da dynamisches 
-
-
-
-Rotation
