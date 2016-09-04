@@ -43,14 +43,14 @@ Was die Szenarien selbst betrifft, wurden ebenfalls mehrere verworfen, da bei ih
 
 
 
-\chapter{Vorgehen und verwendete Hilfsmittel und Software}
+\section{Vorgehen und verwendete Hilfsmittel und Software}
 
 Zu Beginn stellte sich die Frage, welche Software zu benutzen ist, da es sich um ein recht komplexe Problemstellung handelt. Begonnen wurde mit der YCS~Implementierung~\cite{Bull03asimple}. Sie ist in der Literatur wenig vertreten, die Implementierung bot aber einen guten Einstieg in das Thema, da sie sich auf das Wesentliche eines LCS beschränkte und nur wenige Optimierungen enthielt.\\
 Auf Basis des dadurch gewonnenen Wissens war es dann leichter, die XCS Implementierung zu verstehen und nachvollziehen zu können. Insbesondere die Optimierungen und der etwas unsaubere Programmierstil in der Standardimplementierung bereiteten Probleme.\\
 
 Anhand des Studiums der Literatur war klar, dass in der Richtung der Überwachungsszenarien es wenig Arbeiten, die sich damit beschäftigten, wie die XCS Implementierung umzusetzen sei. Ein Rückgriff auf bestehende Bibliotheken war deshalb nicht möglich, ursprünglich geplante Untersuchungen komplexerer Systeme wie zentrale Steuerung, Austausch von Regeln etc. wurden gestrichen und es wurde sich auf den einfachen Fall, lokale Information ohne zentrale Steuerung mit höchstens minimaler Kommunikation beschränkt. Dies machte die Verwendung komplexerer Simulationssysteme unnötig, die Einarbeitungszeit in Multiagenten Frameworks wie z.B. Repast~\cite{repast} erschien zu hoch, wie auch die Risiken, was Geschwindigkeit, Kompatibilität und Speicherverbrauch betraf, unbekannt waren, weshalb ein eigenes Simulationsprogramm entwickelt wurde.\\
 
-Das Simulationsprogramm samt zugehöriger Oberfläche~\cite{AgentSimulator} zur Erstellung von neuen Test-Jobs wurde in Java mit Hilfe von NetBeans~IDE~6.5~\cite{NetBeans} selbst entwickelt und gestaltet.\\
+Das Simulationsprogramm samt zugehöriger Oberfläche~\cite{agentsimulator} zur Erstellung von neuen Test-Jobs wurde in Java mit Hilfe von NetBeans~IDE~6.5~\cite{NetBeans} selbst entwickelt und gestaltet.\\
 
 Für die Verlaufsgraphen wurde GnuPlot~4.2.4~\cite{GnuPlot} benutzt, die Darstellungen der jeweiligen Konfiguration des Torus (insbesondere in Kapitel~\ref{scenario_description:cha}) wurden im Programm mittels Gif89Encoder~\cite{gifencoder} erstellt. Weitere Graphen und Darstellungen wurden OpenOffice.org~Impress und OpenOffice.org~Calc~\cite{OpenOffice} erstellt.\\
 Wesentlicher Bestandteil der Konfigurationsoberfläche war auch eine Automatisierung der Erstellung von Konfigurationsdateien und Batchdateien für ein Einzelsystem bzw. für JoSchKA~\cite{JoSchKa} zum Testen einer ganzen Reihe von Szenarien und GnuPlot Skripts. Die Automatisierung war aufgrund der tausenden getesteten Szenarien und Parametereinstellungen entscheidend zur Durchführung dieser Arbeit.\\

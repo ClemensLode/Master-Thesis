@@ -1,6 +1,6 @@
 \chapter{Das Zielobjekt}\label{zielobjekt:cha}
 
-Auf dem Torus bewegt sich neben den Agenten auch das Zielobjekt. Es kann, wie die Agenten auch, unterschiedlichen Bewegungsarten folgen, besitzt aber außerdem noch eine bestimmte Geschwindigkeit (siehe Kapitel~\ref{base_properties_goal:sec}). Neben der Größe des Torus und den Hindernissen tragen diese Eigenschaften des Zielobjekts wesentlich zur Schwierigkeit eines Szenarios bei, da dieser die Aufenthaltswahrscheinlichkeiten des Zielobjekts unter Einbeziehung des Zustands des letzten Zeitschritts bestimmt. Springt das Zielobjekt beispielsweise auf zufällige auf dem Torus (siehe Kapitel~\ref{goal_zufaelliger_sprung:sec}), dann existiert keine Verbindung zwischen den Positionen des Zielobjekts zweier aufeinanderfolgender Zeiteinheiten und Lernen wird sehr schwierig, was später in Kapitel~\ref{zielobjekt_analyse_zufall_sprung:sec} gezeigt wird. Primär soll diese Form der Bewegung auch nur zur allgemeinen, vorbereitenden Analyse dienen, während einfache Bewegungen, wie die zufällige Bewegung (Kapitel~\ref{random_neighbor:sec}) bzw. die Bewegung mit einfacher Richtungsänderung (Kapitel~\ref{direction_change:sec}) die später tiefer untersuchten Bewegungsarten darstellen. Danach soll noch das sich intelligent verhaltende Zielobjekt besprochen werden, was ebenfalls ein zentraler Punkt der späteren Analyse (in Kapitel~\ref{zielagent_analyse_intelligent:sec}) sein soll. Am Ende sollen dann zwei Sonderfälle erwähnt werden, zum einen ein Zielobjekt, das nur in die selbe Richtung läuft (Kapitel~\ref{no_direction_change:sec}), welches in Kapitel~\ref{communication:cha} zur Untersuchung des schwierigen Szenarios benutzt werden soll.
+Auf dem Torus bewegt sich neben den Agenten auch das Zielobjekt. Es kann, wie die Agenten auch, unterschiedlichen Bewegungsarten folgen, besitzt aber außerdem noch eine bestimmte Geschwindigkeit (siehe Kapitel~\ref{base_properties_goal:sec}). Neben der Größe des Torus und den Hindernissen tragen diese Eigenschaften des Zielobjekts wesentlich zur Schwierigkeit eines Szenarios bei, da dieser die Aufenthaltswahrscheinlichkeiten des Zielobjekts unter Einbeziehung des Zustands des letzten Zeitschritts bestimmt. Springt das Zielobjekt beispielsweise auf zufällige auf dem Torus (siehe Kapitel~\ref{goal_zufaelliger_sprung:sec}), dann existiert keine Verbindung zwischen den Positionen des Zielobjekts zweier aufeinanderfolgender Zeiteinheiten und Lernen wird sehr schwierig, was später in Kapitel~\ref{zielobjekt_analyse_zufall_sprung:sec} gezeigt wird. Primär soll diese Form der Bewegung auch nur zur allgemeinen, vorbereitenden Analyse dienen, während einfache Bewegungen, wie die zufällige Bewegung (Kapitel~\ref{random_neighbor:sec}) bzw. die Bewegung mit einfacher Richtungsänderung (Kapitel~\ref{direction_change:sec}) die später tiefer untersuchten Bewegungsarten darstellen. Danach soll noch das sich intelligent verhaltende Zielobjekt besprochen werden, was ebenfalls ein zentraler Punkt der späteren Analyse (in Kapitel~\ref{zielagent_analyse_intelligent:sec}) sein soll. Am Ende sollen dann zwei Sonderfälle erwähnt werden, zum einen ein Zielobjekt, das nur in dieselbe Richtung läuft (Kapitel~\ref{no_direction_change:sec}), welches in Kapitel~\ref{communication:cha} zur Untersuchung des schwierigen Szenarios benutzt werden soll.
 
 
 \section{Basiseigenschaften}\label{base_properties_goal:sec}
@@ -58,11 +58,11 @@ In Abbildung~\ref{goal_agent_intelligent:fig} wird die Richtung Süden gestrichen
 
 \subsection{Typ "`Beibehaltung der Richtung"'}\label{no_direction_change:sec}
 
-Der Zielobjekt versucht, immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, wählt es ein zufälliges, angrenzendes, freies Feld im Westen oder Osten. Anzumerken ist, dass dies zusätzliche Fähigkeiten darstellen, d.h. das Zielobjekt kann feststellen, ob sich direkt angrenzend ein Hindernis im Norden befindet, während normale Agenten, was die Distanz betrifft, keine Informationen darüber besitzen können.\\ TODO
+Ein Zielobjekt dieses Typs versucht, immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, wählt es ein zufälliges, angrenzendes, freies Feld im Westen oder Osten. Anzumerken ist, dass dies zusätzliche Fähigkeiten darstellen, d.h. das Zielobjekt kann feststellen, ob sich direkt angrenzend ein Hindernis im Norden befindet, während normale Agenten, was die Distanz betrifft, keine Informationen darüber besitzen können.\\ TODO
 
-Sind auch die Felder im Westen und Osten belegt, springt es auf ein zufälliges freies Feld in der Nähe. Schafft es der Zielobjekt innerhalb von einer bestimmten Zahl (Breite des Spielfelds) von Schritten nicht, einen weiteren Schritt nach Norden zu gehen, wird ebenfalls gesprungen, um ein "`festhängen"' an einem Hindernis zu vermeiden.\\
+Sind auch die Felder im Westen und Osten belegt, springt es auf ein zufälliges freies Feld in der Nähe. Schafft es der Zielobjekt innerhalb von einer bestimmten Zahl (Breite des Spielfelds) von Schritten nicht, einen weiteren Schritt nach Norden zu gehen, wird ebenfalls gesprungen, um ein "`Festhängen"' an einem Hindernis zu vermeiden.\\
 
-In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen dargestellt, zum einen ein wiederholtes hin- und herlaufen unter den Hindernissen, der Weg links um die Hindernisse herum und der Weg rechts um die Hindernisse herum.
+In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen dargestellt, zum einen ein wiederholtes Hin- und Herlaufen unter den Hindernissen, der Weg links um die Hindernisse herum und der Weg rechts um die Hindernisse herum.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -72,9 +72,7 @@ In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen da
 \label{goal_agent_always_same_direction:fig}
 \end{figure}
 
-\subsection{Typ "`SXCS"'}\label{zielobjekt_sxcs_einfuehrung:sec}
+\subsection{Typ "`Lernendes Zielobjekt"'}\label{zielobjekt_sxcs_einfuehrung:sec}
+TODO Typname?
 
-Dieser Typ ist eine Implementierung für das Zielobjekt, das auf der SXCS Implementierung in Kapitel~\ref{lcs_variants:cha} basiert. Einziger Unterschied ist in der Art, wie das SXCS die eigenen Aktionen bewertet. Während das dort beschriebene SXCS die Nähe zum Zielobjekt belohnt, soll hier das Zielobjekt die Situationen positiv bewerten, bei denen sich keine Agenten in Überwachungsreichweite befinden. Eine genaue Beschreibung folgt im Kapitel~\ref{lcs_variants:cha}, hier sollte die Idee nur der Vollständigkeit halber erwähnt werden.
-
-TODO Pendelbewegung?
-TODO Fester Pfad?
+Ein Zielobjekt dieses Typs kann mit Hilfe einer der in Kapitel~\ref{lcs_variants:cha} besprochenen Algorithmen lernen. Wesentlicher Unterschied zu lernenden Agenten ist, dass hier das Zielobjekt eine Aktion als positiv vermerkt, wenn sich keine Agenten in Überwachungsreichweite befinden. Eine genaue Beschreibung folgt in Kapitel~\ref{variant_zielobjekt_xcs_sxcs:sec}, hier soll die Idee nur der Vollständigkeit halber erwähnt werden.

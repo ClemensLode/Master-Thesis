@@ -60,7 +60,7 @@ Wann immer ein \emph{base reward} Wert an einen Agenten verteilt wird, kann es s
 
 Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel ~\ref{calculateRewardLCS:fig} besprochenen Funktion bei der SXCS Variante ohne verzögerten \emph{reward}. 
 
-In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:fig} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:fig} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von 1.0 ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
+In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:pro} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:pro} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von 1.0 ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
 
 \newlisting{Zweites Kernstück des verzögerten SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}{collect_reward_dsxcs:pro}
 /**
@@ -206,7 +206,7 @@ TODO Programm~\ref{process_reward_dsxcs2:pro}
 
 TODO wann weitergabe des rewards
 
-Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes ``externes Ereignis'' von diesen Agenten aufgefasst wird, hängt von den jeweiligen Kommunikationsvarianten ab, die in ~(\ref{sec:kommunikationsvarianten}) besprochen werden.
+Jeder Reward, der aus einem normalen Ereignis generiert wird, wird unter Umständen an alle anderen Agenten weitergegeben. Wie ein solches sogenanntes "`externes Ereignis"' von diesen Agenten aufgefasst wird, hängt von den jeweiligen Kommunikationsvarianten ab, die in Kapitel~\ref{kommunikationsvarianten:sec} besprochen werden.
 
 Durch eine gemeinsame Schnittstelle erhält jeder Agent den Reward zusammen mit dem Kommunikationsfaktor. Dabei ergibt sich das Problem, dass sich Rewards überschneiden können, da jeder Reward sich rückwirkend auf die vergangenen ActionClassifierSets auswirken kann. Auch können mehrere externe Rewards eintreffen, als auch ein eigener lokaler Reward aufgetreten sein. Würden die Rewards nach ihrer Eingangsreihenfolge abgearbeitet werden, kann es passieren, dass das selbe ActionClassifierSet sowohl mit einem hohen als auch einem niedrigen Reward aktualisiert wird. Da das globale Ziel ist, das Zielobjekt durch \emph{irgendeinen} Agenten zu überwachen, ist es in jedem einzelnen Zeitschritt nur relevant, dass ein \emph{einzelner} Agent einen hohen Reward produziert bzw. weitergibt um die eigene Aktion als zielführend zu bewerten.
 
@@ -238,8 +238,7 @@ Ist kein Event aufgetreten und liegt ein 1-Reward vor, dann stellt sich die Frag
 TODO Test
 
 
-\section{Kommunikationsvarianten}
-\label{sec:kommunikationsvarianten}
+\section{Kommunikationsvarianten}\label{kommunikationsvarianten:sec}
 
 Allen hier vorgestellten Kommunikationsvarianten ist gemeinsam, dass sie einen Kommunikationsfaktor berechnen, nach denen sie den externen Reward, den ihnen ein anderer Agent übermittelt hat, bewerten. Der Kommunikationsfaktor gewichtet alle Verwendungen des Parameters \(\beta\) (welcher die Lernrate bestimmt). Ein Faktor von \(1.0\) hieße, dass der externe Reward wie ein normaler Reward behandelt wird, ein Faktor von \(0.0\) hieße, dass externe Rewards deaktiviert sein sollen.
 Die Idee ist, dass unterschiedliche Agenten unterschiedlich stark am Erfolg des anderen Agenten beteiligt sind, da ohne Kommunikation jeder Agent versuchen wird, selbst das Zielobjekt möglichst in die eigene Überwachungsreichweite zu bekommen, anstatt mit anderen Agenten zu kooperieren, also das Gebiet des Torus möglichst großräumig abzudecken.
@@ -356,6 +355,8 @@ Umgekehrt ist der Einfluss bei sehr wenigen Agenten gering. TODO
 Vergleich unterschiedliche Agentenanzahl, unterschiedliche Kommunikationsmittel
 Vergleich mit LCS?
 
+\subsection{Difficult XCS TODO}\label{xcs_difficult_scenario:sec}
+
 \subsection{Vergleich TODO}
 
 Old LCS Agent
@@ -380,7 +381,7 @@ Kapitel~\ref{test_schwieriges_szenario:sec} vergleichen
 \centerline{	
 \includegraphics{corrected_reward.eps}
 }
-\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards] {Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
+\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards]{Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
 \label{corrected_reward:fig}
 \end{figure}
 

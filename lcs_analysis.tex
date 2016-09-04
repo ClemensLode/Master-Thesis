@@ -83,9 +83,10 @@ Auch bei den Heuristiken zeichnet sich ein klares Bild ab, bei niedrigen Geschwi
 \end{figure}
 
 \begin{verbatim}
-Bester Agent nach 20000 Schritten (Zielgeschwindigkeit 2.0, SXCS, 2000 Schritte)
+Bester Agent nach 20000 Schritten 
+(Zielgeschwindigkeit 2.0, SXCS, 2000 Schritte)
 
-#0######.###0#0##.#0#0###0-S : [Fi: 0.38] [Ex: 00450.0] [Pr: 0.74] [PE: 0.38]
+#0######.###0#0##.#0#0###0-S : Fi: 0.38, Ex: 450, Pr: 0.74, PE: 0.38
 ....
 TODO
 \end{verbatim}
@@ -131,3 +132,48 @@ Szenarien, Parameter.
 
 
 Prediction Error sehr hoch, da dynamisches 
+
+\subsection{Test Kommunikation}
+
+\subsection{Bewertung Kommunikation:}
+
+Die Vorteile, die man durch Kommunikation erzielen kann, hängt stark von dem Szenario ab. Beispielsweise in dem Fall, bei dem zufällige Agenten bereits fast 100\% Abdeckung erreichen, also so viele Agenten auf dem Feld sind, dass der Gewinn durch Absprache minimal ist. Auch ist, weil nur mit Binärsensoren gearbeitet wird, die Sensorik gestört, wenn sich sehr viele Agenten auf dem Feld befinden, weil die Sensoren sehr oft gesetzt sind und somit wenig Aussagekraft haben. Erweiterungen wie zusätzliche Sensoren die die genauen Abstände bestimmen, würde hier wahrscheinlich klarere Ergebnisse liefern.
+
+
+Umgekehrt ist der Einfluss bei sehr wenigen Agenten gering. TODO
+Vergleich unterschiedliche Agentenanzahl, unterschiedliche Kommunikationsmittel
+Vergleich mit LCS?
+
+\subsection{Difficult XCS TODO}\label{xcs_difficult_scenario:sec}
+
+\subsection{Vergleich TODO}
+
+Old LCS Agent
+New LCS Agent
+
+Multistep LCS Agent
+Dieser Algorithmus stellt eine Implementation des Standard XCS Algorithmus dar. Unterschied zur Standardimplementation ist, dass die Probleminstanz bei Erreichen des temporären Ziels (d.h. das Zielobjekt in Sicht zu bekommen) nicht tatsächlich neugestartet wird.
+Events, wie bei den neuen LCS Implementationen gibt es nicht, ist das Ziel in Sicht wird Reward 1.0 weitergegeben.
+
+Sight range/Kommunikationsrange
+
+
+LCS Agenten schneiden auch ohne Kommunikation (bei ausreichender Anzahl von Schritten) immer besser ab als zufällige Agenten.
+
+TODOGrafiken
+
+TODO Problemzahl und Schrittzahl mit
+Kapitel~\ref{test_schwieriges_szenario:sec} vergleichen
+
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{corrected_reward.eps}
+}
+\caption[Beispielhafte Darstellung der Kombinierung interner und externer Rewards]{Beispielhafte Darstellung der Kombinierung interner und externer Rewards}
+\label{corrected_reward:fig}
+\end{figure}
+
+
+
+

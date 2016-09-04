@@ -11,7 +11,7 @@ Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfa
 
 \begin{enumerate}
 
-\item Anteil Sprünge des Zielobjekts (siehe Kapitel~\ref{base_properties_goal:sec}), Durchläufe mit hohen Werte müssten verworfen werden
+\item Anteil Sprünge des Zielobjekts (siehe Kapitel~\ref{zielobjekt:sec}), Durchläufe mit hohen Werte müssten verworfen werden
 \item Anteil blockierter Bewegungen der Agenten
 \item Halbzeitqualität (siehe Kapitel~\ref{qualitaet:sec}), größere Unterschiede zur ermittelten Qualität deuten darauf hin, dass sich der Algorithmus noch nicht stabilisiert hat und das Szenario mit höherer Schrittzahl erneut durchgeführt werden sollte
 \item Abdeckung
@@ -22,7 +22,7 @@ Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfa
 
 \subsection{Abdeckung}
 
-Die theoretisch maximal mögliche Anzahl an Felder, die die Agenten innerhalb ihrer Überwachungsreichweite zu einem Zeitpunkt haben können, entspricht der Zahl der Agenten multipliziert mit der Zahl der Felder die ein Agent in seiner Übertragungsreichweite haben kann. Ist dieser Wert größer als die Gesamtzahl aller freien Felder, wird stattdessen dieser Wert benutzt.\\
+Die theoretisch maximal mögliche Anzahl an Felder, die die Agenten innerhalb ihrer Überwachungsreichweite zu einem Zeitpunkt haben können, entspricht der Zahl der Agenten multipliziert mit der Zahl der Felder, die ein Agent in seiner Übertragungsreichweite haben kann. Ist dieser Wert größer als die Gesamtzahl aller freien Felder, wird stattdessen dieser Wert benutzt.\\
 Teilt man nun die Anzahl der momentan tatsächlich überwachten Felder durch die eben ermittelte maximal mögliche Anzahl an überwachten Felder, erhält man die Abdeckung, die die Agenten momentan erreichen.\\
 
 
@@ -148,6 +148,9 @@ Je schneller, zufälliger
 
 \section{Zielobjekt mit zufälliger Bewegung bzw. einfacher Richtungsänderung}
 
+TODO kürzerer Titel für beide Bewegungsarten!!!
+
+
 Wesentlicher Punkt bei beiden Bewegungstypen (siehe Kapitel~\ref{random_neighbor:sec} und Kapitel~\ref{direction_change:sec}) ist, dass der jetzige Ort des Zielobjekts maximal zwei Felder (die maximale Geschwindigkeit des Zielobjekts in den Tests) vom Ort in der vorangegangenen Zeiteinheit entfernt ist. Somit ist ein lokales Einfangen eher von Relevanz, der Ort an dem sich das Zielobjekt im nächsten Zeitschritt befinden wird, ist zumindest vom aktuellen Ort abhängig, wenn das Zielobjekt auch schneller sein kann als andere Agenten.\\
 
 Wesentlicher Unterschied zwischen beiden Bewegungstypen ist, dass das Zielobjekt mit zufälliger Bewegung nach 2 Schritten mit Wahrscheinlichkeit von \(\frac{1}{4}\) auf das ursprüngliche Feld zurückkehrt, also stehenbleibt. Wie die Ergebnisse in Tabellen~\ref{table:neighbor_change_random} und ~\ref{table:neighbor_change_pillar} zeigen, ergibt sich dadurch ein leichteres Szenario. Ein mitunter stehenbleibender Agent kann mittels Heuristiken leichter überwacht werden, während es keine signifikante Veränderung bei der zufälligen Bewegung ergibt. In weiteren Tests soll deswegen immer nur Zielobjekten mit einfacher Richtungsänderung getestet werden.
@@ -258,7 +261,7 @@ In Abbildung~\ref{speed_random_goal_heuristik:fig} sind dagegen die Testergebnis
 
 \subsection{Zielobjekt mit intelligenter Bewegung}\label{zielagent_analyse_intelligent:sec}
 
-In Abbildung~\ref{speed_intelligent_goal:fig} und Abbildung~\ref{speed_intelligent_goal_obst2:fig} werden im Säulenszenario bzw. Szenario mit zufällig verteilten Hindernissen wieder die Heuristiken bei unterschiedlichen Geschwindigkeiten des Zielobjekts verglichen. Beim Säulenszenario ist wieder der Knick wie beim Fall mit Zielobjekt mit einfacher Richtungsänderung (siehe Kapitel~\ref{speed_single_direction:sec}) zu beobachten. Im Fall mit 
+In Abbildung~\ref{speed_intelligent_goal:fig} und Abbildung~\ref{speed_intelligent_goal_obst2:fig} werden im Säulenszenario bzw. Szenario mit zufällig verteilten Hindernissen wieder die Heuristiken bei unterschiedlichen Geschwindigkeiten des Zielobjekts verglichen. Beim Säulenszenario ist wieder der Knick wie beim Fall mit Zielobjekt mit einfacher Richtungsänderung (siehe Kapitel~\ref{speed_single_direction:sec}) zu beobachten. Im Fall mit  TODO
 
 \begin{figure}[htbp]
 \centerline{	
@@ -287,11 +290,11 @@ Dass dies doch nicht stimmt... TODO
 
 TODO: Erläuterung!
 
-Zu beachten sei, dass im Fall von ``Intelligent Hide'' eine relativ große Nummer an Sprüngen des Zielobjekts (siehe Kapitel~\ref{base_properties_goal:sec}) stattgefunden hat, was die Ergebnisse etwas verzerrt, die Zahl hält sich aber noch in Grenzen (bis zu ca. 0.5\% im Fall der einfachen und intelligenten Heuristik im Fall mit vielen Hindernissen).
+Zu beachten sei, dass im Fall von ``Intelligent Hide'' eine relativ große Nummer an Sprüngen des Zielobjekts (siehe Kapitel~\ref{zielobjekt:sec}) stattgefunden hat, was die Ergebnisse etwas verzerrt, die Zahl hält sich aber noch in Grenzen (bis zu ca. 0.5\% im Fall der einfachen und intelligenten Heuristik im Fall mit vielen Hindernissen).
 
 TODO neu, weg
 \begin{table}[ht]
-\caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, ohne Hindernisse)}
+\caption{Vergleich von ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, ohne Hindernisse)}
 \centering
 \begin{tabular}{c c c c}
 \hline\hline
@@ -308,7 +311,7 @@ Intelligente Heuristik & 69.62\% & 85.74\% \\ [1ex]
 \end{table}
 
 \begin{table}[ht]
-\caption{Vergleich ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
+\caption{Vergleich von ``Intelligent Open'' und ``Intelligent Hide'' (8 Agenten, zufälliges Szenario mit $\lambda_{h} = 0.2$, $\lambda_{p} = 0.99$)}
 \centering
 \begin{tabular}{c c c c}
 \hline\hline
@@ -331,7 +334,7 @@ Intelligente Heuristik & 56.94\% & 90.45\% \\ [1ex]
 \end{table}
 
 \begin{table}[ht]
-\caption{Vergleich ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
+\caption{Vergleich von ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
 \centering
 \begin{tabular}{c c c}
 \hline\hline
