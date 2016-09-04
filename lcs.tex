@@ -39,11 +39,9 @@ Ein klassisches Beispiel für ``Multi-Step''-Verfahren ist das ``Maze~\(N\)'' Pro
 
 Eine wesentliche Erweiterung des LCS ist das sogenannte ``accuracy-based classifier system XCS'', zuerst beschrieben in \cite{Wilson1995}. Neben neuer  Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich der Anwendung des GA) ist im Vergleich zum einfachen LCS der wesentliche Unterschied, auf welche Weise der \emph{fitness} Wert berechnet wird. Während  \emph{fitness} bei einfachen LCS lediglich entweder auf dem \emph{prediction error} basierten, basiert bei XCS \emph{fitness} auf der Genauigkeit der jeweiligen Regel. Eine genaue Beschreibung findet sich in~\cite{Butz2006}.\\
 
-Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des Multistep-Verfahrens von ~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in ~\cite{Butz}), eine Besonderheit stellt allerdings die Problemdefinition dar. Keine der gefundenen Implementationen und Varianten von XCS beschäftigen sich mit dynamischen Überwachungsszenarios, sondern mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}). Insbesondere zeigen Ergebnisse aus der Literatur, dass XCS in der Standardimplementierung Schwierigkeiten mit Problemen mit größerer Schrittzahl zwischen Start und Ziel hat \cite{Barry} \cite{Banzhaf} und bisherige Arbeiten sich auf einfache Probleme konzentrierten \cite{xcs1} \cite{xcs2}.
+Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des Multistep-Verfahrens von ~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in ~\cite{Butz}), eine Besonderheit stellt allerdings die Problemdefinition dar. Keine der gefundenen Implementationen und Varianten von XCS beschäftigen sich mit dynamischen Überwachungsszenarios, sondern mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}). Insbesondere zeigen Ergebnisse aus der Literatur, dass XCS in der Standardimplementierung Schwierigkeiten mit Problemen mit größerer Schrittzahl zwischen Start und Ziel hat \cite{Barry} \cite{Banzhaf} und bisherige Arbeiten sich auf einfache Probleme konzentrierten \cite{xcs1} \cite{xcs2}.\\
 
 TODO \cite{Butz2005} gradient descent 
-
-Tournament Selection
 
  Die wesentlichen Aussagen in der Natur bezüglich 
 
@@ -56,6 +54,15 @@ Ebenfalls wurde die dort erwähnte Erweiterung, die Auswahl nicht mittels Roulett
 
 
 Bezüglich Multiagentensystemen und XCS gibt es Arbeiten, die basieren allerdings auf zentraler Steuerung bzw. \emph{OCS}, siehe~\cite{Takadama}, also einer übergeordneten Organisationseinheit bzw. globaler Regeln oder globalem Regeltausch zwischen den Agenten.\\
+
+
+Vielversprechend war der Titel der Arbeit~\cite{Lujan}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider ist bei der Arbeit nicht klar, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels Reward-Funktion bewertet werden, da es globale Information gab, was das Problem deutlich vereinfacht und es mit dem Gegenstand dieser Arbeit kaum vergleichbar macht.\\
+
+Im Bereich der Multiagentensysteme in Verbindung mit LCS im Allgemeinen, gibt es Arbeiten:
+TODO
+
+
+Diese Arbeit soll nun also TODO
 
 
 
@@ -74,9 +81,138 @@ repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten Rewa
 
 
 \section{Parameter}
-Die XCS-Parameter der durchgeführten Experimente entsprechen den Parametern in~\cite{Butz},  TODO
+TODO runter evtl, erst wenn die Parameter besprochen sind
 
+Die XCS Parameter der durchgeführten Experimente entsprechen weitesgehend den Parametern in~\cite{Butz} (``Commonly Used Parameter Settings''). Versuchsweise wurden einige Parameter abgeändert, jedoch, mit zwei Ausnahmen, ohne besonderen Erfolg. Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. 
 
+\subsection{Maximalwert von \(\rho\)}\label{maximalwert_rho:sec}
+Der maximale Reward hat lediglich ästhetische Auswirkungen und wurde auf \(1.0\) gesetzt. In der Standardimplementation von XCS (siehe~\ref{multistep_calc_reward:fig}) ist der maximale Reward gleichbedeutend mit dem Maximalwert von \(\rho\), da das Problem bei einem Reward neugestartet wird, der Reward aus dem letzten Schritt also immer \(0\) ist.\\
+In der hier vorgestellten Variante wird dagegen der Reward absteigend, zusammen mit dem \emph{maxPrediction} Wert, an frühere ActionSets verteilt, \(\rho\) kann also größer als \(1.0\) werden. In diesem Bereich ist noch Bedarf an theoretischer Forschung, in Tests haben sich Werte im Bereich von \(5.0\) ergeben.
+
+\subsection{``prediction discount''}
+Für ``prediction discount'' \(\gamma\) hat sich ein höherer Wert als sinnvoll erwiesen, laut~\cite{Butz} hängt der Wert auch vom verwendeten Szenario ab. Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe der Rewards, der über \emph{maxPrediction} weitergegeben wird, weniger schnell abfällt, wodurch eine längere Verkettung von Rewards möglich ist.\\ Tabelle~\ref{table:prediction_discount} zeigt einen Vergleich der Qualität mit dem Standardwert \(\gamma = 0.71\) und dem für die in dieser Arbeit verwendeten Testszenarien gewählten Wert \(\gamma = 0.95\).\\
+
+\begin{table}[ht]
+\caption{Drehung von Classifiern, Szenario ohne Hindernisse und mit einfacher Richtungsänderung des Zielobjekts}
+\centering
+\begin{tabular}{c c c c c}
+\hline\hline
+Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
+\hline
+Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
+Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
+Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
+
+LCS Ohne Drehung & 8 & 100 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 8 & 500 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 8 & 500 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+Zufälliger Agent & 12 & 500 & 76.03\% & 76.59\% \\
+Einfacher Agent & 12 & 500 & 67.30\% & 96.86\% \\
+Intelligenter Agent & 12 & 500 & 86.85\% & 95.08\% \\ [0.5ex]
+
+LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+\hline
+\end{tabular}
+\label{table:prediction_discount}
+\end{table}
+
+\subsection{Lernrate \(\beta\)}
+
+Für die Lernrate \(\beta\) hat sich ein etwas niedrigerer Wert als der in der Literatur angegebene als sinnvoll erwiesen. Auch dieser Parameter ist szenariospezifisch, über die konkrete Begründung kann nur spekuliert werden.
+Vergleichende Tests (siehe Tabelle~\ref{table:learning_rate} mit niedrigerem bzw. höherem Wert haben zu einer etwas schlechteren Qualität geführt.
+
+\begin{table}[ht]
+\caption{Vergleichende Tests für die Lernrate \(\beta\)}
+\centering
+\begin{tabular}{c c c c c}
+\hline\hline
+Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
+\hline
+Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
+Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
+Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
+
+LCS Ohne Drehung & 8 & 100 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 8 & 500 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 8 & 500 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+Zufälliger Agent & 12 & 500 & 76.03\% & 76.59\% \\
+Einfacher Agent & 12 & 500 & 67.30\% & 96.86\% \\
+Intelligenter Agent & 12 & 500 & 86.85\% & 95.08\% \\ [0.5ex]
+
+LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+\hline
+\end{tabular}
+\label{table:learning_rate}
+\end{table}
+
+\subsection{Accuracy equality \(\epsilon_{0}\)}
+
+Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der Subsummation und der Berechnung des \emph{accuracy}-Werts von Bedeutung. In der Literatur~(\cite{Butz}) wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete Reward annehmen kann. Aufgrund der Überlegungen in~\ref{maximalwert_rho:sec} setzen wir \(\epsilon_{0}\) deshalb auf \(0.05\). Die Entscheidung wird auch durch Tests (siehe~\ref{table:epsilon}) bestätigt.
+
+\begin{table}[ht]
+\caption{Vergleichende Tests für den ``Accuracy equality'' Wert \(\epsilon_{0}\)}
+\centering
+\begin{tabular}{c c c c c}
+\hline\hline
+Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
+\hline
+Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
+Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
+Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
+
+LCS Ohne Drehung & 8 & 100 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 8 & 500 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 8 & 500 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+Zufälliger Agent & 12 & 500 & 76.03\% & 76.59\% \\
+Einfacher Agent & 12 & 500 & 67.30\% & 96.86\% \\
+Intelligenter Agent & 12 & 500 & 86.85\% & 95.08\% \\ [0.5ex]
+
+LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
+LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
+LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
+
+\hline
+\end{tabular}
+\label{table:epsilon}
+\end{table}
+
+\subsection{``prediction init''}
+TODO
+
+\subsection{Übersicht über alle Parameterwerte}
 \begin{table}[ht]
 \caption{Verwendete Parameter (soweit nicht anders angegeben) und Standardparameter}
 \centering
@@ -85,6 +221,7 @@ Die XCS-Parameter der durchgeführten Experimente entsprechen den Parametern in~\
 Parameter & Wert & Standardwert\\ [0.5ex]
 \hline
 Max population \(N\) & 128\\
+Max value \(\rho\) & \textbf{1.0} & [10000]\\
 Fraction mean fitness \(\delta\) & 0.1 & [0.1]\\
 Deletion threshold \(\theta_{\mathrm{del}}\) & 20.0 & [\(\sim\) 20.0]\\
 Subsumption threshold \(\theta_{\mathrm{sub}}\) & 20.0 & [20.0+]\\
@@ -94,15 +231,15 @@ Mutation probability \(\mu\) & \(0.05\) & [0.01-0.05]\\
 Prediction error reduction & 0.25 & [0.25]\\
 Fitness reduction & \(0.1\) & [0.1]\\
 
-Prediction init \(p_{i}\) & 0.5 & [\emph{1\% des größten Werts}]\\
+Prediction init \(p_{i}\) & \textbf{0.5} & [\(\sim\) 0]\\
 Prediction error init \(\epsilon_{i}\) & 0.0 & [0.0]\\
 Fitness init \(F_{i}\) & \(0.01\) &  [0.01]\\
-Accuracy equal below \(\epsilon_{0}\) & 0.05 & [\emph{1\% des größten Werts}]\\
+Accuracy equality \(\epsilon_{0}\) & \textbf{0.05} & [\emph{1\% des größten Werts}]\\
 Accuracy calculation \(\alpha\) & 0.1 & [0.1]\\
 Accuracy power \(\nu\) & 5.0 & [5.0]\\
 Prediction discount \(\gamma\) & \textbf{0.95} & [0.71]\\
 
-Learning reate \(\beta\) & \textbf{0.05} & [0.1-0.2]\\
+Learning rate \(\beta\) & \textbf{0.05} & [0.1-0.2]\\
 
 exploration probability & 0.5 (siehe~\ref{sec:subsummation}) & [\(\sim\) 0.5]\\ [0.5ex]
 
@@ -362,422 +499,8 @@ Hierbei gibt es mehrere verschiedene Möglichkeiten:
 \item ``exploit'' wenn Ziel in Sichtweite, ``explore'' sonst
 \end{enumerate}
 
-TODO
+Problem: Überwachungsszenario: Learning kann hier nur während des Laufs passieren. Ein rein zufällig ablaufender Learning Algorithmus deckt u.U. nicht alles ab!
 
-
-Während es in der 
 
 TODO Vergleich weiter unten
 
-\chapter{LCS Varianten}
-
-\section{Hauptprogramm}
-
-Der Aufruf in der verwendeten Implementierung unterscheidet sich ein wenig von der originalen Implementation, weswegen er in TODO nochmal dargestellt sein soll.
-
-\begin{program}
-  \begin{verbatim}
-/**
- * Führt eine Anzahl von Problemen aus
- * @param experiment_nr Nummer des auszuführenden Experiments
- */
-  public void doOneMultiStepExperiment(int experiment_nr) {
-    int currentTimestep = 0;
-
-  /**
-   * number of problems for the same population
-   */
-    for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
-
-    /**
-     * creates a new grid and deploys agents and goal at random positions
-     */
-      BaseAgent.grid.resetState();
-
-    /**
-     * Führe Problem aus und aktualisiere aktuellen Zeitschritt
-     */
-      currentTimestep = doOneMultiStepProblem(currentTimestep);
-
-    /**
-     * Initialisiere neuen "Random Seed" Wert
-     */
-      Misc.initSeed(Configuration.getRandomSeed() + 
-        experiment_nr * Configuration.getNumberOfProblems() + 1 + i);
-    }
-  }
-  \end{verbatim}
- \label{mainExperiment:fig}
-  \caption{Zentrale Schleife für einzelne Experimente}
-\end{program}
-
-\section{Multistepverfahren}
-
-TODO
-Als Vergleich wurde das bekannte Verfahren fast unverändert übernommen. Wie weiter oben erwähnt wird das Szenario bei einem positiven Reward aber nicht neugestartet.
-
-Idee ist, dass der Reward, den eine Aktion (bzw. das jeweils zugehörige ActionSet) erhält, vom erwarteten Reward der folgenden Aktion abhängt. Somit wird, rückführend vom Ziel, der Reward schrittweise an vorgehende Aktionen verteilt und somit das Ziel schneller gefunden
-
-TODO Quelle
-
-
-reward = 0 ? Gebe maxPrediction des nächsten Zugs
-reward = 1 ? Gebe maxPrediction 0, reward = 1
-
-
-In jedem Schritt wird das vorherige ActionSet durch maxPrediction bzw. reward belohnt
-TODO
-
-\begin{program}
-  \begin{verbatim}
-
-/**
- * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
- * Reward zu bestimmen, den besten Wert des ermittelten MatchSets 
- * weiterzugeben und, bei aktuell positivem Reward, das aktuelle
- * ActionSet zu belohnen.
- *
- * @param gaTimestep Der aktuelle Zeitschritt
- */
-
-  public void calculateReward(final long gaTimestep) {
-  /**
-   * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
-   * Überwachungsreichweite befindet
-   */
-    boolean reward = checkRewardPoints();
-
-    if(prevActionSet != null){
-      collectReward(lastReward, lastMatchSet.getBestValue(), false);
-      prevActionSet.evolutionaryAlgorithm(classifierSet, gaTimestep);
-    }
-
-    if(reward) {
-      collectReward(reward, 0.0, true);
-      lastActionSet.evolutionaryAlgorithm(classifierSet, gaTimestep);
-      return;
-    }
-    prevActionSet = lastActionSet;
-    lastReward = reward;
-  }
-\end{verbatim}
-  \caption{Erstes Kernstück des Multistepverfahrens (calculateReward, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}
-\end{program}
-
-\begin{program}
-  \begin{verbatim}
-/**
- * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
- * zugehörigen ActionSets weiter.
- *
- * @param reward Wahr wenn der Zielagent in Sicht war.
- * @param best_value Bester Wert des vorangegangenen ActionSets
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven Reward, aufgerufen wurde
- */
-
-  public void collectReward(boolean reward, double best_value, boolean is_event) {
-    double corrected_reward = reward ? 1.0 : 0.0;
-
-  /**
-   * Ereignis, aktualisiere das aktuelle ActionSet und lösche das vorherige
-   */
-    if(is_event) {
-      if(lastActionSet != null) {
-        lastActionSet.updateReward(corrected_reward, best_value, factor);
-        prevActionSet = null;
-      }
-    } 
-
-  /**
-   * Kein Ereignis, also nur das letzte ActionSet aktualisieren
-   */
-    else 
-    {
-      if(prevActionSet != null) {
-        prevActionSet.updateReward(corrected_reward, best_value, factor);
-      }
-    }
-  }
-\end{verbatim}
-  \caption{Zweites Kernstück des Multistepverfahrens (collectReward - Verteilung des Rewards auf die ActionSets), angepasst an ein dynamisches Überwachungsszenario}
-\end{program}
-
-\begin{program}
-  \begin{verbatim}
-
-/**
- * Bestimmt die zum letzten bekannten Status passenden Classifier und
- * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
- * ActionClassifierSet mithilfe der gewählten Aktion ermittelt.
- *
- * @param gaTimestep Der aktuelle Zeitschritt
- */
-
-  public void calculateNextMove(long gaTimestep) {
-
- /**
-  * Überdecke das classifierSet mit zum Status passenden Classifiern
-  * welche insgesamt alle möglichen Aktionen abdecken.
-  */
-    classifierSet.coverAllValidActions(lastState, getPosition(), gaTimestep);
-
- /**
-  * Bestimme alle zum Status passenden Classifier.
-  */
-    lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
-
- /**
-  * Entscheide auf welche Weise die Aktion ausgewählt werden soll.
-  */
-    lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
-                                           lastExplore, gaTimestep);
-
- /**
-  * Wähle Aktion und bestimme zugehöriges ActionSet
-  */
-    calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
-    lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
-                                                      calculatedAction);
-  }
-\end{verbatim}
-  \caption{Drittes Kernstück des Multistepverfahrens (calculateNextMove - Auswahl der nächsten Aktion und Ermittlung des zugehörigen ActionSets), angepasst an ein dynamisches Überwachungsszenario}
-\end{program}
-
-\section{LCS Variante ohne Kommunikation}
-Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim einfachen Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den ActionSets jeweils zwischen zwei direkt aufeinanderfolgenden ActionSets. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (fitness, prediction) für die Classifier gefunden werden.
-Bei der veränderten LCS Variante ist die Verbindung zwischen den ActionSets direkt die zeitliche Nähe zum Ziel. ActionSets von jedem Schritt seit dem Erreichen des letzten Ziels werden gespeichert bis das Ziel erreicht wurde und dann in Abhängigkeit des Alters mit absteigendem bzw. aufsteigendem Reward bewertet.
-
-\(r(a)\) bezeichnet den Reward für das ActionSet mit Alter \(a\).
-
-Bei linearer Rewardvergabe:
-$$
-r(a) = \left\{ \begin{array}{rl}
-  \frac{a}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $1$} \\
-  \frac{1 - a}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $0$}
-       \end{array} \right.
-$$
-
-bzw. bei quadratischer Rewardvergabe:
-
-$$
-r(a) = \left\{ \begin{array}{rl}
-  \frac{{a}^{2}}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $1$} \\
-  \frac{{1 - a}^{2}}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $0$}
-       \end{array} \right.
-$$
-
-In Tests ergab sich für die quadratische Rewardvergabe ein minimal besseres Ergebnis (TODO zeigen), im weiteren Verlauf, insbesondere in den Grafiken, werde ich mich auf die lineare Rewardvergabe beschränken um eine verständliche Darstellung zu ermöglichen.
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{positive_negative_reward.eps}
-}
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets] {Schematische Darstellung der (quadratischen) Rewardverteilung an gespeicherte ActionSets bei einem positiven bzw. negativen Ereignis}
-\label{positive_negative_reward:fig}
-\end{figure}
-
-\section{Ereignisse}
-
-In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
-
-Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe ~(\ref{saved_rewards:fig})).
-
-Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. W\"ahlen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe ~(\ref{neutral_reward:fig})). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
-Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. ``maxStackSize'' stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
-
-\begin{figure}[H]
-\setbox0\vbox{\small
-Ein Ereignis tritt auf, wenn:
-\begin{enumerate}
-\item Positive Rewardänderung (Zielagent war im letzten Zeitschritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis (mit reward = \(1\))
-\item Negative Rewardänderung (Zielagent war im letzten Zeitschritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis (mit reward = \(0\))
-\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielagent ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(1\))
-\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielagent ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(0\))
-\end{enumerate}
-}
-\centerline{\fbox{\box0}}
-\end{figure}
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{saved_rewards.eps}
-}
-\caption[Schematische Darstellung der zeitlichen Rewardverteilung an und der Speicherung von ActionSets] {Schematische Darstellung der zeitlichen Rewardverteilung an ActionSets nach mehreren positiven und negativen Ereignissen und der Speicherung der letzten ActionSets}
-\label{saved_rewards:fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{neutral_reward.eps}
-}
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
-\label{neutral_reward:fig}
-\end{figure}
-
-\begin{program}
-  \begin{verbatim}
-
-/**
- * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
- * Reward zu bestimmen und positive, negative und neutrale Ereignisse 
- * den besten Wert des ermittelten MatchSets weiterzugeben und, bei 
- * aktuell positivem Reward, das aktuelle ActionSet zu belohnen.
- *
- * @param gaTimestep Der aktuelle Zeitschritt
- */
-
-  public void calculateReward(final long gaTimestep) {
-  /**
-   * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
-   * Überwachungsreichweite befindet
-   */
-    boolean reward = checkRewardPoints();
-
-    if (reward != lastReward) {
-      int start_index = historicActionSet.size() - 1;
-      collectReward(start_index, actionSetSize, reward, 1.0, true);
-      actionSetSize = 0;
-    }
-    else 
-
-    if(actionSetSize >= Configuration.getMaxStackSize())
-    {
-      int start_index = Configuration.getMaxStackSize() / 2;
-      int length = actionSetSize - start_index;
-      collectReward(start_index, length, reward, 1.0, false);
-      actionSetSize = start_index;
-    }
-
-    lastReward = reward;
-  }
-\end{verbatim}
-\label{calculateRewardLCS:fig}
-  \caption{Erstes Kernstück des LCS-Algorithmus (calculateReward, Bestimmung des Rewards anhand der Sensordaten)}
-\end{program}
-
-\begin{program}
-  \begin{verbatim}
-/**
- * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
- * zugehörigen ActionSets weiter.
- *
- * @param reward Wahr wenn der Zielagent in Sicht war.
- * @param best_value Bester Wert des vorangegangenen ActionSets
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven Reward, aufgerufen wurde
- */
-
-  public void collectReward(boolean reward, double best_value, boolean is_event) {
-    double corrected_reward = reward ? 1.0 : 0.0;
-  /**
-   * Wenn es kein Event ist, dann gebe den Reward weiter wie beim 
-   * Multistepverfahren
-   */
-    double max_prediction = is_event ? 
-      0.0 : historicActionSet.get(start_index+1).getMatchSet().getBestValue();
-
-  /**
-   * Aktualisiere eine ganze Anzahl von ActionSets
-   */
-    for(int i = 0; i < action_set_size; i++) {
-
-  /**
-   * Benutze aufsteigenden bzw. absteigenden Reward bei einem positiven 
-   * bzw. negativen Ereignis
-   */
-      if(is_event) {
-        corrected_reward = reward ? 
-          calculateReward(i, action_set_size) : 
-          calculateReward(action_set_size - i, action_set_size);
-      }
-  /**
-   * Aktualisiere das ActionSet mit dem bestimmten Reward und
-   * gebe bei allen anderen ActionSets den Reward weiter wie 
-   * beim Multistepverfahren 
-   */
-      ActionClassifierSet action_classifier_set = 
-        historicActionSet.get(start_index - i);
-      action_classifier_set.updateReward(corrected_reward, max_prediction, factor);
-
-      max_prediction = action_classifier_set.getMatchSet().getBestValue();
-    }
-
-\end{verbatim}
-  \caption{Zweites Kernstück des LCS-Algorithmus (collectReward - Verteilung des Rewards auf die ActionSets)}
-\end{program}
-
-\begin{program}
-  \begin{verbatim}
-
-/**
- * Bestimmt die zum letzten bekannten Status passenden Classifier und
- * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
- * ActionClassifierSet mithilfe der gewählten Aktion ermittelt.
- * Im Vergleich zur originalen Multistepversion wird am Schluß noch 
- * das ermittelte ActionSet gespeichert.
- *
- * @param gaTimestep Der aktuelle Zeitschritt
- */
-
-  public void calculateNextMove(long gaTimestep) {
-
- /**
-  * Überdecke das classifierSet mit zum Status passenden Classifiern
-  * welche insgesamt alle möglichen Aktionen abdecken.
-  */
-    classifierSet.coverAllValidActions(lastState, getPosition(), gaTimestep);
-
- /**
-  * Bestimme alle zum Status passenden Classifier.
-  */
-    lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
-
- /**
-  * Entscheide auf welche Weise die Aktion ausgewählt werden soll,
-  * wähle Aktion und bestimme zugehöriges ActionSet
-  */
-    lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
-                                           lastExplore, gaTimestep);
-
-    calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
-    lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
-                                                      calculatedAction);
-
- /**
-  * Speichere das ActionSet und passe den Stack bei einem Überlauf an
-  */
-    actionSetSize++;
-    historicActionSet.addLast(lastActionSet);
-    if (historicActionSet.size() > Configuration.getMaxStackSize()) {
-      historicActionSet.removeFirst();
-    }
-  }
-\end{verbatim}
-  \caption{Drittes Kernstück des LCS-Algorithmus (calculateNextMove - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}
-\end{program}
-
-
-
-
-\subsection{Test der verschiedenen Exploration-Modi}
-
-\chapter{Analyse LCS}
-
-\subsection{LCS und Heuristiken}
-
-In allen Tests erreichten die Heuristiken deutlich bessere Ergebnisse. Diesen Nachteil hat sich LCS in diesen Szenarien durch deutlich überlegene Flexibilität erkauft
-Ein Großteil der einkommenden Informationen ist für die Auswertung nicht relevant und lokale Information ist zu ungenau.
-Bei einer komplexeren Implementierung mit Distanzen
-
-\subsection{Vergleich Multistep / LCS}
-
-Szenarien, Parameter.
-
-
-
-Prediction Error sehr hoch, da dynamisches 
-
-
-
-Rotation
