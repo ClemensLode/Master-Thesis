@@ -132,16 +132,6 @@ In diesem Szenario werden regelmäßig, mit jeweils 7 Feldern Zwischenraum zueinan
 \label{pillar_grid:fig}
 \end{figure}
 
-\subsection{"`Raum Szenario"'}
-Auf dem Torus wird ein Rechteck der halben Gesamthöhe und -breite des Torus erstellt, welches im Norden eine Öffnung von 4 Feldern Breite aufweist. Der Zielagent startet in der Mitte des Raums, alle Agenten starten mit maximaler Distanz zu den Hindernissen an zufälliger Position. Abbildung~\ref{room_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines solchen Szenarios.\\
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{room_grid.eps}
-}
-\caption["`Raum Szenario"']{"`Raum Szenario"' mit quaderförmiger Anordnung der Hindernisse mit Öffnung im Norden, zufälliger Verteilung der Agenten am Rand und zu Beginn im Zentrum startendem }
-\label{room_grid:fig}
-\end{figure}
 
 
 \subsection{Schwieriges Szenario}\label{difficult_scenario:sec}
@@ -160,18 +150,6 @@ Abbildung~\ref{difficult_grid:fig} zeigt die Startkonfiguration des Szenarios.
 \label{difficult_grid:fig}
 \end{figure}
 
-\subsection{"`Irrgarten Szenario"'}
-
-Der Code zur Generierung der Hindernisse stammt aus \cite{Hamer}. In den "`Gängen"' des Irrgartens herrscht jeweils eine Breite von \(2\) Feldern. Die anfängliche Verteilung der Agenten und des Zielobjekts geschieht zufällig. Abbildung~\ref{maze_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines Irrgartens.\\
-TODO Idee oder raus
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{maze_grid.eps}
-}
-\caption["`Irrgarten Szenario"']{"`Irrgarten Szenario"' mit einer Anordnung von Hindernissen in der Art, dass es nur wenige Pfade gibt.}
-\label{maze_grid:fig}
-\end{figure}
 
 
 \section{Bestimmung der Qualität eines Algorithmus}\label{qualitaet:sec}
