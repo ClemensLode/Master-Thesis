@@ -1,0 +1,582 @@
+\chapter{LCS}\label{lcs:cha}
+
+\section{Einführung}
+
+Jeder Agent besitzt ein Learning Classifier System, welches auf dem von Butz TODO XCS basiert. Die Implementierung entspricht im Wesentlichen der Standardimplementation von Butz 2000, eine Besonderheit stellt allerdings die Problemdefinition dar. Keine der gegenwärtigen Implementationen und Varianten von XCS beschäftigen sich mit dynamischen Überwachungsszenarios sondern mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. 
+
+Im XCS-Multistepverfahren (TODOLiteratur) läuft ein Problem so lange bis ein positiver Reward aufgetreten ist und startet dann das Szenario neu. Bei einem Überwachungsszenario mit kontinuierlichem Reward ist das Multistepverfahren nicht anwendbar, das Szenario kann nicht neu gestartet werden, da sich die Agenten während des Laufs anpassen sollen. Ziel ist hier ja nicht, einen bestimmten Weg zu einem festen Ziel zu finden (wie z.B. bei WOODS TODO), sondern eine bestimmte Regelmenge zu erlernen, mit der eine möglichst gute, dauerhafte Überwachung stattfinden kann. 
+
+In der hier verwendeten Implementierung läuft das Problem deshalb einfach weiter. Wesentlicher Unterschied zu XCS wird deshalb die Behandlung des Rewards sein.
+
+In der Literatur (TODO) fehlen Arbeiten, in denen ein solches Szenario (ohne globale Steuerungseinheit oder Regeltausch) in Verbindung mit dem XCS behandelt wird. Diese Arbeit soll diese Lücke schließen und die Basis für weitere Arbeiten in dieser Richtung liefern. 
+
+
+TODO Einleitung aus Gradient Descent Methods in Learning Classifier
+Systems: Improving XCS Performance
+in Multistep Problems evtl
+
+
+
+
+\section{Classifier}
+
+Ein LCS beinhaltet eine Reihe von Classifiern. Ein einzelner Classifier besteht im Wesentlichen aus fünf Teilen:
+
+\subsection{Fitness}
+Der Fitness Wert soll die allgemeine Genauigkeit des Classifiers 
+repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten Rewards angepasst. TODO Wilson. Der Wertebereich verläuft zwischen \(0.0\) und \(1.0\) (maximale Genauigkeit).
+
+\subsection{Prediction}
+Der ``Prediction''-Wert des Classifiers stellt die Höhe des Rewards dar, von dem der Classifier vermutet, dass er ihn bei der nächsten Vergabe des Rewards erhalten wird. Auch dieser Wert wird stetig angepasst.
+
+\subsection{Prediction Error}
+Der „Prediction-Error“-Wert soll die Genauigkeit des Classifiers bzgl. der Reward-Prediction (durchschnittliche Differenz zwischen Prediction und tatsächlichem Reward) repräsentieren. U.a. auf Basis dieses Werts wird der Fitness-Wert des Classifiers angepasst.
+
+\subsection{Aktion}
+Wird ein Classifier ausgewählt, wird eine bestimmte Aktion ausgeführt. In unserem Szenario entsprechen die Aktionsmöglichkeiten die der anderen Agenten, also 4 Bewegungsrichtungen plus eine ``nichts-tun''-Aktion.
+
+\subsection{Kondition}
+Die Kondition gibt an, bei welchem Sensor-Input dieser Classifier ausgewählt werden kann. 
+
+\section{Initialisierung}
+
+Aus dem Bereich naturanalogen Algorithmen weiss man (TODO Quelle), dass es beim Absuchen des Lösungsraums vorteilhaft sein kann nicht mit Null initialisierten Genotypen zu starten sondern mit einer zufälligen Population. Die Idee ist, dass dadurch die Zahl der Schritte zum Optimum verringert werden können (TODO genauer etvtl. Zitat).
+Beim XCS liegt die Sache nicht so einfach. Tests (TODO) haben gezeigt, dass die Qualität weder kurz noch langfristig besser ist. Der Grund dafür liegt darin, dass die Classifier zueinander bezüglich ihrer Wahrscheinlich in Konkurrenz stehen, aufgerufen und gelöscht zu werden. Viele der zufällig erstellten Classifier müssen also erst einmal beseitigt werden. Eine Beseitigung passiert mit einer Wahrscheinlichkeit abhängig von der Numerosity, der Fitness und der Prediction. Ein zufällig generierter Classifier mit hoher Fitness und Prediction dessen Condition in dem aktuellen Szenario selten auftritt (also die Fitness nur schwer verringert werden kann) benötigt lange, bis es aktualisiert wird und wird mit nur geringer Wahrscheinlichkeit gelöscht. Erst mit steigender Erfahrung des LCS und somit steigender Numerosity können solche Classifier eher verdrängt werden, in dieser Zeit können die entsprechenden Classifier aber bereits mittels Covering erstellt worden sein und somit den womöglich existierenden Vorteil eines zufälligen Starts einholen.
+Bleibt also nur die Möglichkeit das ClassifierSet mit Classifiern mit zufälliger Kondition und zuf\"alliger Aktion zu füllen, während man Fitness, Prediction und Prediction Error auf den Standardwerten eines neuen Classifiers belässt. Tests haben gezeigt (TODO), dass dadurch minimal bessere Ergebnisse erzielt werden, allerdings nur in Szenarien mit größerer Schrittzahl (\(>100\)). Dies lässt sich darauf zurückführen, dass zum einen das anfänglich gefüllte ClassifierSet die MatchSets relativ groß werden lässt und die erstellten Classifier den Algorithmus anfänglich stören und zum anderen, dass 
+TODO Begründung?
+\(\Rightarrow\) Starten mit Classifiern mit zufälliger Kondition und Aktion aber Startinitialisierung der restlichen Werten.
+
+\section{Sensoren und Matching}
+
+In der hier verwendeten Implementierung gibt es zwar eine gewisse Vorverarbeitung der Sensordaten, im Wesentlichen müssen aber Kondition und Sensordaten übereinstimmen, damit der jeweilige Classifier ausgewählt wird. Konkret besteht die Kondition ebenfalls aus einem 9-stelligen Vektor, der allerdings nicht nur binäre sondern trinäre Werte besitzen kann. 
+
+\subsection{Wildcards}
+
+Neben den zu den Sensordaten korrespondierenden Werten 0 und 1 gibt es noch einen dritten ``dont-care''-Zustand ``\#'', der anzeigen soll, dass beim Vergleich zwischen Kondition und Sensordaten diese Stelle ignoriert werden soll. Eine aus nur ``dont-care'' Werten bestehende Kondition würde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle Sensor-Inputs passt.
+
+Beispiel:
+Kondition \(1.\#010.1\#01\) matched Sensordaten \(1.0010.1001\), \(1.1010.1001\), \(1.0010.1101\) und \(1.1010.1101\).
+
+Die Benutzung von Wildcards erlaubt es dem LCS mehrere Classifier zu subsummieren, wodurch die Gesamtzahl der Classifier sinkt und somit Erfahrungen, die ein LCS Agent sammelt, nicht unbedingt doppelt gemacht werden müssen. Die dahinter stehende Annahme ist, dass es Situationen gibt, in denen ein Wert aus dem Sensor-Input für die Qualität der Entscheidung weniger entscheidend sein kann, als die Ersparnis durch das Zusammenlegen beider Classifier, d.h. dem Ignorieren dieses Inputs.
+
+\subsection{Matching von Sensordaten mit Classifiern}
+
+Beim Vergleich mit Sensordaten wir ebenfalls mit einem Vektor wie bei \(B\) erglichen. Entscheidend beim Vergleich ist hier aber nicht, dass beide Vektoren identisch sind, sondern, dass der Classifier ``matched''. Ein Element des Bedingungsvektors kann 3 Zustände einnehmen. \(0\), \(1\) und \(\#\). \(\#\) beinhaltet beide Zustände \(0\) und \(1\).
+
+Den dritten verwendeten Vergleich zwischen Bedingungsvektoren gibt es bei der Subsumation (der Kinder zu ihren Eltern und des gesamten ActionSets siehe ~(\ref{sec:subsummation}). Ein Classifier subsumiert einen anderen Classifier, wenn er ihn beinhaltet, aber nicht identisch mit ihm ist, also allgemeiner ist.
+
+\subsection{Drehungen}
+
+Ein Classifier besteht aus dem Bedingungsvektor 
+\[(g x_{0} x_{1} x_{2} x_{3})\] (bzw. \[(g x_{0} x_{1} x_{2} x_{3} y_{0} y_{1} y_{2} y_{3})\] 
+für den Fall mit Hindernissen) und der Aktion \(a\).
+
+Eine wesentliche Vereinfachung, die angenommen wird, ist, dass angenommen wird, dass eine Aktion in einer anderen, in 90 Grad Schritten gedrehten Umwelt, gleiche Güte besitzt.
+In einer statischen Umgebung ist dies nicht unbedingt der Fall, ohne diese Vereinfachung könnte sich ein Agent einfacher zurechtfinden, wie TODO (keine Drehung, 1 Problem pro Experiment) diese Testläufe zeigen.
+Da wir uns aber auf den dynamischen Fall konzentrieren und durch diese Vereinfachung eine signifikante Verkleinerung des Suchraums erreichen, benutzen wir die Vereinfachung.
+Im Algorithmus betrifft dies primär den Vergleich von Classifiern untereinander und mit dem Sensorstatus. 
+
+\subsection{Äquivalenz von Classifiern}
+Ein Classifier A ist identisch mit einem Classifier B wenn gilt:
+
+\begin{enumerate}
+\item \(A_{g} = B_{g}\)
+\item Falls \(A_{g} = 0\):
+
+\begin{enumerate}
+\item Es gibt ein \(i\) für das gilt: 
+\[(A_{x_{0+i \bmod 4}} A_{x_{1+i \bmod 4}} A_{x_{2+i \bmod 4}} A_{x_{3+i \bmod 4}}) = (B_{x_{0}} B_{x_{1}} B_{x_{2}} B_{x_{3}})\]
+\item Mit Hindernissen muss für dieses \(i\) außerdem gelten: 
+
+\begin{enumerate}
+\item \((A_{y_{0+i \bmod 4}} A_{y_{1+i \bmod 4}} A_{y_{2+i \bmod 4}} A_{y_{3+i \bmod 4}}) = (B_{y_{0}} B_{y_{1}} B_{y_{2}} B_{y_{3}})\)
+\item Falls \(A_{a} = \) NO\_ACTION : 
+\[A_{a} = B_{a} = \mathrm{NO\_ACTION}\]
+\item Falls \(A_{a} \neq \) NO\_ACTION : 
+\[(A_{a}+i) \bmod 4 = B_{a}\]
+\end{enumerate}
+\end{enumerate}
+
+\item Falls \(A_{g} = 1\):
+
+\begin{enumerate}
+\item Identische Aktion: \[A_{a} = B_{a}\]
+\item Identische Agentensensoren: \[(A_{x_{0}} A_{x_{1}} A_{x_{2}} A_{x_{3}}) = (B_{x_{0}} B_{x_{1}} B_{x_{2}} B_{x_{3}})\]
+\item Mit Hindernissen muss außerdem: \[(A_{y_{0}} A_{y_{1}} A_{y_{2}} A_{y_{3}}) = (B_{y_{0}} B_{y_{1}} B_{y_{2}} B_{y_{3}})\]
+\end{enumerate}
+
+\end{enumerate}
+
+Die Gleichheit zwischen Vektoren gilt, wenn paarweise Gleichheit zwischen den Elementen besteht, also \(A_{x_{i}} = B_{x_{i}}\) für \(i = 0 \dots 3\) und \(A_{y_{i}} = B_{y_{i}}\) für \(i = 0 \dots 3\) im Fall mit Hindernissen.
+
+\subsection{Test Drehungen}
+
+Mit aktivierter Optimierung der Drehungen wird in bestimmten Szenarien bis zu einer bestimmten Schrittzahl ein besseres Ergebnis erreicht, d.h. die Konvergenzgeschwindigkeit wird erhöht. In längeren Durchläufen mit größerer Schrittzahl werden jedoch bessere Ergebnisse ohne der Optimierung erreicht. Der Zugewinn folgt aus einer durch die zusätzliche lokale Information die in den Classifiern gespeichert werden kann.
+
+In einer zukünftigen Implementierung sollte überlegt werden, wie bei räumlichen Aufgaben für Classifier ein LCS sowohl drehbare als auch nicht-drehbare Classifier speichern kann. Dies kann in einer Form des erwähnten Wildcard-Systems bewerkstelligt werden. Dadurch und zusammen mit der Subsummation könnten beide Vorteile vereint werden und sowohl lokale, als auch allgemeine Information gesammelt werden. TODOvielleicht doch noch rein?
+
+
+
+
+\section{Implementation}
+
+Für die Auswahl der tatsächlich auszuführenden Aktion müssen dann alle (genotypischen) Classifier in AppliedClassifier umgewandelt werden, die jeweils genau auf eine bestimmte Aktion verweisen.
+Sichtwe
+
+Zur Durchführung und Forschung war es notwendig, den kompletten XCS Algorithmus nachvollziehen zu können. TODO
+
+Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction TODO
+
+
+Das Multistepverfahren baut darauf auf, dass die Qualität der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
+
+Der hier entwickelte Algorithmus muss primär nicht einen Weg zum Ziel erkennen, sondern eine möglichst optimale (und auch an andere Agenten angepasste) Verhaltensstrategie finden.
+
+Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht zum Erfolg führen. Eine einfache Implementation mit einem simplen Agenten der auf das Ziel zugeht, wenn es in Sicht ist und sich sonst wie ein sich zufällig bewegender Agent verhält, schneidet grundsätzlich schlechter ab.
+
+\subsection{ActionSets}
+
+\subsection{AppliedClassifierSet}
+
+\subsection{Numerosity}
+
+
+TODO Beschreibung
+In der originalen Implementierung von Butz 2000 TODO war die Behandlung der Numerosity stark optimiert auf den Fall des einmaligen Rewards ohne Protokollierung der bisherigen ActionSets. Nach einer missglückten ersten Implementierung – der Wert der numerositySum eines ClassifierSets stimmte nicht mehr mit der Summe der numerosity-Werte der enthaltenen Classifiers überein – entschloss ich mich den entsprechenden Code neuzuschreiben. Hierbei wurde jedem Classifier eine Liste der Eltern, d.h. der jeweiligen ActionSets, zugewiesen.
+Wird ein Microclassifier entfernt, wird dann lediglich die Änderungsfunktion der Numerosity des Classifiers aufgerufen, der dann wiederum die NumerositySum der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viel Umstände, die NumerositySum immer auf den aktuellen Stand zu halten.
+Positiver Nebeneffekt ist, dass man dadurch leicht auf die Menge der ActionSets zugreifen kann, denen ein Classifier angehört. Inwiefern das tatsächlich von Nutzen sein kann ist offen. TODO
+Kernstück des LCS Agenten:
+
+
+
+\subsection{Covering}
+
+Die Implementation entspricht im Wesentlichen dem Original, es wurde aber im Hinblick auf eine klare Code-Struktur eine Optimierung entfernt und Code zur Behandlung von Drehungen hinzugefügt. Im Original wird die Erstellung des MatchSets gleichzeitig mit dem Covering ausgeführt, wodurch möglicherweise Zeit gespart wird, während in dieser Implementierung es in zwei Funktionen aufgeteilt wurde. TODOBEschreibung
+Bezüglich der Drehung musste eine Schleife eingefügt werden, die die abgedeckten Aktionen mit allen, inklusive durch Drehung entstandenen, Aktionen eines Classifiers aktualisiert. Ein einzelner Classifier kann also mehrere Aktionen abdecken, beispielsweise kann ``0-0000-0000->0'' bei der Sensoreingabe ``0-0000-0000'' alle vier Aktionen bereits abdecken. TODO besseres Beispiel. 
+
+
+In meiner ersten Version hatte ich alle ungültigen Aktionen von vornherein für das Covern ausgeschlossen. Eine ungültige Aktion ist beispielsweise ein Laufen gegen ein Hindernis oder einen Agenten. Alleine dadurch verbesserte sich die Leistung um etwa 0.5\%. Das lässt sich darauf zurückführen, dass die Sensoren eines Agenten eigentlich nur feststellen können, ob ein anderer Agent in Sichtweite ist, nicht aber in welcher Entfernung. Für die eigentlichen Ergebnisse wurde die dafür verantwortliche Methode wieder entfernt.
+
+Außerdem ist ein Fehler der originalen XCS Implementation behoben. Wenn neue Classifier beim Covering hinzugefügt werden, wird ihre anfängliche ActionSetSize auf die numerositySum des matchSets gesetzt. Einen Grund dafür gibt es nicht, in meiner Implementation setze ich deshalb den Wert auf die anfängliche Größe des actionSets.
+Beim Aufruf des Covering-Algorithmus weiss man schon, wie groß
+
+TODO nein!
+
+
+\subsection{Subsummation}\label{sec:subsummation}
+
+Ein Problem ist hier natürlich die Sicherstellung, dass Informationen nicht verloren gehen. Andere Arbeiten befassen sich mit der Untersuchung von der Benutzung von Wildcards. In der hier verwendeten Implementation übernehme ich unverändert die Implementation aus der Literatur.
+
+\subsection{Evolutionärer Algorithmus}
+
+Der genetische Algorithmus wurde im Wesentlichen nicht verändert. Da aber die Binärsensoren eng zusammenhängen, werden beim Crossing Over zwei feste Stellen für Crossing Over benutzt. Die Stellen trennen somit die 3 Gene, Zielagent, Agenten und feste Hindernisse.
+
+Im Test erbrachte die Benutzung des Algorithmus wenig Unterschied.
+TODO Erklärung
+
+
+\section{Ablauf eines LCS}
+
+\begin{enumerate}
+\item Bei der Auswahl einer Aktion werden zuerst einmal alle Classifier mit denjenigen Konditionen gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das MatchSet.
+\item Im nächsten Schritt wählen wir einen Classifier aus diesem MatchSet aus und speichern dessen Aktion.
+\item Schließlich bilden wir anhand des MatchSets und der gewählten Aktion das ActionSet
+\end{enumerate}
+
+\subsection{Exploration und Exploitation}
+
+Die Auswahl in Punkt (2) kann auf verschiedene Weise erfolgen. In XCS gibt es drei Möglichkeiten der Auswahl, wobei man zusätzlich noch während eines Experiments zwischen den Möglichkeiten wechseln kann.
+\begin{enumerate}
+\item ``exploit'': Es wird immer ein Classifier mit dem höchsten Produkt aus fitness \(*\) prediction gewählt
+\item ``explore'': Es wird mit Hilfe einer Roulette-Auswahl, welche anhand des Produkts aus fitess \(*\) prediction geordnet ist, ein Classifier ausgewählt
+\item ``random-explore'': Es wird ein zufälliger Classifier gewählt, unabhängig von fitness oder prediction.
+\end{enumerate}
+
+In der XCS Implementierung sind alle drei Möglichkeiten zu finden, standardmäßig ist jedoch Möglichkeit 2 zugunsten von Möglichkeit 3 deaktiviert.
+Bei einem dynamischen Überwachungsszenario ist es im Vergleich zu standardmäßigen statischen Szenarien weder nötig noch hilfreich ``random-explore'' zu nutzen. Die Idee für ``random-explore'' in einem statischen Szenario ist, dass man vermeiden möchte, dass das LCS immer wieder die selben Entscheidungen trifft und somit immer wieder den selben Umweltreizen ausgesetzt ist, was wiederum zu immer wieder gleichen Entscheidungen führt usw.
+Bei einem dynamischen Szenario ergibt sich das Problem nicht, andere Agenten und das Ziel sind in stetiger Bewegung und der eigene Startpunkt ist nicht fixiert. Das gewichtete ``explore'' oder gar nur ``exploit'' sollten deshalb ausreichen, wenn nicht sogar wesentlich besser abschneiden.
+
+\subsection{Wechsel zwischen Exploration und Exploitation}
+
+In der Standardimplementierung von XCS wird zwischen ``exploit'' und ``random-explore'' nach jedem Erreichen des Ziels umgeschalten. 
+
+Möglichkeit (3.) entspricht dem Fall in der Standardimplementierung von XCS. Dabei wird bei jedem Erreichen eines positiven Rewards zwischen ``explore'' und ``exploit'' hin und hergeschaltet, was in der Standardimplementierung dem Beginn eines neuen Problems entspricht.
+
+Hierbei gibt es mehrere verschiedene Möglichkeiten:
+
+\begin{enumerate}
+\item Immer ``exploit''
+\item Immer ``explore''
+\item Abwechselnd ``explore'' und ``exploit''
+\item Zufällig entweder ``explore'' oder ``exploit'' (50\% Wahrscheinlichkeit jeweils)
+\item Erste Hälfte eines jeden Problems nur ``explore'', dann nur ``exploit''
+\item Wie (4.), während des Problems allerdings eine lineare Abnahme der Wahrscheinlichkeit von ``explore'' und eine lineare Zunahme der Wahrscheinlichkeit von ``exploit''
+\item ``exploit'' wenn Ziel in Sichtweite, ``explore'' sonst
+\end{enumerate}
+
+TODO
+
+
+Während es in der 
+
+TODO Vergleich weiter unten
+
+\chapter{LCS Varianten}
+
+\section{Multistepverfahren}
+
+TODO
+Als Vergleich wurde das bekannte Verfahren fast unverändert übernommen. Wie weiter oben erwähnt wird das Szenario bei einem positiven Reward aber nicht neugestartet.
+
+Idee ist, dass der Reward, den eine Aktion (bzw. das jeweils zugehörige ActionSet) erhält, vom erwarteten Reward der folgenden Aktion abhängt. Somit wird, rückführend vom Ziel, der Reward schrittweise an vorgehende Aktionen verteilt und somit das Ziel schneller gefunden
+
+TODO Quelle
+
+
+reward = 0 ? Gebe maxPrediction des nächsten Zugs
+reward = 1 ? Gebe maxPrediction 0, reward = 1
+
+
+In jedem Schritt wird das vorherige ActionSet durch maxPrediction bzw. reward belohnt
+TODO
+
+\begin{program}
+  \begin{verbatim}
+
+/**
+ * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
+ * Reward zu bestimmen, den besten Wert des ermittelten MatchSets 
+ * weiterzugeben und, bei aktuell positivem Reward, das aktuelle
+ * ActionSet zu belohnen.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateReward(final long gaTimestep) {
+  /**
+   * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
+   * Überwachungsreichweite befindet
+   */
+    boolean reward = checkRewardPoints();
+
+    if(prevActionSet != null){
+      collectReward(lastReward, lastMatchSet.getBestValue(), false);
+      prevActionSet.evolutionaryAlgorithm(classifierSet, gaTimestep);
+    }
+
+    if(reward) {
+      collectReward(reward, 0.0, true);
+      lastActionSet.evolutionaryAlgorithm(classifierSet, gaTimestep);
+      return;
+    }
+    prevActionSet = lastActionSet;
+    lastReward = reward;
+  }
+\end{verbatim}
+  \caption{Erstes Kernstück des Multistepverfahrens (calculateReward, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}
+\end{program}
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
+ * zugehörigen ActionSets weiter.
+ *
+ * @param reward Wahr wenn der Zielagent in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen ActionSets
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
+ *        einem positiven Reward, aufgerufen wurde
+ */
+
+  public void collectReward(boolean reward, double best_value, boolean is_event) {
+    double corrected_reward = reward ? 1.0 : 0.0;
+
+  /**
+   * Ereignis, aktualisiere das aktuelle ActionSet und lösche das vorherige
+   */
+    if(is_event) {
+      if(lastActionSet != null) {
+        lastActionSet.updateReward(corrected_reward, best_value, factor);
+        prevActionSet = null;
+      }
+    } 
+
+  /**
+   * Kein Ereignis, also nur das letzte ActionSet aktualisieren
+   */
+    else 
+    {
+      if(prevActionSet != null) {
+        prevActionSet.updateReward(corrected_reward, best_value, factor);
+      }
+    }
+  }
+\end{verbatim}
+  \caption{Zweites Kernstück des Multistepverfahrens (collectReward - Verteilung des Rewards auf die ActionSets), angepasst an ein dynamisches Überwachungsszenario}
+\end{program}
+
+\begin{program}
+  \begin{verbatim}
+
+/**
+ * Bestimmt die zum letzten bekannten Status passenden Classifier und
+ * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
+ * ActionClassifierSet mithilfe der gewählten Aktion ermittelt.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateNextMove(long gaTimestep) {
+
+ /**
+  * Überdecke das classifierSet mit zum Status passenden Classifiern
+  * welche insgesamt alle möglichen Aktionen abdecken.
+  */
+    classifierSet.coverAllValidActions(lastState, getPosition(), gaTimestep);
+
+ /**
+  * Bestimme alle zum Status passenden Classifier.
+  */
+    lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
+
+ /**
+  * Entscheide auf welche Weise die Aktion ausgewählt werden soll.
+  */
+    lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
+                                           lastExplore, gaTimestep);
+
+ /**
+  * Wähle Aktion und bestimme zugehöriges ActionSet
+  */
+    calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
+    lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
+                                                      calculatedAction);
+  }
+\end{verbatim}
+  \caption{Drittes Kernstück des Multistepverfahrens (calculateNextMove - Auswahl der nächsten Aktion und Ermittlung des zugehörigen ActionSets), angepasst an ein dynamisches Überwachungsszenario}
+\end{program}
+
+\section{LCS Variante ohne Kommunikation}
+Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde die selbe wie beim einfachen Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den ActionSets jeweils zwischen zwei direkt aufeinanderfolgenden ActionSets. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (fitness, prediction) für die Classifier gefunden werden.
+Bei der veränderten LCS Variante ist die Verbindung zwischen den ActionSets direkt die zeitliche Nähe zum Ziel. ActionSets von jedem Schritt seit dem Erreichen des letzten Ziels werden gespeichert bis das Ziel erreicht wurde und dann in Abhängigkeit des Alters mit absteigendem bzw. aufsteigendem Reward bewertet.
+
+\(r(a)\) bezeichnet den Reward für das ActionSet mit Alter \(a\).
+
+Bei linearer Rewardvergabe:
+$$
+r(a) = \left\{ \begin{array}{rl}
+  \frac{a}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $1$} \\
+  \frac{1 - a}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $0$}
+       \end{array} \right.
+$$
+
+bzw. bei quadratischer Rewardvergabe:
+
+$$
+r(a) = \left\{ \begin{array}{rl}
+  \frac{{a}^{2}}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $1$} \\
+  \frac{{1 - a}^{2}}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $0$}
+       \end{array} \right.
+$$
+
+In Tests ergab sich für die quadratische Rewardvergabe ein minimal besseres Ergebnis (TODO zeigen), im weiteren Verlauf, insbesondere in den Grafiken, werde ich mich auf die lineare Rewardvergabe beschränken um eine verständliche Darstellung zu ermöglichen.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{positive_negative_reward.eps}
+}
+\caption[Schematische Darstellung der Rewardverteilung an ActionSets] {Schematische Darstellung der (quadratischen) Rewardverteilung an gespeicherte ActionSets bei einem positiven bzw. negativen Ereignis}
+\label{positive_negative_reward:fig}
+\end{figure}
+
+\section{Ereignisse}
+
+In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
+
+Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe ~(\ref{saved_rewards:fig})).
+
+Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. W\"ahlen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe ~(\ref{neutral_reward:fig})). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
+Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. ``maxStackSize'' stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Ein Ereignis tritt auf, wenn:
+\begin{enumerate}
+\item Positive Rewardänderung (Zielagent war im letzten Zeitschritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis (mit reward = \(1\))
+\item Negative Rewardänderung (Zielagent war im letzten Zeitschritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis (mit reward = \(0\))
+\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielagent ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(1\))
+\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielagent ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(0\))
+\end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{saved_rewards.eps}
+}
+\caption[Schematische Darstellung der zeitlichen Rewardverteilung an und der Speicherung von ActionSets] {Schematische Darstellung der zeitlichen Rewardverteilung an ActionSets nach mehreren positiven und negativen Ereignissen und der Speicherung der letzten ActionSets}
+\label{saved_rewards:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{neutral_reward.eps}
+}
+\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
+\label{neutral_reward:fig}
+\end{figure}
+
+\begin{program}
+  \begin{verbatim}
+
+/**
+ * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
+ * Reward zu bestimmen und positive, negative und neutrale Ereignisse 
+ * den besten Wert des ermittelten MatchSets weiterzugeben und, bei 
+ * aktuell positivem Reward, das aktuelle ActionSet zu belohnen.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateReward(final long gaTimestep) {
+  /**
+   * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
+   * Überwachungsreichweite befindet
+   */
+    boolean reward = checkRewardPoints();
+
+    if (reward != lastReward) {
+      int start_index = historicActionSet.size() - 1;
+      collectReward(start_index, actionSetSize, reward, 1.0, true);
+      actionSetSize = 0;
+    }
+    else 
+
+    if(actionSetSize >= Configuration.getMaxStackSize())
+    {
+      int start_index = Configuration.getMaxStackSize() / 2;
+      int length = actionSetSize - start_index;
+      collectReward(start_index, length, reward, 1.0, false);
+      actionSetSize = start_index;
+    }
+
+    lastReward = reward;
+  }
+\end{verbatim}
+\label{calculateRewardLCS:fig}
+  \caption{Erstes Kernstück des LCS-Algorithmus (calculateReward, Bestimmung des Rewards anhand der Sensordaten)}
+\end{program}
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
+ * zugehörigen ActionSets weiter.
+ *
+ * @param reward Wahr wenn der Zielagent in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen ActionSets
+ * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
+ *        einem positiven Reward, aufgerufen wurde
+ */
+
+  public void collectReward(boolean reward, double best_value, boolean is_event) {
+    double corrected_reward = reward ? 1.0 : 0.0;
+  /**
+   * Wenn es kein Event ist, dann gebe den Reward weiter wie beim 
+   * Multistepverfahren
+   */
+    double max_prediction = is_event ? 
+      0.0 : historicActionSet.get(start_index+1).getMatchSet().getBestValue();
+
+  /**
+   * Aktualisiere eine ganze Anzahl von ActionSets
+   */
+    for(int i = 0; i < action_set_size; i++) {
+
+  /**
+   * Benutze aufsteigenden bzw. absteigenden Reward bei einem positiven 
+   * bzw. negativen Ereignis
+   */
+      if(is_event) {
+        corrected_reward = reward ? 
+          calculateReward(i, action_set_size) : 
+          calculateReward(action_set_size - i, action_set_size);
+      }
+  /**
+   * Aktualisiere das ActionSet mit dem bestimmten Reward und
+   * gebe bei allen anderen ActionSets den Reward weiter wie 
+   * beim Multistepverfahren 
+   */
+      ActionClassifierSet action_classifier_set = 
+        historicActionSet.get(start_index - i);
+      action_classifier_set.updateReward(corrected_reward, max_prediction, factor);
+
+      max_prediction = action_classifier_set.getMatchSet().getBestValue();
+    }
+
+\end{verbatim}
+  \caption{Zweites Kernstück des LCS-Algorithmus (collectReward - Verteilung des Rewards auf die ActionSets)}
+\end{program}
+
+\begin{program}
+  \begin{verbatim}
+
+/**
+ * Bestimmt die zum letzten bekannten Status passenden Classifier und
+ * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
+ * ActionClassifierSet mithilfe der gewählten Aktion ermittelt.
+ * Im Vergleich zur originalen Multistepversion wird am Schluß noch 
+ * das ermittelte ActionSet gespeichert.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
+ */
+
+  public void calculateNextMove(long gaTimestep) {
+
+ /**
+  * Überdecke das classifierSet mit zum Status passenden Classifiern
+  * welche insgesamt alle möglichen Aktionen abdecken.
+  */
+    classifierSet.coverAllValidActions(lastState, getPosition(), gaTimestep);
+
+ /**
+  * Bestimme alle zum Status passenden Classifier.
+  */
+    lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
+
+ /**
+  * Entscheide auf welche Weise die Aktion ausgewählt werden soll,
+  * wähle Aktion und bestimme zugehöriges ActionSet
+  */
+    lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
+                                           lastExplore, gaTimestep);
+
+    calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
+    lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
+                                                      calculatedAction);
+
+ /**
+  * Speichere das ActionSet und passe den Stack bei einem Überlauf an
+  */
+    actionSetSize++;
+    historicActionSet.addLast(lastActionSet);
+    if (historicActionSet.size() > Configuration.getMaxStackSize()) {
+      historicActionSet.removeFirst();
+    }
+  }
+\end{verbatim}
+  \caption{Drittes Kernstück des LCS-Algorithmus (calculateNextMove - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}
+\end{program}
+
+
+
+
+\subsection{Test der verschiedenen Exploration-Modi}
+
+\chapter{Analyse LCS und Multistep}
+
+\subsection{Vergleich Multistep / LCS}
+
+Szenarien, Parameter.
+

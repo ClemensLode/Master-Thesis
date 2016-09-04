@@ -1,0 +1,57 @@
+\chapter{Ablauf der Simulation}
+
+Bei Simulationen am Computer stellt sich sofort die Frage nach der Genauigkeit. Die Agenten werden bei dieser Simulation nacheinander abgearbeitet und bewegen sich auf einem Torus mit diskreten Feldern. Dies kann u.U. dazu führen, dass je nach Position in der Liste abzuarbeitender Agenten die Informationen über die Umgebung unterschiedlich alt sind. Die große Frage ist deshalb, in welcher Reihenfolge Sensordaten ermittelt, ausgewertet, Agenten bewegt, intern sich selbst bewertet und global die Qualität gemessen wird.\\
+Da eine Aktion auf Basis der Sensordaten ausgewählt wird, ist die erste Restriktion, dass eine Aktion nach der Verarbeitung der Sensordaten stattfinden muss. Und da Aktionen bewertet werden sollen, also jeweils der Zustand nach der Bewegung mit dem gewünschten Zustand verglichen werden soll, ist die zweite Restriktion, dass die Bewertung einer Aktion nach dessen Ausführung stattfinden muss.\\
+Ansonsten gibt es folgende Möglichkeiten:
+
+\section{Reihenfolge der Ausführung}
+\begin{enumerate}
+\item Für alle Agenten werden erst einmal die neuen Sensordaten erfasst und sich für eine Aktion entschieden. Sind alle Agenten abgearbeitet, werden die Aktionen ausgeführt.
+\item Die Agenten werden nacheinander abgearbeitet, es werden jeweils neue Sensordaten erfasst und sich sofort für eine neue Aktion entschieden. 
+\end{enumerate}
+
+Bei der ersten Möglichkeit haben alle Agenten die Sensordaten vom Beginn der Zeiteinheit, während bei der zweiten Möglichkeit später verarbeitete Agenten bereits die Aktionen der bereits berechneten Agenten miteinbeziehen können. Umgekehrt können dann frühere Agenten bessere Positionen früher besetzen. Da aufgrund der primitiven Sensoren nicht davon auszugehen ist, dass Agenten beginnende Bewegungen (und somit deren Zielposition) anderer Agenten einbeziehen können, soll jeder Agent von den Sensorinformationen zu Beginn der Zeiteinheit ausgehen.\\
+Wenn sich mehrere Agenten auf dasselbe Feld bewegen wollen, dann spielt die Reihenfolge der Ausführung der Aktionen eine Rolle. Wird die Liste der Agenten einfach linear abgearbeitet, können Agenten mit niedriger Position in der Liste die Aktion auf Basis jüngerer Sensordaten fällen. Dies kann dazu führen, dass Aktionen von Agenten mit höherer Position in der Liste eher fehlschlagen, da das als frei angenommene Feld nun bereits besetzt ist. Da es keinen Grund gibt, Agenten mit niedrigerer Position zu bevorteilen, werden die Aktionen der Agenten in zufälliger Reihenfolge abgearbeitet.\\
+Bezüglich der Bewegung ergibt sich hierbei eine weitere Frage, nämlich wie unterschiedliche Bewegungsgeschwindigkeiten behandelt werden sollen, da alle Agenten eine Einheitsgeschwindigkeit von maximal einem Feld pro Zeiteinheit haben, während sich das Zielobjekt je nach Szenario gleich eine ganze Anzahl von Feldern bewegen kann.\\
+
+Auch hier habe ich mich für eine zufällige Verteilung entschieden. Kann sich das Zielobjekt um \(n\) Schritte bewegen, so wird seine Bewegung in \(n\) Einzelschritte unterteilt, die nacheinander mit zufälligen Abständen (d.h. Bewegungen anderer Agenten) ausgeführt werden.\\
+Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen soll. Hier soll ein Sonderfall eingeführt werden, so dass das Zielobjekt in einer Zeiteinheit mehrmals (\(n\)-mal) neue Sensordaten erfassen und sich für eine neue Aktion entscheiden kann.
+
+TODO Begründung
+
+
+\section{Reihenfolge Rewardverteilung}
+Schließlich bleibt die Frage danach, wann geprüft werden soll, ob das Zielobjekt in Sicht ist, und wann somit der Reward verteilt wird. Da XCS in der Standardimplementation darauf ausgelegt ist, den Reward jeweils genau einer Aktion zuzuordnen, sollte der Reward nicht bei jeder einzelnen Bewegung des Zielobjekts überprüft und verteilt werden, sondern nur einmal pro Zeiteinheit. Außerdem soll der Einfachheit halber der Reward auch von binärer Natur sein (``Zielobjekt in Überwachungsreichweite'' oder ``Zielobjekt nicht in Überwachungsreichweite''), weshalb Zwischenzustände für den Reward (z.B. ``War zwei von drei Zeitschritten in der Überwachungsreichweite'' \(\Rightarrow \frac{2}{3}\) Reward) ausgeschlossen werden sollen. Für den Reward gibt es somit folgende Möglichkeiten:
+
+\begin{enumerate}
+\item Rewards werden direkt nach der Ausführung einer einzelnen Aktion vergeben.
+\item Rewards werden nach Ausführung aller Aktionen der Agenten vergeben.
+\item Rewards werden nach Ausführung aller Aktionen des Zielobjekts vergeben.
+\end{enumerate}
+
+Werden die Rewards sofort vergeben (Punkt 1), dann werden sich später noch weg-bewegende bzw. sich später noch hinbewegende Agenten nicht beachtet. Da die Agenten in zufälliger Reihenfolge abgearbeitet werden, würde das bedeuten, dass die Bewegung der restlichen (zufälligen) Anzahl von Agenten in den Reward nicht miteinbezogen wird. Selbiges gilt für Punkt 3.\\
+Auch das Zielobekt kann Reward erhalten. Hierbei gibt es ebenfalls drei Möglichkeiten:
+\begin{enumerate}
+\item Reward direkt nach Ausführung des letzten Schritts
+\item Reward nach Ausführung aller Agenten
+\end{enumerate}
+
+Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und  das Zielobjekt in einem Durchlauf gemeinsam bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
+Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Grids anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn wir vom realistischen Fall ausgehen, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, den Zielobjekts insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
+Was den Zeitpunkt des Rewards betrifft, lautet die Hypothese, dass wir ein besseres Ergebnis erreichen, wenn man den Reward anhand der selben Momentaufnahme verteilt, anhand der wir auch die Qualität testen, d.h. dass Punkt 2 Punkt 1 überlegen ist. Dies bestätigt sich in Tests siehe TODO.
+
+\section{Zusammenfassung}
+Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also wie folgt aus:
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+\begin{enumerate}
+\item Erfassung aller Sensordaten
+\item Wahl der Aktion anhand der Regeln des jeweiligen Agenten
+\item Ausführung der Aktion (in zufälliger Reihenfolge, das Zielobjekt führt nach dem ersten Schritt außerdem Schritt 1. und 2. für alle weiteren Schritte nochmals durch)
+\item Bestimmung des Rewards
+\item Bestimmen der Qualität dieser Zeiteinheit
+\end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}

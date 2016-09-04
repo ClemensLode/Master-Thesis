@@ -1,0 +1,309 @@
+\chapter{Szenario}
+
+Im Wesentlichen sollen die hier besprochenen Algorithmen in einem Überwachungsszenario getestet werden, d.h. die Qualität eines Algorithmus wird anhand des Anteils der Zeit bewertet, die er das Zielobjekt überwachen konnte, relativ zur Gesamtzeit. 
+
+Verwendetes Umfeld wird ein quadratischer Torus sein, der aus quadratischen Feldern besteht.\\
+Jedes bewegliche Objekt auf einem Feld kann sich nur auf eines der vier Nachbarfelder bewegen oder stehenbleiben.\\
+Die Felder können entweder leer oder durch ein Objekt besetzt sein. Besetzte Felder können nicht betreten werden. Es gibt drei verschiedene Arten von Objekten, unbewegliche Hindernisse, ein zu überwachendes Zielobjekt und Agenten. Sowohl das Zielobjekt als auch die Agenten bewegen sich anhand eines jeweils bestimmten Algorithmus und bestimmter Sensordaten.\\
+Bis Kapitel~\ref{communication:cha} wird ausschließlich der Fall ohne Kommunikation betrachtet. TODO
+
+\section{Probleminstanzen}
+
+Eine einzelne Probleminstanz entspricht einem Torus mit einer (abhängig vom verwendeten Random-Seed-Wert) bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit. \\
+Ein Experiment entspricht dem Test einer Anzahl von Probleminstanzen mit einer Reihe von Random-Seed-Werten.\\
+In einem Durchlauf werden mehrere Experimente (jeweils mit unterschiedlichen Random-Seed-Wert-Reihen) durchgeführt.
+
+\section{Sichtbarkeit}
+Die Parameter ``Sichtweite'' und ``Überwachungsreichweite'' einer Probleminstanz bestimmen, bis zu welcher Distanz das Zielobjekt von einem Agenten als ``gesehen'' bzw. ``überwacht'' gilt, sofern die Sicht durch andere Objekte nicht versperrt ist. Ob Objekte durch Agenten bzw. dem Zielobjekt gesehen werden ist relevant für die Sensordaten. Ob sie sich in Überwachungsreichweite befinden ist relevant für die Bewertung der Qualität des für die Agenten bzw. das Zielobjekt verwendeten Algorithmus.
+
+\section{Qualität}
+
+Qualität eines Algorithmus zu einem Problem wird anhand des Anteils der Zeit berechnet, die er das Zielobjekt während des Problems überwachen konnte, relativ zur Gesamtzeit.\\
+Qualität eines Algorithmus zu einer Anzahl von Problemen (also einem Experiment) wird Anhand des Gesamtanteil der Zeit berechnet, die er das Zielobjekt während aller Probleme überwachen konnte, relativ zur Gesamtzeit aller Probleme.\\
+Qualität eines Algorithmus entspricht dem Durchschnitt der Qualitäten des Algorithmus mehrerer Experimente.
+
+Halbzeitqualität eines Algorithmus zu einem Problem entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit.\\
+Halbzeitqualität eines Algorithmus zu einer Anzahl von Problemen entspricht dem Anteil der Zeit, die der Algorithmus das Zielobjekt während jeweils der zweiten Hälfte des Problems überwachen konnte, relativ zur halben Gesamtzeit aller Probleme.\\
+Die Halbzeitqualität eines Algorithmus entspricht dem Durchschnitt aller Halbzeitqualitäten des Algorithmus mehrerer Experimente.\\
+Ein Vergleich der Qualität mit der Halbzeitqualität eines Algorithmus erlaubt ermöglicht einen Einblick, wie gut sich der Algorithmus verhält, nachdem er sich auf das Problem bereits eine Weile lang einstellen konnte. 
+
+\section{Dynamik}
+
+Die Szenarien fallen alle unter die Kategorie ``dynamisch''. In diesem Zusammenhang soll darunter verstanden werden, dass es kein konkretes Ziel gibt, das erreicht werden soll oder kann. 
+
+TODO woods als Beispiel statisches Szenario
+
+\section{Kollaboration}
+
+Wesentliches Hauptaugenmerk der Gestaltung der Szenarien soll Kollaboration sein, d.h. die Aufgabe soll mit Hilfe mehrerer Agenten gemeinsam gelöst werden. Eine erfolgreiche Überwachung soll deswegen so definiert sein, dass sich ein beliebiger Agent in Überwachungsreichweite des Ziels befindet. Um sicherzustellen, dass diese Aufgabe nicht ein einzelner Agent erfüllen kann, soll sich das Zielobjekt schneller fortbewegen als die einzelnen Agenten.\\
+Könnte sich das Zielobjekt genauso langsam oder langsamer als die Agenten bewegen, dann wäre das Problem sehr simpel, da das Zielobjekt Schwierigkeiten hätte, Agenten abzuschütteln, deren einzige Strategie es ist, sich in Richtung des Zielobjekts zu bewegen.
+
+TODO aus verschiedenen Richtungen betrachten? Mehrere Agenten notwendig?
+
+\chapter{Agenten}
+
+\section{Sensoren}
+
+Jeder Agent besitzt 3 Gruppen mit jeweils 4 Sensoren. Alle Sensoren sind visuelle Sensoren mit begrenzter Reichweite und können nur feststellen, ob sich in ihrem Sichtbereich ein entsprechendes Objekt befindet oder nicht. Andere Objekte blockieren die Sicht, Sichtlinien werden durch einen einfachen Bresenham-Linienalgorithmus bestimmt.\\
+Jede Gruppe von Sensoren nimmt einen anderen Typ von Objekt wahr. Die erste Gruppe nimmt das Zielobjekt, die zweite Gruppe andere Agenten und die dritte Gruppe Hindernisse wahr.\\
+Ein Sensor ist jeweils in eine bestimmte Richtung ausgerichtet (Norden, Osten, Süden und Westen, wobei auf den Abbildungen Norden immer oben ist) und wird auf ``wahr'' gesetzt, wenn sich in dem von der Sichtweite bestimmten Kegel ein entsprechendes Objekt befindet.\\
+In Abbildung ~\ref{sight_directions:fig} sind alle Sichtkegel (dunkler und heller Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt. Als Sandardwerte wird hier eine Sichtweite von \(5.0\) und eine Überwachungsreichweite von \(3.0\) verwendet, der überwachte Bereich ist also eine Teilmenge des sichtbaren Bereichs.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{sight_directions.eps}
+}
+\caption[Sichtkegel und Überwachungsreichweite eines Agenten]{Sichtkegel und Überwachungsreichweite eines Agenten, jeweils für die einzelnen Richtungen}
+\label{sight_directions:fig}
+\end{figure}
+
+\section{Fähigkeiten}
+
+Jeder Agent kann in jedem Schritt zwischen 5 verschiedenen Aktionen wählen, die den vier Richtungen plus einer Aktion, bei der der Agent sich nicht bewegt, entsprechen. Agenten können pro Zeiteinheit genau einen Schritt durchführen. Das Zielobjekt kann je nach Szenarioparameter mehrere Schritte ausführen.
+
+\section{Ablauf der Bewegung}
+Alle Agenten werden nacheinander in der Art abgearbeitet, dass der jeweilige Agent die aktuellen Sensordaten aus der Umgebung holt und anhand dieser die nächste Aktion bestimmt. Ungültige Aktionen, d.h. der Versuch sich auf ein besetztes Feld zu bewegen, schlagen fehl und der Agent führt in diesem Schritt keine Aktion aus, wird aber nicht weiter bestraft. Eine detaillierte Beschreibung wird in Kapitel~\ref{conclusion:cha} geliefert.
+
+\section{Grundsätzliche Algorithmen der Agenten}
+
+Neben denjenigen Algorithmen, die auf LCS basieren und in Kapitel~\ref{lcs:cha} besprochen werden, gibt es folgende Grundtypen, die dazu dienen, die Qualität der anderen Algorithmen einzuordnen. Wesentliches Merkmal im Vergleich zu auf LCS basierenden Algorithmen ist, dass sie statische, handgeschriebene Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren, d.h. ihre Regeln nicht anpassen.
+
+\subsection{``Randomized''}\label{randomized_movement:sec}
+In jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung ~(\ref{agent_random:fig}) zeigt eine Beispielsituation bei der der Agent jegliche Sensordaten ignoriert und eine Aktion zufällig auswählen wird.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{agent_random.eps}
+}
+\caption[Sich zufällig bewegender Agent]{Agent bewegt sich in eine zufällige Richtung (oder bleibt stehen)}
+\label{agent_random:fig}
+\end{figure}
+
+\subsection{``Simple AI Agent''}
+Ist das Zielobjekt in Sichtweite, bewegt sich dieser Agent auf das Ziel zu. Ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung ~(\ref{simple_agent_to_goal:fig}) zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte. 
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{simple_agent_to_goal.eps}
+}
+\caption[Einfacher Agent]{Einfacher Agent : Sofern es sichtbar ist bewegt sich der Agent auf das Zielobjekt zu}
+\label{simple_agent_to_goal:fig}
+\end{figure}
+
+\subsection{``Intelligent AI Agent''}
+Ist der Zielobjekt in Sicht, verhält sich dieser Algorithmus wie ``Simple AI Agent''. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird. Falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung ~(\ref{intelligent_agent:fig}) sieht der Agent das Zielobjekt nicht und wählt deswegen eine Richtung, in der der Sensor keine Agenten anzeigt, in diesem Fall Norden.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{intelligent_agent.eps}
+}
+\caption[Sich intelligent verhaltender Agent]{Intelligenter Agent : Falls das Zielobjekt nicht sichtbar ist bewegt sich der Agent von anderen Agenten weg}
+\label{intelligent_agent:fig}
+\end{figure}
+
+
+
+\chapter{Das Zielobjekt}
+
+
+Die Typen von Zielobjekten werden zum einen über ihre Geschwindigkeit und zum anderen über ihre Bewegungsart definiert. Neben der Größe des Torus und den Hindernissen trägt der Typ des Zielobjekts wesentlich zur Schwierigkeit eines Szenarios bei, da dieser die Aufenthaltswahrscheinlichkeiten des Zielobjekts unter Einbeziehung des Zustands des letzten Zeitschritts bestimmt. Die Schwierigkeit bestimmt sich über die Summe der erwarteten Aufenthaltswahrscheinlichkeiten in nicht überwachten Feldern geteilt durch die Summe der Aufenthaltswahrscheinlichkeiten in überwachten Feldern.
+
+\subsection{Basiseigenschaften}
+
+Im wesentlichen entspricht ein Zielobjekt einem Agenten, d.h. das Zielobjekt kann sich bewegen und besitzt Sensoren. 
+
+Gemeinsam haben alle Arten von Bewegungen des Zielobjekts, dass, wenn dem Algorithmus kein freies Feld zur Verfügung steht, ein zufälliges, freies Feld in der Nähe ausgewählt und dort hingesprungen wird. Dies kommt einem Neustart gleich und ist notwendig um eine Verfälschung des Ergebnisses zu verhindern, das daher rühren kann, dass ein oder mehrere Agenten (zusammen mit eventuellen Hindernissen) alle vier Bewegungsrichtungen des Zielobjekts blockieren.\\
+Andererseits ist auch der Sprung eine Verfälschung, falls bei einem Durchlauf eine ganze Anzahl von Sprüngen durchgeführt worden sein, sollte man deshalb das Ergebnis verwerfen und andere Random-Seed Werte benutzen.
+
+TODO wie oft das aufgetreten ist
+
+TODO benachbarte Hindernisse aus Bewegung ausschliessen, Nähesensor
+
+\subsection{Typ ``Total Random''}
+Ein Zielobjekt dieses Typs springt zu einem zufälligen (freien) Feld auf dem Torus. Mit dieser Einstellung kann die Abdeckung des Algorithmus geprüft werden, d.h. inwieweit die Agenten jeweils außerhalb der Überwachungsreichweite anderer Agenten bleiben. Jegliche Anpassung an die Bewegung des Zielobjekts ist hier wenig hilfreich, ein Agent kann nicht einmal davon ausgehen, dass sich das Zielobjekt in der Nähe seiner Position der letzten Zeiteinheit befindet. Die Aufenthaltswahrscheinlichkeit für jedes freie Feld ist hierbei \(\frac{1}{n}\), wobei \(n\) die Anzahl der freien Felder entspricht.
+
+\subsection{``Random Movement''}
+Wie ``Random Movement'' bei Agenten (~\ref{randomized_movement:sec}). Sind alle möglichen Felder belegt, wird wie oben beschrieben auf ein zufälliges Feld gesprungen. Diesen Fall außen vorgelassen beträgt die Aufenthaltswahrscheinlichkeit für die 4 angrenzenden Felder jeweils \(\frac{1}{5}\) und das Zielobjekt bleibt mit Wahrscheinlichkeit \(\frac{1}{5}\) stehen.
+
+\subsection{``One direction change''}
+Mit dieser Einstellung wird die der letzten Richtung entgegengesetzten Richtung aus der Menge der Auswahlmöglichkeiten entfernt und von den verbleibenden drei Richtungen (plus der Aktion ``Stehenbleiben'') eine zufällig ausgewählt. Sind alle drei Richtungen versperrt, wird stehengeblieben.\\
+War die letzte Aktion nicht eine Bewegungsrichtung, sondern die Aktion ``Stehenbleiben'', so wird eine zufällige Richtung ausgewählt. Sind alle Richtungen versperrt, wird auch hier wieder auf ein zufälliges Feld gesprungen.
+Die Aufenthaltswahrscheinlichkeit beträgt im Fall ohne angrenzende Hindernisse für die Felder vor, links und rechts (relativ zur Bewegungsrichtung im vergangenen Zeitschritt) also \(\frac{1}{3}\). In Abbildung~\ref{goal_agent_one_direction_change:fig} ist eine Beispielsituation zu sehen, bei der der Zielagent sich zuletzt nach Norden bewegt hat und nun zwischen Norden, Westen und Osten auswählen kann.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_direction_change.eps}
+}
+\caption[Zielobjekt mit maximal einer Richtungsänderung]{Zielobjekt macht pro Schritt maximal eine Richtungsänderung}
+\label{goal_agent_one_direction_change:fig}
+\end{figure}
+
+\subsection{``Always same direction''}
+Der Zielobjekt versucht, immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, wählt er ein zufälliges, angrenzendes, freies Feld im Westen oder Osten. Anzumerken ist, dass dies zusätzliche Fähigkeiten darstellen, d.h. das Zielobjekt kann feststellen, ob sich direkt angrenzend ein Hindernis im Norden befindet, während normale Agenten, was die Distanz betrifft, keine Informationen darüber besitzen können.\\
+Sind auch die Felder im Westen und Osten belegt, springt er auf ein zufälliges freies Feld. Schafft es der Zielobjekt innerhalb von einer bestimmten Zahl (Breite des Spielfelds) von Schritten nicht, einen weiteren Schritt nach Norden zu gehen, wird ebenfalls gesprungen, um ein ``Festhängen'' an einem Hindernis zu vermeiden. Ohne Hindernisse ergibt sich also eine Aufenthaltswahscheinlichkeit von \(1.0\) im darüberliegenden Feld im Norden. In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen dargestellt, zum einen ein wiederholtes hin- und herlaufen unter den Hindernissen, der Weg links um die Hindernisse herum und der Weg rechts um die Hindernisse herum.
+
+TODO im Bild den Pfeil nach rechts bzw. links raus, wo er bereits im Norden frei ist
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_always_same_direction.eps}
+}
+\caption[Zielobjekt das sich, wenn möglich, immer nach Norden bewegt]{Zielobjekt bewegt sich, wenn möglich, immer nach Norden}
+\label{goal_agent_always_same_direction:fig}
+\end{figure}
+
+\subsection{``Intelligent (Open)''}
+Das Zielobjekt versucht bei der Auswahl der Aktion möglichst die Aktion zu wählen, bei der es außerhalb der Sichtweite der Agenten bleibt, es werden also alle Richtungen gestrichen, in denen ein anderer Agent gesichtet wird. Von den verbleibenden Richtungen werden außerdem mit 20\% Wahrscheinlichkeit alle Richtungen gestrichen, in denen sich ein Hindernis befindet. Sind alle Richtungen gestrichen worden, bewegt sich das Zielobjekt zufällig. Sind alle Richtungen blockiert, springt es wie in den anderen Varianten auch auf ein zufälliges Feld. In Abbildung~\ref{goal_agent_intelligent_open:fig} wird die Richtung Westen gestrichen, da sich dort ein Agent befindet. Im Norden und Osten befinden sich Hindernisse, diese Richtungen werden jeweils mit 20\% gestrichen, während die Richtung Süden mit Sicherheit als Auswahlmöglichkeit übrig bleibt. Die Aufenthaltswahrscheinlichkeit für Norden und Osten wären also jeweils \(\frac{8*8}{3*10*10}+\frac{2*8}{2*10*10} = \frac{88}{300}\) und \(\frac{8*8}{3*10*10}+\frac{2*2*8}{2*10*10}+\frac{2*2}{10*10}=\frac{124}{300}\) für den Süden.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_intelligent_open.eps}
+}
+\caption[Sich intelligent verhaltendes Zielobjekt der Agenten und Hindernissen ausweicht]{Zielobjekt bewegt sich mit bestimmter Wahrscheinlichkeit von Agenten und größerer Wahrscheinlichkeit von Hindernissen weg}
+\label{goal_agent_intelligent_open:fig}
+\end{figure}
+
+\subsection{``Intelligent (Hide)''}
+Das Zielobjekt vermeidet Agenten wie bei ``Intelligent (Open)'', streicht aber statt Richtungen mit Hindernissen Richtungen ohne Hindernisse mit 20\% Wahrscheinlichkeit, tendiert also eher dazu, auf Hindernisse zuzugehen. Idee ist, dass es sich dadurch möglicherweise den Blicken der Agenten entziehen kann. Betrachten wir in Abbildung~\ref{goal_agent_intelligent_hide:fig} die selbe Situation wie bei ``Intelligent (Open)'' so sind die Aufenthaltswahrscheinlichkeiten von Norden und Osten mit denen von Süden vertauscht.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_intelligent_hide.eps}
+}
+\caption[Sich intelligent verhaltendes Zielobjekt der Agenten ausweicht und Hindernisse sucht]{Zielobjekt bewegt sich von Agenten weg und mit bestimmter Wahrscheinlichkeit auf Hindernisse zu}
+\label{goal_agent_intelligent_hide:fig}
+\end{figure}
+
+\subsection{``LCS''}
+Eine LCS Implementierung, die der Implementierung eines LCS Agenten entspricht. Das Ziel des Zielobjekts ist es hier aber, es zu vermeiden, Agenten zu überwachen (bzw. umgekehrt eine Überwachung durch andere Agenten zu vermeiden). Eine genaue Beschreibung folgt im Kapitel~\ref{lcs:cha} und soll hier nur der Vollständigkeit halber erwähnt werden.
+
+TODO auch ein eigenes goal agent lcs kapitel machen
+TODO Pendelbewegung?
+TODO Fester Pfad?
+
+
+\chapter{Szenarien}
+
+Getestet wurden eine Reihe von Szenarien (in Verbindung mit unterschiedlichen Werten für die Anzahl der Agenten, Größe des Torus und Art und Geschwindigkeit des Zielobjekts). Wesentliche Rolle spielt hier die Verteilung der Hindernisse.\\
+In den Abbildungen repräsentieren rote Felder Hindernisse, weiße Felder Agenten und das grüne Feld jeweils das Zielobjekt. In Abbildung ~(\ref{empty_grid:fig}) ist ein Szenario ohne Hindernisse und mit zufälliger Verteilung der Agenten und zufälliger Position des Zielobjekts dargestellt.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{00_000_grid.eps}
+}
+\caption[``Leeres Szenario'' ohne Hindernisse]{``Leeres Szenario'' ohne Hindernisse}
+\label{empty_grid:fig}
+\end{figure}
+
+\section{Zufälliges Szenario}
+
+Zwei Parameter bestimmen das Aussehen des zufälligen Szenarios, zum einen der Prozentsatz an Hindernissen an der Gesamtzahl der Felder des Torus, zum anderen der Grad inwieweit die Hindernisse zusammenhängen. Bei der Erstellung des Szenarios bestimmt dieser Grad die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. Ein Wert von \(0.0\) ergibt somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert nahe \(1.0\) eine oder mehrere stark zusammenhängende Strukturen schafft.\\
+Wird der Prozentsatz an Hindernissen auf \(0.0\) gesetzt, dann werden Hindernisse vollständig deaktiviert. Als Optimierung werden in diesem Fall auch alle Sensorinformationen diesbezüglich deaktiviert.
+
+TODO LCS Ausgabe bzgl. Verallgemeinerung der Hindernissensoren
+%müsste #### ausgeben
+
+In Abbildungen ~(\ref{random_grid_005:fig}), ~(\ref{random_grid_01:fig}), ~(\ref{random_grid_02:fig}) und ~(\ref{random_grid_04:fig}) werden Beispiele für zufällige Szenarien gegeben mit einem Anteil an Hindernissen von \(5\)\%, \(10\)\%, \(20\)\% bzw. \(40\)\% und jeweils einem Verknüpfungsfaktor von \(1\)\%, \(50\)\% bzw. \(99\)\%.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{005_001_grid.eps}
+\includegraphics{005_050_grid.eps}
+\includegraphics{005_099_grid.eps}
+}
+\caption[``Zufälliges Szenario'' mit 5{\%} Hindernissen] {``Zufälliges Szenario'' mit 5{\%} zufällig verteilten Hindernissen und aufsteigendem  Verknüpfungsfaktor, 0.01, 0.5 und 0.99.}
+\label{random_grid_005:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{01_001_grid.eps}
+\includegraphics{01_050_grid.eps}
+\includegraphics{01_099_grid.eps}
+}
+\caption[``Zufälliges Szenario'' mit 10{\%} Hindernissen] {``Zufälliges Szenario'' mit 10{\%} zufällig verteilten Hindernissen und aufsteigendem  Verknüpfungsfaktor, 0.01, 0.5 und 0.99.}
+\label{random_grid_01:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{02_001_grid.eps}
+\includegraphics{02_050_grid.eps}
+\includegraphics{02_099_grid.eps}
+}
+\caption[``Zufälliges Szenario'' mit 20{\%} Hindernissen] {``Zufälliges Szenario'' mit 20{\%} zufällig verteilten Hindernissen und aufsteigendem  Verknüpfungsfaktor, 0.01, 0.5 und 0.99.}
+\label{random_grid_02:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{04_001_grid.eps}
+\includegraphics{04_050_grid.eps}
+\includegraphics{04_099_grid.eps}
+}
+\caption[``Zufälliges Szenario'' mit 40{\%} Hindernissen] {``Zufälliges Szenario'' mit 40{\%} zufällig verteilten Hindernissen und aufsteigendem  Verknüpfungsfaktor, 0.01, 0.5 und 0.99.}
+\label{random_grid_04:fig}
+\end{figure}
+
+\section{``Säulen Szenario''}
+Hier werden mit jeweils 7 Feldern Zwischenraum zueinander regelmäßig Hindernisse verteilt. Idee ist, dass die Agenten eine kleine Orientierungshilfe besitzen aber gleichzeitig möglichst wenig Hindernisse verteilt werden. Das Zielobjekt startet an zufälliger Position, die Agenten starten mit möglichst großem Abstand zum Zielobjekt. Abbildung~\ref{pillar_grid:fig} zeigt ein Beispiel bei der das Zielobjekt sich in der Mitte und die Agenten am Rand befinden.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{pillar_grid.eps}
+}
+\caption[``Säulen Szenario'']{``Säulen Szenario'' mit regelmäßig angeordneten Hindernissen und zufälliger Verteilung von Agenten mit möglichst großem Abstand zum Zielobjekt}
+\label{pillar_grid:fig}
+\end{figure}
+
+\section{``Kreuz Szenario''}
+Hier gibt eine horizontale Reihe aus Hindernissen halber Gesamtbreite welche durch eine vertikale Reihe aus Hindernissen halber Gesamthöhe in der Mitte geschnitten wird. Agenten und das Zielobjekt werden zufällig verteilt. Abbildung~\ref{cross_grid:fig} zeigt ein Beispiel für ein solches Szenario.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{cross_grid.eps}
+}
+\caption[``Kreuz Szenario'']{``Kreuz Szenario'' mit kreuzförmiger Anordnung der Hindernisse und zufälliger Verteilung der Agenten und des Zielobjekts}
+\label{cross_grid:fig}
+\end{figure}
+
+\section{``Raum Szenario''}
+Auf dem Torus wird ein Rechteck der halben Gesamthöhe und -breite des Torus erstellt, welches im Norden eine Öffnung von 4 Feldern Breite aufweist. Der Zielagent startet in der Mitte des Raums, alle Agenten starten mit maximaler Distanz zu den Hindernissen an zufälliger Position.\\
+Abbildung~\ref{room_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines solchen Szenarios.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{room_grid.eps}
+}
+\caption[``Raum Szenario'']{``Raum Szenario'' mit quaderförmiger Anordnung der Hindernisse mit Öffnung im Norden, zufälliger Verteilung der Agenten am Rand und zu Beginn im Zentrum startendem }
+\label{room_grid:fig}
+\end{figure}
+
+
+\section{``Schwieriges Szenario''}
+Hier wird das Torus zum einen an der rechten Seite vollständig durch Hindernisse blockiert, um den Torus zu halbieren. Alle Agenten starten am linken Rand, der Zielagent startet auf der rechten Seite.\\
+In regelmäßigen Abständen (7 Felder Zwischenraum) befindet sich eine vertikale Reihe von Hindernissen mit Öffnungen von 4 Feldern Breite abwechselnd im oberen Viertel und dem unteren Viertel.\\
+Idee dieses Szenarios ist zu testen, inwieweit die Agenten durch die Öffnungen zum Ziel finden können. Andere Agenten können hierbei als Orientierung dienen, in wel TODO
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{difficult_grid.eps}
+}
+\caption[``Schwieriges Szenario'']{``Schwieriges Szenario'' mit fester, wallartiger Verteilung von Hindernissen in regelmäßigen Abständen und mit Öffnungen, mit den Agenten mit zufälligem Startpunkt am linken Rand und dem Zielagenten mit festem Startpunkt rechts oben}
+\label{difficult_grid:fig}
+\end{figure}
+
+\section{``Irrgarten Szenario''}
+
+Der Code zur Generierung der Hindernisse stammt aus \cite{Hamer}. In den ``Gängen'' des Irrgartens herrscht jeweils eine Breite von \(2\) Feldern. Die anfängliche Verteilung der Agenten und des Zielobjekts geschieht zufällig. Abbildung~\ref{maze_grid:fig} zeigt ein Beispiel für eine Startkonfiguration eines Irrgartens.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{maze_grid.eps}
+}
+\caption[``Irrgarten Szenario'']{``Irrgarten Szenario'' mit einer Anordnung von Hindernissen in der Art, dass es nur wenige Pfade gibt.}
+\label{maze_grid:fig}
+\end{figure}
+
+TODO critical choice pg. 191
+

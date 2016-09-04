@@ -3,10 +3,87 @@
 
 
 \section{Zusammenfassung}
-This is a summary section
+Zu Beginn wurde auf die Szenariodefinition und die Fähigkeiten der Agenten eingegangen. Anhand von Beispielen heuristischer Agenten wurden einige Grundeigenschaften der präsentierten Szenarien als Vorbereitung für die Analyse der Learning Classifier Systeme bestimmt. Nach der Einführung in LCS, der Beschreibung des Standardverfahren XCS und der angepassten Implementierung für Überwachungsszenarios konnten dann umfangreiche Tests ausgeführt werden. Danach wurde durch die Hinzunahme von der Möglichkeit zur Kommunikation eine angepasste Implementierung für verzögerten Reward definiert auf Basis dessen dann mehrere Varianten für die Weitergabe des Rewards vorgestellt, analysiert und verglichen wurden.
 
 \section{Ergebnis}
-
+Das wesentliche Ergebnis ist, dass die Implementierung des XCS auf  Überwachungsszenarios ausgeweitet werden kann ohne wesentliche Veränderungen am Algorithmus vorzunehmen. Die alleinige Anpassung des XCS Multistepverfahrens, dass ein neues Problem gestartet wird, wann immer sich das Ziel in Überwachungsreichweite befand führte nicht zum Erfolg, die Ergebnisse waren nicht besser als ein sich zufällig bewegender Agent. Erst durch Verknüpfung des Rewards mit dem zeitlichen Abstand zu einer Änderung des Zustands führte zu deutlich besseren Ergebnissen.\\
+Desweiteren wurde untersucht, inwiefern sich der Austausch an minimaler Information unter den Agenten, ohne zentrale Steuerung oder globalem Regeltausch, auf die Qualität auswirkt. Zwar gab es vereinzelt positive Effekte, diese waren jedoch auf andere Faktoren zurückzuführen.
 
 \section{Ausblick}
-THE END...
+Weitere Untersuchungen sind nötig um zu bestimmen, inwiefern Kommunikation, beispielsweise mit einer größeren Zahl an besseren Sensoren, zu einem besseren Ergebnis führen kann. TODO\\
+Vom theoretischen Standpunkt ist noch zu klären, warum genau der zeitliche Abstand zum Erfolg geführt hat und wo die Grenzen hierfür liegen. 
+
+
+\chapter{Verwendete Hilfsmittel und Software}
+
+Zu Beginn stellte sich die Frage, welche Software zu benutzen ist, da es sich um ein recht komplexe Problemstellung handelt. Begonnen habe ich mit der YCS Implementierung von TODO. Sie ist in der Literatur wenig vertreten, die Implementierung bot aber einen guten Einstieg in das Thema, da sie sich auf das Wesentliche beschränkte und keine Optimierungen enthielt.
+
+Der nächste Schritt war zu entscheiden, auf welchem System die Agenten simuliert werden sollen. Unter einer Reihe von vorhandenen Implementierungen entschied ich mich für eine eigene Implementation. 
+Wesentlicher Grund war die Unerfahrenheit mit den Lösungen (und der damit verbundenen Einarbeitungszeit) wie auch Überlegungen bzgl. der Geschwindigkeit, dem Speicherverbrauch und der Kompatibilität. TODO
+
+Das Programm und die zugehörige Oberfläche zum Erstellen von Test-Jobs wurden in Netbeans 6.5 programmiert.
+
+Grafiken wurden mittels GnuPlot erstellt.
+
+Grafiken der Grid-Konfiguration wurden im Programm mittels GifEncode TODO erste
+ * @version 0.90 beta (15-Jul-2000)
+ * @author J. M. G. Elliott (tep@jmge.net)
+
+Wesentlicher Bestandteil der Konfigurationsoberfläche war auch eine Automatisierung der Erstellung von Konfigurationsdateien, Batchdateien (für ein Einzelsystem und für JoSchKA) zum Testen einer ganzen Reihe von Szenarien und auch GnuPlot Skripts.
+
+Speicherverbrauch
+
+Speicherung der Agentenpositionen und des Grids verbrauchen fast keinen Speicher TODO
+Wesentlicher Faktor waren die LCS Systeme mit ihren ClassifierSets TODO
+
+OpenOffice
+
+LEd Latex
+
+
+Speicherprobleme JAVA GB
+
+\section{Beschreibung des Konfigurationsprogramms}
+
+\begin{figure}[htbp]
+\centerline{	
+%\includegraphics{agent_configuration.eps}
+}
+\caption[Screenshot des Konfigurationsprogramms] {Screenshot des Konfigurationsprogramms}
+\label{agent_configuration:fig}
+\end{figure}
+
+
+
+\begin{thebibliography}{99}
+\bibitem{Butz} {\sc Butz, M. \& Wilson, S.W.:}  \textit{An Algorithmic Description of XCS}, 2001.
+In P-L. Lanzi, W. Stolzmann \& S.W. Wilson (eds) Advances in Learning Classifier Systems: IWLCS 2000. Springer, pp253-272.
+
+\bibitem{Bull} {\sc Larry Bull:}  \textit{A Simple Accuracy-Based Learning Classifier System}, 
+\url{http://www2.cmp.uea.ac.uk/~it/ycs/ycs.pdf}
+
+\bibitem{Hamer} 
+{\sc Carol Hamer}, \textit{J2ME Games With MIDP2}, Apress, 2004,
+ISBN 1-590-59382-0
+\url{http://www.java-tips.org/java-me-tips/midp/how-to-create-a-maze-game-in-j2me-3.html}
+
+
+The weight vector w of covering
+classifiers is randomly initialized with values from [-1,1]; all
+the other parameters are initialized as in XCS (see [4]).
+[4] Martin V. Butz and Stewart W. Wilson. An algorithmic description of
+XCS. Journal of Soft Computing, 6(3–4):144–153, 2002.
+
+Martin V. Butz, David E. Goldberg, and Pier Luca Lanzi. Gradient
+descent methods in learning classifier systems: Improving XCS performance
+in multistep problems. IEEE Transaction on Evolutionary
+Computation, 9(5):452–473, October 2005.
+WOODS
+
+Pier Luca Lanzi, Daniele Loiacono, Stewart W. Wilson, and David E.
+Goldberg. XCS with Computed Prediction in Continuous Multistep
+Environments. In Proceedings of the IEEE Congress on Evolutionary
+Computation – CEC-2005, pages 2032–2039, Edinburgh, UK, September
+2005. IEEE.
+
+\end{thebibliography}
