@@ -1,7 +1,19 @@
 \chapter{XCS}\label{lcs:cha}
 
-Jeder Agent besitzt ein unabhängiges, sogenanntes \emph{eXtended Classifier System} (XCS), welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
-Im Folgenden konzentrieren sich die Ausführungen auf den Teil, der relevant für das Verständnis der in Kapitel~\ref{lcs_variants:cha} vorgestellten XCS Varianten ist (für eine umfassende Beschreibung von XCS soll auf \cite{Butz2006} verwiesen werden). 
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\end{flushleft}
+\end{minipage}
+\begin{minipage}[t]{0.6\textwidth}
+\begin{flushright} \tiny
+\emph{If everyone is thinking alike, then somebody isn't thinking.}\\
+George S. Patton\\
+~\\
+~\\
+\end{flushright}
+\end{minipage}
+
+Im vorangegangenen Kapitel wurde das Szenario, die Simulation und Agenten mit Heuristiken besprochen. Nun wird es um lernende Agenten gehen, die jeweils ein unabhängiges, sogenannten \emph{eXtended Classifier System} (XCS), besitzen, welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}, für eine umfassende Beschreibung von XCS wird auf \cite{Butz2006} verwiesen.\\
 
 \begin{figure}[H]
 \setbox0\vbox{\small
@@ -16,24 +28,24 @@ Im Wesentlichen besteht ein XCS aus folgenden Elementen:
 
 \item einem Mechanismus zur Evolution der \emph{classifier} (mittels genetischer Operatoren, siehe Kapitel~\ref{genetische_operatoren:sec}) sowie
 
-\item einem Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning}, siehe Kapitel~\ref{bewertung:sec})
+\item einem Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning}, siehe Kapitel~\ref{bewertung:sec}).
 
 \end{enumerate}
 }
 \centerline{\fbox{\box0}}
 \end{figure}
 
-Während die ersten drei Punkte bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden werden nun Punkt 1, 2 und 3 näher betrachtet und das Kapitel mit einer Diskussion und Analyse der XCS Parameter in Kapitel~\ref{cha:parameter} abgerundet.
+Während die ersten drei Punkte bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden werden nun Punkt 1, 2 und 3 näher betrachtet. Im Folgenden konzentrieren sich die Ausführungen auf den für das Verständnis der in Kapitel~\ref{lcs_variants:cha} vorgestellten XCS Varianten relevanten Teil.\\ 
 
 
 \section{Classifier}\label{classifier:sec}
 
-Ein \emph{classifier} besteht aus einer Anzahl im folgenden diskutierten Variablen die anhand der in Kapitel~\ref{cha:parameter} aufgelisteten Werte initialisiert werden. Wesentliche Teile sind der \emph{condition} Vektor (Kapitel~\ref{condition_vector:sec}) und der \emph{action} Wert (Kapitel~\ref{action_wert:sec}), alle restlichen Variablen dienen zur Berechnung der Wahrscheinlichkeit mit welchem der \emph{classifier} ausgewählt und dessen \emph{action} Wert ausgeführt wird.\\
+Ein \emph{classifier} besteht aus einer Anzahl von Variablen, die anhand der in Kapitel~\ref{cha:parameter} aufgelisteten Werte initialisiert werden. Wesentliche Teile sind der \emph{condition} Vektor (Kapitel~\ref{condition_vector:sec}) und der \emph{action} Wert (Kapitel~\ref{action_wert:sec}). Alle restlichen Variablen dienen zur Berechnung der Wahrscheinlichkeit, mit welcher der \emph{classifier} ausgewählt wird.\\
 
 
 \subsection{Der \emph{condition} Vektor}\label{condition_vector:sec}
 
-Der \emph{condition} Vektor gibt die Kondition an, in welchen Situationen der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordatensätze der jeweilige \emph{classifier} erkennt. Der Aufbau des Vektors (siehe Abbildung~\ref{gruppen_condition_vector:fig}) entspricht dem Vektor der über die Sensoren erstellt wird (siehe Kapitel~\ref{sensordatensatz:sec}). Eine wesentliche Erweiterung des \emph{condition} Vektors stellen sogenannte Platzhalter dar, die es dem \emph{condition} Vektor erlauben, mehrere verschiedene Sensordatensätze zu erkennen (siehe Kapitel~\ref{platzhalter:sec}).
+Der \emph{condition} Vektor gibt die Kondition an, in welchen Situationen der zugehörige \emph{classifier} ausgewählt werden kann, d.h. welche Sensordatensätze der jeweilige \emph{classifier} erkennt. Der Aufbau des Vektors (siehe Abbildung~\ref{gruppen_condition_vector:fig}) entspricht dem Vektor der über die Sensoren erstellt wird (siehe Kapitel~\ref{sensordatensatz:sec}). Eine wesentliche Erweiterung des \emph{condition} Vektors stellen sogenannte Platzhalter dar, die es dem \emph{condition} Vektor erlauben, mehrere verschiedene Sensordatensätze zu erkennen (siehe Kapitel~\ref{platzhalter:sec}).\\
 
 \begin{figure}[htbp]
 \centerline{	
@@ -49,13 +61,13 @@ $\underbrace{z_{s_{N}} z_{r_{N}} z_{s_{O}} z_{r_{O}} z_{s_{S}} z_{r_{S}} z_{s_{W
 
 \subsection{Der \emph{action} Wert}\label{action_wert:sec}
 
-Wird ein \emph{classifier} ausgewählt, wird eine bestimmte Aktion ausgeführt, die durch den \emph{action} Wert determiniert ist. Im Rahmen dieser Arbeit entsprechen diese Aktionsmöglichkeiten den 4 Bewegungsrichtungen, die in Kapitel~\ref{agents:cha} besprochen wurden.\\
+Wird ein \emph{classifier} ausgewählt, wird eine bestimmte Aktion ausgeführt, die durch den \emph{action} Wert determiniert ist. Im Rahmen dieser Arbeit entsprechen diese Aktionsmöglichkeiten den vier Bewegungsrichtungen, die in Kapitel~\ref{agents:cha} besprochen wurden.\\
 
 
 \subsection{Der \emph{fitness} Wert}
 
-Der \emph{fitness} Wert soll die allgemeine Genauigkeit des \emph{classifier}
-repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten \emph{reward} Werte angepasst. Hier erstreckt sich der Wertebereich zwischen \(0,0\) und \(1,0\) (maximale Genauigkeit). Insbesondere eines der ersten Werke zu XCS \cite{wilson:95} beschäftigte sich mit diesem Aspekt der Genauigkeit.\\
+Der \emph{fitness} Wert soll die Genauigkeit des \emph{classifier}
+repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten \emph{reward} Werte angepasst. Hier erstreckt sich der Wertebereich zwischen \(0,0\) (minimale Genauigkeit) und \(1,0\) (maximale Genauigkeit). Insbesondere eines der ersten Werke zu XCS \cite{wilson:95} beschäftigte sich mit diesem Aspekt der Genauigkeit.\\
 
 
 \subsection{Der \emph{reward prediction} Wert}
@@ -65,37 +77,40 @@ Der \emph{reward prediction} Wert des \emph{classifier} stellt die Höhe des \emp
 
 \subsection{Der \emph{reward prediction error} Wert}
 
-Der \emph{reward prediction error} Wert soll die Genauigkeit des \emph{classifier} bzgl. des \emph{reward prediction} Werts (die durchschnittliche Differenz zwischen \emph{reward prediction} und \emph{reward}) repräsentieren. U.a. auf Basis dieses Werts wird der \emph{fitness} Wert des \emph{classifier} angepasst.\\
+Der \emph{reward prediction error} Wert soll die durchschnittliche Differenz zwischen dem \emph{reward prediction} Wert und dem tatsächlichen \emph{reward} Wert repräsentieren. U.a. auf Basis dieses Werts wird der \emph{fitness} Wert des \emph{classifier} angepasst.\\
 
 
 \subsection{Der \emph{experience} Wert}
 
-Mit dem \emph{experience} Wert des \emph{classifier} wird die Anzahl repräsentiert, wie oft ein \emph{classifier} aktualisiert wurde, also wieviel Erfahrung er sammeln konnte. Im Wesentliche	n dient dieser Wert als Entscheidungshilfe, ob auf die anderen Werte des \emph{classifier} vertraut werden kann bzw. ob der \emph{classifier} als unerfahren gilt und somit z.B. bei Löschung und Subsummation gesondert behandelt werden muss.\\
+Mit dem \emph{experience} Wert des \emph{classifier} wird die Anzahl repräsentiert, wie oft ein \emph{classifier} aktualisiert wurde, also wieviel Erfahrung der \emph{classifier} sammeln konnte. Im Wesentlichen dient dieser Wert als Entscheidungshilfe, ob auf die anderen Werte des \emph{classifier} vertraut werden kann bzw. ob der \emph{classifier} als "`unerfahren"' gilt und somit z.B. bei Löschung und Subsummation gesondert behandelt werden muss.\\
 
 
 \subsection{Der \emph{numerosity} Wert}
 
-Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und Kapitel~\ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden. Was die Implementation betrifft sei Kapitel~\ref{corrected_numerosity_function:sec} zu erwähnen, verglichen mit der originalen Implementierung wurden einige Änderungen vorgenommen.\\
+Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden. Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und \ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Bezüglich der Implementierung sei Kapitel~\ref{corrected_numerosity_function:sec} zu erwähnen, da dort, verglichen mit der originalen Implementierung, einige Änderungen vorgenommen wurden.\\
 
 
 
 \section{Vergleich des \emph{condition} Vektors mit Sensordaten}\label{platzhalter:sec}
 
-Neben den zu den Sensordaten korrespondierenden Werten \(0\) und \(1\) soll es noch einen dritten Zustand als Teil des \emph{condition} Vektors geben, den Platzhalter "`\#"'. Dieser soll anzeigen, dass beim Vergleich zwischen dem \emph{condition} Vektor und den Sensordaten diese Stelle ignoriert werden soll. Eine Stelle im \emph{condition} Vektor mit Platzhalter gilt dann also als äquivalent zur korrespondierenden Stelle in den Sensordaten, egal ob sie mit \(0\) oder \(1\) belegt ist. Ein Vektor, der ausschließlich aus Platzhaltern besteht, würde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle möglichen Kombinationen der Sensordaten passt. Umgekehrt können dadurch bei der Auswahl der \emph{classifier} mehrere \emph{classifier} auf einen gegebenen Sensordatenvektor passen. Diese bilden dann die sogenannte \emph{match set} Liste, aus welchem dann wie in Kapitel~\ref{auswahlart:sec} beschrieben, der eigentliche \emph{classifier} ausgewählt wird.\\
-Im Folgenden wird nun untersucht, welche Sensordatensätze ein \emph{condition} Vektor erkennt (siehe Kapitel~\ref{erkennung_sensordatenpaar:sec}), und zum anderen, auf welche Weise man ähnliche \emph{classifier} zusammenlegen kann (siehe Kapitel~\ref{subsummation:sec}).
+Ein Vergleich zwischen zwei Vektoren ist über den Vergleich ihrer jeweiligen Einzelelemente gegeben. Hier werden nun die Zustände der Einzelelemente im \emph{condition} Vektors erweitert und besprochen, wie dann ein Vergleich durchgeführt wird.\\
+
+Neben den zu den Sensordaten korrespondierenden Werten \(0\) und \(1\) soll es noch einen dritten Zustand als Teil des \emph{condition} Vektors geben, den Platzhalter "`\#"'. Dieser zeigt an, dass beim Vergleich zwischen dem \emph{condition} Vektor und den Sensordaten diese Stelle ignoriert wird. Eine Stelle im \emph{condition} Vektor mit Platzhalter gilt dann also als äquivalent zur korrespondierenden Stelle in den Sensordaten, egal ob sie mit \(0\) oder \(1\) belegt ist. Ein Vektor, der ausschließlich aus Platzhaltern besteht, würde somit bei der Auswahl immer in Betracht gezogen werden, da er auf alle möglichen Kombinationen der Sensordaten passt. Umgekehrt können dadurch bei der Auswahl der \emph{classifier} mehrere \emph{classifier} auf einen gegebenen Sensordatenvektor passen. Diese bilden dann die sogenannte \emph{match set} Liste, aus welcher dann der eigentliche \emph{classifier} ausgewählt wird (siehe Kapitel~\ref{auswahlart:sec}).\\
+
+Im Folgenden wird zum einen untersucht, welche Sensordatensätze ein \emph{condition} Vektor erkennt (siehe Kapitel~\ref{erkennung_sensordatenpaar:sec}), und zum anderen, auf welche Weise man ähnliche \emph{classifier} zusammenlegen kann (siehe Kapitel~\ref{subsummation:sec}).\\
+
 
 \subsection{Erkennung von Sensordatenpaaren}\label{erkennung_sensordatenpaar:sec}
 
-Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare herangezogen. In Kapitel~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es sich damit also eine gewisse Redundanz ergibt. Daraus folgt, dass auch das Datenpaar \((0/\#)\) zu \((\#/\#)\) äquivalent ist, also beide Datenpaare die selben Sensordatenpaare erkennen. 
-
+Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare herangezogen. In Kapitel~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann. Damit der \emph{condition} Vektor nicht von vornherein ungültige Werte annehmen kann, wird durch Einführung einer Redundanz ein Datenpaar \((0/1)\) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1)\) und somit auch das \((0/\#)\) äquivalent zu \((\#/\#)\) sein, also beide Datenpaare die gleichen Sensordatenpaare erkennen.\\
 
 \begin{figure}[H]
 \setbox0\vbox{\small
 Es ergeben sich also folgende Fälle:
 \begin{enumerate}
 \item Sensordatenpaar \((0/0)\) wird erkannt von \((0/0)\), \((\#, 0)\), \((0, \#)\), \((\#, \#)\),
-\item Sensordatenpaar \((1/0)\) wird erkannt von \((1/0)\), \((\#, 0)\), \((1, \#)\), \((\#, \#)\),
-\item Sensordatenpaar \((1/1)\) wird erkannt von \((1/1)\), \((\#, 1)\), \((1, \#)\), \((\#, \#)\), \((0/1)\), \((0/\#)\);
+\item Sensordatenpaar \((1/0)\) wird erkannt von \((1/0)\), \((\#, 0)\), \((1, \#)\), \((\#, \#)\) und
+\item Sensordatenpaar \((1/1)\) wird erkannt von \((1/1)\), \((\#, 1)\), \((1, \#)\), \((\#, \#)\), \((0/1)\), \((0/\#)\).
 \end{enumerate}
 }
 \centerline{\fbox{\box0}}
@@ -118,9 +133,9 @@ Beispiele für erkennende condition Vektoren:
 
 \subsection{Subsummation von \emph{classifier}}\label{subsummation:sec}
 
-Die Benutzung von den oben erwähnten Platzhaltern (Kapitel~\ref{platzhalter:sec}) erlaubt es dem XCS mehrere \emph{classifier} zusammenzulegen, wodurch die Gesamtzahl der \emph{classifier} sinkt und somit Erfahrungen, die ein XCS Agent sammelt, nicht unbedingt mehrfach gemacht werden müssen. Die dahinter stehende Annahme ist, dass es Situationen gibt, in denen der Gewinn, der durch Unterscheidung von zwei verschiedenen Sensordatensätzen erbracht werden kann, geringer ist, als die Ersparnis, die durch das Zusammenlegen beider \emph{classifier} entsteht.\\
+Die Benutzung von den oben erwähnten Platzhaltern (Kapitel~\ref{platzhalter:sec}) erlaubt es dem XCS, mehrere \emph{classifier} zusammenzulegen. Dadurch sinkt die Gesamtzahl der \emph{classifier} und somit müssen Erfahrungen, die ein XCS Agent sammelt, nicht unbedingt mehrfach gemacht werden. Implizit wird dabei angenommen, dass es Situationen gibt, in denen der Gewinn, der durch Unterscheidung von zwei verschiedenen Sensordatensätzen erbracht werden kann, geringer ist, als die Ersparnis, die durch das Zusammenlegen beider \emph{classifier} entsteht.\\
 
-Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wert als auch einen ausreichend kleinen \emph{reward prediction error} Wert, so kann er als sogenannter \emph{subsumer} auftreten. Andere \emph{classifier} (in derselben \emph{action set} Liste, also mit gleichem \emph{action} Wert) werden durch den \emph{subsumer} ersetzt, sofern der von ihnen abgedeckte Sensordatenbereich eine Teilmenge des von dem \emph{subsumer} abgedeckten Bereichs ist, der \emph{subsumer} also an allen Stellen des \emph{condition} Vektors entweder denselben Wert wie der zu subsummierende \emph{classifier} oder einen Platzhalter besitzt.\\
+Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wert als auch einen ausreichend kleinen \emph{reward prediction error} Wert, so kann er als sogenannter \emph{subsumer} auftreten. Ein \emph{subsumer} ersetzt andere \emph{classifier} in derselben \emph{action set} Liste, sofern der von dem jeweiligen \emph{classifier} gesamte abgedeckte Sensordatenbereich eine Teilmenge des von dem \emph{subsumer} abgedeckten Bereichs ist. Der \emph{subsumer} besitzt also an allen Stellen des \emph{condition} Vektors entweder denselben Wert wie der zu subsummierende \emph{classifier} oder einen Platzhalter.\\
 
 
 \section{Ablauf eines XCS}\label{ablauf_lcs:sec}
@@ -130,88 +145,105 @@ Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wer
 Ein XCS läuft wie folgt ab:
 \begin{enumerate}
 \item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe Kapitel~\ref{covering:sec}),
-\item Auswahl auf die Sensordaten passender \emph{classifier} (\emph{match set} Liste, siehe Kapitel~\ref{matching:sec}),
-\item Bestimmung der Auswahlart und Auswahl der Aktion (\emph{explore/exploit}, siehe Kapitel~\ref{auswahlart:sec}),
-\item Erstellung der zur Aktion zugehörigen Liste von \emph{classifier} (\emph{action set} Liste, siehe Kapitel~\ref{actionSet:sec});
+\item Auswahl auf die Sensordaten passenden \emph{classifier} (\emph{match set} Liste, siehe Kapitel~\ref{matching:sec}),
+\item Bestimmung der Auswahlart und Auswahl der Aktion (\emph{explore}/\emph{exploit}, siehe Kapitel~\ref{auswahlart:sec}) und
+\item Erstellung der zur Aktion zugehörigen Liste von \emph{classifier} (\emph{action set} Liste, siehe Kapitel~\ref{actionSet:sec}).
 \end{enumerate}
 }
 \centerline{\fbox{\box0}}
 \end{figure}
 
-Im Folgenden werden die einzelnen Punkte besprochen:
+Im Folgenden werden die einzelnen Punkte besprochen.
 
 
 \subsection{Abdeckung aller Aktionen durch \emph{covering}}\label{covering:sec}
 
-Das \emph{covering} untersicht die Menge aller \emph{classifier} aus dem letzten \emph{match set} (siehe Kapitel~\ref{matching:sec}), ob für jede mögliche Aktion jeweils mindestens ein \emph{classifier} vorhanden ist. Ist dies nicht der Fall, wird ein neuer \emph{classifier} mit dieser Aktion als seinen \emph{action} Wert und einem \emph{condition} Vektor, der auf den letzten Sensordatensatz passt, erstellt und in die Population eingefügt. So wird sichergestellt, dass alle Situationen und Aktionen abgedeckt sind. Ist die Populationsgröße \(N\) zu niedrig, kommt es zum \emph{trashing}, d.h. es werden andauernd neue \emph{classifier} erstellt, gleichzeitig müssen aber (brauchbare) alte \emph{classifier} gelöscht werden. In Kapitel~\ref{sec:max_population_parameter} in Abbildung~\ref{neuerstellte_classifier_maxpop:fig} sieht man beispielsweise, dass in dem dortigen Szenario mindestens bis zu einer Größe von 64 dies regelmäßig passiert.
+Das \emph{covering} untersucht die Menge aller \emph{classifier} aus der letzten \emph{match set} Liste (siehe Kapitel~\ref{matching:sec}), ob für jede mögliche Aktion jeweils mindestens ein \emph{classifier} vorhanden ist. Ist dies nicht der Fall, wird für jede fehlende Aktion ein neuer \emph{classifier}, dessen \emph{condition} Vektor auf den letzten Sensordatensatz passt, erstellt und in die Population eingefügt. So wird sichergestellt, dass alle Situationen und Aktionen abgedeckt sind. Ist die Populationsgröße \(N\) zu niedrig, kommt es zum \emph{trashing}, d.h. es werden andauernd neue \emph{classifier} erstellt; gleichzeitig müssen aber (brauchbare) alte \emph{classifier} gelöscht werden. In Kapitel~\ref{sec:max_population_parameter} in Abbildung~\ref{neuerstellte_classifier_maxpop:fig} sieht man beispielsweise, dass dies im dortigen Szenario mindestens bis zu einer Größe von 256 regelmäßig passiert.\\
+
 
 \subsection{Die \emph{match set} Liste}\label{matching:sec}
 
-In der \emph{match set} Liste werden jeweils alle \emph{classifier} gespeichert, die den letzten Sensordatensatz erkannt haben. Sie entspricht dem \emph{predictionArray} in der originalen Implementierung von XCS in~\cite{Butz_xcsclassifier}, dort werden außerdem Vorberechnungen zur Auswahl der nächsten Aktion durchgeführt und die Ergebnisse gespeichert, die insbesondere in Kapitel~\ref{auswahlart:sec} von Bedeutung sind (die sogenannten \emph{predictionFitnessProductSum} Werte).
+In der \emph{match set} Liste werden jeweils alle \emph{classifier} gespeichert, die den letzten Sensordatensatz erkannt haben. Sie entspricht dem \emph{predictionArray} in der originalen Implementierung von XCS in~\cite{Butz_xcsclassifier}. Dort werden außerdem Vorberechnungen zur Auswahl der nächsten Aktion durchgeführt und die Ergebnisse gespeichert, die insbesondere in Kapitel~\ref{auswahlart:sec} von Bedeutung sind, die sogenannten \emph{predictionFitnessProductSum} Werte.\\
 
 
 \subsection{Die \emph{action set} Liste}\label{actionSet:sec}
 
-Eine \emph{action set} Liste ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt denselben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur die letzte \emph{action set} Liste gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden (siehe Kapitel~\ref{sxcs_variant:sec}).
+In einer \emph{action set} Liste werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt denselben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementierung von XCS wird jeweils nur die letzte \emph{action set} Liste gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück, siehe Kapitel~\ref{sxcs_variant:sec}) gespeichert werden.\\
 
 
 \subsection{Genetische Operatoren}\label{genetische_operatoren:sec}
 
-Es werden aus der jeweiligen \emph{action set} Liste zwei \emph{classifier} (die Eltern) zufällig ausgewählt und zwei neue \emph{classifier} (die Kinder) aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt (da sie aus derselben \emph{action set} Liste stammen, ist der Wert beider Eltern identisch). Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Werden Kinder in die Population eingefügt, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifier} ist, werden sie stattdessen subsummiert.\\
-Da die Sensoren und somit auch der \emph{condition} Vektor aus drei in sich geschlossenen Gruppen bestehen, werden im Unterschied zur Standardimplementation beim \emph{crossing over} zwei feste Stellen benutzt, die die Gruppe für das Zielobjekt, die Gruppe für Agenten und die Gruppe für feste Hindernisse voneinander trennen.\\
+Es werden aus der jeweiligen \emph{action set} Liste zwei \emph{classifier} ("`Eltern"') zufällig ausgewählt und zwei neue \emph{classifier} ("`Kinder"') aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt. Da sie aus derselben \emph{action set} Liste stammen, ist der Wert beider Eltern identisch. Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Wird versucht, Kinder, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifier} ist,  in die Population einzufügen, werden sie stattdessen subsummiert.\\
+
+Da die Sensoren und somit auch der \emph{condition} Vektor aus drei in sich geschlossenen Gruppen bestehen, werden im Unterschied zur Standardimplementierung beim \emph{crossing over} zwei feste Stellen benutzt, die die Gruppe für das Zielobjekt, die Gruppe für Agenten und die Gruppe für feste Hindernisse voneinander trennen.\\
 
 Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen (siehe Kapitel~\ref{condition_vector:sec}) des \emph{condition} Vektors des ersten bzw. zweiten ausgewählten Elternteils, dann können für die drei Gruppen der \emph{condition} Vektoren \((z_{1k}, a_{1k}, h_{1k})\) und \((z_{2k}, a_{2k}, h_{2k})\) der beiden Kinder folgende Kombinationen auftreten:
-
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_1, h_1) , (z_2, a_2, h_2)]\]
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_1, h_1) , (z_1, a_2, h_2)]\]
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_1, a_2, h_1) , (z_2, a_1, h_2)]\]
-\[[(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = [(z_2, a_2, h_1) , (z_1, a_1, h_2)]\]
-
+\([(z_{1k}, a_{1k}, h_{1k}), (z_{2k}, a_{2k}, h_{2k})] = \{[(z_1, a_1, h_1) , (z_2, a_2, h_2)],\)
+\([(z_2, a_1, h_1) , (z_1, a_2, h_2)], [(z_1, a_2, h_1) , (z_2, a_1, h_2)], [(z_2, a_2, h_1) , (z_1, a_1, h_2)]\}\)
 
 
 \section{Bewertung der Aktionen (\emph{base reward})}\label{bewertung:sec}
 
-XCS ist darauf ausgelegt, dass es eine komplette, genaue und möglichst allgemeine Darstellung einer \emph{reward} Funktion darstellt. Die \emph{reward} Funktion läuft lokal auf jedem Agenten ab und die Bewertung, die der Agent berechnet, wird also auf Basis der eigenen Sensordaten gebildet. Die Bewertung wird in diesem Zusammenhang im Folgenden als \emph{base reward} Wert bezeichnet.\\
+Damit die Agenten lernen können, muss an einer Stelle eine Bewertung mit Hilfe einer sogenannten \emph{reward} Funktion geschehen. XCS ist darauf ausgelegt, dass es eine komplette, genaue und möglichst allgemeine Darstellung einer solchen \emph{reward} Funktion darstellt. Die \emph{reward} Funktion läuft lokal auf jedem Agenten ab und die Bewertung, die der Agent berechnet, wird also auf Basis der eigenen Sensordaten gebildet. Die Bewertung wird im Folgenden als \emph{base reward} Wert bezeichnet.\\
+
+In Kapitel~\ref{bewertung_singlestep:sec} wird zuerst die Bewertung mit dem \emph{single step} Verfahren erläutert. Ein wesentlicher Bestandteil ist hier die globale Information. Entsprechend wird in Kapitel~\ref{bewertung_multistep:sec} die Bewertung im \emph{multi step} Verfahren behandelt, bei begrenzter lokaler Information wird dort über mehrere Probleminstanzen hinweg eine globale Information aufgebaut. Im Gegensatz dazu steht die Bewertung bei einem Überwachungsszenario (siehe Kapitel~\ref{bewertung_ueberwachungszenario:sec}). Die Frage ist hier, anhand welcher Richtlinie man eine \emph{reward} Funktion überhaupt aufstellen soll.\\
 
 
-\subsection{Bewertung beim \emph{single step} Verfahren}
+\subsection{Bewertung beim \emph{single step} Verfahren}\label{bewertung_singlestep:sec}
 
-Bei einer Problemstellung, die mit dem \emph{single step} Verfahren gelöst werden kann, entspricht die optimale Darstellung der \emph{reward} Funktion durch das XCS gleichzeitig auch der Lösung des eigentlichen Problems. Beispielsweise beim oben erwähnten \emph{6-Multiplexer} Problem prüft die \emph{reward} Funktion, ob das XCS aus den 4 Datenbits anhand der 2 Steuerbits das richtige Datenbit gewählt hat, also ob das XCS so wie ein \emph{6-Multiplexer} funktioniert. Wesentliche Voraussetzung für das \emph{single step} Verfahren ist, dass der Agent globale Information besitzt, also in einem Schritt möglichst alle Informationen zur Lösung des Problems zur Verfügung hat, um die eigene Ausgabe zu bewerten.\\
-
-
-\subsection{Bewertung beim \emph{multi step} Verfahren}
-
-Bei komplexeren Problemen, bei denen ein Agent nur lokale Informationen zur Verfügung hat (beispielsweise bei \emph{Maze~\(N\)} die angrenzenden Felder), bezieht die \emph{reward} Funktion nur eine Teilinformation der Welt in die Bewertung ein, beispielsweise "`1"' beim letzten Schritt auf das Ziel und "`0"' sonst. Deshalb ist die optimale Darstellung der \emph{reward} Funktion bei XCS in der \emph{multi step} Variante die, dass der Aufbau eines Gesamtbilds über die Weitergabe mittels des jeweiligen \emph{maxPrediction} Werts geschieht. Auf Basis dessen wird ein vereinfachter Gesamtweg gebildet (vereinfacht deshalb, weil Situationen und Aktionen in den \emph{classifier set} Listen gespeichert werden und nicht Aktionsreihenfolgen und/oder Positionsangaben zusammen mit der auszuführenden Aktion) und somit zumindest teilweise das Problem in ein \emph{single step} Problem überführt.\\
+Bei einer Problemstellung, die mit dem \emph{single step} Verfahren gelöst werden kann, entspricht die optimale Darstellung der \emph{reward} Funktion durch das XCS gleichzeitig auch der Lösung des eigentlichen Problems. Beispielsweise prüft im in der Einleitung (Kapitel~\ref{single_step_intro:sec}) erwähnten \emph{6-Multiplexer} Problem die zugehörige \emph{reward} Funktion, ob das XCS aus den 4 Datenbits anhand der 2 Steuerbits das richtige Datenbit gewählt hat, ob also das XCS so wie ein \emph{6-Multiplexer} funktioniert. Wesentliche Voraussetzung für das \emph{single step} Verfahren ist, dass der Agent globale Information besitzt, also in einem Schritt möglichst alle Informationen zur Lösung des Problems zur Verfügung hat, um die eigene Ausgabe zu bewerten.\\
 
 
-\subsection{Bewertung bei einem Überwachungsszenario}
+\subsection{Bewertung beim \emph{multi step} Verfahren}\label{bewertung_multistep:sec}
 
-Der gleiche Gedankengang muss bei einem Überwachungsszenario ausgeführt werden. Die Darstellung des Gesamtproblems aus lokaler Information, die standardmäßig beim \emph{multi step} Verfahren bei XCS verwendet wird, kann man zwar einfach für das Szenario übernehmen (siehe Kapitel~\ref{standardxcs:sec}), die Ergebnisse, wie sie in Kapitel~\ref{lcs_analysis:cha} gezeigt werden, sind dann aber oft nicht viel besser als ein sich zufällig bewegender Agent.\\
+Bei komplexeren Problemen, bei denen ein Agent nur lokale Informationen zur Verfügung hat, bezieht die \emph{reward} Funktion nur eine Teilinformation der Welt in die Bewertung ein. Beispiels beim \emph{Maze~\(N\)} Problem (siehe Kapitel~\ref{multi_step_intro:sec}) fließen in die Entscheidung nur die angrenzenden Felder ein und die \emph{reward} Funktion bewertet einen \emph{classifier} "`1"' beim letzten Schritt auf das Ziel und ansonsten "`0"'. Deshalb ist die optimale Darstellung der \emph{reward} Funktion bei XCS in der \emph{multi step} Variante die, dass der Aufbau eines Gesamtbilds über die Weitergabe mittels des jeweiligen \emph{maxPrediction} Werts geschieht. Auf Basis dessen wird ein vereinfachter Gesamtweg gebildet und somit zumindest teilweise das Problem in ein \emph{single step} Problem überführt. Vereinfacht ist er, weil Situationen und Aktionen in den \emph{classifier set} Listen gespeichert werden und nicht Aktionsreihenfolgen und / oder Positionsangaben zusammen mit der auszuführenden Aktion.\\
 
-Ein alternativer Weg, der dann in Kapitel~\ref{lcs_variants:cha} vorgestellt und in Kapitel~\ref{lcs_analysis:cha} signifikant bessere Ergebnisse erbringt, ist, den \emph{base reward} Werts nicht sukzessive weiterzugeben, sondern bei jedem Auftreten eines positiven \emph{base reward} Werts direkt alle bisherigen Aktionen (seit dem letzten Auftreten) absteigend mit dem Wert zu aktualisieren.\\
 
-Offen bleibt die Frage, wie die \emph{reward} Funktion beim Überwachungsszenario aussieht. Letztlich hat ein Agent freie Wahl, wie der \emph{base reward} Wert aus den Sensordaten berechnet wird. Für die 24 Binärsensoren ergeben sich bis zu \(2^{24}\) Situationen, die wahrgenommen werden können (tatsächlich sind es weniger, da es nur ein Zielobjekt gibt und bestimmte Situationen nicht auftreten können) und jeder Situation könnte ein individueller \emph{base reward} zugewiesen werden, was entsprechend viele Möglichkeiten für die \emph{reward} Funktion ergibt.\\
+\subsection{Bewertung bei einem Überwachungsszenario}\label{bewertung_ueberwachungszenario:sec}
 
-Zur Beantwortung der Frage ist es notwendig, zu betrachten, wie das globale Ziel erreicht werden kann. Eine Möglichkeit ist, sich anhand der in  Kapitel~\ref{base_agent_types:sec} vorgestellten Heuristiken zu orientieren. Auch wenn diese Heuristiken nicht direkt mit einem \emph{base reward} arbeiten, bewerten sie doch in jeder Situation eine bestimmte Situation als gut oder schlecht. Erkennt beispielsweise ein Agent mit intelligenter Heuristik Agenten im Sichtbereich, wird er die jeweiligen Richtungen als schlecht bewerten, während er die freien Richtungen als gut bewertet.\\
+Der gleiche Gedankengang wie im vorangegangenen Abschnitt muss beim Überwachungsszenario ausgeführt werden. Die Darstellung des Gesamtproblems aus lokaler Information, die standardmäßig beim \emph{multi step} Verfahren bei XCS verwendet wird, kann man zwar für das Szenario übernehmen (siehe Kapitel~\ref{standardxcs:sec}); die Ergebnisse, wie sie später in Kapitel~\ref{lcs_analysis:cha} gezeigt werden, sind dann aber oft nicht viel besser als ein sich zufällig bewegender Agent.\\
 
-Betrachtet man die Heuristiken näher führt dies zu folgenden Erkenntnissen:
+Eine Alternative ist, den \emph{base reward} Werts nicht sukzessive weiterzugeben, sondern bei jedem Auftreten eines positiven \emph{base reward} Werts direkt alle bisherigen Aktionen (seit dem letzten Auftreten) absteigend mit dem Wert zu aktualisieren. Diese Idee wird in dann in Kapitel~\ref{lcs_variants:cha} vorgestellt und in Kapitel~\ref{lcs_analysis:cha} signifikant bessere Ergebnisse erbringen.\\
 
+Offen bleibt die Frage, wie die \emph{reward} Funktion beim Überwachungsszenario aussieht. Letztlich hat ein Agent die freie Wahl, wie der \emph{base reward} Wert aus den Sensordaten berechnet wird. Für die 24 Binärsensoren ergeben sich bis zu \(2^{24}\) wahrnehmbare Situationen. Tatsächlich sind es weniger, da es nur ein Zielobjekt gibt und bestimmte Situationen nicht auftreten können. Weiterhin könnte jeder Situation ein individueller \emph{base reward} Wert zugewiesen werden, was entsprechend viele Möglichkeiten für die \emph{reward} Funktion ergäbe. Mangels Speicherkapazität fällt eine solche Darstellung der \emph{reward} Funktion aber von vornherein weg.\\
+
+Zur Beantwortung der Frage ist deshalb eher die Betrachtung des globalen Ziels von Bedeutung. Eine Möglichkeit ist, sich anhand der in Kapitel~\ref{base_agent_types:sec} vorgestellten Heuristiken zu orientieren. Auch wenn diese Heuristiken nicht direkt mit einem \emph{base reward} Wert arbeiten, bewerten sie doch jede einzelne Situation als positiv oder als negativ. Erkennt beispielsweise ein Agent mit intelligenter Heuristik andere Agenten im Sichtbereich, wird er die Richtungen, in denen sich Agenten befinden, als negativ bewerten. Umgekehrt wird er freie Richtungen als positiv bewerten. Betrachtet man die Heuristiken unter diesem Gesichtspunkt näher, dann führt dies zu folgenden Erkenntnissen:\\
+
+
+\begin{description}
+
+\item[Algorithmus mit zufälliger Bewegung] Dieser Algorithmus bewertet alle Situationen identisch, er benutzt also eine konstante \emph{reward} Funktion.
+
+\item[Einfache Heuristik] Dieser Algorithmus bewertet jede Situation, in der das Zielobjekt in Sicht ist, als positiv.
+
+\item[Intelligente Heuristik] Dieser Algorithmus bewertet ebenfalls jede Situation mit einem Zielobjekt in Sicht als positiv. Zusätzlich versucht ein Agent mit dieser Heuristik sich aus der Sicht anderer Agenten zu bewegen. Er bewertet also im Grunde Situationen besser, in denen mehr Richtungen frei von Agenten sind.
+
+\end{description}
+
+Auf Basis dieser Informationen und den Testergebnissen in Kapitel~\ref{analysis_sans_lcs:cha} ist es nun möglich, sich für eine wahrscheinlich erfolgreiche \emph{reward} Funktion zu entscheiden.\\
+
+Verwendet man die \emph{reward} Funktion des Agenten mit zufälliger Bewegung für XCS, dann würden entsprechend die Aktionen zufällig bewertet werden. Das ergäbe, dass sich der Agent, ähnlich wie ein Agent mit zufälliger Bewegung, bewegen und eine entsprechend niedrige Qualität erzielen würde. Dieser Algorithmus soll also nicht als Vorbild dienen.\\
+
+Bei den Tests ist dagegen der Agent mit intelligenter Heuristik eindeutig im Vorteil; allerdings ist es schwierig, oben beschriebene \emph{reward} Funktion zu modellieren, da im Rahmen dieser Arbeit lediglich binäre Ausgabewerte möglich sein sollen. Um mehrere unterschiedliche Situationen zu differenzieren, wären aber mehrere Zustände Voraussetzung. Beispielsweise könnte der \emph{base reward} Wert anhand der Anzahl der sich in der Nähe befindlichen Agenten bestimmt werden um so eine Abstufung erreichen zu können.\\
+
+Treffen kann man nur die Unterscheidung, ob gar keine Agenten in Sicht sind oder ob mindestens ein Agent in Sicht ist. Dadurch belohnt man weniger den Weg zum Ziel (d.h. die Anzahl der Agenten in Sicht verringern bzw. sich von Agenten weg zu bewegen) sondern mehr das Ziel, dass durch die intelligente Heuristik letztlich erreicht wird, selbst (keine Agenten mehr in Sicht). Trotzdem stellt dies nur eine teilweise Umsetzung um und die Ergebnisse die die intelligente Heuristik erreicht stellen somit ein oberes Limit für die mögliche Qualität (ohne Einbeziehung von Hindernissen) dar.\\
+
+Dagegen lässt sich der Teil der intelligenten Heuristik einfach modellieren, der der einfachen Heuristik entspricht. Deren \emph{reward} Funktion kann direkt übernommen werden und der \emph{base reward} Wert wird auf "`1"' gesetzt, wenn das Zielobjekt in Sicht ist. Ist das Ziel nicht in Sicht, dann wird die oben beschriebene Regel benutzt, befinden sich keine Agenten in Sicht, wird der \emph{base reward} Wert trotz fehlendem Zielobjekts auf "`1"' gesetzt, sonst auf "`0"'.\\
+
+Bezüglich der Erweiterung mit der Überprüfung, ob Agenten in Sicht sind, haben sich in Tests nur minimale Unterschiede ergeben. Beispielsweise ergab sich (auf dem Säulenszenario mit 8 Agenten mit SXCS und einem Zielobjekt mit einfacher Richtungsänderung und Geschwindigkeit 2) eine Qualität von \(39,15\%\) im Vergleich zur originalen Implementierung von \(32,20\%\) bei 500 Schritten bzw. \(36,28\%\) zu \(35,75\%\) bei 2.000 Schritten.\\
+
+Es ist allerdings denkbar, dass bestimmte Szenarien, z.B. mit vielen Hindernissen oder sehr wenigen Agenten, speziell diese Art der Bewertung problematisch machen. Beispielsweise erreicht mit nur einem Agenten mit SXCS im Säulenszenario mit einem Zielagenten mit einfacher Richtungsänderung und Geschwindigkeit 2 bei 2.000 Schritten die Variante ohne dieser Erweiterung eine Qualität von \(7,21\%\) während die Variante mit der Erweiterung nur \(4,55\%\) erreicht. Bei einer größeren Anzahl von Agenten liegt die Variante mit der Erweiterung jedoch vorne und wird in den Tests in dieser Arbeit verwendet werden.\\
+
+In der Implementierung wird die mit der Bewertung zusammenhängende Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{check_reward_points:pro}) in Programm~\ref{multistep_calc_reward:pro} (Zeile 15) bzw. in Programm~\ref{sxcs_calc_reward:pro} (Zeile 15) aufgerufen.\\
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Es ergeben sich also folgende Möglichkeiten:
 \begin{itemize}
-
-\item Agent mit zufälliger Bewegung: Dieser Algorithmus bewertet alle Situationen identisch, er benutzt also eine konstante \emph{reward} Funktion.
-
-\item Agent mit einfacher Heuristik: Bei diesem Algorithmus wird jede Situation als gut bewertet, in der das Zielobjekt in Sicht ist.
-
-\item Agent mit intelligenter Heuristik: Hier werden ebenfalls alle Situationen mit einem Zielobjekt in Sicht als gut bewertet. Zusätzlich versucht ein Agent mit dieser Heuristik sich aus der Sicht anderer Agenten zu bewegen, bewertet im Grunde als Situationen besser, in denen mehr Richtungen frei von Agenten sind.
-
+\item Zielobjekt nicht in Sicht, mindestens ein Agent in Sicht \(\Rightarrow\) \emph{base reward}~\( = 0\),
+\item Zielobjekt nicht in Sicht, kein Agent in Sicht \(\Rightarrow\) \emph{base reward}~\( = 1\) und
+\item Zielobjekt in Sicht \(\Rightarrow\) \emph{base reward}~\( = 1\).
 \end{itemize}
-
-Aus Basis dieser Informationen und den Testergebnissen in Kapitel~\ref{analysis_sans_lcs:cha} ist es nun möglich, sich für eine erfolgreiche \emph{reward} Funktion zu entscheiden.\\
-
-Verwendet man die \emph{reward} Funktion des Agenten mit zufälliger Bewegung für XCS, dann würden entsprechend die Aktionen zufällig bewertet werden. Das wiederum hätte als Konsequenz, dass sich der Agent ähnlich wie ein Agenten mit zufälliger Bewegung bewegen und entsprechend niedrige Qualität erzielen würde. Dieser Algorithmus soll also nicht als Vorbild dienen.\\
-
-Bei den Tests siegt eindeutig der Agent mit intelligenter Heuristik. Allerdings ist es schwierig, oben beschriebene \emph{reward} Funktion zu modellieren, da in dem Rahmen dieser Arbeit lediglich binäre Ausgabewerte möglich sind. Um mehrere unterschiedliche Situationen zu differenzieren (Anzahl der Richtungen in denen kein Agent in Sicht ist), wären aber mehrere Zustände Voraussetzung. Somit kann die intelligente Heuristik nicht als Modell stehen und stellt nur ein oberes Limit für die mögliche Qualität (ohne Einbeziehung von Hindernissen) dar.\\
-
-Bleibt nur die einfache Heuristik, deren \emph{reward} Funktion deshalb für die hier besprochenen XCS Varianten benutzt wird, der \emph{base reward} wird auf "`1"' gesetzt, wenn das Zielobjekt in Sicht ist, sonst auf "`0"'.\\
-
-Was die Implementierung selbst betrifft, wird die mit der Bewertung zusammenhängende Funktion \emph{checkRewardPoints()} in Programm~\ref{multistep_calc_reward:pro} (Zeile 15) bzw. in Programm~\ref{sxcs_calc_reward:pro} (Zeile 16) aufgerufen.
+}
+\centerline{\fbox{\box0}}
+\end{figure}

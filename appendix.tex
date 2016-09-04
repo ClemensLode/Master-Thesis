@@ -1,21 +1,22 @@
-\chapter{Implementation}\label{implementation:cha}
+\chapter{Implementierung}\label{implementation:cha}
 
-Im Folgenden sind die Kernbestandteile aus dem Quelltext des Simulators aufgelistet. Sie dienen primär zum Verständnis der Idee und sind nur bedingt lauffähig. Der vollständige Quelltext ist auf der beiliegenden DVD bzw. unter~\cite{agentsimulator} verfügbar.
+Im Folgenden sind die Kernbestandteile aus dem Quelltext des Simulators aufgelistet. Sie dienen primär zum Verständnis der Idee und sind nur bedingt lauffähig. Der vollständige Quelltext ist auf der beiliegenden DVD bzw. unter~\cite{agentsimulator} verfügbar.\\
+
 
 \section{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
 
-In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird in einer weiteren Schleife über die Anzahl der maximalen Schritte die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich werden die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha}, was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
+In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung einer Probleminstanz (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird in einer weiteren Schleife über die Anzahl der maximalen Schritte die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich werden die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha}, was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).\\
 
 \newlisting{Zentrale Schleife für einzelne Experimente}{mainExperiment:pro}
 /**
- * Führt eine Anzahl von Problemen aus
+ * Führt eine Anzahl von Probleminstanzen aus.
  * @param experiment_nr Nummer des auszuführenden Experiments
  */
-  public void doOneMultiStepExperiment(int experiment_nr) {
+  public void doOneMultiStepExperiment(final int experiment_nr) {
     int currentTimestep = 0;
 
   /**
-   * number of problems for the same population
+   * Durchlaufe Anzahl von Probleminstanzen für die selbe Population.
    */
     for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
 
@@ -27,25 +28,25 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
     /**
      * Erstellt einen neuen Torus und verteilt Agenten und 
-     *   das Zielobjekt neu
+     *   das Zielobjekt neu.
      */
       BaseAgent.grid.resetState();
 
     /**
-     * Führe Problem aus und aktualisiere aktuellen Zeitschritt
+     * Führe Probleminstanz aus und aktualisiere aktuellen Zeitschritt.
      */
       currentTimestep = doOneMultiStepProblem(currentTimestep);
     }
   }
 \end{lstlisting}
 
-\newlisting{Zentrale Schleife für einzelne Probleme}{mainProblem:pro}
+\newlisting{Zentrale Schleife für einzelne Probleminstanzen}{mainProblem:pro}
 /**
- * Führt eine Anzahl von Schritten auf dem aktuellen Torus aus
+ * Führt eine Anzahl von Schritten auf dem aktuellen Torus aus.
  * @param stepCounter Der aktuelle Zeitschritt
  * @return Der Zeitschritt nach der Ausführung
  */
-  private int doOneMultiStepProblem(int stepCounter) {
+  private int doOneMultiStepProblem(final int stepCounter) {
   /**
    * Zeitpunkt bis zu dem das Problem ausgeführt wird
    */
@@ -55,31 +56,31 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
          currentTimestep < steps_next_problem; currentTimestep++) {
 
     /**
-     * Ermittle die Sichtbarkeit und erhebe Statistiken
+     * Ermittle die Sichtbarkeit und erhebe Statistiken.
      */
       BaseAgent.grid.updateSight();
       BaseAgent.grid.updateStatistics(currentTimestep);
 
     /**
-     * Ermittle neue Sensordaten und berechne Aktionen der Agenten
+     * Ermittle neue Sensordaten und berechne Aktionen der Agenten.
      */
       calculateAgents(currentTimestep);
 
     /**
-     * Ermittle den Reward für alle Agenten (nach dem ersten Schritt)
+     * Ermittle den reward Wert für alle Agenten (nach dem ersten Schritt).
      */
       if(currentTimestep > stepCounter) {
         rewardAgents(currentTimestep);
       }
 
     /**
-     * Führe zuvor berechnete Aktionen aus
+     * Führe zuvor berechnete Aktionen aus.
      */
       moveAgents();
     }
 
     /**
-     * Abschließende Ermittlung des Rewards
+     * Abschließende Ermittlung des reward Werts
      */
     BaseAgent.grid.updateSight();
     rewardAgents(steps_next_problem);
@@ -91,15 +92,15 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 
 
-\newlisting{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainCalculate:pro}
+\newlisting{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb einer Probleminstanz}{mainCalculate:pro}
 /**
- * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
- * @param gaTimestep der aktuelle Zeitschritt
+ * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus.
+ * @param gaTimestep Der aktuelle Zeitschritt
  */
   private void calculateAgents(final long gaTimestep) {
 
   /**
-   * Ermittle Sensordaten und bestimme nächste Bewegung
+   * Ermittle Sensordaten und bestimme die nächste Bewegung.
    */
     for(BaseAgent a : agentList) {
       a.aquireNewSensorData();
@@ -112,9 +113,9 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 
 
-\newlisting{Zentrale Bearbeitung (Verteilung des \emph{reward} Werts) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainReward:pro}
+\newlisting{Zentrale Bearbeitung (Verteilung des \emph{reward} Werts) aller Agenten und des Zielobjekts innerhalb einer Probleminstanz}{mainReward:pro}
 /**
- * Verteilt den Reward an alle Agenten
+ * Rufe die Verarbeitungsfunktion für den reward Wert aller Agenten auf.
  */
   private void rewardAgents(final long gaTimestep) {
     for(BaseAgent a : agentList) {
@@ -126,14 +127,14 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 
 
-\newlisting{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainMove:pro}
+\newlisting{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb einer Probleminstanz}{mainMove:pro}
 /**
- * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
- * @param gaTimestep der aktuelle Zeitschritt
+ * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus.
+ * @param gaTimestep Der aktuelle Zeitschritt
  */
-  private void moveAgents(long gaTimestep) {
+  private void moveAgents(final long gaTimestep) {
   /**
-   * Erstelle Ausführungsliste für alle Objekte (Zielobjekt mehrfach)
+   * Erstelle Ausführungsliste für alle Objekte (Zielobjekt mehrfach).
    */
     int goal_speed = Configuration.getGoalAgentMovementSpeed();
     ArrayList<BaseAgent> random_list = 
@@ -145,8 +146,8 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
     }
 
   /**
-   * Führe die ermittelten Aktionen in zufälliger Reihenfolge aus
-   *   (Zielobjekt kann mehrfach ausgeführt werden).
+   * Führe die ermittelten Aktionen in zufälliger Reihenfolge aus. 
+   * Das Zielobjekt kann dabei mehrfach ausgeführt werden.
    */
     int[] array = Misc.getRandomArray(random_list.size());
     for(int i = 0; i < array.length; i++) {
@@ -170,11 +171,11 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 \newlisting{Berechnung der nächsten Aktion bei der Benutzung des Algorithmus mit zufälliger Bewegung}{calculateNextMoveRandomAlgorithm:pro}
 /**
- * Berechne nächste Aktion (zufälliger Algorithmus)
+ * Berechne die nächste Aktion (zufälliger Algorithmus).
  */
   private void calculateNextMove() {
   /**
-   * Wähle zufällige Richtung als nächste Aktion
+   * Wähle eine zufällige Richtung als nächste Aktion.
    */
     calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
   }
@@ -183,11 +184,11 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 \newlisting{Berechnung der nächsten Aktion bei der Benutzung der einfachen Heuristik}{calculateNextMove_SimpleHeuristic:pro}
 /**
- * Berechne nächste Aktion (einfache Heuristik)
+ * Berechne die nächste Aktion (einfache Heuristik).
  */
   private void calculateNextMove() {
   /**
-   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
+   * Ermittlung der Informationen der Gruppe der Sensoren, die auf 
    * das Zielobjekt ausgerichtet sind
    */
     boolean[] goal_sensor = lastState.getSensorGoal();
@@ -203,7 +204,7 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
     }
 
   /**
-   * Sonst wähle zufällige Richtung als nächste Aktion
+   * Sonst wähle zufällige Richtung als nächste Aktion.
    */
     if(calculatedAction == -1) {
       calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
@@ -214,11 +215,11 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
 
 \newlisting{Berechnung der nächsten Aktion bei der Benutzung der intelligenten Heuristik}{calculateNextMove_IntelligentHeuristic:pro}
 /**
- * Berechne nächste Aktion (intelligente Heuristik)
+ * Berechne nächste Aktion (intelligente Heuristik).
  */
 private void calculateNextMove() {
   /**
-   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
+   * Ermittlung der Informationen der Gruppe der Sensoren, die auf 
    * das Zielobjekt ausgerichtet sind
    */
     boolean[] goal_sensor = lastState.getSensorGoal();
@@ -235,7 +236,7 @@ private void calculateNextMove() {
     }
 
   /**
-   * Zielobjekt nicht in Sicht? Dann bewege von Agenten weg
+   * Zielobjekt nicht in Sicht? Dann bewege von Agenten weg.
    */
     if(calculatedAction == -1) {
       calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
@@ -262,9 +263,58 @@ private void calculateNextMove() {
 
 
 
+
+\section{Bewertungsfunktion}
+
+\newlisting{Bewertungsfunktion für die XCS Varianten}{check_reward_points:pro}
+
+/**
+ * Berechnet den base reward Wert und gibt ihn zurück.
+ * @return Den base reward Wert
+ */
+  public boolean checkRewardPoints() {
+    if(lastState == null) {
+      return false;
+    }
+  /**
+   * Prüft die eigenen Sensordaten.
+   */
+    boolean[] sensor_agent = lastState.getSensorAgent();
+    boolean[] sensor_goal = lastState.getSensorGoal();
+
+  /**
+   * Ziel in Sicht? Dann gebe positiven base reward Wert zurück.
+   */
+    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+      if((sensor_goal[2*i])) {
+        return true;
+      }
+    }
+
+  /**
+   * Kein Zielobjekt, aber Agent in Sicht? 
+   * Dann gebe negativen base reward Wert zurück.
+   */
+    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+      if(sensor_agent[2*i]) {
+        return false;
+      }
+    }
+
+  /**
+   * Kein Zielobjekt und kein Agent in Sicht? 
+   * Dann gebe positiven base reward Wert zurück.
+   */
+    return true;
+  }
+
+\end{lstlisting}
+
+\clearpage
+
 \section{Korrigierte \emph{addNumerosity()} Funktion}\label{corrected_numerosity_function:sec}
 
-Durch die Benutzung von \emph{macro classifier} ergibt sich das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifier} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifier} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz_xcsclassifier} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einer einzelnen \emph{action set} Liste optimiert. Dagegen wurde die für diese Arbeit erstellte Implementierung jeweils mit bis über 100 \emph{action set} Listen programmiert, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{action set} Listen zur Folge, in der der \emph{classifier} Mitglied ist.\\
+Durch die Benutzung von \emph{macro classifier} ergibt sich das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifier} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifier} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz_xcsclassifier} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einer einzelnen \emph{action set} Liste optimiert. Dagegen wurde die für diese Arbeit erstellte Implementierung jeweils mit bis über 100 \emph{action set} Listen programmiert, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{action set} Listen zur Folge, in welcher der \emph{classifier} Mitglied ist.\\
 
 Wird also ein \emph{micro classifier} entfernt, dann wird lediglich die Änderungsfunktion des jeweiligen \emph{classifier} aufgerufen, der dann wiederum den \emph{numerositySum} Wert der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viele Umstände, den \emph{numerositySum} der Eltern immer auf den aktuellen Stand zu halten und einzelne \emph{classifier} zu löschen.\\
 
@@ -272,14 +322,14 @@ Positiver Nebeneffekt durch die verbesserte Struktur ist der vereinfachte Zufgri
 
 Die Standardimplementierung weist ein weiteres Problem auf. So enthält der \emph{fitness} Wert eines \emph{classifier} als Optimierung bereits den \emph{numerosity} Wert als Faktor, während bei der Aktualisierung des \emph{numerosity} Werts der \emph{fitness} Wert nicht aktualisiert wurde. Das hat zur Folge, dass theoretisch der \emph{fitness} Wert eines \emph{classifier} fast den \emph{max population} Wert annehmen kann, wenn ein \emph{classifier} mit \emph{numerosity} und \emph{fitness} Wert in der Höhe von \emph{max population} auf einen \emph{numerosity} Wert von \(1,0\) reduziert wird. Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die Korrektur besteht darin, den \emph{fitness} Wert mit dem Quotienten aus dem neuen durch den alten \emph{numerosity} Wert zu multiplizieren. Die korrigierte Fassung ist in Programm~\ref{corrected_numerosity_function:pro} dargestellt.\\
 
-Möglicherweise kann man diesen Fehler durch Veränderung der Parameter oder längere Laufzeiten kompensieren. Es ergibt jedoch keinen Sinn, dass beim Subsummieren bzw. Löschen eines \emph{micro classifier} der \emph{fitness} Wert verändert wird. In Tests haben sich nur minimale Unterschiede ergeben. Beispielsweise ergab sich (auf dem Säulenszenario mit 8 Agenten mit SXCS und einem Zielobjekt mit einfacher Richtungsänderung) eine Qualität von \(39,15\%\) im Vergleich zur originalen Implementierung von \(39,95\%\) bei 500 Schritten bzw. \(35,42\%\) zu \(35,01\%\) bei 2000 Schritten. Der Fehler scheint sich also eher langfristig auszuwirken, wenn auch der Unterschied so klein ist, dass man ihn vernachlässigen kann. Problematisch wird es, wenn Modifikationen von XCS darauf aufbauen, dass der \emph{fitness} Wert für jeden \emph{micro classifier} immer kleiner gleich \emph{1.0} ist.\\
+Möglicherweise kann man diesen Fehler durch Veränderung der Parameter oder längere Laufzeiten kompensieren. Es ergibt jedoch keinen Sinn, dass beim Subsummieren bzw. Löschen eines \emph{micro classifier} der \emph{fitness} Wert verändert wird. In Tests haben sich nur minimale Unterschiede ergeben. Beispielsweise ergab sich (auf dem Säulenszenario mit 8 Agenten mit SXCS und einem Zielobjekt mit einfacher Richtungsänderung und Geschwindigkeit 2) eine Qualität von \(32,43\%\) im Vergleich zur originalen Implementierung von \(32,20\%\) bei 500 Schritten bzw. \(36,28\%\) zu \(35,75\%\) bei 2.000 Schritten. Der Fehler scheint sich also minimal negativ auf die Qualität auszuwirken. Problematisch wird es aber auf theoretischer Ebene, wenn Modifikationen von XCS darauf aufbauen, dass der \emph{fitness} Wert für jeden \emph{micro classifier} immer kleiner gleich \(1,0\) ist. Dies kann u.U. zu größeren Fehlern führen.\\
 
-Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fassung benutzt werden.
+Alles in allem betrachtet soll im Rahmen dieser Arbeit die korrigierte Fassung benutzt werden.\\
 
 \newlisting{Korrigierte Version der \emph{addNumerosity()} Funktion}{corrected_numerosity_function:pro}
 /**
- * Erhöht oder erniedrigt den numerosity Wert des classifier
- * @param num Der zur numerosity zu addierende Wert (kann negativ sein).
+ * Erhöht oder erniedrigt den numerosity Wert des classifier.
+ * @param num Addiere num (kann negativ sein) zum numerosity Wert.
  */
   public void addNumerosity(int num) {
     int old_num = numerosity;
@@ -287,12 +337,12 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
     numerosity += num;
 
   /**
-   * Korrektur der fitness
+   * Korrektur des fitness Werts
    */
     if(old_num > 0) {
       fitness = fitness * (double)numerosity / (double)old_num;
     } else {
-      fitness = Configuration.
+      fitness = Configuration.getFitnessInitialization();
     }
 
   /**
@@ -310,14 +360,16 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
 \clearpage
 
-\section{Implementierung XCS Multistepverfahrens }
 
-\newlisting{Erstes Kernstück des Standard XCS Multistepverfahrens (\emph{calculateReward()}, Bestimmung und Verarbeitung des \emph{reward} Werts anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario, bei positivem \emph{reward} Wert wird nicht abgebrochen}{multistep_calc_reward:pro}
+
+\section{Implementierung des XCS \emph{multi step} Verfahrens}
+
+\newlisting{Erstes Kernstück des Standard XCS \emph{multi step} Verfahrens (\emph{calculateReward()}, Bestimmung und Verarbeitung des \emph{reward} Werts anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_reward:pro}
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
- * reward zu bestimmen, den besten Wert der ermittelten match set Liste
- * weiterzugeben und, bei aktuell positivem reward, die aktuelle
- * action set Liste zu belohnen.
+ * reward Wert zu bestimmen, den besten Wert der ermittelten match set 
+ * Liste weiterzugeben und, bei aktuell positivem reward Wert, die 
+ * aktuelle action set Liste positiv zu bewerten.
  *
  * @param gaTimestep Der aktuelle Zeitschritt
  */
@@ -325,7 +377,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
   public void calculateReward(final long gaTimestep) {
   /**
    * checkRewardPoints() liefert "wahr" wenn sich das Zielobjekt in
-   * Sichtweite befindet
+   * Sichtweite oder sich keine Agenten in Sichtweite befindet.
    */
     boolean reward = checkRewardPoints();
 
@@ -346,7 +398,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 \end{lstlisting}
 
 
-\newlisting{Zweites Kernstück des XCS \emph{multi step} Verfahrens (\emph{collectReward()} - Verteilung des \emph{reward} Werts auf die \emph{action set} Listen), angepasst an ein dynamisches Überwachungsszenario}{multistep_collect_reward:pro}
+\newlisting{Zweites Kernstück des XCS \emph{multi step} Verfahrens (\emph{collectReward()}, Verteilung des \emph{reward} Werts auf die \emph{action set} Listen), angepasst an ein dynamisches Überwachungsszenario}{multistep_collect_reward:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen reward Wert und 
  * gibt ihn an die zugehörigen action set Listen weiter.
@@ -354,31 +406,32 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
  * @param reward Wahr wenn das Zielobjekt in Sicht war.
  * @param best_value Bester Wert des vorangegangenen action set Listen
  * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
- *          d.h. einem positiven reward Wert, aufgerufen wurde
+ *          d.h. einem positiven reward Wert, aufgerufen wurde.
  */
 
-  public void collectReward(boolean reward, 
-                double best_value, boolean is_event) {
+  public void collectReward(final boolean reward, 
+                final double best_value, final boolean is_event) {
+
     double corrected_reward = reward ? 1.0 : 0.0;
 
   /**
-   * Falls der reward Wert von einem Ereignis rührt, aktualisiere die 
-   * aktuelle action set Liste und lösche das vorherige
+   * Falls der reward Wert von einem Ereignis rührt, dann aktualisiere 
+   * die aktuelle action set Liste und lösche die vorherige.
    */
     if(is_event) {
       if(lastActionSet != null) {
-        lastActionSet.updateReward(corrected_reward, best_value, factor);
+        lastActionSet.updateReward(corrected_reward, best_value, 1.0);
         prevActionSet = null;
       }
     } 
 
   /**
-   * Kein Ereignis, also nur die letzte action set Liste aktualisieren
+   * Kein Ereignis, also nur die letzte action set Liste aktualisieren.
    */
     else 
     {
       if(prevActionSet != null) {
-        prevActionSet.updateReward(corrected_reward, best_value, factor);
+        prevActionSet.updateReward(corrected_reward, best_value, 1.0);
       }
     }
   }
@@ -395,17 +448,17 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
  * @param gaTimestep Der aktuelle Zeitschritt
  */
 
-  public void calculateNextMove(long gaTimestep) {
+  public void calculateNextMove(final long gaTimestep) {
 
  /**
-  * Überdecke das classifierSet mit zum Status passenden Classifiern
+  * Überdecke das classifierSet mit zum Status passenden classifier
   * welche insgesamt alle möglichen Aktionen abdecken.
   */
     classifierSet.coverAllValidActions(
                     lastState, getPosition(), gaTimestep);
 
  /**
-  * Bestimme alle zum Status passenden Classifier.
+  * Bestimme alle zum Status passenden classifier.
   */
     lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
 
@@ -416,7 +469,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
                                            lastExplore, gaTimestep);
 
  /**
-  * Wähle Aktion und bestimme zugehörige action set Liste
+  * Wähle eine Aktion und bestimme die zugehörige action set Liste.
   */
     calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
     lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
@@ -434,9 +487,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
  * reward Wert zu bestimmen und positive, negative und neutrale 
- * Ereignisse den besten Wert der ermittelten match set Liste 
- * weiterzugeben und, bei aktuell positivem reward Wert, die 
- * aktuelle action set Liste zu belohnen.
+ * Ereignisse zu verarbeiten.
  *
  * @param gaTimestep Der aktuelle Zeitschritt
  */
@@ -444,22 +495,28 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
   public void calculateReward(final long gaTimestep) {
   /**
    * checkRewardPoints() liefert "wahr" wenn sich das Zielobjekt in
-   * Sichtweite befindet
+   * Sichtweite oder sich keine Agenten in Sichtweite befindet.
    */
     boolean reward = checkRewardPoints();
 
+  /**
+   * Positives oder negatives Ereignis?
+   */
     if (reward != lastReward) {
       int start_index = historicActionSet.size() - 1;
-      collectReward(start_index, actionSetSize, reward, 1.0, true);
+      collectReward(start_index, actionSetSize, reward, true);
       actionSetSize = 0;
     }
     else 
 
+  /**
+   * Neutrales Ereignis?
+   */
     if(actionSetSize >= Configuration.getMaxStackSize())
     {
       int start_index = Configuration.getMaxStackSize() / 2;
       int length = actionSetSize - start_index;
-      collectReward(start_index, length, reward, 1.0, false);
+      collectReward(start_index, length, reward, false);
       actionSetSize = start_index;
     }
 
@@ -476,14 +533,19 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
  * gibt ihn an die zugehörigen action set Listen weiter. Es wird
  * kein maxPrediction Wert berechnet oder weitergegeben.
  *
- * @param reward Wahr wenn der Zielobjekt in Sicht war.
- * @param best_value Bester Wert des vorangegangenen action set Listen
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
- *          d.h. einem positiven reward Wert, aufgerufen wurde
+ * @param start_index Index in der historicActionSet Liste der als 
+ *          erstes aktualisiert werden soll.
+ * @param action_set_size Anzahl der action set Listen, die aktualisiert 
+ *          werden sollen.
+ * @param reward Wahr wenn der Zielobjekt in Sicht oder keine Agenten 
+ *          in Sicht waren.
+ * @param is_event Wahr wenn diese Funktion wegen eines positiven oder 
+ *          negativen Ereignisses aufgerufen wurde.
  */
 
-  public void collectReward(int start_index, int action_set_size, 
-                boolean reward, double best_value, boolean is_event) {
+  public void collectReward(final int start_index, 
+                final int action_set_size, final boolean reward, 
+                final boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
 
   /**
@@ -493,7 +555,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
   /**
    * Benutze aufsteigenden bzw. absteigenden reward Wert bei einem 
-   * positiven bzw. negativen Ereignis
+   * positiven bzw. negativen Ereignis.
    */
       if(is_event) {
         corrected_reward = reward ? 
@@ -501,9 +563,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
           calculateReward(action_set_size - i, action_set_size);
       }
   /**
-   * Aktualisiere die action set Liste mit dem bestimmten reward Wert 
-   * und gebe bei allen anderen action set Listen den reward Wert 
-   * weiter wie beim multi step Verfahren 
+   * Aktualisiere die action set Liste mit dem bestimmten reward Wert.
    */
       ActionClassifierSet action_classifier_set = 
         historicActionSet.get(start_index - i);
@@ -525,7 +585,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
  * @param gaTimestep Der aktuelle Zeitschritt
  */
 
-  public void calculateNextMove(long gaTimestep) {
+  public void calculateNextMove(final long gaTimestep) {
 
  /**
   * Überdecke die classifier set Liste mit zum Status passenden 
@@ -541,7 +601,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
  /**
   * Entscheide auf welche Weise die Aktion ausgewählt werden soll,
-  * wähle Aktion und bestimme zugehöriges action set Liste
+  * wähle eine Aktion und bestimme die zugehöriges action set Liste.
   */
     lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
                                            lastExplore, gaTimestep);
@@ -552,7 +612,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
 
  /**
   * Speichere die action set Liste, erhöhe die Größe des Stacks und
-  * und passe den Stack bei einem Überlauf an
+  * und passe den Stack bei einem Überlauf an.
   */
     actionSetSize++;
     historicActionSet.addLast(lastActionSet);
@@ -561,3 +621,7 @@ Alles in allem betrachtet soll im Rahmen dieser Arbeit soll die korrigierte Fass
     }
   }
 \end{lstlisting}
+
+
+
+

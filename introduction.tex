@@ -1,67 +1,65 @@
 \chapter{Einleitung und Motivation}\label{introduction:cha}
 
-Ein aktuelles Forschungsgebiet aus dem Bereich der \emph{learning classifier systems} (LCS) stellen die sogenannten \emph{eXtended Classifier System} (XCS) dar. In der Basis entspricht XCS einem LCS, d.h. eine Reihe von Regeln, bestehend jeweils aus einer Kondition und einer Aktion. Die Regeln werden mittels \emph{reinforcement learning} schrittweise bewertet und an eine Umwelt angepasst. Die Frage nach dem Zeitpunkt der Bewertung teilt die verwendeten Algorithmen bei XCS in \emph{single step} und \emph{multi step} Verfahren ein. Hauptaugenmerk dieser Arbeit ist das \emph{multi step} Verfahren, bei dem die Bewertung der \emph{reward} Wert der Regeln erst nach einigen Schritten verfügbar ist und an zurückliegende Regeln sukzessive weitergeleitet wird, um möglichst alle beteiligten Regeln an dem \emph{reward} Wert zu beteiligen.\\
+Für diese Arbeit wird ein Überwachungsszenario untersucht, das ein spezielles  Räuber-Beute-Szenario~\cite{miller:1994:CPE} darstellt. Ein solches Szenario besteht aus zwei Gruppen sich bewegender Agenten, einem Feld auf dem sie sich bewegen können und Hindernissen verschiedener Art und Eigenschaft. Ziel der einen Gruppe ("`Räuber"') ist es, Mitglieder der anderen Gruppe ("`Beute"') einzufangen, während diese versuchen den Räubern auszuweichen. Bei einem Überwachungsszenario soll weniger das Einfangen selbst, als eine Überwachung der Beute als Ziel gesetzt werden. Eine Untersuchung dieses Szenarios ist interessant, da es zum einen ein Testfeld für verschiedene Algorithmen als auch eine offensichtliche Parallele zur Realität gibt. Insbesondere für das Forschungsgebiet lernender Agenten bietet es viele Ansatzpunkte.\\
 
-Bisherige Anwendungen von XCS haben sich hauptsächlich auf statische Szenarien mit nur einem Agenten oder mit mehreren Agenten mit globaler Organisation und Kommunikation beschränkt. Diese Arbeit konzentriert sich auf das Problem, ob und wie es gelingen kann, XCS so zu modifizieren, damit es Überwachungsszenarien besser besteht als Agenten mit zufälliger Bewegung. In einem Überwachungsszenario ist die Aufgabe, dass die sich dort befindlichen Agenten so positionieren, dass ein sich bewegendes Zielobjekt möglichst in jedem Schritt in unmittelbarer Nähe eines Agenten befindet. Da die Agenten nur lokale Information besitzen und ein solches Szenario aufgrund der Bewegung des Zielobjekts und der anderen Agenten dynamisch ist, lässt sich das Problem nicht ohne weiteres auf ein \emph{single step} noch auf ein \emph{multi step} Problem reduzieren.\\
+Ein aktuelles Forschungsgebiet aus dem Bereich der \emph{learning classifier systems} (LCS) stellen die sogenannten \emph{eXtended Classifier Systems} (XCS) dar. Grundsätzlich entspricht XCS einem LCS, d.h. eine Reihe von Regeln (sogenannte \emph{classifier}), bestehend jeweils aus einer Kondition und einer Aktion, zusammen mit einem Mechanismus, das versucht, eine gegebene Aufgabe zu lernen. Die Regeln werden mittels \emph{reinforcement learning} schrittweise bewertet und an eine Umwelt angepasst. Bei der Frage nach dem Zeitpunkt der Bewertung gibt es bei den verwendeten Algorithmen bei XCS sogenannte \emph{single step} und \emph{multi step} Verfahren. Welches der Verfahren eingesetzt wird, hängt von der Problemstellung ab. Hauptaugenmerk dieser Arbeit ist das \emph{multi step} Verfahren, bei dem über eine schrittweise Weitergabe von Bewertungen versucht wird, eine Aufgabenstellung zu lösen, über das keine globale Information verfügbar ist.\\
 
-Die Zahl der möglichen Anpassungen, insbesondere was das Szenario, die XCS Parameter und Anpassungen an die XCS Implementierung betrifft, sind unüberschaubar groß. Sie bedürfen in erster Linie einer theoretischen Basis, welche in diesem Bereich noch nicht weit fortgeschritten ist. Ziel dieser Arbeit ist es deshalb, insbesondere anhand empirischer Studien zu untersuchen, welche Anpassungen speziell für das Überwachungsszenario erfolgsversprechend sind.\\
+Bisherige Anwendungen von XCS haben sich hauptsächlich auf statische Szenarien mit nur einem Agenten oder mit mehreren Agenten mit zentraler Steuerung und Kommunikation beschränkt. Diese Arbeit konzentriert sich dagegen auf das Problem, ob und wie es gelingen kann, XCS so zu modifizieren, damit es sogenannte Überwachungsszenarien besser besteht, als Agenten mit zufälliger Bewegung.\\
 
-Wesentliche Schwerpunkte der Untersuchung ist die Untersuchung des Szenarios ohne lernende Agenten, die Analyse der Bewertungsfunktion, die Bestimmung einer geeigneten Auswahlart für Aktionen der Agenten und die Bestimmung optimaler Parameter. Auf Basis dessen wird ein neuer Algorithmus entwickelt ("`SXCS"') und in mehreren Tests ausführlich mit der bekannten Standardimplementation verglichen.\\
+Primäres Problem hierbei ist, dass die Agenten zum einen nur lokale Information besitzen und zum anderen ein solches Szenario aufgrund der Bewegung des Zielobjekts und der anderen Agenten dynamisch ist. Dadurch sind die Bedingungen, die für die Anwendung von \emph{single step} oder ein \emph{multi step} Verfahren vorausgesetzt sind, nicht erfüllt.\\
 
-Wesentliche Erkenntnisse aus dieser Arbeit sind:
+Die Zahl der möglichen Anpassungen, insbesondere was das Szenario, die XCS Parameter und Anpassungen an die XCS Implementierung betrifft, sind unüberschaubar groß. Sie bedürfen primär einer theoretischen Basis, welche noch nicht weit fortgeschritten ist. Ziel dieser Arbeit ist es deshalb, insbesondere anhand empirischer Studien zu untersuchen, welche Anpassungen speziell für das Überwachungsszenario erfolgsversprechend sind.\\
+ 
+Wesentliche Schwerpunkte der Untersuchung sind Szenarien ohne lernende Agenten, die Analyse der Bewertungsfunktion, die Bestimmung einer geeigneten Auswahlart für Aktionen der Agenten und die Bestimmung von passenden Parameter. Auf diesen Untersuchungsergebnissen aufbauend wird dann ein neuer Algorithmus entwickelt ("`SXCS"') und in mehreren Tests mit der aus der Literatur bekannten Standardimplementierung von XCS in verschiedenen Szenarien verglichen. Außerdem wird ein Ansatz für Kommunikation entwickelt und diskutiert, der jedoch letztlich keine Verbesserungen im betrachteten Szenario erbrachte.\\
 
-\begin{itemize}
-\item Die Bewertungsfunktion kann anhand einer Nachbildung einer gut funktionierenden Heuristik konstruiert werden.
-\item Ein Wechsel der Auswahlart für Aktionen während eines Laufs kann sinnvoll sein, um seltene Situationen besser zu lernen.
-
-\item Der hier vorgestellte Algorithmus erreicht in fast allen Szenarien ein deutlich besseres Ergebnis als die Standardimplementation.
-\end{itemize}
-
-Desweiteren bietet die Arbeit zahlreiche Ansatzmöglichkeiten für spätere Arbeiten.
-
-%Außerdem wurde untersucht, wie eine einfache Kommunikation ohne globale Steuereinheit stattfinden kann, um das Ergebnis weiter zu verbessern. Im Wesentlichen war dazu eine weitere Anpassung von XCS vonnöten, so dass die Implementierung auch mit (durch die Kommunikation) zeitverzögerten Bewertungen und Bewertungen von anderen Agenten arbeiten konnte.\\
-
-%Wesentliche Erkenntnisse sind,
-%nicht jedes Szenarium eignet sich gleich gut für die Kommunikation,
-%Kommunikation bietet Möglichkeiten zur Anpassung an mit einer variablen, unbekannten Feldgröße zurecht zu kommen und
-%es gibt Szenarien, in denen Kommunikation signifikante Vorteile erbringt.
-%TODO
-
-%Wesentliche Schlussfolgerung ist, dass sich unterschiedliche Szenarien unterschiedlich gut für Kommunikation eignen, dass Kommunikation Möglichkeiten zur Anpassung bietet, um mit einer variablen, unbekannten Feldgröße besser zurecht zu kommen und, dass es Szenarien gibt, in denen Kommunikation signifikante Vorteile erbringt.\\ TODO
+Nachfolgend stellt Kapitel~\ref{stand_wissenschaft:cha} den aktuellen Stand der Wissenschaft dar und grenzt diese Arbeit von anderen ab. Insbesondere ist dort das Ergebnis, dass sich das Problem von den normalerweise verwendeten Problemstellungen, die über das \emph{single step} bzw. \emph{multi step} Verfahren mehr oder weniger lösbar sind, unterscheidet. In Kapitel~\ref{aufbau_arbeit:sec} wird dann eine Übersicht über den weiteren Aufbau dieser Arbeit gegeben und Kapitel~\ref{wesentliche_erkenntnisse_int:sec} fasst die wesentlichen Ergebnisse der Arbeit zusammen.\\
 
 
 \section{Stand der Wissenschaft}\label{stand_wissenschaft:cha}
 
-Das auf Genauigkeit der \emph{classifier} basierende XCS wurde zuerst in \cite{wilson:95} beschrieben und stellt eine wesentliche Erweiterung von LCS dar. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) gibt es im Vergleich zum LCS vor allem innerhalb der Funktion zur Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf der Differenz zwischen erwarteter und tatsächlicher Bewertung basierte, wird bei XCS der \emph{fitness} Wert auf Basis einer speziellen \emph{accuracy} Funktion berechnet. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\end{flushleft}
+\end{minipage}
+\begin{minipage}[t]{0.6\textwidth}
+\begin{flushright} \tiny
+\emph{It's so wonderful to see a great, new, crucial achievement which is not mine!} \\
+Ayn Rand\\
+~\\
+~\\
+\end{flushright}
+\end{minipage}
 
-Die in der Literatur besprochenen Implementationen und Varianten von XCS beschäftigen sich meist mit Szenarien, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung sind insbesondere relativ einfache Probleme wie das 6-Multiplexer oder das Maze1 Problem \cite{Butz2006} \cite{wilson:95} \cite{xcs2}. Die Probleme sind Vertreter aus der Klasse der XCS \emph{single step} bzw. \emph{multi step} Problemen, welche im Folgenden in Kapitel~\ref{single_step_intro:sec} bzw. Kapitel~\ref{multi_step_intro:sec} angesprochen werden.
+Das auf Genauigkeit der auf \emph{classifier} basierende XCS wurde zuerst in \cite{wilson:95} beschrieben und stellt eine wesentliche Erweiterung von LCS dar. Neben neuer Mechanismen zur Generierung neuer \emph{classifier}, insbesondere im Bereich bei der Anwendung des genetischen Operators, gibt es im Vergleich zum LCS vor allem innerhalb der Funktion zur Bewertung der \emph{classifier} Unterschiede. Während die Bewertung bei LCS direkt aus der Differenz zwischen erwarteter und tatsächlicher Bewertung berechnet wird, wird sie bei XCS auf Basis einer speziellen \emph{accuracy} Funktion berechnet. Eine ausführliche Beschreibung zu XCS findet sich in~\cite{Butz2006}.\\
+
+Die in der Literatur besprochenen Implementierungen und Varianten von XCS beschäftigen sich meist mit Szenarien mit statischer Umgebung: Häufiger Gegenstand der Untersuchung sind insbesondere relativ einfache Probleme wie das 6-Multiplexer oder das Maze1 Problem \cite{Butz2006} \cite{wilson:95} \cite{xcs2}. Die Probleme sind Vertreter aus der Klasse der XCS \emph{single step} bzw. \emph{multi step} Problemen, welche im Folgenden in Kapitel~\ref{single_step_intro:sec} bzw. Kapitel~\ref{multi_step_intro:sec} angesprochen werden.\\
+
+Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementierung des \emph{multi step} Verfahrens von~\cite{Butz_xcsclassifier}. Die algorithmische Beschreibung des Algorithmus findet sich in~\cite{butz01algorithmic}, wo auch näher auf die Unterscheidung von \emph{single step} und \emph{multi step} Verfahren eingegangen wird. Eine Besonderheit stellt allerdings die Problemdefinition dar, auf die Kapitel~\ref{problemdefinition:sec} eingeht und das die Unterschiede zwischen dem Überwachungsszenario und den XCS Standardproblemen darstellt. Abschließend werden in Kapitel~\ref{vergleichbare_arbeiten:sec} exemplarisch einige Arbeiten besprochen, die das Thema dieser Arbeit schneiden, aber nur jeweils Teilaspekte behandeln.\\
 
 \subsection{Beschreibung und Beispiel für das \emph{single step} Verfahren}\label{single_step_intro:sec}
 
-Im einfachsten Fall, im sogenannten \emph{single step} Verfahren erfolgt die Bewertung einzelner \emph{classifier}, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten \emph{multi step} Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde.\\
+Im einfachsten Fall des \emph{single step} Verfahrens, erfolgt die Bewertung einzelner Regeln, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten \emph{multi step} Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde.\\
 
-Ein klassisches Beispiel für den Test \emph{single step} Verfahren ist das 6-Multiplexer Problem~\cite{Butz2006}, bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"', so soll das dritte Datenbit, also "`0"' zurückgeben. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden. In Abbildung~\ref{6multiplexer:fig} findet sich eine schematische Darstellung des Problems.\\
+Ein klassisches Beispiel für den Test des \emph{single step} Verfahrens ist das 6-Multiplexer Problem~\cite{Butz2006}, bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"' gesetzt, so soll das dritte Datenbit, also "`0"', zurückgegeben werden. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden. Abbildung~\ref{6multiplexer:fig} zeigt eine Darstellung des Problems.\\
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{6multiplexer.eps}
 }
-\caption[Schematische Darstellung des 6-Multiplexer Problems] {Schematische Darstellung des Das 6-Multiplexer Problems}
+\caption[Schematische Darstellung des 6-Multiplexer Problems] {Schematische Darstellung des 6-Multiplexer Problems ($s_{1}$ und $s_{2}$ bezeichnen die Adressbits, $d_{1}, d_{2}, d_{3}$ und $d_{4}$ bezeichnen die Datenbits)}
 \label{6multiplexer:fig}
 \end{figure}
 
 
 \subsection{Beschreibung und Beispiel für das \emph{multi step} Verfahren}\label{multi_step_intro:sec}
 
-Ein klassisches Beispiel für \emph{multi step} Verfahren ist das \emph{Maze \(N\)} Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neugestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifier}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind.\\
-
-Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} dargestellte (sehr einfache) Szenario dienen. Die zum Agenten zugehörigen \emph{classifer} sind in Abbildung~\ref{simple_scenario_multistep_classifier:fig} dargestellt, wobei die 4 angrenzenden Felder für jeden \emph{classifier} jeweils die Konfiguration der Kondition darstellt und der Pfeil die Aktion (für eine genauere Beschreibung eines \emph{classifier} siehe Kapitel~\emph{classifier:sec}). Im ersten Durchlauf werden alle \emph{classifier} in jedem Schritt zufällig gewählt, dann erhält \emph{classifier} e) eine positive Bewertung. Im zweiten Durchlauf erhält dann \emph{classifer} c) einen von \emph{classifier} e) weitergegebene positive Bewertung und \emph{classifier} e) auf Position 3 wird mit höherer Wahrscheinlichkeit als \emph{classifier} f) gewählt. Das geht so lange weiter, bis sich für \emph{classifier} \(b, c, e, g\) ein ausreichend großer Wert eingestellt hat und keine wesentlichen Veränderungen mehr auftreten.\\
+Ein klassisches Beispiel für \emph{multi step} Verfahren ist das \emph{Maze \(N\)} Problem, bei dem durch ein Labyrinth auf dem kürzesten Weg mit \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neu gestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifier}. Dadurch bewertet man eine ganze Kette von \emph{classifier}  und nähert sich der optimalen Wahrscheinlichkeitsverteilung an. Diese Verteilung sagt aus, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind. Das (sehr einfache) Szenario in Abbildung~\ref{simple_scenario_multistep:fig} verdeutlicht dies.\\
 
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{simple_scenario_multistep.eps}
 }
-\caption[Einführendes Beispiel zum XCS \emph{multi step} Verfahren] {Einfaches Beispiel zum XCS \emph{multi step} Verfahren}
+\caption[Einführendes Beispiel zum XCS \emph{multi step} Verfahren] {In der Darstellung eines einführenden Beispiels zum XCS \emph{multi step} Verfahren entspricht der Stern dem Zielpunkt, das Gesicht dem Agenten, die roten Feldern den Hindernissen und der Rest den freien Feldern.}
 \label{simple_scenario_multistep:fig}
 \end{figure}
 
@@ -69,55 +67,158 @@ Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} darg
 \centerline{	
 \includegraphics{simple_scenario_multistep_classifier.eps}
 }
-\caption[Vereinfachte Darstellung eines \emph{classifier set} für das Beispiel zum XCS \emph{multi step} Verfahren] {Vereinfachte Darstellung eines \emph{classifier set} für das Beispiel zum XCS \emph{multi step} Verfahren}
+\caption[Vereinfachte Darstellung einer \emph{classifier set} Liste] {Vereinfachte Darstellung eines \emph{classifier set} für das Beispiel zum XCS \emph{multi step} Verfahren}
 \label{simple_scenario_multistep_classifier:fig}
 \end{figure}
 
-Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des \emph{multi step} Verfahrens von~\cite{Butz_xcsclassifier}. Die algorithmische Beschreibung des Algorithmus findet sich in~\cite{butz01algorithmic}, wo auch näher auf die Unterscheidung von \emph{single step} und \emph{multi step} Verfahren eingegangen wird. Eine Besonderheit stellt allerdings die Problemdefinition dar, die im Folgenden beschrieben werden soll.
+
+Die zum Agenten zugehörigen \emph{classifier} (das sogenannte \emph{classifier set}) sind in Abbildung~\ref{simple_scenario_multistep_classifier:fig} dargestellt, wobei die vier angrenzenden Felder für jeden \emph{classifier} jeweils die Konfiguration der Kondition darstellen und der Pfeil die Aktion.\\
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Der Verlauf gestaltet sich in mehreren Abschnitten:
+\begin{enumerate}
+\item Alle \emph{classifier} in jedem Schritt zufällig gewählt.
+\item Der \emph{classifier} e) erhält eine positive Bewertung.
+\item Der \emph{classifer} c) einen von \emph{classifier} e) weitergegebene positive Bewertung.
+\item Der \emph{classifier} e) auf Position 3 wird mit höherer Wahrscheinlichkeit als \emph{classifier} f) gewählt.
+\item ...
+\item Die Berechnung ist abgeschlossen wenn sich für \emph{classifier} b), c), e) und g) ein ausreichend großer Wert eingestellt hat und keine wesentlichen Veränderungen mehr auftreten.
+\end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
 
 
-\subsection{Problemdefinition}
+\subsection{Problemdefinition}\label{problemdefinition:sec}
 
-Da es kein Ziel zu erreichen gibt, sondern über die Zeit hinweg ein bestimmtes Verhalten erreicht werden soll (die Überwachung des Zielobjekts), stellt sich die Frage, wie das Problem definiert werden soll. Insbesondere gibt es kein Neustart des Problems und keinen festen Start- oder Zielpunkt. Zusätzlich, durch die Bewegung der anderen Agenten und des Zielobjekts, verändert sich die Umwelt in jedem Schritt, ein Lernen durch Wiederholung gemachter Bewegungsabläufe ist deswegen deutlich schwieriger.\\
+Das für das Überwachungsszenario am ehesten einsetzbare Verfahren ist das \emph{multi step} Verfahren, da eine ganze Reihe von Schritten (Weg)  durchgeführt werden muss und diese mangels globaler Sicht auf das Szenario nicht mit dem \emph{single step} Verfahren berechnet werden können.\\
 
-Die meisten Implementationen und Varianten von XCS beschäftigen sich mit derartigen Szenarien, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere relativ einfache Probleme 6-Multiplexer Problem und Maze1 \cite{Butz2006} \cite{wilson:95} \cite{xcs2}, während XCS mit Problemen größerer Schrittzahl zwischen Start und Ziel Probleme hat \cite{Banzhaf}. Zwar gibt es Ansätze um auch schwierigere Probleme besser in den Griff zu bekommen (z.B. Maze5, Maze6, Woods14 in~\cite{Butz2005}), indem ein Gradientenabstieg in XCS implementiert wurde. Ein konkreter Bezug zu einem dynamischen Überwachungsszenario konnte jedoch in keiner dieser Arbeiten gefunden werden.\\
+Das \emph{multi step} Verfahren kann hier das Problem lösen, einen möglichst kurzen Weg von einem Start- zu einem Zielpunkt zu finden. Dabei wird die Umgebung als statisch angesehen. Wird das Ziel gefunden, wird das Problem neu gestartet und das Verfahren versucht in einem neuen Durchlauf einen noch besseren Weg zu finden. Außerdem wird zwischen unterschiedlichen Lernphasen unterschieden, wobei die Qualität des Algorithmus nur in bestimmten Zeitabschnitten gemessen wird (siehe Kapitel~\ref{auswahlart:sec}.\\
 
-TODO ausführlicher!
+Im Fall des Überwachungsszenarios soll aber kein Zielpunkt oder Weg gefunden, sondern über die Zeit hinweg ein bestimmtes Verhalten, nämlich die Überwachung des Zielobjekts, erreicht werden. Deshalb stellt sich die Frage, wie das Problem hier definiert werden soll. Ein Neustart des Problems ist von der Aufgabenstellung her  ausgeschlossen und es gibt keinen festen Zielpunkt. Durch die Bewegung der anderen Agenten und des Zielobjekts verändert sich außerdem die Umwelt in jedem Schritt, ein Lernen durch Wiederholung von ähnlichen Bewegungsabläufen wie bei XCS ist deswegen schwieriger. Außerdem wird auch die Qualität nicht nur während bestimmten Phasen, sondern während des ganzen Laufs gemessen.\\
+
+Nachfolgend wird herausgearbeitet, inwieweit es in der Literatur Arbeiten gibt, die ähnliche Probleme ansprechen bzw. inwiefern sich diese Arbeit von anderen Arbeiten abgrenzt.\\
+
+\subsection{Arbeiten über XCS Standardproblemen}\label{vergleichbare_arbeiten:sec}
+
+Häufiger Gegenstand der Untersuchung in der Literatur ist insbesondere die Anwendung von XCS auf die oben in Kapitel~\ref{single_step_intro:sec} und Kapitel~\ref{multi_step_intro:sec} besprochenen relativ einfachen Problemtypen. Es gibt zahlreiche Arbeiten, die sich mit verschiedenen Modifikationen für spezielle Szenarien, Optimierung der Parameter oder Anwendung auf schwierigere Probleme beschäftigen. Im Folgenden werden exemplarisch drei Arbeiten vorgestellt um dann eine Abgrenzung zu dieser Arbeit herauszustellen.\\
+
+In \cite{wilson:95} wird das XCS \emph{single step} Verfahren beim \emph{11-Multiplexer} Problem (3 Adressbits, 8 Datenbits) und das XCS \emph{multi step} Verfahren beim \emph{Woods2} Problem getestet. Beim \emph{Woods2} Problem (siehe Abbildung~\ref{woods2:fig}) ist das Ziel für den Agenten Futter auf dem Feld zu finden. Dabei kann er sich anhand unterschiedlicher Hindernisse und den freien Feldern orientieren und sich in die acht angrenzenden Felder bewegen. In beiden genannten Problemen konnte der XCS Algorithmus das Problem erfolgreich durch Generalisierung lösen.\\
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{varwidth}{\textwidth}
+\begin{verbatim}
+..............................
+.QQF..QQF..OQF..QQG..OQG..OQF.
+.OOO..QOO..OQO..OOQ..QQO..QQQ.
+.OOQ..OQQ..OQQ..QQO..OOO..QQO.
+..............................
+..............................
+.QOF..QOG..QOF..OOF..OOG..QOG.
+.QQO..QOO..OOO*.OQO..QQO..QOO.
+.QQQ..OOO..OQO..QOQ..QOQ..OQO.
+..............................
+..............................
+.QOG..QOF..OOG..OQF..OOG..OOF.
+.OOQ..OQQ..QQO..OQQ..QQO..OQQ.
+.QQO..OOO..OQO..OOQ..OQQ..QQQ.
+..............................
+\end{verbatim}
+\end{varwidth}
+\end{center}
+\caption[Darstellung einer Konfiguration des \emph{Woods2} Problems] {Darstellung einer Konfiguration des \emph{Woods2} Problems, "`."' entspricht leerem Feld, "`*"' dem Agenten, "`F"' und "`G"' dem Futter und "`O"' und "`Q"' den Hindernissen (siehe~\cite{wilson:95})}
+\label{woods2:fig}
+\end{figure}
+
+Weiter verfeinert und getestet wird der XCS Algorithmus in \cite{xcs2}. Hier werden Generalisierungsoperatoren (Zusammenfassung von \emph{classifier} und eine Beschränkung des genetischen Operators auf eine kleinere Menge von \emph{classifier}) für XCS eingeführt, welche in den betrachteten Szenarien (\emph{6-Multiplexer}, \emph{11-Multiplexer}, \emph{20-Multiplexer} und \emph{Woods2} Problem) zu deutlich besseren Ergebnissen führten.\\
+
+Mit schwierigeren Problemen beschäftigt sich beispielsweise die Arbeit~\cite{Butz2005}. Fragestellung hier ist, wie man u.a. die Probleme \emph{Maze6} und \emph{Woods14} (siehe Abbildung~\ref{woods14:fig}) mit XCS besser in den Griff bekommen kann. Ziel beider Szenarien ist, dass ein Agent, der an einem zufälligen freien Feld startet, das Futter ("`F"') findet. Unter "`schwieriger"' wird hier aber lediglich eine größere Anzahl von Schritten zum Zielpunkt verstanden, also nicht etwa ein dynamisches Szenario mit z.B. einem sich bewegendem Zielpunkt. Zur Lösung wird ein Gradientenabstieg in XCS implementiert, wodurch besseren Ergebnisse in den besagten Problemen erreicht werden. Beim Gradientenabstieg werden Aktualisierungen einzelner \emph{classifier} zusätzlich anhand ihrer Genauigkeit gewichtet, es handelt sich also um eine Erweiterung der Aktualisierungsfunktion.\\
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{varwidth}{\textwidth}
+\begin{verbatim}
+TTTTTTTTT   TTTTTTTTTTTTTT
+T.....TFT   TT...TTTT.TT.T
+T..T.TT.T   T.TTT.TT.T.T.T
+T.T.....T   T.TTT.T.TTT.TT
+T...TT..T   TFTTT.TT.TTTTT
+T.T.T..TT   TTTTTT..TTTTTT
+T.T.....T   TTTTTTTTTTTTTT
+T.....T.T
+TTTTTTTTT
+\end{verbatim}
+\end{varwidth}
+\end{center}
+\caption[Darstellung einer Konfiguration des \emph{Maze6} und des \emph{Woods14} Problems] {Darstellung einer Konfiguration des \emph{Maze6} und des \emph{Woods14} Problems, "`."' entspricht einem leeren Feld, "`F"' dem Futter und "`T"' einem Hindernis (siehe~\cite{Butz2005})}
+\label{woods14:fig}
+\end{figure}
+
+
+Wie in Kapitel~\ref{problemdefinition:sec} auflistet und später in Kapitel~\ref{scenario_description:cha} diskutiert, gibt es signifikante Unterschiede zwischen den Standardszenarien und dem in dieser Arbeit untersuchten Überwachungsszenarien. Deshalb werden im Folgenden Arbeiten aufgelistet, die sich mehr auf den Anwendungsfall und insbesondere auf  dynamische Szenarien beziehen.\\
+
+
+\subsection{Arbeiten zu dynamischen \emph{single step} Problemen}
+
+Vielversprechend war der Titel der Arbeit~\cite{Lujan2008}, "`Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment"'. In der Arbeit wurde das XCSlib~\cite{xcslib} mit einem Open Source Echtzeitstrategiespiel verknüpft und bei jedem Schritt des Spiels wurde die aktuelle Situation mit dem \emph{classifier set} verglichen und sich für eine Aktion entschieden. Ziel war es, eine Reihe von Gebäuden und Einheiten zu errichten, wofür es einer bestimmten Abfolge bedarf (z.B. zuerst das Haupthaus, dann die Arbeiter). Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch zeigten dort Testläufe mit dem \emph{multi step} Verfahren keine Anzeichen, dass ein Lernen stattfand, weshalb sich auf das \emph{single step} Verfahren konzentriert wurde. Deshalb können, trotz einer ähnlichen Dynamik wie beim Überwachungsszenario, die Ergebnisse und Herangehensweisen nicht mit dieser Arbeit verglichen werden.\\
+
+Eine weitere Arbeit in dieser Richtung~\cite{Hercog02socialsimulation} beschreibt das "`El Farol"' Bar Problem (EFBP) in Verbindung mit XCS und einem Multiagentensystem. Im EFBP geht es um eine Bar und eine Anzahl von Personen. Jede Person kann entscheiden, ob sie die Bar besucht oder nicht. Entscheiden sich zuviele Personen für einen Besuch, dann gibt es für keine Person eine positive Bewertung. Besucht eine Person von sich aus die Bar nicht, gibt es (für diese Person) ebenfalls keine positive Bewertung. In der Arbeit wurde eine Methode benutzt ("`MAXCS"'), um (in Verbindung mit XCS) kooperativ die Bewertungen zwischen den Personen zu verteilen und die Ergebnisse mit egoistisch handelnden Personen verglichen. Als Ergebnis wurde eine Emergenz festgestellt, d.h. die Agenten kooperierten miteinander und die Aufgabe konnte dadurch optimal gelöst werden. Zwar ist auch dies ein dynamisches Szenario, die Vergleichbarkeit ist aber sehr eingeschränkt, da die Personen jeweils das Verhalten der anderen Personen in der letzten Woche kennen, und somit globale Information besitzen, weshalb es sich bei dem EFBP ebenfalls um ein \emph{single step} Problem handelt.\\
 
 
 
-Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll, während in dieser Arbeit alle Agenten dieselbe Rolle spielen sollen.\\
+\subsection{Arbeiten zur Auswahlart von \emph{classifier}}
 
-Vielversprechend war der Titel der Arbeit~\cite{Lujan2008}, "`Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment"'. In der Arbeit wurde das XCSlib~\cite{xcslib} mit einem Open Source Echtzeitstrategiespiel verknüpft und bei jedem Schritt des Spiels wurde die aktuelle Situation mit dem \emph{classifier set} verglichen und sich für eine Aktion entschieden. Ziel war es, eine Reihe von Gebäuden und Einheiten zu errichten, wofür es einer bestimmten Abfolge bedarf (z.B. zuerst das Haupthaus, dann die Arbeiter). Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch zeigten dort Testläufe mit dem \emph{multi step} Verfahren keine Anzeichen, dass ein Lernen stattfand, weshalb sich auf das \emph{single step} Verfahren konzentriert wurde. Das ist auch der Grund weshalb, trotz einer ähnlichen Dynamik wie beim Überwachungsszenario, die Ergebnisse und Herangehensweisen nicht mit dieser Arbeit verglichen werden kann.\\
+Ein in der Arbeit wesentlicher Punkt ist die Auswahlart der \emph{classifier}, also ob eher exploratives Verhalten (die sogenannte \emph{explore} Phase), gefördert oder ob eher jeweils nur der vielversprechendste \emph{classifier} ausgewählt (die \emph{exploit} Phase) bzw. inwiefern zwischen diesen beiden Phasen hin- und hergeschaltet werden soll.\\
 
-Eine weitere Arbeit in dieser Richtung~\cite{Hercog02socialsimulation} beschreibt das "`El Farol"' Bar Problem (EFBP) in Verbindung mit XCS und einem Multiagentensystem. Im EFBP geht es um eine Bar und eine Anzahl von Personen, jede Person kann entscheiden, ob sie die Bar besucht oder nicht. Entscheiden sich zuviele Personen für einen Besuch, dann gibt es \emph{reward} für keine Person. Besucht eine Person von sich aus die Bar nicht, gibt es ebenfalls keinen \emph{reward}. In der Arbeit wurde eine Methode benutzt ("`MAXCS"'), um (in Verbindung mit XCS) kooperativ den \emph{reward} zwischen den Personen zu verteilen und die Ergebnisse mit egoistisch handelnden Personen verglichen. Als Ergebnis wurde eine Emergenz festgestellt, d.h. die Agenten kooperierten miteinander und die Aufgabe konnte optimal gelöst werden. Auch hier wieder ist es ein dynamisches Szenario, die Vergleichbarkeit ist aber sehr eingeschränkt, da es sich bei dem EFBP ebenfalls um ein \emph{single step} Problem handelt.\\
+In der Standardimplementierung von XCS wird in jeder Probleminstanz entweder zufällig oder in jedem Schritt anhand eines Parameters zwischen der \emph{explore} und \emph{exploit} Phase gewechselt. Die Motivation von \cite{1102280} ist, dass sich durch vermehrtes Wissen des XCS nach einigen absolvierten Problemen die Balance zwischen beiden Phasen ändert. Als Idee wird vorgeschlagen, anstatt über Zufall und manuelle Tests des Parameters, diese Balance während eines Laufs automatisch anhand von Statistiken anzupassen. Im betrachteten Szenario wurde eine deutliche Verringerung der nötigen \emph{explore} Phasen ohne Qualitätseinbußen und somit auch eine deutlich niedrigere Laufzeit erreicht.\\
 
-
-Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama} basieren, also im Gegensatz zum Gegenstand dieser Arbeit auf eine übergeordnete Organisationseinheit bzw. auf globale Regeln oder globalem Regeltausch zwischen den Agenten zurückgreifen.\\
-
-%Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{1102281} vorgestellt. Dort wurde die jeweilige Bewertung unter den (zwei) Agenten aufgeteilt, es fand also eine Kommunikation des \emph{reward} Werts statt. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in Kapitel~\ref{communication:cha} diskutiert.\\
-
-%In \cite{Miyazaki} wurde gezeigt, dass bei der Weitergabe der Bewertung Gruppenbildung von entscheidender Wichtigkeit ist. Nach bestimmten Kriterien werden Agenten in Gruppen zusammengefasst und die Bewertung anstatt an alle, jeweils nur an die jeweiligen Gruppenmitgliedern weitergegeben.
-%Dies bestätigen auch Tests in Kapitel~\ref{communication:cha}, bei der sich Agenten mit ähnelnden (was das Verhalten gegenüber anderen Agenten betrifft) \emph{classifier set} Listen in Gruppen zusammengefasst wurden und zum Teil bessere Ergebnisse erzielt werden konnten als ohne Kommunikation.
+Zwar wird die Idee aus der Arbeit, die Auswahlart dynamisch während eines Laufs anhand der ermittelten Statistiken zu wechseln, aufgegriffen; allerdings konnte die Erweiterung nicht übernommen werden, da sie sich wieder auf \emph{multi step} Probleme bezieht. Stattdessen wurde ein eigener Algorithmus implementiert, der auf Basis der Sichtbarkeit des Zielobjekts entscheidet, wann zwischen den beiden Phasen gewechselt wird.\\
 
 
-Zwar gibt es Ansätze um auch schwierigere Probleme besser in den Griff zu bekommen (z.B. Maze5, Maze6, Woods14 in~\cite{Butz2005}), indem ein Gradientenabstieg in XCS implementiert wurde, mit "`schwieriger"' sind aber Probleme gemeint, die mit dem \emph{multi step} Verfahren gel
+\subsection{Arbeiten zu dynamischen Multiagentensystemen}\label{abgrenzung:sec}
 
-. Ziel war es aber hier nicht, mit einer Dynamik zurechtzukommen, sondern lediglich Probleme mit längeren Wegen 
+Eine dieser Arbeit am nächsten kommende Problemstellung wird in \cite{1102281} vorgestellt. Dabei wird ein vereinfachtes Fußballspiel simuliert, bei dem ein bis zwei Agenten versuchen müssen, einen Ball auf der jeweils gegenüberliegenden Seite aus dem Spielfeld zu befördern. Ähnlich wie in dieser Arbeit haben die Agenten Sensoren in die vier verschiedenen Richtungen und können sich ebenfalls in diese Richtungen bewegen. Außerdem ist das Szenario dynamisch, d.h. es gibt andere, sich bewegende Objekte. Unterschiede zu der hier verwendeten Problemstellung sind allerdings zum einen, dass sobald das Ziel erreicht wurde das Problem neu gestartet wird und zum anderen der Schwierigkeitsgrad. Zwar bewegt sich der Ball, jedoch nur dann, wenn ihn ein Agent anstösst. Dies sorgt für eine geringere Dynamik, als ein sich andauernd bewegendes Zielobjekt. Desweiteren ist der einzelne Gegenspieler in der anderen Mannschaft ein sich zufällig bewegender Agent und es gibt keine Hindernisse die es zu umgehen gilt.\\
 
-Bei einem Gradientenabstieg wird ein 
+Bezüglich des Aspekts des Multiagentensystems wird dort außerdem versucht, die Bewertung unter den (zwei) Agenten aufzuteilen. Die Aufteilung läuft nach dem sogenannten \emph{profit sharing} Schema wie es in der Arbeit \cite{Miyazaki} vorgestellt wurde. Dabei erhält der der \(n\)-te Agent in einer vorher festgelegten Gruppe von Agenten die Bewertung \(f_{n} = \frac{1}{M}f_{n-1}\) und der erste Agent die maximale Bewertung. In der oben vorgestellten Arbeit bei der Simulation eines Fußballspiels wird beispielsweise der Agent, der den Ball aus dem Spielfeld befördert hat mit \(1,0\) und der andere mit \(0,9\) bewertet. Diese Form der Verteilung des \emph{reward} Werts ist im hier besprochenen Überwachungsszenario direkt leider nicht anwendbar, es werden hier aber alternative Ansätze angesprochen.\\
 
-Ein konkreter Bezug zu einem dynamischen Überwachungsszenario konnte jedoch in keiner dieser Arbeiten gefunden werden. 
+In der Literatur gibt es noch eine Reihe weiterer Multiagentensysteme die mit Kommunikation und einem XCS arbeiten. Die primäre Abgrenzung zu diesen Arbeiten ist allerdings, dass sie sich komplexer Kommunikation bedienen und damit u.a. globale, von den Agenten geteilte \emph{classifier set} Listen anlegen, einzelne \emph{classifier} untereinander austauschen, die Agenten in Gruppen zentral organisieren und einzelnen Agenten Rollen verteilen oder direkt zentral steuern. Beispielsweise wird in der Arbeit~\cite{Takadama01} ein Organisationsmodell ("`Organizational-learning oriented Classifier System"', OCS) vorgestellt, welches hier aufgrund der Komplexität nur unzureichend dargestellt werden kann. Im Kern der Arbeit wird versucht, mittels einem gemeinsamen, geteilten Speicher Rollen für die Agenten zu verteilen. Der Schwerpunkt liegt also in der tatsächlichen Organisation unter den Agenten, während sich im Folgenden mehr auf die individuellen Agenten, die unabhängig voneinander eine gemeinsame Aufgabe lösen sollen, konzentriert wird.\\
 
-%\cite{Barry03limitsin} TODO
-%TODO Anwendungen XCS!?
+Angesprochen wird in der Arbeit der Verweis auf die LCS Varianten mit Speicher, deren Ziel es ist, Probleme zu lösen, die keine Markow-Kette darstellen. Eine Markow-Kette ist ein stochastischer Prozess, der gedächtnislos ist (das ist die sogenannte Markow-Eigenschaft), d.h. bei dem "`die zukünftige Entwicklung des Prozesses nur von dem zuletzt beobachteten Zustand abhängt und von der sonstigen Vorgeschichte unabhängig ist"' \cite{Waldmann}. Ein solches Problem wird in dieser Arbeit behandelt, es wird allerdings ein anderer Weg als in beispielsweise~\cite{lanzi99optimal} gegangen. Dort kann eine Aktion eines Agenten sowohl äußere (z.B. Bewegung) als auch innere Auswirkungen (Veränderung des inneren Zustands) haben, wodurch eine Art Speicher realisierbar ist und somit die Markow-Eigenschaft wieder hergestellt werden kann. In dieser Arbeit werden dagegen die aktivierten \emph{classifier} gespeichert bis ein Ziel erreicht wird.\\
 
-Kapitel~\ref{bewertung:sec}, eingehen auf reward Funktion
 
-%Da es sich um Neuland handelt, konnten 
+\subsection{Implementierungen von XCS}
 
-\section{Aufbau der Arbeit}
+Die wesentlichen zwei Implementierungen zu XCS sind zum einen XCSlib~\cite{xcslib}, welche eine XCS Funktionsbibliothek in C++ zur Verfügung stellt, und zum anderen die ursprüngliche Implementierung  \cite{Butz_xcsclassifier} welche eine kompakte Umsetzung in Java zur Verfügung stellt. Zur Simulation wurden keine der beiden Implementierungen verwendet, sondern eine eigene Java Umsetzung des XCS Algorithmus programmiert. Dies geschah zum einen, um die Funktionsweise von XCS voll zu verstehen und zum anderen, weil von Anfang an klar war, dass Modifikationen am Algorithmus vorgenommen werden sollen. Im Wesentlichen sind die Implementierungen identisch, die Unterschiede sind in den jeweiligen Kapiteln, insbesondere in Kapitel~\ref{lcs_variants:cha} erklärt und teilweise im Anhang (siehe Kapitel~\ref{implementation:cha}) als Quelltext dargestellt.\\
 
-Kapitel~\ref{stand_wissenschaft:cha} stellt den gegenwärtigen Stand der Forschung dar, insbesondere in Bereichen, die sich mit dem Thema dieser Arbeit schneiden. Kapitel~\ref{scenario_description:cha} geht dann auf das verwendete Szenario, die Eigenschaften der Objekte und vor allem die Eigenschaften der Agenten und des Zielobjekts ein. Schließlich wird erläutert, wie die Simulation auf dem beschriebenen Szenario ablaufen soll. In Kapitel~\ref{lcs:cha} werden dann die wichtigsten Teile des XCS vorgestellt, insbesondere die sogenannten \emph{classifier}, die Verarbeitung von Sensordaten, der allgemeine Ablauf und die XCS Parameter. Vorbereitend für die Entwicklung neuer XCS Varianten sind insbesondere Kapitel~\ref{bewertung:sec}, bei dem es um die Konstruktion einer passenden \emph{reward} Funktion für die beschriebenen Szenarien geht, und Kapitel~\ref{exploreexploit:sec}, bei dem es um die Frage geht, wann sich ein Agent für welche Aktion entscheiden soll, zu nennen. Darauf aufbauend schließt Kapitel~\ref{lcs_variants:cha} an und bespricht Anpassungen wie auch Verbesserungen des XCS Algorithmus. Speziell für das vorgestellte Szenario wird desweiteren eine selbstentwickelte XCS Variante (SXCS) vorgestellt.
-% und dann durch die Erweiterung der Möglichkeit zur Kommunikation zwischen den Agenten weiterentwickelt. 
-Der wesentliche Höhepunkt folgt dann in Kapitel~\ref{lcs_analysis:cha} in dem alle diskutierten Algorithmen in den vorgestellten Szenarien getestet und analysiert werden. Abschluss bildet die Zusammenfassung und der Ausblick in Kapitel~\ref{conclusion:cha} und im Anhang~\ref{implementation:cha} findet sich dann noch eine Anzahl der zentralen, implementierten Quellcodes der Algorithmen, die in dieser Arbeit vorgestellt werden.
+
+\section{Aufbau der Arbeit}\label{aufbau_arbeit:sec}
+
+Kapitel~\ref{stand_wissenschaft:cha} stellt den gegenwärtigen Stand der Forschung dar, insbesondere in Bereichen, die sich mit dem Thema dieser Arbeit schneiden. Kapitel~\ref{scenario_description:cha} geht dann auf das verwendete Szenario, die Eigenschaften der Objekte und vor allem die Eigenschaften der Agenten und des Zielobjekts ein. Schließlich wird erläutert, wie die Simulation auf dem beschriebenen Szenario ablaufen soll. In Kapitel~\ref{lcs:cha} werden dann die wichtigsten Teile des XCS vorgestellt, insbesondere die sogenannten \emph{classifier}, die Verarbeitung von Sensordaten, der allgemeine Ablauf und die XCS Parameter. Vorbereitend für die Entwicklung neuer XCS Varianten sind insbesondere Kapitel~\ref{bewertung:sec}, bei dem es um die Konstruktion einer passenden \emph{reward} Funktion für die beschriebenen Szenarien geht, und Kapitel~\ref{exploreexploit:sec}, bei dem es um die Frage geht, wann sich ein Agent für welche Aktion entscheiden soll, zu nennen. Darauf aufbauend bespricht Kapitel~\ref{lcs_variants:cha} Anpassungen und Verbesserungen des XCS Algorithmus. Speziell für das vorgestellte Szenario wird desweiteren eine selbstentwickelte XCS Variante (SXCS) vorgestellt und dann durch die Erweiterung der Möglichkeit zur Kommunikation zwischen den Agenten weiterentwickelt.\\
+
+Der Schwerpunkt der Arbeit beschreibt Kapitel~\ref{lcs_analysis:cha}: Hier werden alle diskutierten Algorithmen in den vorgestellten Szenarien getestet und analysiert. Abschluss bildet die Zusammenfassung und der Ausblick in Kapitel~\ref{conclusion:cha}. Im Anhang~\ref{implementation:cha} findet sich dann noch eine Anzahl der wichtigsten Quelltexte der Algorithmen, die in dieser Arbeit vorgestellt wurden.\\
+
+
+\section{Wesentliche Erkenntnisse der Arbeit}\label{wesentliche_erkenntnisse_int:sec}
+
+Wesentliche Erkenntnisse aus dieser Arbeit werden sein:
+\begin{itemize}
+
+\item Die Bewertungsfunktion kann anhand einer Nachbildung einer gut funktionierenden Heuristik konstruiert werden (siehe Kapitel~\ref{bewertung_ueberwachungszenario:sec}).
+
+\item Durch Hinzufügen einer Form von Speicher (siehe Kapitel~\ref{sxcs_variant:sec}) kann SXCS die betrachtete Aufgabe wesentlich besser als XCS lösen (siehe Kapitel~\ref{lcs_analysis:cha}).
+
+\item Eine Variation der Lernrate kann je nach Szenario sinnvoll sein (siehe Kapitel~\ref{sec:learnrate_parameter} und Kapitel~\ref{xcs_difficult_scenario:sec}).
+
+\item Die Agenten mit XCS und SXCS haben deutliche Probleme mit Szenarien mit vielen Hindernissen (siehe Kapitel~\ref{tournament_factor_test:sec}).
+
+\item Ein dynamischer Wechsel der Auswahlart für Aktionen während eines Laufs kann sinnvoll sein, um die Zahl der blockierten Bewegungen zu verringern und das Zielobjekt besser verfolgen zu können (siehe Kapitel~\ref{analysis_random_scenario_xcs:sec}).
+
+\item Sowohl XCS als auch SXCS können (für sich zufällig bewegende Agenten) schwierige Szenarien (siehe Kapitel~\ref{difficult_scenario:sec}) mit markanten Hindernispunkten meistern (siehe Kapitel~\ref{xcs_difficult_scenario:sec}) und SXCS kann diese sogar besser als die intelligente Heuristik lösen (siehe Kapitel~\ref{sxcs_intelligent_difficult_test:sec}).
+
+\item Die vorgestellte Variante des verzögerten SXCS Algorithmus DSXCS bietet Raum für Verbesserung (siehe Kapitel~\ref{verzoegerter_reward:sec}).
+
+\item Die versuchte Implementierung von Kommunikation führte nicht zum Erfolg, zum einen wegen geringer Möglichkeiten zur Kooperation, zum anderen wegen zu einfach umgesetztem Algorithmus (siehe Kapitel~\ref{dsxcs_analysis:sec} und \ref{bewertung_komm:sec}).
+
+\end{itemize}

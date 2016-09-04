@@ -18,42 +18,17 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{icomma}
-\lstset{language=java}
-
-\doublespacing
-
+\usepackage{varwidth}
 % wegen deutschen Umlauten
 \usepackage[ansinew]{inputenc}
+\usepackage{fancyhdr}
+%\documentclass[]{scrbook}
+%\usepackage[Sonny]{fncychap}
 
-% The hyperref package is used to handle cross-referencing commands in LaTeX to produce hypertext links in the document. The package provides backends for the \special set defined for HyperTeX DVI processors; for embedded pdfmark commands for processing by Acrobat Distiller (dvips and Y&Y's dvipsone); for Y&Y's dviwindo; for PDF control within pdfTeX and dvipdfm; for TeX4ht; and for VTeX's pdf and HTML backends.
-\usepackage[
-	anchorcolor=black,
-	backref=false,
-	bookmarks=true,
-	bookmarksnumbered=true,
-	breaklinks=true,
-	citecolor=green,
-	colorlinks=true,
-	draft=false,
-	filecolor=cyan,
-	final=true,
-	hyperfigures=false,
-	hyperfootnotes=true,
-	linkcolor=red,
-	menucolor=red,
-	pagebackref=false,
-	pdfauthor={Clemens Lode},
-	% pdfcreater={LaTeX with hyperref package}
-	pdfkeywords={Learning Classifier System},
-	pdfstartview=FitH,
-	% pdfsubject={},
-	pdftex,
-  	pdftitle={XCS in dynamischen Multiagenten-Überwachungsszenarien ohne globale Kommunikation},
-	plainpages=false,
-  urlcolor=magenta  
-]{hyperref}
+\lstset{language=java}
 
 \pagestyle{headings}
+
 
 \graphicspath{{graphics/}}
 
@@ -73,6 +48,7 @@
 \renewcommand{\bottomfraction}{1.0}
 \renewcommand{\topfraction}{1.0}
 
+\def\pagename{Seite}
 \theoremstyle{break}
 \newtheorem{Definition}{Definition}[section]
 
@@ -90,13 +66,18 @@
 \renewcommand\lstlistlistingname{Programmverzeichnis}
 
 \newcommand{\newlisting}[2]{\begin{lstlisting}[frame=trbl,caption={#1},label={#2},numbers=left,captionpos=b,float={htbp}]{}}
-\hyphenation{Ziel-ob-jekt S\"au-len-sze-nario} 
+\hyphenation{Ziel-ob-jekt S\"au-len-sze-nario \"Uber-wa-chungs-sze-na-rio collectReward calculateNextMove calculateReward Sen-sor-da-ten-satz Lis-te Kon-fi-gu-ra-ti-ons-pro-gramm XCS SXCS DSXCS reward Ziel-ob-jekt Ziel-ob-jekts}
 \begin{document}
+
 \lstset{basicstyle=\footnotesize, numberstyle=\tiny}
+
+\setlength{\headheight}{14pt}
+
+\setlength\fboxsep{10pt}
 
 \frontmatter
 \include{frontpage}
- 
+
 \tableofcontents
 \clearemptydoublepage
 \listoffigures
@@ -110,6 +91,16 @@
 \clearemptydoublepage
 \pagestyle{headings}
 \mainmatter
+\onehalfspacing
+\pagestyle{fancy} 
+\fancyhf{} 
+\fancyhead[LE]{\small \slshape \rightmark}
+\fancyhead[RO]{\small \slshape \leftmark}
+\lfoot[\thepage    ]{\scriptsize 2009, Clemens Lode, Universit"at Karlsruhe (TH)}
+\cfoot[]{}
+\rfoot[\scriptsize 2009, Clemens Lode, Universit"at Karlsruhe (TH)]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
 \include{introduction}
 
@@ -119,20 +110,21 @@
 
 \include{lcs}
 \include{exploration}
-\include{parameter}
 \include{lcs_variant}
-%\include{variante_com}
+\include{variante_com}
 
 \include{ohne_lcs_analysis}
+\include{parameter}
 \include{lcs_analysis}
 
 \include{conclusion}
 
 \begin{appendix}
 \include{appendix}
-%\include{appendix_com}
+\include{appendix_com}
 \end{appendix}
 \clearpage
+\pagestyle{plain}
 \backmatter
 \clearemptydoublepage
 \bibliography{main}

@@ -1,175 +1,171 @@
 \chapter{Zusammenfassung, Ergebnis und Ausblick}\label{conclusion:cha}
 
-Zu Beginn wurde auf die Szenariodefinition und die Fähigkeiten der Agenten eingegangen. Anhand von Beispielen heuristischer Agenten wurden einige Grundeigenschaften der präsentierten Szenarien als Vorbereitung für die Analyse der Learning Classifier Systeme herausgefiltert und bestimmt. Die Einführung in LCS, der Beschreibung des Standardverfahren XCS und der angepassten Implementierung für Überwachungsszenarios ermöglichten das Ausführen umfangreicher Tests. TODO
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\end{flushleft}
+\end{minipage}
+\begin{minipage}[t]{0.6\textwidth}
+\begin{flushright} \tiny
+\emph{People do not like to think. If one thinks, one must reach conclusions. Conclusions are not always pleasant.}\\
+Helen Keller\\
+~\\
+~\\
+\end{flushright}
+\end{minipage}
 
 
-TODO irgendwo noch unterbringen, dass action set sizes gleich sind!
+Wesentliche Erkenntnisse aus dieser Arbeit sind:
+\begin{itemize}
+
+\item Die Bewertungsfunktion kann anhand einer Nachbildung einer gut funktionierenden Heuristik konstruiert werden (siehe Kapitel~\ref{bewertung_ueberwachungszenario:sec}).
+
+\item Durch Hinzufügen einer Form von Speicher (siehe Kapitel~\ref{sxcs_variant:sec}) kann SXCS die betrachtete Aufgabe wesentlich besser als XCS lösen (siehe Kapitel~\ref{lcs_analysis:cha}).
+
+\item Eine Variation der Lernrate kann je nach Szenario sinnvoll sein (siehe Kapitel~\ref{sec:learnrate_parameter} und Kapitel~\ref{xcs_difficult_scenario:sec}).
+
+\item Die Agenten mit XCS und SXCS haben deutliche Probleme mit Szenarien mit vielen Hindernissen (siehe Kapitel~\ref{tournament_factor_test:sec}).
+
+\item Ein dynamischer Wechsel der Auswahlart für Aktionen während eines Laufs kann sinnvoll sein, um die Zahl der blockierten Bewegungen zu verringern und das Zielobjekt besser verfolgen zu können (siehe Kapitel~\ref{analysis_random_scenario_xcs:sec}).
+
+\item Sowohl XCS als auch SXCS können (für sich zufällig bewegende Agenten) schwierige Szenarien (siehe Kapitel~\ref{difficult_scenario:sec}) mit markanten Hindernispunkten meistern (siehe Kapitel~\ref{xcs_difficult_scenario:sec}) und SXCS kann diese sogar besser als die intelligente Heuristik lösen (siehe Kapitel~\ref{sxcs_intelligent_difficult_test:sec}).
+
+\item Die vorgestellte Variante des verzögerten SXCS Algorithmus DSXCS bietet Raum für Verbesserung (siehe Kapitel~\ref{verzoegerter_reward:sec}).
+
+\item Die versuchte Implementierung von Kommunikation führte nicht zum Erfolg, zum einen wegen geringer Möglichkeiten zur Kooperation, zum anderen wegen zu einfach umgesetztem Algorithmus (siehe Kapitel~\ref{dsxcs_analysis:sec} und \ref{bewertung_komm:sec}).
+
+\end{itemize}
 
 
-%von der Möglichkeit zur Kommunikation eine angepasste Implementierung für verzögerten Reward definiert auf Basis dessen dann mehrere Varianten für die Weitergabe des Rewards vorgestellt, analysiert und verglichen wurden.
+Das wesentliche Ergebnis ist, dass die Implementierung des XCS auf  Überwachungsszenarien ausgeweitet werden kann, ohne wesentliche Veränderungen am Algorithmus vorzunehmen. Die alleinige Anpassung des XCS \emph{multi step} Verfahrens, dass eine neue Probleminstanz gestartet wird, wann immer sich das Ziel in Überwachungsreichweite befand, führte aber nicht zum Erfolg. Die Ergebnisse waren kaum besser als ein sich zufällig bewegender Agent.\\
+
+Erst eine Untersuchung der Natur von Überwachungsszenarien, insbesondere die Feststellung, dass bei ihnen nicht die Markow-Eigenschaft gilt und somit ein Speicher sinnvoll sein könnte, führte weiter zur Entwicklung des SXCS Algorithmus.\\
+
+Zuvor musste jedoch erst die Bewertungsfunktion analysiert werden. Dazu wurden die aus XCS bekannten \emph{single step} und \emph{multi step} Verfahren näher betrachtet und drei einfache, im Überwachungsszenario relativ erfolgreiche, Heuristiken untersucht. Dadurch konnte eine Bewertungsfunktion gewonnen werden, die abhängig von den Sensordaten einen positiven \emph{base reward} vergab, wenn das Zielobjekt oder keine Agenten in Sicht waren.\\
+
+Zusammen mit der betrachteten Implementierung von XCS im Überwachungsszenario konnte mit der Bewertungsfunktion die funktionsfähige Variante SXCS implementiert und getestet werden. Ergebnis hier war, dass SXCS in den betrachteten Szenarien XCS deutlich überlegen ist.\\
+
+Ausnahme bildete das Szenario mit Hindernissen, hier musste aufgrund zahlreicher blockierter Bewegungen die Auswahlart näher untersucht werden. Resultat der Überlegungen war dann ein dynamischer Wechsel der Auswahlart für die Aktionen, mit dem bei einer Mischung der \emph{roulette wheel selection} und \emph{best selection} etwas bessere Ergebnisse erzielt werden konnten.\\
+
+Eine Untersuchung des schwierigen Szenarios ergab, dass SXCS auch hier gegenüber XCS deutlich bessere Ergebnisse erzielt. Insbesondere wurde auch die intelligente Heuristik deutlich geschlagen, was beweist, dass Hindernisstrukturen bei den durchgeführten Tests von den SXCS Agenten gelernt wurden.\\
+
+Schließlich wurde intensiv ein Ansatz für Kommunikation diskutiert. Hauptidee war, dass Agenten ihre Aktionen nicht negativ bewerten sollten, wenn andere Agenten das Ziel in Sicht haben. Die tatsächliche Umsetzung konnte in Tests allerdings nicht überzeugen. Hier ist noch viel Raum für weitere Untersuchungen gegeben.\\
 
 
-TODO oberes Limit der Genauigkeit, 84\%, da ja geswitched wird.
-TODO erweiteren, dass schlechte Ergebnisse nur geliefert werden konnten (relativ zum intelligenten Agent)w
-Geringen Unterschied ansprechen, mit zufälligem Algorithmus argumentieren,
-vielleicht ein BEispiel rechnen wo Qualität des zufälligen abgezogen wird!
+\section{Ausblick}\label{ausblick:sec}
 
+Mit dieser Arbeit wurde ein neues Gebiet von Problemfeldern in Verbindung mit dem XCS Algorithmus eröffnet. Dadurch bieten sich zahlreiche mögliche Fortsetzungen der Untersuchung, welche nachstehend kurz diskutiert werden.
 
-\section{Ergebnis TODO}
+\subsection{Verbesserung der Sensoren}\label{verbesserung_sensoren:sec}
 
-Zentrales Ergebnis: Die Implementierung des XCS auf  Überwachungsszenarios ist ohne wesentliche Veränderung möglich. TODO
-
-Es wurde gezeigt, welche Änderungen und Anpassungen am XCS Algorithmus durchzuführen sind, will man ihn in einem Überwachungsszenario einsetzen. Insbesondere die Problemdefinition 
-Bewertung! Kapitel~\ref{bewertung:sec}
-
-spielte eine Rolle, da sie den wesentlichen Unterschied zu den üblichen statischen Szenarien bildete.\\
-
-
-empfindlich gegenüber Parameteränderungen
-
-
-
-Das wesentliche Ergebnis ist, dass die Implementierung des XCS auf  Überwachungsszenarios ausgeweitet werden kann, ohne wesentliche Veränderungen am Algorithmus vorzunehmen. Während sich die Qualität der resultierenden Agenten im Allgemeinen über dem zufälligen Agenten befindet, ist die Effizienz der Implementierung, im Vergleich zu einfachen Heuristiken, sehr gering. Mit der verwendeten Implementierung hat XCS Probleme, eine optimale Regelmenge zu finden bzw. zu halten. Eine Regel wie z.B. "`laufe auf das Ziel zu, wenn es in Sicht ist"', ist als Heuristik sehr erfolgreich. Bei dauerhafter Überwachung ohne Kommunikation läuft es aber eher auf ein Verfolgungsszenario hinaus. Aufgrund andauerndem Lernens TODO ???
-
-Die alleinige Anpassung des XCS Multistepverfahrens, dass ein neues Problem gestartet wird, wann immer sich das Ziel in Überwachungsreichweite befand führte nicht zum Erfolg. Die Ergebnisse waren nicht besser als ein sich zufällig bewegender Agent.\\
-
-
-Erst durch Verknüpfung der Bewertung (dem \emph{base reward}) mit dem zeitlichen Abstand zu einer Änderung des Zustands führte zu deutlich besseren Ergebnissen.\\
-
-TODO
-Desweiteren wurde untersucht, inwiefern sich der Austausch an minimaler Information unter den Agenten, ohne zentrale Steuerung oder globalem Regeltausch, auf die Qualität auswirkt. Zwar gab es vereinzelt positive Effekte, diese waren jedoch auf andere Faktoren zurückzuführen.
-
-
-
-\section{Ausblick und verworfene Ansätze}
-
-Mit dieser Arbeit wurde ein neues Gebiet von Problemfeldern in Verbindung mit dem XCS Algorithmus eröffnet. Dies erlaubt eine ganze Reihe von fortführenden Untersuchungen, die nachstehend kurz diskutiert werden. Zusätzlich stellen die nachfolgenden Ausführungen ausprobierte Lösungsansätze vor, die jedoch im Verlauf der Testphasen wieder verworfen und nicht weiter verfolgt wurden.
-
-
-\subsection{Ausweitung der Sensoren}
-
-In dieser Arbeit wurde ein sehr einfaches Sensorenmodell verwendet, das zwar höhere Sichtweiten bringt, dafür aber sehr ungenaue Informationen liefert. 
+In dieser Arbeit wurde ein einfaches Sensorenmodell verwendet, das zwar höhere Sichtweiten ermöglicht, dafür aber sehr ungenaue Informationen liefert. 
 Zu einem wesentlich besseren Ergebnis könnte die Verwendung von einer größeren Anzahl von Sensoren bzw. rationale Eingabewerten führen. Dies würde die Möglichkeit eröffnen, den Abstand zu anderen Agenten je nach Szenario genauer zu regeln. Eine einführende Arbeit bezüglich rationalen Eingabewerten und XCS findet sich z.B. in \cite{689040}. Alternativ böte sich an, einfach weitere Binärsensoren einzugliedern um so mehrwertige Sensoren zu erhalten.\\
 
-Mit dem Erweitern der Sensoren würde sich auch die Tür für eine Optimierung der \emph{reward} Funktion für den \emph{base reward} öffnen (siehe Kapitel~\ref{bewertung:sec}), wodurch sich auch der Lernerfolg für das globale Problem verbessern könnte.
+Mit dem Erweitern der Sensoren würde sich auch die Tür für eine Optimierung der \emph{reward} Funktion für den \emph{base reward} Wert öffnen (siehe Kapitel~\ref{bewertung:sec}), wodurch sich auch der Lernerfolg für das globale Problem verbessern könnte.\\
+
+Desweiteren könnten Szenarien untersucht werden, bei denen es, durch die besondere Positionierung von Hindernissen, markante Stellen auf dem Feld gibt, an denen sich die Agenten orientieren können. Beispielsweise sind dann auch komplexere Bewegungen des Zielobjekts denkbar (z.B. Pendel- oder Kreisbewegungen), welche die Agenten durch kluge Positionierung an markanten Stellen erlernen könnten.\\
+
 
 \subsection{Verwendung einer mehrwertigen \emph{reward} Funktion}
 
-Es ist aus den Analysen in Kapitel~\ref{analysis_sans_lcs:cha} bekannt, dass ein Agent mit intelligenter Heuristik in den betrachteten Szenarien sehr gut abschneidet, die \emph{reward} Funktion wurde allerdings von der einfachen Heuristik übernommen. Der Grund dafür wurde in Kapitel~\ref{bewertung:sec} ausführlich diskutiert, zur Darstellung bedarf einer mehrwertigen \emph{reward} Funktion. Eine Erweiterung des Algorithmus in diese Richtung erscheint deshalb sinnvoll.
+Es ist aus den Analysen in Kapitel~\ref{analysis_sans_lcs:cha} bekannt, dass ein Agent mit intelligenter Heuristik in den betrachteten Szenarien sehr gut abschneidet; die \emph{reward} Funktion wurde allerdings von der einfachen Heuristik übernommen. Der Grund dafür wurde in Kapitel~\ref{bewertung:sec} ausführlich diskutiert, zur Darstellung bedarf es einer mehrwertigen \emph{reward} Funktion. Eine Erweiterung des Algorithmus in diese Richtung erscheint deshalb sinnvoll.\\
 
 
 \subsection{Untersuchung der Theorie}
 
-Genauer untersucht werden muss die mathematische Grundlage des verwendeten Ansatzes vom in Kapitel~\ref{sxcs_variant:sec} besprochenen XCS Variante SXCS. Zwar wurden in dieser Arbeit einige Eigenschaften untersucht und festgestellt, jedoch fehlt die theoretische Begründung, weshalb diese Form der Verteilung des \emph{reward} Werts auf \emph{action set} Listen in zeitlichem Zusammenhang in diesen Szenarien deutlich besser abschneidet. Womöglich ist hierzu eine Untersuchung einzelner Agenten in einem einfacheren Szenario zielführend.
+Genauer untersucht werden muss die mathematische Grundlage des verwendeten Ansatzes vom in Kapitel~\ref{sxcs_variant:sec} besprochenen XCS Variante SXCS. Zwar wurden in dieser Arbeit einige Eigenschaften untersucht und festgestellt, jedoch fehlt die theoretische Begründung, weshalb diese Form der Verteilung des \emph{reward} Werts auf \emph{action set} Listen in zeitlichem Zusammenhang in diesen Szenarien deutlich besser abschneidet als die von XCS. Womöglich ist hierzu eine Untersuchung einzelner Agenten in einem einfacheren Szenario zielführend. Insbesondere würde ein einfacheres Szenario auch die benötigte Rechenzeit verkürzen und somit die Untersuchung wesentlich verkürzen.\\
 
 \subsection{Untersuchung der \emph{classifier}}
 
-Anekdotenweise wurden stichprobenartig \emph{classifier} in Kapitel~\ref{strategien_agenten_classifier:sec} untersucht. Dabei wurde per Hand und Augenmaß durch eine vorsortierte Liste an \emph{classifier} von erfolgreichen Agenten geblättert und interessante herausgefischt. Dies diente lediglich zur Demonstration und um ein Gefühl zu erhalten, wie die Regelsätze der \emph{classifier} aussehen. Es ist denkbar, dass man Methoden entwickeln könnte, um konkrete (vereinfachte) Strategien in der Form "`Falls im Osten kein Hindernis und Zielobjekt nicht in Sicht, gehe nach Osten"' daraus abzuleiten. 
+Eine tiefergehende Analyse der \emph{classifier set} Listen selbst könnte ebenfalls neue Erkenntnisse liefern. Hier könnte man feststellen, was für Strategien die Agenten tatsächlich lernen. Zwar wird vom Programm die Liste vorsortiert, echte Strategien lassen sich aber nur bei der Analyse mehrerer \emph{classifier} gleichzeitig erkennen, weshalb im Rahmen dieser Arbeit die Ausgabe dieser Listen lediglich zur Fehleranalyse der Simulation benutzt wurde.\\
+
+Es ist anzunehmen, dass die jeweilige Umwelt, also die anderen Agenten, eine wesentliche Rolle spielen. Bei stichprobenartiger Untersuchung wurden beispielsweise Strategien gefunden, bei denen die Agenten bewusst dem Zielobjekt aus dem Weg gehen. Eine solche Strategie ist auf dem ersten Blick sinnlos. Im Kontext von egoistisch handelnden Agenten, eines Szenarien ohne Hindernisse und im Hinblick auf die eingebaute Belohnung bei der Erreichung eines Gebiets ohne Agenten (siehe Kapitel~\ref{bewertung_ueberwachungszenario:sec}), erscheint dies aber in einem ganz anderen Licht.\\
+
 
 \subsection{Erhöhung des Bedarfs an Kollaboration}
 
-Die in dieser Arbeit verwendeten Szenarien konnten nur unzureichend die Kollaboration zwischen den Agenten in den Vordergrund stellen. Ein einfaches Verfolgen, also eine lokale Strategie, führte eher zum Erfolg. Aufgezeigt wird dies insbesondere beim Vergleich zwischen der einfachen mit der intelligenten Heuristik bei unterschiedlichen Geschwindigkeiten des Zielobjekts auf Szenarien mit relativ wenigen Hindernissen (siehe Kapitel~\ref{zielagent_analyse_intelligent:sec}), obwohl sich das Zielobjekt in diesem Fall intelligent verhalten hat. Ein Ansatz wurde in Kapitel~\ref{bewertung:sec} erwähnt, eine Abkehr von einem binären zu einem mehrwertigen \emph{base reward} um die \emph{reward} Funktion der intelligenten Heuristik besser abbilden zu können.\\
+Die in dieser Arbeit verwendeten Szenarien konnten nur teilweise die Kollaboration zwischen den Agenten in den Vordergrund stellen. Ein einfaches Verfolgen, also eine lokale Strategie, führte bereits zum Erfolg. Aufgezeigt wird dies insbesondere beim Vergleich zwischen der einfachen mit der intelligenten Heuristik bei unterschiedlichen Geschwindigkeiten des Zielobjekts in Szenarien mit relativ wenigen Hindernissen (siehe Kapitel~\ref{zielagent_analyse_intelligent:sec}), obwohl sich das Zielobjekt in diesem Fall intelligent verhalten hat.\\
 
-Wollte man sich dem Problemkreis der Kollaboration nähern, drängt sich auch die Lösungsidee auf, die Problemstellung an sich zu ändern z.B. in der Form, das Zielobjekt als überwacht einzustufen, wenn es gleichzeitig von mehreren Agenten oder von mehreren Seiten beobachtet wird.\\
+Ein Ansatz wurde in Kapitel~\ref{bewertung:sec} erwähnt, eine Abkehr von einem binären zu einem mehrwertigen \emph{base reward} Wert, um die \emph{reward} Funktion der intelligenten Heuristik noch etwas besser abbilden zu können. Auch wäre es sowohl was Kollaboration als auch z.B. Kommunikation betrifft, sinnvoll, zuerst einen neuen Agenten mit einer Heuristik zu entwickeln, der das jeweilige Szenario optimal löst. Darauf aufbauend könnte man dann wieder z.B. die Bewertungsfunktion anpassen.\\
+
+Will man tiefer auf Kollaboration eingehen, drängt sich auch die Lösungsidee auf, die Problemstellung an sich zu ändern. Beispielsweise könnte man das Zielobjekt nur dann als überwacht einzustufen, wenn es gleichzeitig von mehreren Agenten oder von mehreren Seiten beobachtet wird.\\
 
 
 \subsection{Rotation des \emph{condition} Vektors}
 
-Ursprünglich wurde das Szenario auf Basis von Rotation konzipiert. Die Annahme war, dass ein Agent, der für einen Satz an Sensordaten eine optimales \emph{classifier set} gefunden hat, dieses \emph{classifier set} auch für Sensordaten eines um 90, 180 und 270 Grad gedrehten Szenarios (mit entsprechend 90, 180 und 270 Grad gedrehter Aktion des jeweiligen \emph{classifier}) optimal sei. Aufgrund der deutlichen Komplexitätssteigerung des Programms, der niedrigeren Laufzeit und mangels konkreter Qualitätssteigerungen gegenüber dem Ansatz ohne Rotation wurde diese Idee jedoch fallengelassen. Möglicherweise könnte man durch Hinzunahme eines weiteren Bits im \emph{condition} Vektor, das bestimmt, ob dieser \emph{classifier} gleichzeitig auch die drei rotierten Szenarien erkennen kann, die Leistung des Systems verbessern. Dies würde jedoch weitere Untersuchungen erfordern, welche über den Rahmen dieser Arbeit hinausgehen würden.\\
+Ursprünglich wurde das Szenario auf Basis von Rotation konzipiert. Die Annahme war, dass wenn ein Agent, eine für einen Satz an Sensordaten optimale \emph{classifier set} Liste gefunden hat, die \emph{classifier set} Liste auch für Sensordaten eines um 90, 180 und 270 Grad gedrehten Szenarien (mit entsprechend 90, 180 und 270 Grad gedrehter Aktion des jeweiligen \emph{classifier}) optimal sei. Aufgrund der deutlichen Komplexitätssteigerung des Programms, der niedrigeren Laufzeit und mangels konkreter Qualitätssteigerungen gegenüber dem Ansatz ohne Rotation wurde diese Idee jedoch verworfen.\\
+
+Möglicherweise könnte man durch Hinzunahme eines weiteren Bits im \emph{condition} Vektor, das bestimmt, ob dieser \emph{classifier} gleichzeitig auch die drei rotierten Szenarien erkennen kann, die Leistung des Systems verbessern. Dies hätte jedoch weitere Untersuchungen erfordert, welche über den Rahmen dieser Arbeit hinausgegangen wären.\\
 
 
-\subsection{Abnehmende Wahrscheinlichkeit der \emph{explore} Phase}
+\subsection{Anpassungsfähigkeit von SXCS}\label{anpassungsfaehigkeit:sec}
 
-Kapitel~\ref{exploreexploit:sec} stellte mehrere Arten des Wechsels zwischen der \emph{explore} und \emph{exploit} Phase vor. In der Literatur gibt es beispielsweise in \cite{1102279} einen Ansatz, um die Wahrscheinlichkeit, in eine \emph{explore} Phase zu wechseln bzw. in dieser Phase zu bleiben, während eines Durchlaufs mittels einer intelligenten Methode angepasst wird.\\
-
-Wie dies bei Überwachungsszenarios ausgenutzt werden könnte ist noch unklar. Die Ergebnisse, bezüglich des Wechsels bei der Änderung des \emph{base reward} Werts in Kapitel~\ref{test_auswahlarten:sec}, deuten darauf hin, dass ein Ausgleich geschaffen werden kann, indem jeweils bei selten erlebten und häufig erlebten Situationen unterschiedliche Auswahlarten benutzt werden. Eine solche Anpassung könnte aber auch z.B. durch Analyse der aktuellen \emph{classifier set} Liste erfolgen, was womöglich ein flexibleres Verhalten ermöglicht. Beispielsweise könnte man in Situationen, in der das \emph{match set} nur \emph{classifier} mit insgesamt niedrigem \emph{experience} Wert aufweist, eher in die \emph{explore} Phase wechseln. Weitere Untersuchungen in diesem Bereich wären angebracht.\\
+XCS im Allgemeinen besitzt die Eigenschaft zu lernen. Interessant wäre eine Untersuchung, ob und wie sich die in dieser Arbeit diskutierten Varianten sich an neue Szenarien anpassen können. Zwar wurde bei der Untersuchung der Szenarien mit zufälligen Hindernissen gezeigt, dass sie es schaffen, mit veränderten Hindernispositionen zurechtzukommen, es wurde jedoch nicht untersucht, wie schnell eine solche Anpassung erfolgt. Beispielsweise könnte man 10 Probleminstanzen das Säulenszenario testen lassen und dann mit derselben Population 10 Probleminstanzen mit dem schwierigen Szenario. Anschließend wäre eine Betrachtung der Zahl der neu erstellten \emph{classifier}, des gleitenden Durchschnitts der Qualität und der Vergleich zu den Qualitäten bei separatem Testens beider Szenarien interessant.\\
 
 
-\subsection{Gesonderte Behandlung von neutralen Ereignissen}
+\subsection{Wechsel zwischen \emph{explore}/\emph{exploit} Phasen}
 
-Beträgt bei einem neutralen Ereignis (siehe Kapitel~\ref{sec:events}) der \emph{base reward} Wert \(0\), so wurde ausprobiert, die vom Stack genommenen Werte einfach zu verwerfen. Leitgedanke hierbei war es, das Verhalten eines  Agenten nicht negativ zu bewerten, auch wenn er es für längere Zeit nicht schafft, das Zielobjekt in Sichtweite zu bekommen. 
+Kapitel~\ref{exploreexploit:sec} stellte mehrere Arten des Wechsels zwischen der \emph{explore} und \emph{exploit} Phase vor. In der Literatur gibt es beispielsweise in \cite{1102279} einen Ansatz, um die Wahrscheinlichkeit, in eine \emph{explore} Phase zu wechseln bzw. in dieser Phase zu bleiben, während eines Durchlaufs mittels einer intelligenten Methode anzupassen.\\
 
-TODO!
-
-Dies begründet sich damit, dass er trotzdem ein Gebiet überwacht hat, in dem die Aufenthaltswahrscheinlichkeit des Zielobjekts größer 0 war und somit, was das globale Problem betrifft, eigentlich zielführend gehandelt hat. Die Annahme war, dass (nach der erwarteten Verteilung der zukünftigen Positionen des Zielobjekts) selbst bei einer optimalen Verteilung der Agenten, einige Agenten das Zielobjekt nie in Sicht bekommen und deshalb durch ein neutrales Ereignis nicht bestraft werden sollen. In den verwendeten Szenarien hat dies zu keinem Erfolg geführt, im Gegenteil, insbesondere im schwierigen Szenario hat dies dazu geführt, dass ein deutlich schlechteres Ergebnis erreicht wurde. Dies lässt sich dadurch erklären, dass mit gesonderter Behandlung Agenten, die etwas falsches gelernt haben, dies (mangels Kontakt zum Zielobjekt) sehr schwierig wieder verlernen. Dies erkennt man an der Darstellung des gleitenden Durchschnitts der Qualität in Abbildung~\ref{difficult_learning_rate_continous_quality:fig}. Das erste Problem wird von allen drei Varianten problemlos gemeistert, dann gibt es einen Kontakt zum Zielobjekt, der aber (bei einem hohen Wert von \(\beta\) von \(0,1\)) so stark ist, dass der jeweilige Agent im nächsten Problem kein Ziel mehr findet. Mit geringerer Lernrate \(\beta\) lässt sich das zwar lösen, sorgt aber für eine geringere Konvergenzgeschwindigkeit.\\
-
-Fazit ist, dass eine Sonderbehandlung, für den Fall mit neutralem Ereignis, ohne positiven \emph{base reward} zwar wegen oben genannter Gründe wichtig scheint, das "`Vergessen"' aber auch wertvoll sein kann.
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{plot_100_goal_agent_observed-13-03-09--21-25-09-438.eps}
-}
-\caption[Auswirkung des Parameters \emph{learning rate} $\beta$ auf den gleitenden Durchschnitt der  Qualität (Schwieriges Szenario)] {Auswirkung des Parameters \emph{learning rate} $\beta$ auf den gleitenden Durchschnitt der Qualität im schwierigen Szenario, Bewegung des Zielobjekts ohne Richtungsänderung, Geschwindigkeit 1, 8 Agenten mit SXCS Algorithmus, 2000 Schritte}
-\label{difficult_learning_rate_continous_quality:fig}
-\end{figure}
+Wie dies bei Überwachungsszenarien ausgenutzt werden könnte, ist noch nicht ganz verstanden. Die Ergebnisse bezüglich des Wechsels bei der Änderung des \emph{base reward} Werts in Kapitel~\ref{analysis_random_scenario_xcs:sec} deuten darauf hin, dass ein striktes Verfolgen des Zielobjekts und ein eher zufälliges Herumlaufen im Szenario mit Hindernissen von Vorteil sein kann.\\
 
 
 \subsection{Anpassung des \emph{maxStackSize} Werts}
 
-Bei der Besprechung von "`Ereignissen"' in Verbindung mit SXCS in Kapitel~\ref{sec:events} hat man gesehen, dass sich die optimalen Werte für das Säulenszenario und das schwierige Szenario stark unterscheiden. Um sich die Anpassung mittels Testläufen an das jeweilige Szenario zu sparen, wäre es für den Algorithmus sinnvoll, eine Methode zu entwickeln, mit der sich der \emph{maxStackSize} Wert während des Laufs an das jeweilige Szenario anpassen kann. Wie dies konkret auszusehen hat, ist noch offen. Zuvor müsste der Algorithmus selbst in der Theorie näher analysiert werden.
+Wie in Kapitel~\ref{groesse_stack:sec} erwähnt, kann der \emph{maxStackSize} Wert stark vom jeweiligen Szenario abhängen, wenn wichtige Entscheidungen weit zurückliegen. Mangels eines theoretischen Fundaments muss man zwischen den folgenden drei wirkenden Faktoren einen Kompromiss finden:
 
+\begin{itemize}
+\item Erstens gibt es die Verzögerung zu Beginn einer Probleminstanz und insbesondere zu Beginn eines Experiments, es kann u.U. bis zu \(\frac{maxStackSize}{2}\) Schritte dauern, bis das erste Mal ein \emph{classifier} aktualisiert wird. 
+
+\item Auch werden bei einem großen \emph{maxStackSize} Wert womöglich Aktionen positiv (oder negativ) bewertet, die an der Situation nicht beteiligt waren. Insbesondere gilt dies, wenn es sich um kurze lokale Entscheidungen handelt. 
+
+\item Umgekehrt, wählt man den Stack zu klein, kann es sein, dass ein Überlauf und somit u.U. ein gewisser Fehler auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.\\
+\end{itemize} 
+
+Bei der Besprechung von Ereignissen in Verbindung mit SXCS in Kapitel~\ref{sec:events} hat man gesehen, dass sich die optimalen Werte für das Säulenszenario und das schwierige Szenario stark unterscheiden. Um sich die Anpassung mittels Testläufen an das jeweilige Szenario zu sparen, wäre es für den Algorithmus sinnvoll, eine Methode zu entwickeln, mit der sich der \emph{maxStackSize} Wert während des Laufs an das jeweilige Szenario anpassen kann. Zur Entwicklung des Algorithmus müsste der Algorithmus allerdings in der Theorie erst näher analysiert werden.\\
 
 
 \subsection{Lernendes Zielobjekt}
 
-Sicher interessant ist auch der umgekehrte Ansatz, bei dem die Rollen von Agent und Zielobjekt, was die Bestimmung der Qualität betrifft, vertauscht wird. Dann wäre das Zielobjekt das Objekt, das lernt und den Agenten ausweichen muss. Bei dieser Problemstellung fällt zwar der kollaborative Aspekt weg, es hat aber den Vorteil, mit derselben Simulation dieses neue Problem untersuchen zu können. Die Implementierung ist sehr simpel, es muss lediglich die \emph{reward} Funktion entsprechend abgeändert werden, damit beispielsweise das Ausweichen von Agenten positiv bewertet wird. Bis auf die in Kapitel~\ref{zielobjekt:sec} erwähnte Sprungeigenschaft ist ein lernendes Zielobjekt ansonsten praktisch identisch mit der XCS bzw. SXCS Implementierung. Bei anfänglichen Tests konnten keine besonderen Erkenntnisse gewonnen werden und der Ansatz wurde deshalb nicht weiter verfolgt.
+Sicher interessant ist auch der umgekehrte Ansatz, bei dem die Rollen von Agent und Zielobjekt, was die Bestimmung der Qualität betrifft, vertauscht werden. Dann wäre das Zielobjekt das Objekt, das lernt und den Agenten ausweichen muss. Bei dieser Problemstellung fällt zwar der kollaborative Aspekt weg, es hat aber den Vorteil, mit derselben Simulation diese neue Probleminstanz untersuchen zu können. Für die Implementierung muss lediglich die \emph{reward} Funktion entsprechend abgeändert werden, damit beispielsweise das Ausweichen von Agenten positiv bewertet wird. Bis auf die in Kapitel~\ref{zielobjekt:sec} erwähnte Sprungeigenschaft ist ein lernendes Zielobjekt ansonsten praktisch identisch mit der XCS bzw. SXCS Implementierung. Bei anfänglichen Tests konnten keine besonderen Erkenntnisse gewonnen werden, deshalb wurde der Ansatz nicht weiter verfolgt.\\
 
 
-%\subsection{Weitere Berechnungsmethoden für den Kommunkationsfaktor}
+\subsection{Verbesserung der DSXCS \emph{reward} Funktion}
 
-%TODO!
+Bei der angesprochenen XCS Variante DSXCS (siehe Kapitel~\ref{verzoegerter_reward:sec}) wurden eine Reihe von Ansatzmöglichkeiten besprochen, wie die \emph{reward} Funktion verbessert werden könnte. Blickt man in die Literatur, so wird der grundsätzliche Ansatz bestätigt. Beispielsweise wird in~\cite{Takadama01} erläutert, dass Szenarien, die keine Markow-Kette darstellen und bei denen somit frühere Sensordaten relevant für die Entscheidung in der Gegenwart sind, mittels Speicher besser gelöst werden können. Eine Arbeit~\cite{lanzi98adding} zu diesem Thema wurde in der Einleitung in Kapitel~\ref{abgrenzung:sec} erwähnt.\\
 
-%Im Bereich der Kommunikation wurden, neben in dieser Arbeit besprochenen "`egoistischen Relation"' (siehe Kapitel~\ref{egoistic_relation:sec}), auch weitere Verfahren ausprobiert, mit welchen versucht wurde, gleichartige Gruppen zu finden. Hier wurden ganze \emph{classifier set} Listen unterschiedlicher Agenten miteinander auf Ähnlichkeit geprüft um daraus einen Faktor zu berechnen, der (wie bei der "`egoistischen Relation"') Einfluss auf die Weitergabe des \emph{base reward} Werts haben sollte. Der dadurch deutlich erhöhte Kommunikations- und Berechnungsaufwand lag jedoch in keinem Verhältnis zu eventuell beobachteten Qualitätsverbesserungen, im Gegenteil, es wurden eher Qualitätsverschlechterungen beobachtet. Die Ergebnisse mit dem Test der "`egoistischen Relation"' zeigen jedoch, dass hier zumindest etwas Potential stecken könnte und für bestimmte Szenarien die zwei Grundideen, dass sich die Agenten zum einen an die Größe des Szenarios anpassen und zum anderen der \emph{base reward} Wert möglichst nur an sich ähnlich verhaltende Agenten weitergegeben wird, nicht ganz falsch sein können. Genauere, insbesondere theoretische, Untersuchungen sind hier nötig.\\
-
-
-\subsection{Verworfene Szenarien}
-
-Szenarien, die keine zusätzlichen Beobachtungen erbrachten, bzw. nur das Betrachten unbedeutender Teilaspekte ermöglichten, wurden verworfen.\\
-So sind u.a. zu nennen,
-
-\begin{itemize}
-\item das Szenario "`Labyrinth"', bei denen die Agenten denen die Agenten wahrscheinlich an den mangelnden Fähigkeiten der Sensoren scheiterten,
-\item das Szenario "`Raum"', was ein vereinfachtes "`schwieriges Szenario"' mit einem "`Raum"' mit einer Öffnung in der Mitte darstellte, welches sich als zu einfach zu lösen herausstellte und
-\item das Szenario "`Kreuz"', bei dem die Hindernisse in der Mitte des Raums ein Kreuz bilden, jedoch keine bedeutend anderen Ergebnisse lieferte als Szenarien mit zufällig verteilten Hindernissen.
-\end{itemize}
 
 
 \section{Vorgehen und verwendete Hilfsmittel und Software}
 
-Zu Beginn stellte sich die Frage, welche Software zu benutzen ist, da bereits frühzeitig die komplexe Problemstellung absehbar war. Begonnen wurde mit der YCS~Implementierung~\cite{Bull03asimple}. Sie ist in der Literatur wenig vertreten, die Implementierung bot aber einen guten Einstieg in das Thema, da sie sich auf das Wesentliche eines LCS beschränkte und nur wenige Optimierungen enthielt.\\
+Begonnen wurde mit der YCS~Implementierung~\cite{Bull03asimple}. Sie ist in der Literatur wenig vertreten, die Implementierung bot aber einen guten Einstieg in das Thema, da sie sich auf das Wesentliche eines LCS beschränkte und nur wenige Optimierungen im Quelltext enthielt.\\
 
 Das so gewonnene Wissen war Basis und Voraussetzung für das Verstehen und Nachvollziehen der XCS Implementierung. Insbesondere die Optimierungen und der etwas unsaubere Programmierstil in der Standardimplementierung bereiteten Probleme.\\
 
-Leider bietet die Fachliteratur nur ein begrenztes Angebot an Beschreibung von Arbeiten dar, die sich mit der konkreten XCS Implementierung und deren Umsetzung beschäftigen. Insbesondere im Hinblick auf den nichtklassischen Fall des Überwachungsszenarios musste fast bei 0 begonnen werden. Ein Rückgriff auf bestehende Bibliotheken war deshalb nicht möglich, ursprünglich geplante Untersuchungen komplexerer Systeme wie zentrale Steuerung, Austausch von Regeln etc. waren deswegen zu streichen.\\
+Aufgrund der Komplexität der Fragestellung beschränkte sich die Untersuchung zuerst auf den Fall, in dem lokale Informationen ohne zentrale Steuerung und ohne Kommunikation auftreten. Dies machte die Verwendung komplexerer Simulationssysteme unnötig. Auch erschien die Einarbeitungszeit in Multiagenten Frameworks wie z.B. Repast~\cite{repast} erschien zu hoch, wie auch die unbekannten Risiken, was Geschwindigkeit, Kompatibilität und Speicherverbrauch betraf, weshalb letztlich ein eigenes Simulationsprogramm entwickelt wurde.\\
 
-Konsequenterweise beschränkten sich die Untersuchungen auf den Fall, in dem lokale Informationen ohne zentrale Steuerung und ohne Kommunikation auftreten. Dies machte die Verwendung komplexerer Simulationssysteme unnötig, die Einarbeitungszeit in Multiagenten Frameworks wie z.B. Repast~\cite{repast} erschien zu hoch, wie auch die unbekannten Risiken, was Geschwindigkeit, Kompatibilität und Speicherverbrauch betraf, weshalb letztlich ein eigenes Simulationsprogramm entwickelt wurde.\\
+Das Simulationsprogramm samt zugehöriger Oberfläche zur Erstellung von neuen Test-Jobs wurde in Java mit Hilfe von NetBeans~IDE~6.5~\cite{NetBeans} selbst entwickelt und gestaltet.\\
 
-Das Simulationsprogramm samt zugehöriger Oberfläche~\cite{agentsimulator} zur Erstellung von neuen Test-Jobs wurde in Java mit Hilfe von NetBeans~IDE~6.5~\cite{NetBeans} selbst entwickelt und gestaltet. Für die Verlaufsgraphen wurde GnuPlot~4.2.4~\cite{GnuPlot} benutzt, die Darstellungen der jeweiligen Konfiguration des Torus (insbesondere in Kapitel~\ref{scenario_description:cha}) wurden im Programm mittels Gif89Encoder~\cite{gifencoder} erstellt. Weitere Graphen und Darstellungen wurden OpenOffice.org~Impress und OpenOffice.org~Calc~\cite{OpenOffice} angefertigt.\\
+Der Quelltext ist auf der beiliegenden DVD, über~\cite{agentsimulator} oder alternativ per E-Mail unter clemens@lode.de verfügbar.\\
 
-Besonders hilfreich für die Programmierung der Simulation, der Testumgebung, des Konfigurationsmanagements und der Oberfläche waren hierzu Erfahrungen aus der 3-monatigen Studienarbeit zum Thema \emph{estimation of distribution algorithms} am Institut für Angewandte Informatik und Formale Beschreibungsverfahren (AIFB) der Universität Karlsruhe (TH) bei Dr. Jürgen Branke wie auch einer halbjährigen Arbeit zum Thema Zellularautomaten am Institut für Algorithmen und Kognitive Systeme der Universität Karlsruhe (TH) bei Herrn Dr. rer. nat. Thomas Worsch.\\
+Für die Verlaufsgraphen wurde GnuPlot~4.2.4~\cite{GnuPlot} benutzt, die Darstellungen der jeweiligen Konfiguration des Torus (siehe Kapitel~\ref{scenario_description:cha}) wurden im Programm mittels Gif89Encoder \cite{gifencoder} erstellt. Weitere Graphen und Darstellungen wurden in OpenOffice.org~Impress und OpenOffice.org~Calc~\cite{OpenOffice} angefertigt.\\
 
-Wesentlicher Bestandteil der Konfigurationsoberfläche war auch eine Automatisierung der Erstellung von Konfigurationsdateien und Batchdateien für ein Einzelsystem bzw. für JoSchKA~\cite{JoSchKa} zum Testen einer ganzen Reihe von Szenarien und GnuPlot Skripts. Die Automatisierung war aufgrund der tausenden getesteten Szenarien und Parametereinstellungen entscheidend zur Durchführung dieser Arbeit.\\
+Besonders hilfreich für die Programmierung der Simulation, der Testumgebung, des Konfigurationsmanagements und der Oberfläche waren hierzu Erfahrungen aus der  Studienarbeit zum Thema \emph{estimation of distribution algorithms} am Institut für Angewandte Informatik und Formale Beschreibungsverfahren (AIFB) der Universität Karlsruhe (TH) bei Dr. Jürgen Branke wie auch einer halbjährigen Arbeit zum Thema Zellularautomaten am Institut für Algorithmen und Kognitive Systeme der Universität Karlsruhe (TH) bei Herrn Dr. rer. nat. Thomas Worsch.\\
+
+Wesentlicher Bestandteil der Konfigurationsoberfläche ist insbesondere eine Automatisierung der Erstellung von Konfigurationsdateien und Batchdateien für ein Einzelsystem bzw. für JoSchKA~\cite{JoSchKa} zum Testen einer ganzen Reihe von Szenarien und GnuPlot Skripts. Die Automatisierung war aufgrund der tausenden zu testender Szenarien und Parametereinstellungen entscheidend zur  Durchführung dieser Arbeit.\\
+
 Dieses Dokument schließlich wurde mittels dem \LaTeX Editor LEd 0.5263 \cite{LeD} erstellt und mittels MiKTeX~2.7~\cite{miktex} kompiliert.\\
 
 
 \section{Beschreibung des Konfigurationsprogramms}
 
-In Abbildung~\ref{agent_configuration_whole:fig} ist ein Screenshot des gesamten Konfigurationsprogramms abgebildet. Auf der rechten Seite sind die Ergebnisse aller bisherigen Läufe in einer Datenbank angeordnet, auf der linken Seite (siehe Abbildung~\ref{agent_configuration_conf:fig}) befindet sich das Konfigurationsmenü um neue Testläufe zusammenzustellen. Dabei kann man mehrere Konfigurationen nacheinander eingeben, mittels des \emph{Save} Knopfs speichern und schließlich mittels des \emph{Package} Knopfs alle gespeicherten Konfigurationen zu einem Testpaket zusammenschnüren. Das Testpaket kann dann entweder lokal als Batchdatei oder mit Hilfe des gemeinsam generierten Skripts bei JoSchKa am AIFB hochgeladen und dort automatisch abgearbeitet werden. Ergebnisse werden für jedes Experiment in ein Verzeichnis geschrieben, aus der das Programm wiederum automatisch einen Eintrag in der Datenbank generiert.\\
+In Abbildung~\ref{agent_configuration_whole:fig} ist ein Screenshot des gesamten Konfigurationsprogramms (um 90 Grad gedreht) abgebildet. Auf der rechten Seite sind die Ergebnisse aller bisherigen Läufe in einer Datenbank angeordnet, auf der linken Seite befindet sich das Konfigurationsmenü, um neue Testläufe zusammenzustellen. Dabei kann man mehrere Konfigurationen nacheinander eingeben, mittels des \emph{Save} Knopfs speichern und schließlich mittels des \emph{Package} Knopfs alle gespeicherten Konfigurationen zu einem Testpaket zusammenschnüren. Das Testpaket kann dann entweder lokal als Batchdatei oder mit Hilfe des gemeinsam generierten Skripts bei JoSchKa am AIFB hochgeladen und dort automatisch abgearbeitet werden. Die Ergebnisse werden für jedes Experiment in ein Verzeichnis geschrieben, aus der das Programm wiederum bei Betätigung des \emph{Update} Knopfs einen Eintrag in der Datenbank generiert und darstellt.\\
 
-Das Simulationsprogramm selbst wird mit einem oder mehreren Dateinamen als Parameter aufgerufen. Die zugehörigen Dateien enthalten die Konfigurationsdaten für jeweils einen Durchlauf und entsprechen vom Aufbau her dem Format, welches das Konfigurationsprogramm erstellt.
+Das Simulationsprogramm selbst wird mit einem oder mehreren Dateinamen als Parameter aufgerufen. Die zugehörigen Dateien enthalten die Konfigurationsdaten für jeweils einen Durchlauf und entsprechen im Aufbau dem Format, welches das Konfigurationsprogramm erstellt.\\
 
 \begin{figure}[htbp]
 \centerline{	
-\includegraphics{AgentConfiguration_whole.eps}
+\includegraphics[height=0.8\textheight]{screenshot.eps}%AgentConfiguration_whole.eps}
 }
 \caption[Screenshot des Konfigurationsprogramms (Gesamtübersicht)] {Screenshot des Konfigurationsprogramms (Gesamtübersicht)}
 \label{agent_configuration_whole:fig}
-\end{figure}
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{AgentConfiguration_conf.eps}
-}
-\caption[Screenshot des Konfigurationsprogramms (Konfigurationsbereich)] {Screenshot des Konfigurationsprogramms (Konfigurationsbereich)}
-\label{agent_configuration_conf:fig}
 \end{figure}

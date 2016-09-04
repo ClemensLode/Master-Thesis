@@ -1,61 +1,69 @@
-\section{Implementation des DSXCS Algorithmus}
+\section{Implementierung des DSXCS Algorithmus}
 
-\newlisting{Erstes Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()} - Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
+\newlisting{Erstes Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{collectReward()}, Bewertung der \emph{action set} Listen)}{collect_reward_dsxcs:pro}
 /**
- * Diese Funktion verarbeitet den übergebenen reward Wert und gibt ihn an 
- * die zugehörigen action set Listen weiter. 
+ * Diese Funktion verarbeitet den übergebenen base reward Wert und 
+ * gibt ihn an die zugehörigen action set Listen weiter. Es wird
+ * kein maxPrediction Wert berechnet oder weitergegeben.
  *
- * @param reward Wahr wenn das Zielobjekt in Sicht war.
- * @param best_value Bester Wert des vorangegangenen action set Listen
- * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, 
- *          d.h. einem positiven reward Wert, aufgerufen wurde
+ * @param start_index Index in der historicActionSet Liste der als 
+ *          erstes aktualisiert werden soll.
+ * @param action_set_size Anzahl der action set Listen, die aktualisiert 
+ *          werden sollen.
+ * @param reward Wahr wenn der Zielobjekt in Sicht oder keine Agenten 
+ *          in Sicht waren.
+ * @param factor Der Aktualisierungsfaktor
+ * @param is_event Wahr wenn diese Funktion wegen eines positiven oder 
+ *          negativen Ereignisses aufgerufen wurde.
  */
+  public void collectReward(final int start_index, 
+                final int action_set_size, final boolean reward, 
+                final double factor, final boolean is_event) {
 
-  public void collectReward(int start_index, int action_set_size, 
-                boolean reward, double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
 
   /**
-   * Aktualisiere eine ganze Anzahl von Einträgen im historicActionSet
+   * Aktualisiere eine ganze Anzahl von Einträgen in der 
+   * historicActionSet Liste.
    */
      for(int i = 0; i < action_set_size; i++) {
 
-  /**
-   * Benutze aufsteigenden bzw. absteigenden reward Wert bei 
-   * einem positiven bzw. negativen Ereignis
-   */
+    /**
+     * Benutze aufsteigenden bzw. absteigenden reward Wert bei 
+     * einem positiven bzw. negativen Ereignis.
+     */
        if(is_event) {
          corrected_reward = reward ? 
            calculateReward(i, action_set_size) : 
            calculateReward(action_set_size - i, action_set_size);
        } 
-
-  /**
-   * Füge den ermittelten reward Wert zur historicActionSet Liste
-   */
+    /**
+     * Füge den ermittelten reward Wert zur historicActionSet Liste.
+     */
        historicActionSet.get(start_index - i).
          addReward(corrected_reward, factor);
-
     }
   }
 \end{lstlisting}
 
 
-\newlisting{Auszug aus dem zweiten Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
+\newlisting{Zweites Kernstück des verzögerten SXCS Algorithmus DSXCS (\emph{calculateNextMove()}, Auswahl der nächsten Aktion und Ermittlung der zugehörigen \emph{action set} Liste)}{dsxcs_calc_move:pro}
 
 /**
  * Der erste Teil der Funktion ist identisch mit der calculateNextMove()
  * Funktion der SXCS Variante ohne Kommunikation. Der Zusatz ist, dass beim 
  * Überlauf die in der historicActionSet Liste gespeicherte reward Werte
  * verarbeitet werden.
+ *
+ * @param gaTimestep Der aktuelle Zeitschritt
  */
 
-  public void calculateNextMove(long gaTimestep) {
+  public void calculateNextMove(final long gaTimestep) {
 
   // ... 
 
   /**
-   * historicActionSet voll? Dann verarbeite den dortigen reward Wert
+   * historicActionSet Liste voll? Dann verarbeite den dortigen reward Wert.
    */
      if (historicActionSet.size() > Configuration.getMaxStackSize()) {
        historicActionSet.pop().processReward();
@@ -71,18 +79,10 @@
  */
 
   public void processReward() {
-  /**
-   * Finde das größte reward / factor Paar
-   */
+
     for(RewardHelper r : reward) {
     /**
-     * Dieser Eintrag wurde schon in collectReward() verwertet
-     */
-      if(r.reward == 1.0 && r.factor == 1.0) {
-        continue;
-      }
-    /**
-     * Aktualisiere den Eintrag mit den entsprechenden Werten
+     * Aktualisiere den Eintrag mit den entsprechenden Werten.
      */
       actionClassifierSet.updateReward(r.reward, 0.0, r.factor);
     }
@@ -90,10 +90,10 @@
 \end{lstlisting}
 
 
-\newlisting{Verbesserte Variante des dritten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
+\newlisting{Verbesserte Variante des dritten Kernstück des verzögerten SXCS Algorithmus DSXCS (Verarbeitung des jeweiligen reward Werts, \emph{processReward()})}{process_reward_dsxcs2:pro}
 /**
- * Zentrale Routine der historicActionSet Liste zur Verarbeitung aller 
- * eingegangenen reward Wert bis zu diesem Punkt.
+ * Verbesserte zentrale Routine der historicActionSet Liste zur 
+ * Verarbeitung aller eingegangenen reward Wert bis zu diesem Punkt.
  */
 
   public void processReward() {
@@ -101,7 +101,7 @@
     double max_value = 0.0;
     double max_reward = 0.0;
   /**
-   * Finde das größte reward / factor Paar
+   * Finde das größte reward / factor Paar.
    */
     for(RewardHelper r : reward) {
       
@@ -111,7 +111,7 @@
       }
     }
     /**
-     * Aktualisiere den Eintrag mit dem ermittelten Werten
+     * Aktualisiere den Eintrag mit dem ermittelten Werten.
      */
     actionClassifierSet.updateReward(max_reward, 0.0, 1.0);
   }
@@ -120,7 +120,9 @@
 \clearpage
 
 
-\section{Implementation des egoistischen \emph{reward}}
+
+
+\section{Implementierung des egoistischen \emph{reward}}
 
 \newlisting{"'Egoistische Relation"', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem erwarteten Verhalten des Agenten gegenüber anderen Agenten}{egoistic_relationship:pro}
 /**
