@@ -2,9 +2,14 @@
 
 \section{Sensoren}
 
-Jeder Agent besitzt 3 Gruppen mit jeweils 4 Sensoren. Alle Sensoren sind visuelle Sensoren mit begrenzter Reichweite und können nur feststellen, ob sich in ihrem Sichtbereich ein entsprechendes Objekt befindet oder nicht. Andere Objekte blockieren die Sicht, Sichtlinien werden durch einen einfachen Bresenham-Linienalgorithmus bestimmt.\\
+Jeder Agent besitzt 3 Gruppen mit jeweils 8 Sensoren. Alle Sensoren sind visuelle Sensoren mit begrenzter Reichweite und können nur feststellen, ob sich in ihrem Sichtbereich ein entsprechendes Objekt befindet oder nicht. Andere Objekte blockieren die Sicht, Sichtlinien werden durch einen einfachen Bresenham-Linienalgorithmus bestimmt.\\
 Jede Gruppe von Sensoren nimmt einen anderen Typ von Objekt wahr. Die erste Gruppe nimmt das Zielobjekt, die zweite Gruppe andere Agenten und die dritte Gruppe Hindernisse wahr.\\
-Ein Sensor ist jeweils in eine bestimmte Richtung ausgerichtet (Norden, Osten, Süden und Westen, wobei auf den Abbildungen Norden immer oben ist) und wird auf ``wahr'' gesetzt, wenn sich in dem von der Sichtweite bestimmten Kegel ein entsprechendes Objekt befindet.\\
+Ein Sensor ist jeweils in eine bestimmte Richtung ausgerichtet (Norden, Osten, Süden und Westen, wobei auf den Abbildungen in dieser Arbeit Norden immer oben ist) und wird auf ``wahr'' (\(1\)) gesetzt, wenn sich in dem Sichtbereich des Sensors ein entsprechendes Objekt befindet.\\
+Die 8 Sensoren in einer Gruppe sind in 4 Richtungen mit jeweils einem Sensorenpaar aufgeteilt. Ein Sensorenpaar besteht aus Sensoren mit unterschiedlich großer Sichtweite, mit der der Agent also rudimentär die Entfernung zu den Objekten feststellen kann. Die Sichtweite des ersten Sensors wird über den Parameter \emph{sight range} bestimmt, die Sichtweite des zweiten Sensors über den Parameter \emph{reward range}.
+
+nehmen jeweils zwei unterschiedliche Sichtweiten wahr. 
+
+
 In Abbildung ~\ref{sight_directions:fig} sind alle Sichtkegel (dunkler und heller Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt. Als Sandardwerte wird hier eine Sichtweite von \(5.0\) und eine Überwachungsreichweite von \(3.0\) verwendet, der überwachte Bereich ist also eine Teilmenge des sichtbaren Bereichs.
 
 \begin{figure}[htbp]

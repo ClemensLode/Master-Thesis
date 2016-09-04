@@ -21,7 +21,8 @@ Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calcu
  *        einem positiven Reward, aufgerufen wurde
  */
 
-  public void collectReward(boolean reward, double best_value, boolean is_event) {
+  public void collectReward(
+                boolean reward, double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
 
   /**
@@ -42,7 +43,8 @@ Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calcu
   /**
    * Füge den ermittelten Reward zum historicActionSet
    */
-       historicActionSet.get(start_index - i).addReward(corrected_reward, factor);
+       historicActionSet.get(start_index - i).
+         addReward(corrected_reward, factor);
 
     }
 
@@ -69,8 +71,7 @@ Die Funktion \emph{calculateReward} ist identisch mit der in Kapitel ~\ref{calcu
    */
      if (historicActionSet.size() > Configuration.getMaxStackSize()) {
       HistoryActionClassifierSet first = historicActionSet.pop();
-      double max_prediction = historicActionSet.getFirst().getBestValue();
-      last.processReward(max_prediction);
+      last.processReward(historicActionSet.getFirst().getBestValue());
     }
   }
 \end{verbatim}
@@ -139,7 +140,7 @@ Befindet sich das Ziel beispielsweise gerade in Überwachungsreichweite mehrerer 
 
 \subsection{Fälle}
 
-In ~(\ref{sec:event}) wurden 4 verschiedene mögliche Situationen für einen einzelnen Agenten dargestellt. In Verbindung mit externen Rewards ergeben sich einige neue Situationen, nämlich ob sich der Zielagent in Überwachungsreichweite anderer Agenten befindet und wie dies im letzten Zeitschritt ausgesehen hat. Zusammen mit den ursprünglichen vier Möglichkeiten ergeben sich folgende 16 Möglichkeiten:
+In ~(\ref{sec:events}) wurden 4 verschiedene mögliche Situationen für einen einzelnen Agenten dargestellt. In Verbindung mit externen Rewards ergeben sich einige neue Situationen, nämlich ob sich der Zielagent in Überwachungsreichweite anderer Agenten befindet und wie dies im letzten Zeitschritt ausgesehen hat. Zusammen mit den ursprünglichen vier Möglichkeiten ergeben sich folgende 16 Möglichkeiten:
 Hier die erweiterte Übersicht, welche Arten von Events im Rahmen eines Multiagentensszenarios auftreten können:
 
 \begin{itemize}
@@ -198,6 +199,10 @@ In Tests (TODO) haben sich dennoch in bestimmten Fällen mit ``Reward all equally
 Blickt man auf diesen Sachverhalt aus einer etwas anderen Perspektive ist es auch einleuchtend. Es scheint offensichtlich, dass es relevant ist, ob das Spielfeld z.B. 100x100 oder nur 10x10 Felder groß ist, wenn es darum geht, das Verhalten über die Zeit hinweg zu bewerten. In den Algorithmus für die Kommunikation bzw. für die Rewardvergabe müsste man deshalb einen weiteren (festen) Faktor einbauen, der zu Beginn in Abhängigkeit von Größe des zu überwachenden Feldes berechnet wird. Dies soll aber nicht Teil der Arbeit werden. TODO
 
 
+
+TODO Idee:
+Verteilt man den Reward an alle Agenten mit gleichem Faktor heisst das letztlich, dass jeder Agent in jedem Zeitschritt den selben Rewardwert erhält. Dann bildet das System der Agenten im Grunde als gemeinsames System von Agenten mit gemeinsamen Sensoren und gemeinsame, ClassifierSet TODO
+
 \subsection{Simple relation}
 
 Eine dritte Implementation vergleicht die Classifier jeweils beider bei der Kommunikation beteiligten Agenten direkt. Alle Classifier des Agenten, der den Reward weitergibt, die ausreichend Erfahrung gesammelt haben und ausreichend genau ist (\emph{experience} und geringes \emph{predictionError}, Bedingung ist identisch mit \emph{isPossibleSubsumer}), werden mit einem identischen Classifier (d.h. mit gleicher \emph{condition} und gleicher \emph{action}) verglichen. Die Differenz der Produkte aus \emph{fitness} und \emph{prediction} geteilt durch den größeren \emph{prediction}-Wert der beiden Classifier stellt hier den Faktor dar. 
@@ -219,7 +224,8 @@ Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Verglei
      * @param other The other set we want to compare with
      * @return degree of relationship (0.0 - 1.0)
      */
-    public double checkDegreeOfRelationship(final MainClassifierSet other) {
+    public double checkDegreeOfRelationship(
+                    final MainClassifierSet other) {
         double degree = 0.0;
         int size = 0;
         ArrayList<Classifier> matched = new ArrayList<Classifier>();
@@ -239,9 +245,9 @@ Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Verglei
                 }
                 if(div != 0.0) {
                     double difference =
-                            1.0 - Math.abs(
-                              c.getFitness() * c.getPrediction() - 
-                              cl.getFitness() * cl.getPrediction()) / div;
+                      1.0 - Math.abs(
+                        c.getFitness() * c.getPrediction() - 
+                        cl.getFitness() * cl.getPrediction()) / div;
                     if(difference > 1.0) {
                         difference = 1.0;
                     } else
@@ -268,14 +274,13 @@ Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Verglei
 
 \subsection{Egoism factor}
 
-Eine weitere Variante berechnet erst einmal für jeden Agenten einen ``Egoismus-Faktor'', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, den Zielagenten in Sicht zu bekommen anstatt ein möglichst großes Gebiet abzudecken.
+Eine weitere Variante berechnet erst einmal für jeden Agenten einen ``Egoismus-Faktor'', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, den Zielagenten in Sicht zu bekommen anstatt ein möglichst großes Gebiet abzudecken.\\
 
 Die Hypothese ist, dass Agenten mit ähnlichem Egoismus-Faktor auch einen ähnlichen Classifiersatz besitzen und der Reward nicht an alle Agenten gleichmäßig weitergegeben wird, sondern bevorzugt an ähnliche Agenten. 
 
 Damit gäbe es einen Druck in Richtung eines bestimmten Egoismus-Faktors. TODO
 
-Der Kommunikationsaufwand ist hier nur minimal, neben dem Reward muss lediglich der Egoismus-Faktor übertragen werden. Auch muss der Faktor nur einmal pro Zeitschritt neuberechnet werden und es müssen nicht quadratisch viele Vergleiche mit anderen Agenten durchgeführt werden.
-
+Der Vorteil gegenüber den anderen Verfahren liegt darin, dass der Kommunikationsaufwand hier nur minimal ist, neben dem \emph{reward} muss lediglich der Egoismus Faktor übertragen und pro Zeitschritt nur einmal berechnet werden.\\
 Ein Problem dieser Variante kann sein, dass der Ansatz das Problem selbst schon löst, indem er kooperatives Verhalten belohnt, unabhängig davon, ob Kooperation für das Problem sinnvoll ist.
 
 Die Variante müsste also zum einen in 
@@ -319,8 +324,10 @@ schlecht abschneiden TODO
      * @param other The other set we want to compare with
      * @return degree of relationship (0.0 - 1.0)
      */
-    public double checkEgoisticDegreeOfRelationship(final MainClassifierSet other) {
-        double ego_factor = getEgoisticFactor() - other.getEgoisticFactor();
+    public double checkEgoisticDegreeOfRelationship(
+                    final MainClassifierSet other) {
+        double ego_factor = 
+                 getEgoisticFactor() - other.getEgoisticFactor();
         if(ego_factor == 0.0) {
             return 0.0;
         }

@@ -50,6 +50,7 @@ TODO
     if(reward) {
       collectReward(reward, 0.0, true);
       lastActionSet.evolutionaryAlgorithm(classifierSet, gaTimestep);
+      prevActionSet = null;
       return;
     }
     prevActionSet = lastActionSet;
@@ -72,11 +73,13 @@ TODO
  *        einem positiven Reward, aufgerufen wurde
  */
 
-  public void collectReward(boolean reward, double best_value, boolean is_event) {
+  public void collectReward(boolean reward, 
+                double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
 
   /**
-   * Ereignis, aktualisiere das aktuelle ActionSet und lösche das vorherige
+   * Falls der Reward von einem Ereignis rührt, aktualisiere das 
+   * aktuelle ActionSet und lösche das vorherige
    */
     if(is_event) {
       if(lastActionSet != null) {
@@ -116,7 +119,8 @@ TODO
   * Überdecke das classifierSet mit zum Status passenden Classifiern
   * welche insgesamt alle möglichen Aktionen abdecken.
   */
-    classifierSet.coverAllValidActions(lastState, getPosition(), gaTimestep);
+    classifierSet.coverAllValidActions(
+                    lastState, getPosition(), gaTimestep);
 
  /**
   * Bestimme alle zum Status passenden Classifier.
@@ -163,7 +167,7 @@ r(a) = \left\{ \begin{array}{rl}
        \end{array} \right.
 $$
 
-In Tests ergab sich für die quadratische Rewardvergabe ein minimal besseres Ergebnis (TODO zeigen), im weiteren Verlauf, insbesondere in den Grafiken, werde ich mich auf die lineare Rewardvergabe beschränken um eine verständliche Darstellung zu ermöglichen.
+In Tests ergab sich für die quadratische Rewardvergabe ein minimal besseres Ergebnis (TODO zeigen), weitere Grafiken werden auf die lineare Rewardvergabe beschränkt sein um eine verständliche Darstellung zu ermöglichen, während in den Simulationen die quadratische Rewardvergabe benutzt wird.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -173,7 +177,7 @@ In Tests ergab sich für die quadratische Rewardvergabe ein minimal besseres Erge
 \label{positive_negative_reward:fig}
 \end{figure}
 
-\section{Ereignisse}
+\section{Ereignisse}\label{sec:events}
 
 In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
 
@@ -264,14 +268,15 @@ Ein Ereignis tritt auf, wenn:
  *        einem positiven Reward, aufgerufen wurde
  */
 
-  public void collectReward(boolean reward, double best_value, boolean is_event) {
+  public void collectReward(
+                boolean reward, double best_value, boolean is_event) {
     double corrected_reward = reward ? 1.0 : 0.0;
   /**
    * Wenn es kein Event ist, dann gebe den Reward weiter wie beim 
    * Multistepverfahren
    */
-    double max_prediction = is_event ? 
-      0.0 : historicActionSet.get(start_index+1).getMatchSet().getBestValue();
+    double max_prediction = is_event ? 0.0 : 
+      historicActionSet.get(start_index+1).getMatchSet().getBestValue();
 
   /**
    * Aktualisiere eine ganze Anzahl von ActionSets
@@ -294,9 +299,11 @@ Ein Ereignis tritt auf, wenn:
    */
       ActionClassifierSet action_classifier_set = 
         historicActionSet.get(start_index - i);
-      action_classifier_set.updateReward(corrected_reward, max_prediction, factor);
+      action_classifier_set.updateReward(
+        corrected_reward, max_prediction, factor);
 
-      max_prediction = action_classifier_set.getMatchSet().getBestValue();
+      max_prediction = 
+        action_classifier_set.getMatchSet().getBestValue();
     }
 
 \end{verbatim}
@@ -322,7 +329,8 @@ Ein Ereignis tritt auf, wenn:
   * Überdecke das classifierSet mit zum Status passenden Classifiern
   * welche insgesamt alle möglichen Aktionen abdecken.
   */
-    classifierSet.coverAllValidActions(lastState, getPosition(), gaTimestep);
+    classifierSet.coverAllValidActions(
+                    lastState, getPosition(), gaTimestep);
 
  /**
   * Bestimme alle zum Status passenden Classifier.
@@ -365,6 +373,11 @@ Ein Ereignis tritt auf, wenn:
 In allen Tests erreichten die Heuristiken deutlich bessere Ergebnisse. Diesen Nachteil hat sich LCS in diesen Szenarien durch deutlich überlegene Flexibilität erkauft
 Ein Großteil der einkommenden Informationen ist für die Auswertung nicht relevant und lokale Information ist zu ungenau.
 Bei einer komplexeren Implementierung mit Distanzen
+
+Insbesondere der Vergleich mit dem intelligenten Agenten, der anderen Agenten ausweicht, zeigt, dass die LCS Agenten unmöglich ein solches globales Ziel erreichen können, es ist also kein emergentes Verhalten zu beobachten. Dies ist dadurch zu begründen, dass bei der Berechnung des Rewards keine Information außer der eigenen, lokalen Information 
+
+der Abstand zu anderen Agenten nicht Teil der Berechnung des Rewards ist, noch gibt keine eingebaute Heuristik. Man könnte zwar 
+
 
 \subsection{Vergleich Multistep / LCS}
 

@@ -67,7 +67,7 @@ Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen sol
 
 TODO Begründung
 
-\section{Messung der Qualität}\label{qualitaet:sec}
+\section{Messung der Qualität}\label{qualitaetsmessung:sec}
 
 Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und das Zielobjekt in einem Durchlauf gemeinsam bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
 Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Grids anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn wir vom realistischen Fall ausgehen, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, den Zielobjekts insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
@@ -113,7 +113,8 @@ Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufg
   /**
    * Zeitpunkt bis zu dem das Problem ausgeführt wird
    */
-    int steps_next_problem = Configuration.getNumberOfSteps() + stepCounter;
+    int steps_next_problem = 
+      Configuration.getNumberOfSteps() + stepCounter;
     
     for (int currentTimestep = stepCounter; 
          currentTimestep < steps_next_problem; currentTimestep++) {
@@ -156,9 +157,8 @@ Die Implementierung Programm~\ref{mainCalculate:fig} wird in einer Schleife aufg
 \begin{program}
   \begin{verbatim}
 /**
- * Calculate the matchings and the action set of each agent and execute the
- * movement
- * @param gaTimestep current time step
+ * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
+ * @param gaTimestep der aktuelle Zeitschritt
  */
   private void calculateAgents(final long gaTimestep) {
 

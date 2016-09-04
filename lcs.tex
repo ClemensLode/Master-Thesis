@@ -4,267 +4,32 @@ TODO statistical value:Error in predictions!
 
 \section{Einführung}
 
-Jeder Agent besitzt ein sogennantes \emph{XCS Classifier System} welches einem speziellen \emph{Learning Classifier System} (LCS) entspricht. Eine allgemeine Einführung in LCS findet sich z.B. in ~\ref{Butz2006a}.\\
+Jeder Agent besitzt ein sogennantes \emph{XCS Classifier System} welches einem speziellen \emph{Learning Classifier System} (LCS) entspricht. Eine allgemeine Einführung in LCS findet sich z.B. in ~\cite{Butz2006a}.\\
 Learning Classifier Systeme sind regelbasierte evolutionäre Lernsysteme. Ein einfaches LCS besteht aus:
 \begin{enumerate}
 \item Einer Menge an Regeln, sogenannte \emph{Classifier}
-\item Eine Mechanismus zur Regelbewertung (mittels \emph{reinforcement learning})
-\item Einem Mechanismus zur Evolution der Regeln (z.B. genetische Operatoren)
+\item Eine Mechanismus zur Bewertung der Regeln (mittels \emph{reinforcement learning})
+\item Einem Mechanismus zur Evolution der Regeln (mittels genetischer Operatoren)
 \end{enumerate}
-
-\subsection{Classifier}
-Eine \emph{classifier} besteht aus einer \emph{condition}, einer \emph{action}, einer \emph{prediction} und eines \emph{prediction errors}:
+Eine \emph{classifier} besteht aus einer \emph{condition}, einer \emph{action}, einer \emph{prediction} und eines \emph{prediction errors}
 
 \subsection{Prediction}
-Der \emph{prediction} Wert des Classifiers stellt die Höhe des Rewards dar, von dem der Classifier erwartet, dass er ihn bei der nächsten Vergabe des Rewards erhalten wird.
+Der \emph{prediction} Wert des \emph{classifier} stellt die Höhe des \emph{reward} Werts dar, von dem der \emph{classifier} erwartet, dass er ihn bei der nächsten Bewertung erhalten wird.
 
 \subsection{Prediction Error}
-Der „Prediction-Error“-Wert soll die Genauigkeit des Classifiers bzgl. der Reward-Prediction (durchschnittliche Differenz zwischen Prediction und tatsächlichem Reward) repräsentieren. U.a. auf Basis dieses Werts wird der Fitness-Wert des Classifiers angepasst.
+Der \emph{prediction error} Wert soll die Genauigkeit des \emph{classifier} bzgl. des \emph{prediction} Werts (durchschnittliche Differenz zwischen \emph{prediction} und tatsächlichem \emph{reward}) repräsentieren. U.a. auf Basis dieses Werts wird der \emph{fitness} Wert des \emph{classifier} angepasst.
 
 \subsection{Action}
-Wird ein Classifier ausgewählt, wird eine bestimmte Aktion ausgeführt die durch den \emph{action} Wert determiniert ist. Im Rahmen der dieser Arbeit entsprechen diese Aktionsmöglichkeiten den in Kapitel~\ref{agent_abilities:sec} besprochenen, ein auf LCS basierender Agent soll also die selben Möglichkeiten besitzen wie die diskutierten heuristischen Agenten, 4 Bewegungsrichtungen plus eine ``nichts-tun''-Aktion.
-
-\subsection{Kondition}
-Die Kondition gibt an, bei welchem Sensor-Input dieser Classifier ausgewählt werden kann. 
-
-
-Ein LCS weist einer bestimmten Bedingung eine Klasse zu, teilt den Suchraum also in Bereiche ein. LCS wurden entwickelt, um eine optimales Regelwerk zu finden, welches gleichzeitig möglichst kompakt ist, also aus möglichst allgemeinen Regeln besteht.
-
-
-~\cite{Butz2005}
-
-
-Im einfachsten Fall, im sogenannten ``Single-Step''-Verfahren erfolgt die Regelbewertung sofort nach Aufruf jeder einzelnen Regel, während im sogenannten ``Multi-Step''-Verfahren mehrere aufeinanderfolgende Regeln bewertet werden. Ein klassisches Beispiel für den Test ``Single-Step''-Verfahren ist das 6-Multiplexer Problem (z.B. in ~\cite{Butz2006}), bei dem mit 2 Adressbits und 4 Datenbits das den Adressbits entsprechende ausgegeben werden soll. Hier ist offensichtlich, dass nach der Klassifizierung sofort bestimmbar ist, ob sie ein korrektes Ergebnis geliefert hat.\\
-Ein klassisches Beispiel für ``Multi-Step''-Verfahren ist das ``Maze~\(N\)'' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird die zuletzt aktivierte Regel positiv bewertet und das Problem wiederholt. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung der folgenden Regel. Somit wird eine ganze Kette von Regeln bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind.\\
-
-Eine wesentliche Erweiterung des LCS ist das sogenannte ``accuracy-based classifier system XCS'', zuerst beschrieben in \cite{Wilson1995}. Neben neuer  Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich der Anwendung des GA) ist im Vergleich zum einfachen LCS der wesentliche Unterschied, auf welche Weise der \emph{fitness} Wert berechnet wird. Während  \emph{fitness} bei einfachen LCS lediglich entweder auf dem \emph{prediction error} basierten, basiert bei XCS \emph{fitness} auf der Genauigkeit der jeweiligen Regel. Eine genaue Beschreibung findet sich in~\cite{Butz2006}.\\
-
-Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des Multistep-Verfahrens von ~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in ~\cite{Butz}), eine Besonderheit stellt allerdings die Problemdefinition dar. Keine der gefundenen Implementationen und Varianten von XCS beschäftigen sich mit dynamischen Überwachungsszenarios, sondern mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}). Insbesondere zeigen Ergebnisse aus der Literatur, dass XCS in der Standardimplementierung Schwierigkeiten mit Problemen mit größerer Schrittzahl zwischen Start und Ziel hat \cite{Barry} \cite{Banzhaf} und bisherige Arbeiten sich auf einfache Probleme konzentrierten \cite{xcs1} \cite{xcs2}.\\
-
-TODO \cite{Butz2005} gradient descent 
-
- Die wesentlichen Aussagen in der Natur bezüglich 
-
-Im Ansatz wurde die Implementation von \cite{Butz2005} getestet.
-
-
-Ebenfalls wurde die dort erwähnte Erweiterung, die Auswahl nicht mittels Roulette-Selection sondern mittels Tournament-Selection zu treffen, getestet, siehe auch \cite{Butz2003}.
-
-  \cite{Butz2005}
-
-
-Bezüglich Multiagentensystemen und XCS gibt es Arbeiten, die basieren allerdings auf zentraler Steuerung bzw. \emph{OCS}, siehe~\cite{Takadama}, also einer übergeordneten Organisationseinheit bzw. globaler Regeln oder globalem Regeltausch zwischen den Agenten.\\
-
-
-Vielversprechend war der Titel der Arbeit~\cite{Lujan}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider ist bei der Arbeit nicht klar, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels Reward-Funktion bewertet werden, da es globale Information gab, was das Problem deutlich vereinfacht und es mit dem Gegenstand dieser Arbeit kaum vergleichbar macht.\\
-
-Im Bereich der Multiagentensysteme in Verbindung mit LCS im Allgemeinen, gibt es Arbeiten:
-TODO
-
-
-Diese Arbeit soll nun also TODO
-
-
-
-Im XCS-Multistepverfahren läuft ein Problem so lange bis ein positiver Reward aufgetreten ist und startet dann das Szenario neu. Bei einem Überwachungsszenario mit kontinuierlichem Reward ist das Multistepverfahren nicht anwendbar, das Szenario kann nicht neu gestartet werden, da sich die Agenten während des Laufs anpassen sollen. Ziel ist hier ja nicht, einen bestimmten Weg zu einem festen Ziel zu finden (wie z.B. bei WOODS TODO), sondern eine bestimmte Regelmenge zu erlernen, mit der eine möglichst gute, dauerhafte Überwachung stattfinden kann. 
-
-In der hier verwendeten Implementierung läuft das Problem deshalb einfach weiter. Wesentlicher Unterschied zu XCS wird deshalb die Behandlung des Rewards sein.
-
-In der Literatur (TODO) fehlen Arbeiten, in denen ein solches Szenario (ohne globale Steuerungseinheit oder Regeltausch) in Verbindung mit dem XCS behandelt wird. Diese Arbeit soll diese Lücke schließen und die Basis für weitere Arbeiten in dieser Richtung liefern. 
-
-
-
-\subsection{Fitness}
-Der Fitness Wert soll die allgemeine Genauigkeit des Classifiers 
-repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten Rewards angepasst. TODO Wilson. Der Wertebereich verläuft zwischen \(0.0\) und \(1.0\) (maximale Genauigkeit).\\
-
-
-
-\section{Parameter}
-TODO runter evtl, erst wenn die Parameter besprochen sind
-
-Die XCS Parameter der durchgeführten Experimente entsprechen weitesgehend den Parametern in~\cite{Butz} (``Commonly Used Parameter Settings''). Versuchsweise wurden einige Parameter abgeändert, jedoch, mit zwei Ausnahmen, ohne besonderen Erfolg. Eine Auflistung findet sich in Tabelle~\ref{table:lcs_parameter}. 
-
-\subsection{Maximalwert von \(\rho\)}\label{maximalwert_rho:sec}
-Der maximale Reward hat lediglich ästhetische Auswirkungen und wurde auf \(1.0\) gesetzt. In der Standardimplementation von XCS (siehe~\ref{multistep_calc_reward:fig}) ist der maximale Reward gleichbedeutend mit dem Maximalwert von \(\rho\), da das Problem bei einem Reward neugestartet wird, der Reward aus dem letzten Schritt also immer \(0\) ist.\\
-In der hier vorgestellten Variante wird dagegen der Reward absteigend, zusammen mit dem \emph{maxPrediction} Wert, an frühere ActionSets verteilt, \(\rho\) kann also größer als \(1.0\) werden. In diesem Bereich ist noch Bedarf an theoretischer Forschung, in Tests haben sich Werte im Bereich von \(5.0\) ergeben.
-
-\subsection{``prediction discount''}
-Für ``prediction discount'' \(\gamma\) hat sich ein höherer Wert als sinnvoll erwiesen, laut~\cite{Butz} hängt der Wert auch vom verwendeten Szenario ab. Ein höherer Wert für \(\gamma\) bedeutet, dass die Höhe der Rewards, der über \emph{maxPrediction} weitergegeben wird, weniger schnell abfällt, wodurch eine längere Verkettung von Rewards möglich ist.\\ Tabelle~\ref{table:prediction_discount} zeigt einen Vergleich der Qualität mit dem Standardwert \(\gamma = 0.71\) und dem für die in dieser Arbeit verwendeten Testszenarien gewählten Wert \(\gamma = 0.95\).\\
-
-\begin{table}[ht]
-\caption{Drehung von Classifiern, Szenario ohne Hindernisse und mit einfacher Richtungsänderung des Zielobjekts}
-\centering
-\begin{tabular}{c c c c c}
-\hline\hline
-Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
-\hline
-Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
-Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
-Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
-
-LCS Ohne Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-Zufälliger Agent & 12 & 500 & 76.03\% & 76.59\% \\
-Einfacher Agent & 12 & 500 & 67.30\% & 96.86\% \\
-Intelligenter Agent & 12 & 500 & 86.85\% & 95.08\% \\ [0.5ex]
-
-LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-\hline
-\end{tabular}
-\label{table:prediction_discount}
-\end{table}
-
-\subsection{Lernrate \(\beta\)}
-
-Für die Lernrate \(\beta\) hat sich ein etwas niedrigerer Wert als der in der Literatur angegebene als sinnvoll erwiesen. Auch dieser Parameter ist szenariospezifisch, über die konkrete Begründung kann nur spekuliert werden.
-Vergleichende Tests (siehe Tabelle~\ref{table:learning_rate} mit niedrigerem bzw. höherem Wert haben zu einer etwas schlechteren Qualität geführt.
-
-\begin{table}[ht]
-\caption{Vergleichende Tests für die Lernrate \(\beta\)}
-\centering
-\begin{tabular}{c c c c c}
-\hline\hline
-Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
-\hline
-Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
-Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
-Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
-
-LCS Ohne Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-Zufälliger Agent & 12 & 500 & 76.03\% & 76.59\% \\
-Einfacher Agent & 12 & 500 & 67.30\% & 96.86\% \\
-Intelligenter Agent & 12 & 500 & 86.85\% & 95.08\% \\ [0.5ex]
-
-LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-\hline
-\end{tabular}
-\label{table:learning_rate}
-\end{table}
-
-\subsection{Accuracy equality \(\epsilon_{0}\)}
-
-Der Parameter \(\epsilon_{0}\) gibt an, unter welchem Wert zwei \emph{accuracy} Werte als gleich gelten sollen. Dies ist insbesondere bei der Subsummation und der Berechnung des \emph{accuracy}-Werts von Bedeutung. In der Literatur~(\cite{Butz}) wird als Regel genannt, dass der Wert auf etwa 1\% des Maximalwerts von \(\rho\) gesetzt werden soll, den der erwartete Reward annehmen kann. Aufgrund der Überlegungen in~\ref{maximalwert_rho:sec} setzen wir \(\epsilon_{0}\) deshalb auf \(0.05\). Die Entscheidung wird auch durch Tests (siehe~\ref{table:epsilon}) bestätigt.
-
-\begin{table}[ht]
-\caption{Vergleichende Tests für den ``Accuracy equality'' Wert \(\epsilon_{0}\)}
-\centering
-\begin{tabular}{c c c c c}
-\hline\hline
-Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
-\hline
-Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
-Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
-Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
-
-LCS Ohne Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-Zufälliger Agent & 12 & 500 & 76.03\% & 76.59\% \\
-Einfacher Agent & 12 & 500 & 67.30\% & 96.86\% \\
-Intelligenter Agent & 12 & 500 & 86.85\% & 95.08\% \\ [0.5ex]
-
-LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-\hline
-\end{tabular}
-\label{table:epsilon}
-\end{table}
-
-\subsection{``prediction init''}
-TODO
-
-\subsection{Übersicht über alle Parameterwerte}
-\begin{table}[ht]
-\caption{Verwendete Parameter (soweit nicht anders angegeben) und Standardparameter}
-\centering
-\begin{tabular}{c c c}
-\hline\hline
-Parameter & Wert & Standardwert\\ [0.5ex]
-\hline
-Max population \(N\) & 128\\
-Max value \(\rho\) & \textbf{1.0} & [10000]\\
-Fraction mean fitness \(\delta\) & 0.1 & [0.1]\\
-Deletion threshold \(\theta_{\mathrm{del}}\) & 20.0 & [\(\sim\) 20.0]\\
-Subsumption threshold \(\theta_{\mathrm{sub}}\) & 20.0 & [20.0+]\\
-Covering \(\#\) probability \(P_{\#}\) & 0.5 & [\(\sim\) 0.33]\\
-GAthreshold \(\theta_{\mathrm{GA}}\) & 25.0 & [25-50]\\
-Mutation probability \(\mu\) & \(0.05\) & [0.01-0.05]\\
-Prediction error reduction & 0.25 & [0.25]\\
-Fitness reduction & \(0.1\) & [0.1]\\
-
-Prediction init \(p_{i}\) & \textbf{0.5} & [\(\sim\) 0]\\
-Prediction error init \(\epsilon_{i}\) & 0.0 & [0.0]\\
-Fitness init \(F_{i}\) & \(0.01\) &  [0.01]\\
-Accuracy equality \(\epsilon_{0}\) & \textbf{0.05} & [\emph{1\% des größten Werts}]\\
-Accuracy calculation \(\alpha\) & 0.1 & [0.1]\\
-Accuracy power \(\nu\) & 5.0 & [5.0]\\
-Prediction discount \(\gamma\) & \textbf{0.95} & [0.71]\\
-
-Learning rate \(\beta\) & \textbf{0.05} & [0.1-0.2]\\
-
-exploration probability & 0.5 (siehe~\ref{sec:subsummation}) & [\(\sim\) 0.5]\\ [0.5ex]
-
-\hline
-\end{tabular}
-\label{table:lcs_parameter}
-\end{table}
-
-Mitunter führen andere Parametereinstellungen auch zu wesentlich besseren Ergebnissen. Dies muss man jedoch vorsichtig betrachten, setzt man beispielsweise den Prediction init Wert \(p_{i}\) auf über 1.0 schneidet das Multistepverfahren deutlich besser ab (ca. 65\% Qualität statt sonst deutlich unter 60\% beim Säulenszenario mit 12 Agenten). Hier muss man jedoch beachten, dass der zufällige Agent gerade mal ca. 65\% erreicht, die Änderung also das Verfahren nicht verbessert haben, sondern den Einfluss des Verfahrens verringert haben (und die Auswahl der Classifier stärker vom Zufall abhängen lassen). Allgemein zu den verwendeten Verfahren ist deswegen zu verdeutlichen, dass eine Abweichung von den XCS Parametern nutzlos ist, solange die Qualität unter dem zufälligen Agenten liegt.
-
-
-
-\section{Initialisierung}
-
-Aus dem Bereich naturanalogen Algorithmen weiss man (TODO Quelle), dass es beim Absuchen des Lösungsraums vorteilhaft sein kann nicht mit Null initialisierten Genotypen zu starten sondern mit einer zufälligen Population. Die Idee ist, dass dadurch die Zahl der Schritte zum Optimum verringert werden können (TODO genauer etvtl. Zitat).
-Beim XCS liegt die Sache nicht so einfach. Tests (TODO) haben gezeigt, dass die Qualität weder kurz noch langfristig besser ist. Der Grund dafür liegt darin, dass die Classifier zueinander bezüglich ihrer Wahrscheinlich in Konkurrenz stehen, aufgerufen und gelöscht zu werden. Viele der zufällig erstellten Classifier müssen also erst einmal beseitigt werden. Eine Beseitigung passiert mit einer Wahrscheinlichkeit abhängig von der Numerosity, der Fitness und der Prediction. Ein zufällig generierter Classifier mit hoher Fitness und Prediction dessen Condition in dem aktuellen Szenario selten auftritt (also die Fitness nur schwer verringert werden kann) benötigt lange, bis es aktualisiert wird und wird mit nur geringer Wahrscheinlichkeit gelöscht. Erst mit steigender Erfahrung des LCS und somit steigender Numerosity können solche Classifier eher verdrängt werden, in dieser Zeit können die entsprechenden Classifier aber bereits mittels Covering erstellt worden sein und somit den womöglich existierenden Vorteil eines zufälligen Starts einholen.
-Bleibt also nur die Möglichkeit das ClassifierSet mit Classifiern mit zufälliger Kondition und zuf\"alliger Aktion zu füllen, während man Fitness, Prediction und Prediction Error auf den Standardwerten eines neuen Classifiers belässt. Tests haben gezeigt (TODO), dass dadurch minimal bessere Ergebnisse erzielt werden, allerdings nur in Szenarien mit größerer Schrittzahl (\(>100\)). Dies lässt sich darauf zurückführen, dass zum einen das anfänglich gefüllte ClassifierSet die MatchSets relativ groß werden lässt und die erstellten Classifier den Algorithmus anfänglich stören und zum anderen, dass 
-TODO Begründung?
-\(\Rightarrow\) Starten mit Classifiern mit zufälliger Kondition und Aktion aber Startinitialisierung der restlichen Werten.
-
+Wird ein \emph{classifier} ausgewählt, wird eine bestimmte Aktion ausgeführt die durch den \emph{action} Wert determiniert ist. Im Rahmen dieser Arbeit entsprechen diese Aktionsmöglichkeiten den 4 Bewegungsrichtungen, die in Kapitel~\ref{agent_abilities:sec} besprochen wurden.
+
+\subsection{Condition}
+Der \emph{condition} Vektor gibt an, in welcher Situation der zugehörige 
+\emph{classifier} ausgewählt werden kann. Der Aufbau des Vektors entspricht dem Vektor der über die Sensoren erstellt wird (siehe~\ref{}). Neben 
 
 
 \section{Sensoren und Matching}
 
-In der hier verwendeten Implementierung gibt es zwar eine gewisse Vorverarbeitung der Sensordaten, im Wesentlichen müssen aber Kondition und Sensordaten übereinstimmen, damit der jeweilige Classifier ausgewählt wird. Konkret besteht die Kondition ebenfalls aus einem 9-stelligen Vektor, der allerdings nicht nur binäre sondern trinäre Werte besitzen kann. 
+In der hier verwendeten Implementierung gibt es zwar eine gewisse Vorverarbeitung der Sensordaten, im Wesentlichen müssen aber Kondition und Sensordaten übereinstimmen, damit der jeweilige Classifier ausgewählt wird. Konkret besteht die Kondition ebenfalls aus einem 24-stelligen Vektor, der allerdings nicht nur binäre sondern trinäre Werte besitzen kann. 
 
 \subsection{Wildcards}
 
@@ -281,68 +46,63 @@ Beim Vergleich mit Sensordaten wir ebenfalls mit einem Vektor wie bei \(B\) ergl
 
 Den dritten verwendeten Vergleich zwischen Bedingungsvektoren gibt es bei der Subsumation (der Kinder zu ihren Eltern und des gesamten ActionSets siehe ~(\ref{sec:subsummation}). Ein Classifier subsumiert einen anderen Classifier, wenn er ihn beinhaltet, aber nicht identisch mit ihm ist, also allgemeiner ist.
 
-\subsection{Drehungen}
 
-Ein Classifier besteht aus dem Bedingungsvektor 
-\[(g x_{0} x_{1} x_{2} x_{3})\] (bzw. \[(g x_{0} x_{1} x_{2} x_{3} y_{0} y_{1} y_{2} y_{3})\] 
-für den Fall mit Hindernissen) und der Aktion \(a\).
 
-Eine wesentliche Vereinfachung, die angenommen wird, ist, dass angenommen wird, dass eine Aktion in einer anderen, in 90 Grad Schritten gedrehten Umwelt, gleiche Güte besitzt.
-In einer statischen Umgebung ist dies nicht unbedingt der Fall, ohne diese Vereinfachung könnte sich ein Agent einfacher zurechtfinden, wie TODO (keine Drehung, 1 Problem pro Experiment) diese Testläufe zeigen.
-Da wir uns aber auf den dynamischen Fall konzentrieren und durch diese Vereinfachung eine signifikante Verkleinerung des Suchraums erreichen, benutzen wir die Vereinfachung.
-Im Algorithmus betrifft dies primär den Vergleich von Classifiern untereinander und mit dem Sensorstatus. 
 
-\subsection{Äquivalenz von Classifiern}
-Ein Classifier A ist identisch mit einem Classifier B wenn gilt:
 
-\begin{enumerate}
-\item \(A_{g} = B_{g}\)
-\item Falls \(A_{g} = 0\):
+~\cite{Butz2005}
 
-\begin{enumerate}
-\item Es gibt ein \(i\) für das gilt: 
-\[(A_{x_{0+i \bmod 4}} A_{x_{1+i \bmod 4}} A_{x_{2+i \bmod 4}} A_{x_{3+i \bmod 4}}) = (B_{x_{0}} B_{x_{1}} B_{x_{2}} B_{x_{3}})\]
-\item Mit Hindernissen muss für dieses \(i\) außerdem gelten: 
 
-\begin{enumerate}
-\item \((A_{y_{0+i \bmod 4}} A_{y_{1+i \bmod 4}} A_{y_{2+i \bmod 4}} A_{y_{3+i \bmod 4}}) = (B_{y_{0}} B_{y_{1}} B_{y_{2}} B_{y_{3}})\)
-\item Falls \(A_{a} = \) NO\_ACTION : 
-\[A_{a} = B_{a} = \mathrm{NO\_ACTION}\]
-\item Falls \(A_{a} \neq \) NO\_ACTION : 
-\[(A_{a}+i) \bmod 4 = B_{a}\]
-\end{enumerate}
-\end{enumerate}
+Im einfachsten Fall, im sogenannten ``Single-Step''-Verfahren erfolgt die Regelbewertung sofort nach Aufruf jeder einzelnen Regel, während im sogenannten ``Multi-Step''-Verfahren mehrere aufeinanderfolgende Regeln bewertet werden. Ein klassisches Beispiel für den Test ``Single-Step''-Verfahren ist das 6-Multiplexer Problem (z.B. in ~\cite{Butz2006}), bei dem mit 2 Adressbits und 4 Datenbits das den Adressbits entsprechende ausgegeben werden soll. Hier ist offensichtlich, dass nach der Klassifizierung sofort bestimmbar ist, ob sie ein korrektes Ergebnis geliefert hat.\\
+Ein klassisches Beispiel für ``Multi-Step''-Verfahren ist das ``Maze~\(N\)'' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird die zuletzt aktivierte Regel positiv bewertet und das Problem wiederholt. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung der folgenden Regel. Somit wird eine ganze Kette von Regeln bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind.\\
 
-\item Falls \(A_{g} = 1\):
+Eine wesentliche Erweiterung des LCS ist das sogenannte ``accuracy-based classifier system XCS'', zuerst beschrieben in \cite{Wilson1995}. Neben neuer  Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich der Anwendung des GA) ist im Vergleich zum einfachen LCS der wesentliche Unterschied, auf welche Weise der \emph{fitness} Wert berechnet wird. Während  \emph{fitness} bei einfachen LCS lediglich entweder auf dem \emph{prediction error} basierten, basiert bei XCS \emph{fitness} auf der Genauigkeit der jeweiligen Regel. Eine genaue Beschreibung findet sich in~\cite{Butz2006}.\\
 
-\begin{enumerate}
-\item Identische Aktion: \[A_{a} = B_{a}\]
-\item Identische Agentensensoren: \[(A_{x_{0}} A_{x_{1}} A_{x_{2}} A_{x_{3}}) = (B_{x_{0}} B_{x_{1}} B_{x_{2}} B_{x_{3}})\]
-\item Mit Hindernissen muss außerdem gelten: \[(A_{y_{0}} A_{y_{1}} A_{y_{2}} A_{y_{3}}) = (B_{y_{0}} B_{y_{1}} B_{y_{2}} B_{y_{3}})\]
-\end{enumerate}
+Die in dieser Arbeit verwendete Implementierung entspricht im Wesentlichen der Standardimplementation des Multistep-Verfahrens von~\cite{Butz2000} (mit der algorithmischen Beschreibung des Algorithmus in ~\cite{Butz}), eine Besonderheit stellt allerdings die Problemdefinition dar, da es kein festes Ziel gibt und somit auch keinen Neustart des Problems.\\
+Keine der gefundenen Implementationen und Varianten von XCS beschäftigen sich mit dynamischen Überwachungsszenarios, sondern mit Szenarios, bei denen das Ziel in einer statischen Umgebung gefunden werden muss. Häufiger Gegenstand der Untersuchung in der Literatur sind insbesondere 6-Multiplexer Problem und Maze1 (z.B. in ~\cite{Butz2006}) bzw. Maze5, Maze6, Woods14 (in ~\cite{Butz2005}). Insbesondere zeigen Ergebnisse aus der Literatur, dass XCS in der Standardimplementierung Schwierigkeiten mit Problemen mit größerer Schrittzahl zwischen Start und Ziel hat \cite{Barry} \cite{Banzhaf} und bisherige Arbeiten sich auf einfache Probleme konzentrierten \cite{xcs1} \cite{xcs2}.\\
 
-\end{enumerate}
+TODO \cite{Butz2005} gradient descent 
 
-Die Gleichheit zwischen Vektoren gilt, wenn paarweise Gleichheit zwischen den Elementen besteht, also \(A_{x_{i}} = B_{x_{i}}\) für \(i = 0 \dots 3\) und \(A_{y_{i}} = B_{y_{i}}\) für \(i = 0 \dots 3\) im Fall mit Hindernissen.
 
-\subsection{Test Drehungen}
+Bezüglich Multiagentensystemen und XCS gibt es hauptsächlich Arbeiten, die auf  auf zentraler Steuerung bzw. \emph{OCS} \cite{Takadama}, also einer übergeordneten Organisationseinheit bzw. globaler Regeln oder globalem Regeltausch zwischen den Agenten, basieren.\\
+Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen finden sich z.B. in \cite{Benouhiba}, wobei es auch dort zentrale Agenten gibt, mit deren Hilfe die Zusammenarbeit koordiniert werden soll.\\
+Vielversprechend war der Titel der Arbeit~\cite{Lujan}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels Reward-Funktion bewertet werden, da es globale Information gab, was das Problem deutlich vereinfacht und es mit dem Gegenstand dieser Arbeit kaum vergleichbar macht.\\
 
-Mit aktivierter Optimierung der Drehungen wird in bestimmten Szenarien bis zu einer bestimmten Schrittzahl ein besseres Ergebnis erreicht, d.h. die Konvergenzgeschwindigkeit wird erhöht. In längeren Durchläufen mit größerer Schrittzahl werden jedoch bessere Ergebnisse ohne der Optimierung erreicht. Der Zugewinn folgt aus einer durch die zusätzliche lokale Information die in den Classifiern gespeichert werden kann.\\
-In einer zukünftigen Implementierung sollte überlegt werden, wie bei räumlichen Aufgaben für Classifier ein LCS sowohl drehbare als auch nicht-drehbare Classifier speichern kann. Dies kann in einer Form des erwähnten Wildcard-Systems bewerkstelligt werden. Dadurch und zusammen mit der Subsummation könnten beide Vorteile vereint werden und sowohl lokale, als auch allgemeine Information gesammelt werden.\\
+Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{Hiroyashu} vorgestellt, bei der der \emph{reward} unter den (zwei) Agenten aufgeteilt wurde. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in~\ref{communication:cha} diskutiert.
+
+
+
+
+Im XCS-Multistepverfahren läuft ein Problem so lange bis ein positiver Reward aufgetreten ist und startet dann das Szenario neu. Bei einem Überwachungsszenario mit kontinuierlichem Reward ist das Multistepverfahren nicht anwendbar, das Szenario kann nicht neu gestartet werden, da sich die Agenten während des Laufs anpassen sollen. Ziel ist hier ja nicht, einen bestimmten Weg zu einem festen Ziel zu finden (wie z.B. bei WOODS TODO), sondern eine bestimmte Regelmenge zu erlernen, mit der eine möglichst gute, dauerhafte Überwachung stattfinden kann. 
+
+In der hier verwendeten Implementierung läuft das Problem deshalb einfach weiter. Wesentlicher Unterschied zu XCS wird deshalb die Behandlung des Rewards sein.
+
+In der Literatur (TODO) fehlen Arbeiten, in denen ein solches Szenario (ohne globale Steuerungseinheit oder Regeltausch) in Verbindung mit dem XCS behandelt wird. Diese Arbeit soll diese Lücke schließen und die Basis für weitere Arbeiten in dieser Richtung liefern. 
+
+\subsection{Fitness}
+Der Fitness Wert soll die allgemeine Genauigkeit des Classifiers 
+repräsentieren und wird über die Zeit hinweg sukzessive an die beobachteten Rewards angepasst. TODO Wilson. Der Wertebereich verläuft zwischen \(0.0\) und \(1.0\) (maximale Genauigkeit).\\
+
+
+\section{Initialisierung}
+
+Normalerweise werden XCS Systeme mit leeren \emph{classifier set} Listen initialisiert, als Option wird jedoch auch eine zufällige Initialisierung erwähnt~(\cite{Butz2006}), bei der zu Beginn die \emph{classifier set} Liste mit mehreren \emph{classifiers} mit zufälliger \emph{action} und \emph{condition} gefüllt wird. Alle anderen Werte (\emph{numerosity}, \emph{experience}, \emph{fitness}, \emph{prediction} und \emph{prediction error}) werden auf ihre Standardwerte gesetzt, welche in~\ref{cha:parameter} erläutert werden.\\
+
+Tests haben gezeigt (siehe Tabelle~\ref{table:lcs_initialization}), dass dadurch minimal bessere Ergebnisse erzielt werden, allerdings nur in Szenarien mit ausreichender Schrittzahl (\(>100\)). Dies lässt sich darauf zurückführen, dass  anfänglich gefüllte \emph{classifier set} Listen die \emph{matchSet} Listen relativ groß lassen werden, somit die Auswirkungen anfänglichen Lernens geringer ausfallen und sich die Agenten eher wie sich zufällig bewegende Agenten verhalten. Da die meisten hier durchgeführten Tests über 500 bzw. 2000 Schritte laufen, sollen somit die \emph{classifier set} Listen mit zufällig generierten \emph{classifiers} gefüllt werden.
 
 \begin{table}[ht]
-\caption{Drehung von Classifiern, Szenario ohne Hindernisse und mit einfacher Richtungsänderung des Zielobjekts}
+\caption{Vergleichende Tests für den den Start mit und ohne zufällig gefüllten \emph{classifier set} Listen}
 \centering
 \begin{tabular}{c c c c c}
-\hline\hline
-Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
+\hline
+Algorithmus & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
 \hline
 Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
-Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
-Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
-
-LCS Ohne Drehung & 8 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 8 & 500 & 1.0\% & 1.0\% \\
+Multistep & 8 & 500 & 60.64\% & 61.54\% \\
+LCS & 8 & 500 & 60.64\% & 61.54\% \\
+NewLCS & 8 & 500 & 60.64\% & 61.54\% \\
+Zufälliges Szenario  & 8 & 500 & 60.64\% & 61.54\% \\
+Säulenszenario & 8 & 100 & 1.0\% & 1.0\% \\
 LCS Ohne Drehung & 8 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
 
 LCS Mit Drehung & 8 & 100 & 1.0\% & 1.0\% \\
@@ -363,53 +123,13 @@ LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
 
 \hline
 \end{tabular}
-\label{table:drehung1}
+\label{table:lcs_initialization}
 \end{table}
 
-\begin{table}[ht]
-\caption{Drehung von Classifiern, Szenario mit Hindernisse und mit einfacher Richtungsänderung des Zielobjekts}
-\centering
-\begin{tabular}{c c c c c}
-\hline\hline
-Szenario & Agentenzahl & Schrittzahl & Abdeckung & Qualität \\ [0.5ex]
-\hline
-Zufälliger Agent & 8 & 500 & 60.64\% & 61.54\% \\
-Einfacher Agent & 8 & 500 & 92.11\% & 96.94\% \\
-Intelligenter Agent & 8 & 500 & 90.18\% & 94.79\% \\ [0.5ex]
-
-LCS Ohne Drehung & 8 & 100 & 60.89\% & 62.56\% \\
-LCS Ohne Drehung & 8 & 500 & 60.19\% & 63.68\% \\
-LCS Ohne Drehung & 8 & 2000 & 60.08\% & 64.15\% \\ [0.5ex]
-
-LCS Mit Drehung & 8 & 100 & 60.58\% & 61.66\% \\
-LCS Mit Drehung & 8 & 500 & 60.68\% & 61.81\% \\
-LCS Mit Drehung & 8 & 2000 & 60.48\% & 63.39\% \\ [0.5ex]
-
-Zufälliger Agent & 12 & 500 & 77.70\% & 77.72\% \\
-Einfacher Agent & 12 & 500 & 68.53\% & 96.94\% \\
-Intelligenter Agent & 12 & 500 & 86.85\% & 94.79\% \\ [0.5ex]
-
-LCS Ohne Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Ohne Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-LCS Mit Drehung & 12 & 100 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 500 & 1.0\% & 1.0\% \\
-LCS Mit Drehung & 12 & 2000 & 1.0\% & 1.0\% \\ [0.5ex]
-
-\hline
-\end{tabular}
-\label{table:drehung2}
-\end{table}
 
 \section{Implementation}
 
-Für die Auswahl der tatsächlich auszuführenden Aktion müssen dann alle (genotypischen) Classifier in AppliedClassifier umgewandelt werden, die jeweils genau auf eine bestimmte Aktion verweisen.
-Sichtwe
-
-Zur Durchführung und Forschung war es notwendig, den kompletten XCS Algorithmus nachvollziehen zu können. TODO
-
-Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction TODO
+Zur Durchführung und Forschung war es notwendig, den kompletten XCS Algorithmus nachvollziehen zu können. Besonders die Verwaltung der Numerosity und die Verwendung des maxPrediction bereitete 
 
 
 Das Multistepverfahren baut darauf auf, dass die Qualität der Agenten sich sukzessive mit jeder Probleminstanz verbessert, der Reward eben an immer weiter vom Ziel entfernte Aktionen TODO weitergereicht wird.
@@ -424,8 +144,6 @@ Da sich das Ziel schneller bewegt, kann eine einfache Verfolgungsstrategie nicht
 
 \subsection{Numerosity}
 
-
-TODO Beschreibung
 In der originalen Implementierung von Butz 2000 TODO war die Behandlung der Numerosity stark optimiert auf den Fall des einmaligen Rewards ohne Protokollierung der bisherigen ActionSets. Nach einer missglückten ersten Implementierung – der Wert der numerositySum eines ClassifierSets stimmte nicht mehr mit der Summe der numerosity-Werte der enthaltenen Classifiers überein – entschloss ich mich den entsprechenden Code neuzuschreiben. Hierbei wurde jedem Classifier eine Liste der Eltern, d.h. der jeweiligen ActionSets, zugewiesen.
 Wird ein Microclassifier entfernt, wird dann lediglich die Änderungsfunktion der Numerosity des Classifiers aufgerufen, der dann wiederum die NumerositySum der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viel Umstände, die NumerositySum immer auf den aktuellen Stand zu halten.
 Positiver Nebeneffekt ist, dass man dadurch leicht auf die Menge der ActionSets zugreifen kann, denen ein Classifier angehört. Inwiefern das tatsächlich von Nutzen sein kann ist offen. TODO
@@ -463,12 +181,16 @@ TODO Erklärung
 \section{Ablauf eines LCS}
 
 \begin{enumerate}
-\item Bei der Auswahl einer Aktion werden zuerst einmal alle Classifier mit denjenigen Konditionen gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das MatchSet.
-\item Im nächsten Schritt wählen wir einen Classifier aus diesem MatchSet aus und speichern dessen Aktion.
+\item Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} Vektoren gesucht, die 
+
+, die auf die aktuellen Sensordaten passen. Diese bilden dann das \emph{matchSet}.
+\item Im nächsten Schritt wählen wir einen \emph{classifier} aus diesem \emph{matchset} aus und speichern dessen Aktion.
 \item Schließlich bilden wir anhand des MatchSets und der gewählten Aktion das ActionSet
 \end{enumerate}
 
 \subsection{Exploration und Exploitation}\label{sec:exploration}
+
+TODO SEHR WICHTIG BEI SICH WENIGBEWEGENDENZIELEN
 
 Die Auswahl in Punkt (2) kann auf verschiedene Weise erfolgen. In XCS gibt es drei Möglichkeiten der Auswahl, wobei man zusätzlich noch während eines Experiments zwischen den Möglichkeiten wechseln kann.
 \begin{enumerate}
@@ -481,6 +203,9 @@ In der XCS Implementierung sind alle drei Möglichkeiten zu finden, standardmäßig
 Bei einem dynamischen Überwachungsszenario ist es im Vergleich zu standardmäßigen statischen Szenarien weder nötig noch hilfreich ``random-explore'' zu nutzen. Die Idee für ``random-explore'' in einem statischen Szenario ist, dass man vermeiden möchte, dass das LCS immer wieder die selben Entscheidungen trifft und somit immer wieder den selben Umweltreizen ausgesetzt ist, was wiederum zu immer wieder gleichen Entscheidungen führt usw.
 Bei einem dynamischen Szenario ergibt sich das Problem nicht, andere Agenten und das Ziel sind in stetiger Bewegung und der eigene Startpunkt ist nicht fixiert. Das gewichtete ``explore'' oder gar nur ``exploit'' sollten deshalb ausreichen, wenn nicht sogar wesentlich besser abschneiden.
 
+Ebenfalls wurde die dort erwähnte Erweiterung, die Auswahl nicht mittels Roulette-Selection sondern mittels Tournament-Selection zu treffen, getestet, siehe auch \cite{Butz2003}.
+
+
 \subsection{Wechsel zwischen Exploration und Exploitation}
 
 In der Standardimplementierung von XCS wird zwischen ``exploit'' und ``random-explore'' nach jedem Erreichen des Ziels umgeschalten. 
@@ -488,6 +213,8 @@ In der Standardimplementierung von XCS wird zwischen ``exploit'' und ``random-ex
 Möglichkeit (3.) entspricht dem Fall in der Standardimplementierung von XCS. Dabei wird bei jedem Erreichen eines positiven Rewards zwischen ``explore'' und ``exploit'' hin und hergeschaltet, was in der Standardimplementierung dem Beginn eines neuen Problems entspricht.
 
 Hierbei gibt es mehrere verschiedene Möglichkeiten:
+
+SWITCH EXPLORE/EXPLOIT + NEW LCS sehr gut TODO
 
 \begin{enumerate}
 \item Immer ``exploit''
@@ -504,3 +231,7 @@ Problem: Überwachungsszenario: Learning kann hier nur während des Laufs passiere
 
 TODO Vergleich weiter unten
 
+
+
+
+TODO perfekte Kette muss hergestellt werden, einmal das Ziel aus den Augen verloren => Reward 0
