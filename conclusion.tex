@@ -28,9 +28,16 @@ Erschwerung, mehr Kollaboration
 TODO aus verschiedenen Richtungen betrachten? Mehrere Agenten notwendig?
 
 Probiert, aber verworfen:
-Rotation
-Numerosity
 
+Während der Arbeit wurden auch einige Ansätze probiert aber mangels Erfolgsaussichten wieder verworfen. Ursprünglich wurde das Szenario auf Basis von Rotation konzipiert. Die Annahme war, dass ein Agent, der für einen Satz an Sensordaten eine optimales \emph{classifier set} gefunden hat, dieses \emph{classifier set} auch für Sensordaten eines um 90, 180 und 270 Grad gedrehten Szenarios (mit entsprechend 90, 180 und 270 Grad gedrehter Aktion des jeweiligen \emph{classifier}) optimal sei. Aufgrund der deutlichen Komplexitätssteigerung des Programms, der niedrigeren Laufzeit und mangels konkreter Qualitätssteigerungen gegenüber dem Ansatz ohne Rotation wurde diese Idee jedoch fallengelassen. Möglicherweise könnte man durch Hinzunahme eines weiteren Bits im \emph{condition} Vektor, das bestimmt, ob dieser \emph{classifier} gleichzeitig auch die drei rotierten Szenarien erkennen kann, die Leistung des Systems verbessern, dies bedarf aber weiterer Untersuchung und geht am eigentlichen Thema dieser Arbeit vorbei.\\
+
+
+Abnehmende Exploration LITERATUR
+Intelligent Exploration Method to Adapt Exploration Rate in XCS, Based on Adaptive Fuzzy Genetic Algorithm
+An Adaptive Approach for the Exploration-Exploitation Dilemma for Learning Agents 
+
+
+Im Bereich der Kommunikation wurde neben der "`egoistischen Relation"' (siehe Kapitel~\ref{egoistic_relation:sec}) auch weitere Verfahren ausprobiert, mit welchen versucht wurde, gleichartige Gruppen zu finden. Hier wurden ganze \emph{classifier set} Listen unterschiedlicher Agenten miteinander auf Ähnlichkeit geprüft um daraus einen Faktor zu berechnen, der (wie bei der "`egoistischen Relation"') Einfluss auf die Weitergabe des \emph{reward} Werts haben sollte. Der dadurch deutlich erhöhte Kommunikations- und Berechnungsaufwand lag jedoch in keinem Verhältnis zu eventuell beobachteten Qualitätsverbesserungen, im Gegenteil wurden eher Qualitätsverschlechterungen bemerkt. Die Ergebnisse mit dem Test der "`egoistischen Relation"' zeigen jedoch, dass hier zumindest etwas Potential stecken könnte und für bestimmte Szenarien die zwei Grundideen, dass sich die Agenten zum einen an die Größe des Szenarios anpassen und zum anderen der \emph{reward} möglichst nur an sich ähnlich verhaltende Agenten weitergegeben wird, nicht ganz falsch sein können. Genauere, insbesondere theoretische, Untersuchungen sind hier aber nötig.\\
 
 
 \chapter{Verwendete Hilfsmittel und Software}

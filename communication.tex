@@ -57,10 +57,9 @@ Wann immer ein \emph{base reward} Wert an einen Agenten verteilt wird, kann es s
 
 Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel ~\ref{calculateRewardLCS:fig} besprochenen Funktion bei der SXCS Variante ohne verzögerten \emph{reward}. 
 
-In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:fig} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:fig} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von 1.0 ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:fig} ausgewertet.
+In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} und \emph{factor} ausgewertet. In der Implementation in Programm~\ref{process_reward_dsxcs1:fig} werden einfach alle nacheinander auf das \emph{action set} angewendet, während in der verbesserten Version in Programm~\ref{process_reward_dsxcs2:fig} nur der \emph{reward} Wert aus dem Paar mit dem größten Produkt aus den \emph{reward} und \emph{factor} Werten für die Aktualisierung benutzt wird. In beiden Implementationen werden außerdem Einträge mit sowohl einem \emph{reward} als auch \emph{factor} Wert von 1.0 ignoriert, sie wurden bereits in Programm~\ref{collect_reward_dsxcs:pro} ausgewertet.
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Zweites Kernstück des verzögerten SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}{collect_reward_dsxcs:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
  * zugehörigen ActionSets weiter. Wesentlicher Unterschied zum LCS ohne 
@@ -105,14 +104,12 @@ In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} un
          addReward(corrected_reward, factor);
 
     }
+  }
+\end{lstlisting}
 
-\end{verbatim}
-\label{collect_reward_dsxcs:fig}
-  \caption{Zweites Kernstück des verzögerten SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}
-\end{program}
+TODO Programm~\ref{dsxcs_calc_move:pro}
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Auszug aus dem dritten Kernstück des verzögerten SXCS-Algorithmus (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
 
 /**
  * Der erste Teil der Funktion ist identisch mit dem calculateNextMove
@@ -133,13 +130,11 @@ In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} un
       last.processReward(historicActionSet.getFirst().getBestValue());
     }
   }
-\end{verbatim}
-  \caption{Auszug aus dem dritten Kernstück des verzögerten SXCS-Algorithmus (\emph{calculateNextMove()})}
-\end{program}
+\end{lstlisting}
 
-\begin{program}
-  \begin{verbatim}
+TODO Programm~\ref{process_reward_dsxcs1:pro}
 
+\newlisting{Viertes Kernstück des verzögerten SXCS-Algorithmus (DSXCS, Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs1:pro}
 /**
  * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
  * eingegangenen Rewards bis zu diesem Punkt.
@@ -164,15 +159,11 @@ In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} un
       actionClassifierSet.updateReward(r.reward, max_prediction, r.factor);
     }
   }
-\end{verbatim}
-\label{process_reward_dsxcs1:fig}
-  \caption{Auszug aus dem vierten Kernstück des verzögerten SXCS-Algorithmus (Verarbeitung des Rewards, \emph{processReward()} TODO)}
-\end{program}
+\end{lstlisting}
 
+TODO Programm~\ref{process_reward_dsxcs2:pro}
 
-\begin{program}
-  \begin{verbatim}
-
+\newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS-Algorithmus (DXCS, Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs2:pro}
 /**
  * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
  * eingegangenen Rewards bis zu diesem Punkt.
@@ -204,11 +195,7 @@ In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} un
      */
     actionClassifierSet.updateReward(max_reward, max_prediction, 1.0);
   }
-\end{verbatim}
-\label{process_reward_dsxcs2:fig}
-  \caption{Verbesserte Variante Auszug aus dem vierten Kernstück des verzögerten SXCS-Algorithmus (Verarbeitung des Rewards, \emph{processReward()} TODO)}
-\end{program}
-
+\end{lstlisting}
 
 
 
@@ -272,77 +259,7 @@ Blickt man auf diesen Sachverhalt aus einer etwas anderen Perspektive ist es auc
 TODO Idee:
 Verteilt man den Reward an alle Agenten mit gleichem Faktor heisst das letztlich, dass jeder Agent in jedem Zeitschritt den selben Rewardwert erhält. Dann bildet das System der Agenten im Grunde als gemeinsames System von Agenten mit gemeinsamen Sensoren und gemeinsame, ClassifierSet TODO
 
-\subsection{Gruppenbildung über Ähnlichkeit der \emph{classifier} der Agenten}
-
-Eine dritte Implementation vergleicht die Classifier jeweils beider bei der Kommunikation beteiligten Agenten direkt. Alle Classifier des Agenten, der den Reward weitergibt, die ausreichend Erfahrung gesammelt haben und ausreichend genau ist (\emph{experience} und geringes \emph{predictionError}, Bedingung ist identisch mit \emph{isPossibleSubsumer}), werden mit einem identischen Classifier (d.h. mit gleicher \emph{condition} und gleicher \emph{action}) verglichen. Die Differenz der Produkte aus \emph{fitness} und \emph{prediction} geteilt durch den größeren \emph{prediction}-Wert der beiden Classifier stellt hier den Faktor dar. 
-
-\emph{pSet1} sei eine Teilmenge (bestehend aus  Classifiern, deren \emph{experience} größer als \emph{thetaSubsumer} und dessen \emph{predictionError} kleiner als epsilon0 ist) des ClassifierSets des Agenten, der den Reward vergibt.
-\emph{pSet2} sei die gleiche Teilmenge, allerdings des Agenten, der den Reward empfängt.
-
-Nun werden Paare identischer Classifier aus \emph{pSet1} und \emph{pSet2} gebildet. Gibt es mehrere Kandidaten für den selben Classifier aus \emph{pSet1}, wird der mit dem ähnlichsten Produkt aus \emph{fitness} und \emph{prediction} gewählt. Die Differenz zwischen den beiden Classifiern eines jeden Paares wird anhand ihres \emph{prediction}-Werts auf einen Wert zwischen \(0.0\) und \(1.0\) skaliert und aufaddiert. Die resultierende Summe wird schließlich durch die Anzahl der Paare dividiert und man erhält den Kommunikationsfaktor.
-
-Ein wesentlicher Nachteil hierbei ist natürlich, dass Classifier-Daten direkt übertragen werden müssen, was bei großer \emph{maxPopulation} u.U. einen hohen Kommunikations- und Speicheraufwand darstellt.
-
-Umgekehrt könnte man diese Funktion auch noch ausbauen und weitergehende Vergleiche ausführen, auch unter Einbeziehung der restlichen Classifier beider ClassifierSets, deren \emph{condition} bzw. \emph{action} nicht übereinstimmen. Beispielsweise kann man alle möglichen Zustände der Sensordaten durchgehen, die passenden Classifier beider ClassifierSets auswählen und die Wahrscheinlichkeiten für gewählte Aktionen vergleichen, was aber hinsichtlich der benötigten Rechenzeit nur für kleine Mengen von Sensordaten sinnvoll erscheint.
-
-TODO Format!
-\begin{program}
-  \begin{verbatim}
-    /**
-     * Relation of this classifier set (the active agent classifier set,
-     * e.g. the set that received a reward) to another classifier set
-     * @param other The other set we want to compare with
-     * @return degree of relationship (0.0 - 1.0)
-     */
-    public double checkDegreeOfRelationship(MainClassifierSet other) {
-        double degree = 0.0;
-        int size = 0;
-        ArrayList<Classifier> matched = new ArrayList<Classifier>();
-
-        for (Classifier c : getClassifiers()) {
-            if(!c.isPossibleSubsumer()) {
-                continue;
-            }
-
-            Classifier cl = other.getBestIdenticalClassifier(matched, c);
-            if (cl != null) {
-                matched.add(cl);
-
-                double div = c.getPrediction();
-                if(cl.getPrediction() > div) {
-                    div = cl.getPrediction();
-                }
-                if(div != 0.0) {
-                    double difference =
-                      1.0 - Math.abs(
-                        c.getFitness() * c.getPrediction() - 
-                        cl.getFitness() * cl.getPrediction()) / div;
-                    if(difference > 1.0) {
-                        difference = 1.0;
-                    } else
-                    if(difference < 0.0) {
-                        difference = 0.0;
-                    }
-                    degree += difference;
-                }
-            }
-            size++;
-        }
-
-        if(size == 0) {
-            return 0.0;
-        }
-
-        return degree / (double)size;
-      }
-\end{verbatim}
-  \caption{``Simple relation'', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf \emph{prediction} und \emph{fitness} der ClassifierSets}
-\end{program}
-
-
-
-
-\subsection{Gruppenbildung über Ähnlichkeit des Verhaltens der Agenten}
+\subsection{Gruppenbildung über Ähnlichkeit des Verhaltens der Agenten}\label{egoistic_relation:sec}
 
 Eine weitere Variante berechnet erst einmal für jeden Agenten einen ``Egoismus-Faktor'', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, den Zielagenten in Sicht zu bekommen anstatt ein möglichst großes Gebiet abzudecken.\\
 
@@ -357,6 +274,8 @@ Die Variante müsste also zum einen in
 
 
 schlecht abschneiden TODO
+
+TODO rewardrange = kommrange, Vereinfachung
 
 
 \begin{figure}[htbp]
@@ -385,9 +304,9 @@ schlecht abschneiden TODO
 \label{reward_range_egoist_block:fig}
 \end{figure}
 
+TODO Programm~\ref{egoistic_relationship:pro}
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{"'Egoistische Relation"', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem Verhalten des Agenten gegenüber anderen Agenten}{egoistic_relationship:pro}
     /**
      * Relation of this classifier set (the active agent classifier set,
      * e.g. the set that received a reward) to another classifier set
@@ -421,9 +340,8 @@ schlecht abschneiden TODO
         }
         return factor;
     }
-\end{verbatim}
-  \caption{``Egoistic relation'', Algorithmus zur Bestimmung des Kommunikationsfaktors basierend auf dem Verhalten des Agenten gegenüber anderen Agenten}
-\end{program}
+\end{lstlisting}
+
 
 
 \section{Bewertung Kommunikation:}
@@ -444,14 +362,7 @@ Multistep LCS Agent
 Dieser Algorithmus stellt eine Implementation des Standard XCS Algorithmus dar. Unterschied zur Standardimplementation ist, dass die Probleminstanz bei Erreichen des temporären Ziels (d.h. den Zielagenten in Sicht zu bekommen) nicht tatsächlich neugestartet wird.
 Events, wie bei den neuen LCS Implementationen gibt es nicht, ist das Ziel in Sicht wird Reward 1.0 weitergegeben.
 
-Single LCS Agent
-
-Mehrere LCS Agenten (``Old LCS Agent'') teilen sich ein gemeinsames ClassifierSet, das sie entsprechend updaten.
-Entspricht dem Extremfall der Kommunikation
 Sight range/Kommunikationsrange
-
-
-
 
 
 LCS Agenten schneiden auch ohne Kommunikation (bei ausreichender Anzahl von Schritten) immer besser ab als zufällige Agenten.

@@ -2,11 +2,10 @@
 
 \section{Hauptschleife}
 
-In der Hauptschleife (Programm~\ref{mainExperiment:fig}) wird ein Experiment mit vorgegebener Konfiguration (``\emph{Configuration}'') durchgeführt. Dabei werden eine Anzahl von Problemen abgearbeitet, bei denen jeweils der Torus auf den Startzustand gesetzt, das eigentliche Problem berechnet und ein neuer \emph{random seed} Wert gesetzt wird.
+In der Hauptschleife (siehe Programm~\ref{mainExperiment:pro}) wird ein Experiment mit vorgegebener Konfiguration (``\emph{Configuration}'') durchgeführt. Dabei werden eine Anzahl von Problemen abgearbeitet, bei denen jeweils der Torus auf den Startzustand gesetzt, das eigentliche Problem berechnet und ein neuer \emph{random seed} Wert gesetzt wird.
 
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Zentrale Schleife für einzelne Experimente}{mainExperiment:pro}
 /**
  * Führt eine Anzahl von Problemen aus
  * @param experiment_nr Nummer des auszuführenden Experiments
@@ -20,7 +19,7 @@ In der Hauptschleife (Programm~\ref{mainExperiment:fig}) wird ein Experiment mit
     for (int i = 0; i < Configuration.getNumberOfProblems(); i++) {
 
     /**
-     * creates a new grid and deploys agents and goal at random positions
+     * Erstellt einen neuen Torus und verteilt Agenten und das Zielobjekt neu
      */
       BaseAgent.grid.resetState();
 
@@ -36,10 +35,7 @@ In der Hauptschleife (Programm~\ref{mainExperiment:fig}) wird ein Experiment mit
         experiment_nr * Configuration.getNumberOfProblems() + 1 + i);
     }
   }
-  \end{verbatim}
- \label{mainExperiment:fig}
-  \caption{Zentrale Schleife für einzelne Experimente}
-\end{program}
+\end{lstlisting}
 
 
 \section{Reihenfolge der Ausführung (\emph{doOneMultiStepProblem()})}\label{reihenfolge:sec}
@@ -102,10 +98,10 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 
 \section{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
 
-In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:fig}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()}, Programm~\ref{mainProblem:fig}) aufgerufen. Dort wird, in einer weiteren Schleife über die Anzahl der maximalen Schritte, die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:fig}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:fig}) und schließlich die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:fig}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha} was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
+In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird, in einer weiteren Schleife über die Anzahl der maximalen Schritte, die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha} was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
 
-\begin{program}
-  \begin{verbatim}
+
+\newlisting{Zentrale Schleife für einzelne Probleme}{mainProblem:pro}
 /**
  * Führt eine Anzahl von Schritten auf dem aktuellen Torus aus
  * @param stepCounter Aktuelle Zeitschritt
@@ -151,14 +147,11 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
     rewardAgents(steps_next_problem);
     return steps_next_problem;
   }
-  \end{verbatim}
- \label{mainProblem:fig}
-  \caption{Zentrale Schleife für einzelne Probleme}
-\end{program}
+\end{lstlisting}
 
 
-\begin{program}
-  \begin{verbatim}
+
+\newlisting{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainCalculate:pro}
 /**
  * Berechnet die Aktionen und führt sie in zufälliger Reihenfolge aus
  * @param gaTimestep der aktuelle Zeitschritt
@@ -175,17 +168,13 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
     BaseAgent.goalAgent.aquireNewSensorData();
     BaseAgent.goalAgent.calculateNextMove(gaTimestep);
   }
-
-\end{verbatim}
- \label{mainCalculate:fig}
-  \caption{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}
-\end{program}
+\end{lstlisting}
 
 
-\begin{program}
-  \begin{verbatim}
+
+\newlisting{Zentrale Bearbeitung (Verteilung des Rewards) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainReward:pro}
 /**
- * Rewards all agents
+ * Verteilt den Reward an alle Agenten
  */
   private void rewardAgents(final long gaTimestep) {
     for(BaseAgent a : agentList) {
@@ -193,14 +182,14 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
     }
     BaseAgent.goalAgent.calculateReward(gaTimestep);
   }
+\end{lstlisting}
 
-\end{verbatim}
- \label{mainReward:fig}
-  \caption{Zentrale Bearbeitung (Verteilung des Rewards) aller Agenten und des Zielobjekts innerhalb eines Problems}
-\end{program}
 
-\begin{program}
-  \begin{verbatim}
+
+\newlisting{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb eines Problems}{mainMove:pro}
+/**
+ * Führt die berechnete Bewegungen der Agenten in zufälliger Reihenfolge aus
+ */
   private void moveAgents(long gaTimestep) {
   /**
    * Erstelle Ausführungsliste für alle Objekte (Zielobjekt mehrfach)
@@ -230,7 +219,4 @@ In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mai
       }
     }
   }
-  \end{verbatim}
- \label{mainMove:fig}
-  \caption{Zentrale Bearbeitung (Ausführung der Bewegung) aller Agenten und des Zielobjekts innerhalb eines Problems}
-\end{program}
+\end{lstlisting}

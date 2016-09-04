@@ -27,14 +27,15 @@ TODO!
 \subsection{Verschiedenes, Numerosity, TODO}
 
 Durch die Benutzung von \emph{macro classifiers} ergibt sich allerdings das programmiertechnische Problem, dass man nicht mehr direkt weiß, wieviele \emph{micro classifiers} sich in einer Population befinden, bei jeder Benutzung des Werts der Populationsgröße müssten die \emph{numerosity} Werte aller \emph{classifiers} jedes Mal addiert werden. In der Standardimplementierung \cite{Butz_xcsclassifier} ist die Behandlung des \emph{numerosity} Werts deswegen stark optimiert, jedes \emph{classifier set} trägt eine temporäre Variable \emph{numerositySum} mit sich, in der die aktuelle Summe gespeichert ist. Die Aktualisierung ist jedoch zum einen mangelhaft umgesetzt, zum anderen auf die Verwendung von einer einzelnen \emph{action set} Liste optimiert, während die hier verwendete Implementierung jeweils mit bis über 100 \emph{action set} Listen programmiert wurde, denen ein \emph{classifier} Mitglied sein kann. Deswegen wurde die Optimierung entfernt und durch eine dezentrale Verwaltung mit einem \emph{Observer} ersetzt, jede Änderung des \emph{numerosity} Wertes hat also die Änderung aller \emph{action set} Listen zur Folge, in der der \emph{classifier} Mitglied ist.\\
+
 Wird also z.B. ein \emph{micro classifier} entfernt, dann wird lediglich die Änderungsfunktion des \emph{classifiers} aufgerufen, der dann wiederum den \emph{numerositySum} Wert der jeweiligen Eltern anpasst. Dies macht einige Optimierungen rückgängig, erspart aber sehr viel Umstände, den \emph{numerositySum} der Eltern immer auf den aktuellen Stand zu halten und einzelne \emph{classifiers} zu löschen.\\
-Positiver Nebeneffekt durch die verbesserte Struktur, dass man dadurch leicht auf die Menge der \emph{action set} Listen zugreifen kann, denen ein \emph{classifier} angehört, hierfür wurde aber keine Verwendung gefunden.\\
+
+Positiver Nebeneffekt durch die verbesserte Struktur ist, dass man dadurch leicht auf die Menge der \emph{action set} Listen zugreifen kann, denen ein \emph{classifier} angehört, hierfür wurde aber im Rahmen dieser Arbeit keine Verwendung gefunden.\\
 
 Ein weiteres Problem der Standardimplementierung ist, dass der \emph{fitness} Wert eines \emph{classifiers} als Optimierung bereits den \emph{numerosity} Wert als Faktor enthält, während bei der Aktualisierung des \emph{numerosity} Werts der \emph{fitness} Wert nicht aktualisiert wurde. Das hat zur Folge, dass theoretisch \emph{fitness} Werte von \emph{classifiers} fast den \emph{max population} Wert annehmen kann, wenn ein \emph{classifier} mit \emph{numerosity} und \emph{fitness} Wert in der Höhe von \emph{max population} auf einen \emph{numerosity} Wert von 1 reduziert wird.\\
-Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die korrigierte Fassung ist in~\ref{corrected_numerosity_function:fig} gelistet, ein Vergleich der Qualität, mit und ohne Korrektur, ist in~\ref{correct_numerosity_graph:fig} dargestellt.
+Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse \emph{XClassifier} in der Datei \emph{XClassifier.java}. Die korrigierte Fassung ist in Programm~\ref{corrected_numerosity_function:pro} gelistet, ein Vergleich der Qualität, mit und ohne Korrektur, ist in Abbildung~\ref{correct_numerosity_graph:fig} dargestellt.
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Korrigierte Version der \emph{addNumerosity()} Funktion}{corrected_numerosity_function:pro}
 /**
  * Adds to the numerosity of the classifier.
  * @param num The added numerosity (can be negative!).
@@ -59,10 +60,7 @@ Dies betrifft die Funktion \emph{public void addNumerosity(int num)} der Klasse 
       }
     }
   }
-\end{verbatim}
-\label{corrected_numerosity_function:fig}
-  \caption{Korrigierte Version der \emph{addNumerosity()} Funktion}
-\end{program}
+\end{lstlisting}
 
 TODO Vergleich!
 TODO wenig Unterschied sensoragent, evtl wieder raus
@@ -75,11 +73,9 @@ Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. d
 
 Kern des Verfahrens ist die Vergabe des \emph{base rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an das letzte \emph{actionSet} gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an das letzte \emph{actionSet} gegeben.\\
 
-Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverändert übernommen. Der wesentliche Unterschied ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Außerdem, wie schon in Kapitel~\ref{exploreexploit:sec} erwähnt, soll die Qualität des Algorithmus nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird. Schließlich gibt es, neben den Parametereinstellungen im Kapitel~\ref{cha:parameter}, feste Schnittpunkte für das \emph{two point crossover} beim genetischen Operator (siehe~\ref{genetische_operatoren:sec}).\\
+Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverändert übernommen. Der wesentliche Unterschied ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Außerdem, wie schon in Kapitel~\ref{exploreexploit:sec} erwähnt, soll die Qualität des Algorithmus nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird. Schließlich gibt es, neben den Parametereinstellungen im Kapitel~\ref{cha:parameter}, feste Schnittpunkte für das \emph{two point crossover} beim genetischen Operator (siehe Kapitel~\ref{genetische_operatoren:sec}).\\
 
-\begin{program}
-  \begin{verbatim}
-
+\newlisting{Erstes Kernstück des Standard XCS Multistepverfahrens (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_reward:pro}
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
  * Reward zu bestimmen, den besten Wert des ermittelten MatchSets 
@@ -110,13 +106,11 @@ Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverän
     prevActionSet = lastActionSet;
     lastReward = reward;
   }
-\end{verbatim}
-  \label{multistep_calc_reward:fig}
-  \caption{Erstes Kernstück des Standard XCS Multistepverfahrens (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}
-\end{program}
+\end{lstlisting}
 
-\begin{program}
-  \begin{verbatim}
+TODO Programm~\ref{multistep_collect_reward:pro}
+
+\newlisting{Zweites Kernstück des Multistepverfahrens (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets), angepasst an ein dynamisches Überwachungsszenario}{multistep_collect_reward:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
  * zugehörigen ActionSets weiter.
@@ -152,13 +146,11 @@ Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverän
       }
     }
   }
-\end{verbatim}
-  \caption{Zweites Kernstück des Multistepverfahrens (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets), angepasst an ein dynamisches Überwachungsszenario}
-\end{program}
+\end{lstlisting}
 
-\begin{program}
-  \begin{verbatim}
+TODO Programm~\ref{multistep_calc_move:pro}
 
+\newlisting{Drittes Kernstück des Multistepverfahrens (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung des zugehörigen ActionSets), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_move:pro}
 /**
  * Bestimmt die zum letzten bekannten Status passenden Classifier und
  * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
@@ -194,10 +186,7 @@ Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverän
     lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
                                                       calculatedAction);
   }
-\end{verbatim}
-  \caption{Drittes Kernstück des Multistepverfahrens (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung des zugehörigen ActionSets), angepasst an ein dynamisches Überwachungsszenario}
-\end{program}
-
+\end{lstlisting}
 
 
 
@@ -238,9 +227,9 @@ In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal b
 
 In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
 
-Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe ~(\ref{saved_rewards:fig})).
+Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).
 
-Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. Wählen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe ~(\ref{neutral_reward:fig})). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
+Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. Wählen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe Abbildung~\ref{neutral_reward:fig}). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
 Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
 
 \begin{figure}[H]
@@ -276,9 +265,9 @@ Ein Ereignis tritt auf, wenn:
 
 TODO Erläuterung
 
-\begin{program}
-  \begin{verbatim}
+TODO Programm~\ref{sxcs_calc_reward:pro}
 
+\newlisting{Erstes Kernstück des SXCS-Algorithmus (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten)}{sxcs_calc_reward:pro}
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
  * Reward zu bestimmen und positive, negative und neutrale Ereignisse 
@@ -312,13 +301,13 @@ TODO Erläuterung
 
     lastReward = reward;
   }
-\end{verbatim}
-\label{calculateRewardLCS:fig}
-  \caption{Erstes Kernstück des SXCS-Algorithmus (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten)}
-\end{program}
+\end{lstlisting}
 
-\begin{program}
-  \begin{verbatim}
+
+
+TODO Programm~\ref{sxcs_collect_reward:pro}
+
+\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}{sxcs_collect_reward:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
  * zugehörigen ActionSets weiter.
@@ -366,14 +355,13 @@ TODO Erläuterung
       max_prediction = 
         action_classifier_set.getMatchSet().getBestValue();
     }
+  }
+\end{lstlisting}
 
-\end{verbatim}
-  \caption{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}
-\end{program}
 
-\begin{program}
-  \begin{verbatim}
+TODO Programm~\ref{sxcs_calc_move:pro}
 
+\newlisting{Drittes Kernstück des SXCS-Algorithmus (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}{sxcs_calc_move:pro}
 /**
  * Bestimmt die zum letzten bekannten Status passenden Classifier und
  * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
@@ -418,18 +406,15 @@ TODO Erläuterung
       historicActionSet.removeFirst();
     }
   }
-\end{verbatim}
-  \caption{Drittes Kernstück des SXCS-Algorithmus (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}
-\end{program}
+\end{lstlisting}
 
 
 
 \subsection{Zielobjekt mit SXCS}
 
-Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von SXCS für das Zielobjekt diskutiert werden. Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{bewertung:sec}) ist die Implementierung für das Zielobjekt identisch. Die abgeänderte Version ist in Programm~\ref{goal_checkRewardPoints:fig} aufgelistet.
+Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von SXCS für das Zielobjekt diskutiert werden. Bis auf die Funktion \emph{checkRewardPoints()} (siehe Kapitel~\ref{bewertung:sec}) ist die Implementierung für das Zielobjekt identisch. Die abgeänderte Version ist in Programm~\ref{goal_check_reward:pro} aufgelistet.
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Bestimmung des \emph{base rewards} für das Zielobjekt}{goal_check_reward:pro}
     /**
      * @return true Falls das Zielobjekt von keinem Agenten überwacht wird
      */
@@ -444,7 +429,5 @@ Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier 
       }
 
       return true;
-    }    \end{verbatim}
-  \label{goal_checkRewardPoints:fig}
-  \caption{Bestimmung des \emph{base rewards} für Agenten}
-\end{program}
+    }
+\end{lstlisting}

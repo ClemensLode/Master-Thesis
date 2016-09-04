@@ -14,6 +14,9 @@
 \usepackage{wrapfig}
 \usepackage{setspace}
 \usepackage{amsmath}
+\usepackage{listings}
+\lstset{language=java}
+
 \doublespacing
 
 % wegen deutschen Umlauten
@@ -54,8 +57,13 @@
 \newfloat{program}{thp}{lop}
 \floatname{program}{Programm}
 
-\begin{document}
+\renewcommand\lstlistingname{Programm}
+\renewcommand\lstlistlistingname{Programmverzeichnis}
 
+\newcommand{\newlisting}[2]{\begin{lstlisting}[frame=trbl,caption={#1},label={#2},numbers=left,captionpos=b,float={htbp}]{}}
+
+\begin{document}
+\lstset{basicstyle=\footnotesize, numberstyle=\tiny}
 
 \frontmatter
 \include{frontpage}
@@ -65,6 +73,8 @@
 \listoffigures
 \clearemptydoublepage
 \listoftables
+\clearemptydoublepage
+\lstlistoflistings
 \clearemptydoublepage
 \pagestyle{plain}
 \include{preface}

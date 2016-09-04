@@ -29,8 +29,6 @@ Sei \(r(O1, O2)\) die Distanz zwischen dem Objekt, das die Sensordaten erfasst u
 \item (0/1) : \emph{reward range} \(\ge r(O_1, O_2) > \) \emph{sight range} (Fall kann nicht auftreten, da \emph{reward range} \( < \) \emph{sight range})
 \end{enumerate}
 
-TODO von 3-5 auf 2-5 umändern
-
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{sight_directions.eps}
@@ -71,8 +69,8 @@ Die in Kapitel~\ref{implementierung_ablauf:sec} erwähnte und dort aufgerufene Fu
 
 \subsection{Algorithmus mit zufälliger Bewegung}\label{randomized_movement:sec}
 
-Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung~(\ref{agent_random:fig}) zeigt eine Beispielsituation, bei der der Agent jegliche Sensordaten (die 4 Agenten und das Zielobjekt, der als Stern dargestellt ist) ignoriert und eine Aktion zufällig auswählen wird.\\
-Programm~\ref{calculateNextMove_RandomAlgorithm:fig} zeigt den zugehörigen Quelltext.
+Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung~\ref{agent_random:fig} zeigt eine Beispielsituation, bei der der Agent jegliche Sensordaten (die 4 Agenten und das Zielobjekt, der als Stern dargestellt ist) ignoriert und eine Aktion zufällig auswählen wird.\\
+Programm~\ref{calculateNextMoveRandomAlgorithm:pro} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -82,8 +80,7 @@ Programm~\ref{calculateNextMove_RandomAlgorithm:fig} zeigt den zugehörigen Quell
 \label{agent_random:fig}
 \end{figure}
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Berechnung der nächsten Aktion bei der Benutzung des Algorithmus mit zufälliger Bewegung}{calculateNextMoveRandomAlgorithm:pro}
 /**
  * Berechne nächste Aktion (zufälliger Algorithmus)
  */
@@ -93,16 +90,13 @@ Programm~\ref{calculateNextMove_RandomAlgorithm:fig} zeigt den zugehörigen Quell
    */
     calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
   }
-\end{verbatim}
- \label{calculateNextMove_RandomAlgorithm:fig}
-  \caption{Berechnung der nächsten Aktion bei der Benutzung des Algorithmus mit zufälliger Bewegung}
-\end{program}
+\end{lstlisting}
 
 
 \subsection{Einfache Heuristik}\label{simple_heuristik:sec}
 
-Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  auf das Zielobjekt zu, ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung~(\ref{simple_agent_to_goal:fig}) zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte.\\
-Programm~\ref{calculateNextMove_SimpleHeuristic:fig} zeigt den zugehörigen Quelltext.
+Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  auf das Zielobjekt zu, ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung~\ref{simple_agent_to_goal:fig} zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte.\\
+Programm~\ref{calculateNextMove_SimpleHeuristic:pro} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -112,8 +106,7 @@ Programm~\ref{calculateNextMove_SimpleHeuristic:fig} zeigt den zugehörigen Quell
 \label{simple_agent_to_goal:fig}
 \end{figure}
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Berechnung der nächsten Aktion bei der Benutzung der einfachen Heuristik}{calculateNextMove_SimpleHeuristic:pro}
 /**
  * Berechne nächste Aktion (einfache Heuristik)
  */
@@ -142,15 +135,11 @@ Programm~\ref{calculateNextMove_SimpleHeuristic:fig} zeigt den zugehörigen Quell
     }      
 
   }
-\end{verbatim}
- \label{calculateNextMove_SimpleHeuristic:fig}
-  \caption{Berechnung der nächsten Aktion bei der Benutzung der einfachen Heuristik}
-\end{program}
-
+\end{lstlisting}
 
 \subsection{Intelligente Heuristik}\label{intelligent_heuristik:sec}
 
-Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~(\ref{intelligent_agent:fig}) ist das Zielobjekt nicht im Sichtbereich des Agenten und dieser wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigt, in diesem Fall Norden.\\ Programm~\ref{calculateNextMove_IntelligentHeuristic:fig} zeigt den zugehörigen Quelltext.
+Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~\ref{intelligent_agent:fig} ist das Zielobjekt nicht im Sichtbereich des Agenten und dieser wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigt, in diesem Fall Norden.\\ Programm~\ref{calculateNextMove_IntelligentHeuristic:pro} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -160,8 +149,7 @@ Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuri
 \label{intelligent_agent:fig}
 \end{figure}
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Berechnung der nächsten Aktion bei der Benutzung der intelligenten Heuristik}{calculateNextMove_IntelligentHeuristic:pro}
 /**
  * Berechne nächste Aktion (intelligente Heuristik)
  */
@@ -205,7 +193,4 @@ private void calculateNextMove() {
       }
     } 
   }
-\end{verbatim}
- \label{calculateNextMove_IntelligentHeuristic:fig}
-  \caption{Berechnung der nächsten Aktion bei der Benutzung der intelligenten Heuristik}
-\end{program}
+\end{lstlisting}

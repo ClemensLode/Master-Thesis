@@ -7,7 +7,7 @@ Eine wesentliche Erweiterung des LCS ist das sogenannte \emph{accuracy-based} XC
 Im einfachsten Fall, im sogenannten \emph{single step} Verfahren erfolgt die Bewertung einzelner \emph{classifier}, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten \emph{multi step} Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde.\\
 Ein klassisches Beispiel für den Test \emph{single step} Verfahren ist das 6-Multiplexer Problem (z.B. in~\cite{Butz2006}), bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"', so soll das dritte Datenbit, also "`0"' zurückgeben. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden.\\
 
-Ein klassisches Beispiel für \emph{multi step} Verfahren ist das "`Maze~\(N\)"' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neugestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifiers}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind. 
+Ein klassisches Beispiel für \emph{multi step} Verfahren ist das "`Maze~\(N\)"' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neugestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifier}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind. 
 
 
 Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} dargestellte (sehr einfache) Szenario dienen. Die zum Agenten zugehörigen \emph{classifer} sind in Abbildung~\ref{simple_scenario_multistep_classifier:fig} dargestellt, wobei die 4 angrenzenden Felder für jeden \emph{classifier} jeweils die Konfiguration der Kondition darstellt und der Pfeil die Aktion (für eine genauere Beschreibung eines \emph{classifier} siehe Kapitel~\emph{classifier:sec}). Im ersten Durchlauf werden alle \emph{classifier} in jedem Schritt zufällig gewählt, dann erhält \emph{classifier} e) eine positive Bewertung. Im zweiten Durchlauf erhält dann \emph{classifer} c) einen von \emph{classifier} e) weitergegebene positive Bewertung und \emph{classifier} e) auf Position 3 wird mit höherer Wahrscheinlichkeit als \emph{classifier} f) gewählt. Das geht so lange weiter bis sich für \emph{classifier} \(b, c, e, g\) ein ausreichend großer Wert eingestellt hat und keine wesentlichen Veränderungen mehr auftreten.
@@ -45,10 +45,10 @@ Vielversprechend war der Titel der Arbeit~\cite{Lujan2008}, ``Generation of Rule
 
 Eine weitere Arbeit in dieser Richtung (\cite{Hercog02socialsimulation}) beschreibt das "`El Farol"' Bar Problem (EFBP), welches dort mit Hilfe eines Multiagenten XCS System erfolgreich gelöst wurde. Die Vergleichbarkeit ist hier auch eingeschränkt, da es sich bei dem EFBP um ein \emph{single step} Problem handelt.\\
 
-Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{1102281} vorgestellt. Dort wurde der \emph{base reward} unter den (zwei) Agenten aufgeteilt, es fand also eine Kommunikation des \emph{reward} Werts statt. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in Kapitel~\ref{communication:cha} diskutiert.\\
+Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{1102281} vorgestellt. Dort wurde der \emph{base reward} (TODO) unter den (zwei) Agenten aufgeteilt, es fand also eine Kommunikation des \emph{reward} Werts statt. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in Kapitel~\ref{communication:cha} diskutiert.\\
 
 In \cite{Miyazaki} wurde gezeigt, dass bei der Weitergabe des \emph{base reward} Gruppenbildung von entscheidender Wichtigkeit ist. Nach bestimmten Kriterien werden Agenten in Gruppen zusammengefasst und der \emph{base reward} anstatt an alle, jeweils nur an die jeweiligen Gruppenmitgliedern weitergegeben.
-Dies bestätigen auch Tests in Kapitel~\ref{communication:cha}, bei der sich Agenten mit ähnelnden (was das Verhalten gegenüber anderen Agenten betrifft) \emph{classifier sets} in Gruppen zusammengefasst wurden und zum Teil bessere Ergebnisse erzielt werden konnten als ohne Kommunikation.
+Dies bestätigen auch Tests in Kapitel~\ref{communication:cha}, bei der sich Agenten mit ähnelnden (was das Verhalten gegenüber anderen Agenten betrifft) \emph{classifier set} Listen in Gruppen zusammengefasst wurden und zum Teil bessere Ergebnisse erzielt werden konnten als ohne Kommunikation.
 
 
 \cite{Barry03limitsin} TODO
@@ -64,8 +64,6 @@ Gamma!
 
 
 
-TODO base reward und reward unterscheiden
-
 Ein XCS ist ein regelbasiertes evolutionäres Lernsystem, das im Wesentlichen aus folgenden Elementen besteht:
 
 TODO ausfuehrlicher
@@ -76,13 +74,13 @@ TODO ausfuehrlicher
 \section{Ablauf eines XCS}\label{ablauf_lcs:sec}
 
 \begin{enumerate}
-\item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe~\ref{covering:sec})
-\item Auswahl auf die Sensordaten passender \emph{classifier} (\emph{matching}, siehe~\ref{matching:sec})
+\item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe Kapitel~\ref{covering:sec})
+\item Auswahl auf die Sensordaten passender \emph{classifier} (\emph{matching}, siehe Kapitel~\ref{matching:sec})
 \item Bestimmung der Auswahlart der Aktion (\emph{explore/exploit}, siehe Kapitel~\ref{auswahlart:sec})
 \item Auswahl der Aktion TODO
-\item Erstellung des zur Aktion zugehörigen Liste von \emph{classifiers} (\emph{actionSet}, siehe~\ref{actionSet:sec})
+\item Erstellung des zur Aktion zugehörigen Liste von \emph{classifier} (\emph{actionSet}, siehe Kapitel~\ref{actionSet:sec})
 
-, so dass es in der Liste \emph{classifiers} deren 
+, so dass es in der Liste \emph{classifier} deren 
 
 TODO
 Bei der Auswahl einer Aktion werden alle \emph{classifier} mit \emph{condition} Vektoren gesucht, die auf die aktuellen Sensordaten passen. Diese bilden dann das \emph{matchSet}.
@@ -100,7 +98,7 @@ In der \emph{lastMatchSet} Variable werden jeweils alle \emph{classifier} gespei
 
 \subsection{Variable \emph{actionSet}}\label{actionSet:sec}
 
-Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt den selben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur das letzte \emph{actionSet} gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden.
+Ein \emph{actionSet} ist jeweils einer Zeiteinheit zugeordnet. Dort werden jeweils alle \emph{classifier} gespeichert, die zu diesem Zeitpunkt denselben \emph{action} Wert besitzen wie der für die Bewegung bestimmte \emph{classifier}. In der Standardimplementation von XCS wird jeweils nur das letzte \emph{actionSet} gespeichert, während in SXCS eine ganze Reihe (bis zu \emph{maxStackSize} Stück) gespeichert werden.
 
 
 
@@ -145,7 +143,7 @@ Neben den zu den Sensordaten korrespondierenden Werten \(0\) und \(1\) soll es n
 
 \subsection{Vergleich des \emph{condition} Vektors mit den Sensordaten}
 
-Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt. Es ergeben sich also folgende Fälle:
+Beim Vergleich der Sensordaten und Daten aus dem \emph{condition} Vektor werden immer jeweils zwei Paare verglichen. In Kapitel~\ref{sensoren:sec} wurde erwähnt, dass der Fall \((0/1\)) in den Sensordaten nicht auftreten kann, weswegen (um die Aufgabe nicht unnötig zu erschweren) ein Datenpaar \((0/1\)) im \emph{condition} Vektor äquivalent zum Datenpaar \((1/1\)) sein soll, es damit also eine gewisse Redundanz gibt. Es ergeben sich also folgende Fälle:
 
 \begin{enumerate}
 \item Sensorenpaar \((0/0)\) wird erkannt von \((0/0)\), \((\#, 0)\), \((0, \#)\), \((\#, \#)\)
@@ -185,7 +183,7 @@ Der \emph{reward prediction} Wert des \emph{classifier} stellt die Höhe des \emp
 
 \subsection{Der \emph{reward prediction error} Wert}
 
-Der \emph{reward prediction error} Wert soll die Genauigkeit des \emph{classifier} bzgl. des \emph{reward prediction} Werts (durchschnittliche Differenz zwischen \emph{reward prediction} und tatsächlichem \emph{reward}) repräsentieren. U.a. auf Basis dieses Werts wird der \emph{fitness} Wert des \emph{classifier} angepasst.\\
+Der \emph{reward prediction error} Wert soll die Genauigkeit des \emph{classifier} bzgl. des \emph{reward prediction} Werts (die durchschnittliche Differenz zwischen \emph{reward prediction} und \emph{reward}) repräsentieren. U.a. auf Basis dieses Werts wird der \emph{fitness} Wert des \emph{classifier} angepasst.\\
 
 
 \subsection{Der \emph{experience} Wert}
@@ -195,19 +193,19 @@ Der \emph{experience} Wert des \emph{classifier} repräsentiert die Anzahl, wie o
 
 \subsection{Der \emph{numerosity} Wert}
 
-Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und \ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden.\\
+Durch Subsummation (siehe Kapitel~\ref{subsummation:sec} und Kapitel~\ref{genetische_operatoren:sec}) können \emph{classifier} eine Rolle als \emph{macro classifier} spielen, d.h. \emph{classifier} die andere \emph{classifier} in sich beinhalten. Der \emph{numerosity} Wert gibt an, wieviele andere, sogenannte \emph{micro classifier} sich in dem jeweiligen \emph{classifier} befinden.\\
 
 
 \section{Subsummation von \emph{classifier}}\label{subsummation:sec}
 
-Die Benutzung von den oben erwähnten Platzhaltern (Kapitel~\ref{platzhalter:sec}) erlaubt es dem XCS mehrere \emph{classifiers} zu zusammenzulegen, wodurch die Gesamtzahl der \emph{classifier} sinkt und somit Erfahrungen, die ein XCS Agent sammelt, nicht unbedingt mehrfach gemacht werden müssen. Die dahinter stehende Annahme ist, dass es Situationen gibt, in denen der Gewinn der durch Unterscheidung zwischen zwei verschiedenen Sensordatensätzen geringer ist als die Ersparnis durch das Zusammenlegen beider \emph{classifiers}, d.h. dem Ignorieren der Unterschiede.\\
+Die Benutzung von den oben erwähnten Platzhaltern (Kapitel~\ref{platzhalter:sec}) erlaubt es dem XCS mehrere \emph{classifier} zu zusammenzulegen, wodurch die Gesamtzahl der \emph{classifier} sinkt und somit Erfahrungen, die ein XCS Agent sammelt, nicht unbedingt mehrfach gemacht werden müssen. Die dahinter stehende Annahme ist, dass es Situationen gibt, in denen der Gewinn der durch Unterscheidung zwischen zwei verschiedenen Sensordatensätzen geringer ist als die Ersparnis durch das Zusammenlegen beider \emph{classifier}, d.h. dem Ignorieren der Unterschiede.\\
 
-Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wert als auch einen ausreichend kleinen \emph{reward prediction error} Wert, so kann er als sogenannter \emph{subsumer} auftreten. Andere \emph{classifiers} (in der selben \emph{action set} Liste, also mit gleichem \emph{action} Wert) werden durch den \emph{subsumer} ersetzt, sofern der von ihnen abgedeckte Sensordatenbereich eine Teilmenge des von dem \emph{subsumer} abgedeckten Bereichs ist, der \emph{subsumer} also an allen Stellen des \emph{condition} Vektors entweder den selben Wert wie der zu subsummierende \emph{classifier} oder einen Platzhalter besitzt.\\
+Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wert als auch einen ausreichend kleinen \emph{reward prediction error} Wert, so kann er als sogenannter \emph{subsumer} auftreten. Andere \emph{classifier} (in derselben \emph{action set} Liste, also mit gleichem \emph{action} Wert) werden durch den \emph{subsumer} ersetzt, sofern der von ihnen abgedeckte Sensordatenbereich eine Teilmenge des von dem \emph{subsumer} abgedeckten Bereichs ist, der \emph{subsumer} also an allen Stellen des \emph{condition} Vektors entweder denselben Wert wie der zu subsummierende \emph{classifier} oder einen Platzhalter besitzt.\\
 
 
 \section{Genetische Operatoren}\label{genetische_operatoren:sec}
 
-Es werden aus der jeweiligen \emph{action set} Liste zwei \emph{classifier} (die Eltern) zufällig ausgewählt und zwei neue \emph{classifier} (die Kinder) aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt (da sie aus der selben \emph{action set} Liste stammen, ist der Wert beider Eltern identisch). Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Werden Kinder in die Population eingefügt, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifiers} ist, werden sie stattdessen subsummiert.\\
+Es werden aus der jeweiligen \emph{action set} Liste zwei \emph{classifier} (die Eltern) zufällig ausgewählt und zwei neue \emph{classifier} (die Kinder) aus ihnen gebildet und in die Population eingefügt. Dabei wird mittels \emph{two-point crossover} ein neuer \emph{condition} Vektor generiert und der \emph{action} Wert auf den der Eltern gesetzt (da sie aus derselben \emph{action set} Liste stammen, ist der Wert beider Eltern identisch). Die restlichen Werte werden standardmäßig wie in Kapitel~\ref{cha:parameter} aufgelistet initialisiert. Werden Kinder in die Population eingefügt, deren \emph{action} Wert und \emph{condition} Vektor identisch mit existierenden \emph{classifier} ist, werden sie stattdessen subsummiert.\\
 Da die Sensoren und somit auch der \emph{condition} Vektor aus drei in sich geschlossenen Gruppen bestehen, werden im Unterschied zur Standardimplementation beim \emph{crossing over} zwei feste Stellen benutzt, die die Gruppe für das Zielobjekt, die Gruppe für Agenten und die Gruppe für feste Hindernisse voneinander trennen.\\
 
 Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen (siehe Kapitel~\ref{condition_vector:sec}) des \emph{condition} Vektors des ersten bzw. zweiten ausgewählten Elternteils, dann können für die drei Gruppen der \emph{condition} Vektoren \((z_{1k}, a_{1k}, h_{1k})\) und \((z_{2k}, a_{2k}, h_{2k})\) der beiden Kinder folgende Kombinationen auftreten:
@@ -222,7 +220,7 @@ Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen 
 
 
 
-\section{Bewertung}\label{bewertung:sec}
+\section{Bewertung der Aktionen (\emph{base reward})}\label{bewertung:sec}
 
 6 unterschiedliche Möglichkeiten,
 goal in reward range
@@ -232,10 +230,11 @@ goal in sight range, kein agent in sight range
 goal in reward range, kein agent in sight range
 goal in sight range, kein agent in reward range
 
+TODO base reward und reward unterscheiden
 
+Programm~\ref{agent_check_reward:pro}
 
-\begin{program}
-  \begin{verbatim}
+\newlisting{Bestimmung des \emph{base reward} Werts für Agenten}{agent_check_reward:pro}
 /**
  * @return true Falls das Zielobjekt von diesem Agenten überwacht wird
  *   und kein anderer Agent in dieser Richtung in 
@@ -253,8 +252,5 @@ goal in sight range, kein agent in reward range
     
     return false;
   }
-\end{verbatim}
-\label{checkRewardPoints:fig}
-  \caption{Bestimmung des \emph{base rewards} für Agenten}
-\end{program}
+\end{lstlisting}
 
