@@ -1,6 +1,8 @@
 \begin{appendix}
 \chapter{Implementation}\label{implementation:cha}
 
+Im Folgenden sind die Kernbestandteile aus dem Quelltext des Simulators aufgelistet. Sie dienen primär zum Verständnis der Idee und sind nur bedingt lauffähig. Der vollständige Quelltext ist auf der beiliegenden DVD bzw. unter~\cite{agentsimulator} verfügbar.
+
 \section{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
 
 In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:pro}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()} in Programm~\ref{mainProblem:pro}) aufgerufen. Dort wird in einer weiteren Schleife über die Anzahl der maximalen Schritte die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:pro}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:pro}) und schließlich werden die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:pro}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha}, was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).

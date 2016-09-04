@@ -15,7 +15,7 @@ soccer!
 
 \cite{Takadama} OCS, centralized control system
 
-In dieser Arbeit soll ein Szenario ohne globale Steuerung oder globale \emph{classifier}, also mit der Restriktion einer begrenzten, lokalen Kommunikation.
+In dieser Arbeit wird ein Szenario ohne globale Steuerung oder globale \emph{classifier}, also mit der Restriktion einer begrenzten, lokalen Kommunikation.
 Geht man davon aus, dass über die Zeit hinweg jeder Agent indirekt mit jedem anderen Agenten in Kontakt treten kann, Nachrichten also mit Zeitverzögerung weitergeleitet werden können, ist eine Form der globalen, wenn auch zeitverzögerten, Kommunikation möglich. TODO 
 Eine spezielle Implementierung für diesen Fall werde ich weiter unten besprechen TODO
 
@@ -56,9 +56,9 @@ Die Funktion \emph{calculateReward()} ist identisch mit der in Kapitel~\ref{sxcs
 
 Eine hilfreiche Voraussetzung für Kommunikation ist, wenn die dadurch möglicherweise entstehende Verzögerung vom jeweiligen Algorithmus unterstützt wird. Während weiter oben 
 
-Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich erst einmal zusammen mit den jeweiligen \emph{action set} Listein einer Liste (\emph{historicActionSet} Liste) gespeichert werden und in jedem Schritt immer nur die \emph{classifier} der \emph{action set} Liste des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert werden. Somit ergibt sich also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, mehrere gleichzeitig stattgefundene (aber erst verzögert eintreffende, wegen z.B. Kommunikationsschwierigkeiten) Ereignisse zusammen auszuwerten. Dies ist macht die Auswertung der eingehenden \emph{reward} Werte und Kommunikationsfaktoren wesentlich einfacher, da alle gemeinsam betrachtet werden können, anstatt dass sie sofort bei Eingang verarbeitet werden müssen.\\
+Der wesentliche Unterschied zur ersten XCS Variante SXCS ist, dass jeglicher ermittelter \emph{reward} Wert und der jeweils zugehörige Faktor lediglich erst einmal zusammen mit den jeweiligen \emph{action set} Listein einer Liste (\emph{historicActionSet} Liste) gespeichert und in jedem Schritt immer nur die \emph{classifier} der \emph{action set} Liste des ältesten Eintrags in der \emph{historicActionSet} Liste aktualisiert werden. Somit ergibt sich also eine zeitlich beliebig verzögerbare Aktualisierungsfunktion, welche uns erlaubt, mehrere gleichzeitig stattgefundene (aber erst verzögert eintreffende, wegen z.B. Kommunikationsschwierigkeiten) Ereignisse zusammen auszuwerten. Dies ist macht die Auswertung der eingehenden \emph{reward} Werte und Kommunikationsfaktoren wesentlich einfacher, da alle gemeinsam betrachtet werden können, anstatt dass sie sofort bei Eingang verarbeitet werden müssen.\\
 
-Wann immer ein \emph{base reward} Wert an einen Agenten verteilt wird, kann es sinnvoll sein, diesen \emph{base reward} an andere Agenten weiterzugeben. Dies wurde z.B. in einem ähnlichen Szenario in~\cite{1102281} festgestellt, bei dem zwei auf XCS basierende Agenten gegen bis zu zwei anderen (zufälligen) Agenten eine vereinfachte Form des Fußballs spielen. Das in dieser Arbeite besprochene Szenario ist wesentlich komplexer, was d
+Wann immer ein \emph{base reward} Wert an einen Agenten verteilt wird, kann es sinnvoll sein, diesen \emph{base reward} an andere Agenten weiterzugeben. Dies wurde z.B. in einem ähnlichen Szenario in~\cite{1102281} festgestellt, bei dem zwei auf XCS basierende Agenten gegen bis zu zwei anderen (zufälligen) Agenten eine vereinfachte Form des Fußballs spielen. Das in dieser Arbeite besprochene Szenario ist wesentlich komplexer, was d TODO
 
 
 
@@ -117,13 +117,21 @@ Verteilt man den Reward an alle Agenten mit gleichem Faktor heisst das letztlich
 In \cite{Miyazaki} wurde gezeigt, dass Gruppenbildung (rationality, grade 2 confusion)
 
 
+TODO
+
+%Eine weitere Variante berechnet einen „Egoismusfaktor“. Dabei wird grob die %Wahrscheinlichkeit der räumlichen Annäherung bei Sichtkontakt festgestellt.
+%Überwiegt bei einem Agenten das Eigeninteresse über das der gesamten Gruppe, %bevorzugt er signifikant eher einen größeren (?) Abstand zu anderen Agenten %bevorzugt und so wahrscheinlich bevorzugt auf eigene Faust versucht, das %Zielobjekt in Sicht zu bekommen anstatt gruppendienlich ein großes Gebiet %abzudecken, so erhält der Agent hier einen großen Faktor.
+%Die Hypothese ist, Agenten mit ähnlichem Egoismusfaktor besitzen auch einen %ähnlichen Classifiersatz, geben den Reward nicht gleichmäßig an alle Agenten %weiter, sondern an ähnliche Agenten.
+%END KORREKTUR
+
+
 Eine weitere Variante berechnet erst einmal für jeden Agenten einen "`Egoismusfaktor"', indem grob die Wahrscheinlichkeit ermittelt wird, dass ein Agent, wenn sich ein anderer Agent in Sicht befindet, sich in diese Richtung bewegt. ``Egoismus''-Faktor, weil ein großer Faktor bedeutet, dass der Agent eher einen kleinen Abstand zu anderen Agenten bevorzugt, also wahrscheinlich eher auf eigene Faust versucht, das Zielobjekt in Sicht zu bekommen, anstatt ein möglichst großes Gebiet abzudecken.\\
 
 Die Hypothese ist, dass Agenten mit ähnlichem Egoismusfaktor auch einen ähnlichen Classifiersatz besitzen und der Reward nicht an alle Agenten gleichmäßig weitergegeben wird, sondern bevorzugt an ähnliche Agenten. 
 
 Damit gäbe es einen Druck in Richtung eines bestimmten Egoismusfaktors. TODO
 
-Der Vorteil gegenüber den anderen Verfahren liegt darin, dass der Kommunikationsaufwand hier nur minimal ist, neben dem \emph{reward} muss lediglich der Egoismus Faktor übertragen und pro Zeitschritt nur einmal berechnet werden.\\
+Der Vorteil gegenüber den anderen Verfahren liegt darin, dass der Kommunikationsaufwand hier nur minimal ist. Neben dem \emph{reward} muss lediglich der Egoismus Faktor übertragen und pro Zeitschritt nur einmal berechnet werden.\\
 Ein Problem dieser Variante kann sein, dass der Ansatz das Problem selbst schon löst, indem er kooperatives Verhalten belohnt, unabhängig davon, ob Kooperation für das Problem sinnvoll ist.
 
 Die Variante müsste also zum einen in 

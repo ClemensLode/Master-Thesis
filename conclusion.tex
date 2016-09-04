@@ -45,6 +45,10 @@ In dieser Arbeit wurde ein sehr einfaches Sensorenmodell verwendet, das zwar höh
 Zu einem wesentlich besseren Ergebnis könnte die Verwendung von einer größeren Anzahl von Sensoren bzw. rationale Eingabewerten führen. Das würde beispielsweise die Möglichkeit erlauben, den Abstand zu anderen Agenten je nach Szenario genauer zu regeln. Eine einführende Arbeit bezüglich rationalen Eingabewerten und XCS findet sich z.B. in \cite{689040}. Mehrwertige Sensoren könnte man einfach durch Hinzunahme von weiteren Binärsensoren bewerkstelligen.\\
 Zusammen mit der Erweiterung der Sensoren könnte auch eine bessere \emph{reward} Funktion für den \emph{base reward} entwickelt werden (siehe Kapitel~\ref{bewertung:sec}), wodurch das globale Problem womöglich besser gelernt werden könnte.
 
+\subsection{Verwendung einer mehrwertigen \emph{reward} Funktion}
+
+Es ist aus den Analysen in Kapitel~\ref{analysis_sans_lcs:cha} bekannt, dass ein Agent mit intelligenter Heuristik in den betrachteten Szenarien sehr gut abschneidet, die \emph{reward} Funktion wurde allerdings von der einfachen Heuristik übernommen. Der Grund dafür wurde in Kapitel~\ref{bewertung:sec} ausführlich diskutiert, zur Darstellung bedarf einer mehrwertigen \emph{reward} Funktion. Eine Erweiterung des Algorithmus in diese Richtung erscheint deshalb sinnvoll.
+
 
 \subsection{Untersuchung der Theorie}
 

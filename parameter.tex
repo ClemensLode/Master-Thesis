@@ -4,7 +4,8 @@ Die Einstellungen der XCS Parameter der durchgeführten Experimente entsprechen w
 
 Liegt beim Test die erreichte Qualität unter der des zufälligen Algorithmus, ist beim Vergleich der Parameterwerte Vorsicht angebracht. Die Ursache für die Verbesserung kann sein, dass der Algorithmus nicht besser lernt, sondern sich umgekehrt eher wie der zufällige Algorithmus verhält. Deswegen ist stets der Vergleich mit der Qualität des sich zufällig bewegenden Algorithmus anzugeben.\\
 
-Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Mit dem Ziel, synchronisierte und vergleichbare Daten zu haben, wurden die Tests in mehreren Etappen durchgeführt. Damit entsprechen die hier aufgeführten Testergebnisse nur den endgültigen Ergebnissen.
+Anzumerken sei, dass alle Tests jeweils mit den in Tabelle~\ref{table:lcs_parameter} angegebenen Parameterwerten durchgeführt wurden und bei jedem Test jeweils nur der zu untersuchende Wert verändert wurde. Mit dem Ziel, synchronisierte und vergleichbare Daten zu haben, wurden die Tests in mehreren Etappen durchgeführt. Damit entsprechen die hier aufgeführten Testergebnisse nur den endgültigen Ergebnissen. Der hohe Aufwand dieses Kapitels war notwendig, da der Unterschied zwischen den Qualitäten der verschiedenen Algorithmen sehr gering war und keine Vergleichsarbeiten existieren, wenn, was bestimmte Standardwerte betrifft, auch auf die Literatur zurückgegriffen wurde und diese sich meist als sinnvoll erwiesen.
+
 
 \subsection{Parameter \emph{max population N}}\label{sec:max_population_parameter}
 
@@ -90,7 +91,7 @@ Abbildung~\ref{prediction_discount:fig} zeigt einen Vergleich der Qualität bei u
 \centerline{	
 \includegraphics{prediction_discount.eps}
 }
-\caption[Auswirkung verschiedener \emph{prediction discount} $\gamma$ Werte auf die Qualität]{Auswirkung verschiedener \emph{prediction discount} $\gamma$ Werte auf die Qualität (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung und Geschwindigkeit 1, Agenten mit XCS)}
+\caption[Auswirkung verschiedener \emph{reward prediction discount} $\gamma$ Werte auf die Qualität]{Auswirkung verschiedener \emph{reward prediction discount} $\gamma$ Werte auf die Qualität (Säulenszenario, Zielobjekt mit einfacher Richtungsänderung und Geschwindigkeit 1, Agenten mit XCS)}
 \label{prediction_discount:fig}
 \end{figure}
 
@@ -190,9 +191,9 @@ Außerdem kann man erkennen, dass bei einem sich intelligent verhaltenden Zielobj
 \centering
 \begin{tabular}{c c c}
 \hline\hline
-Parameter & Wert & Standardwert (siehe~\cite{butz01algorithmic})\\ [0.5ex]
+Parameter & Wert & Standardwert~\cite{butz01algorithmic}\\ [0.5ex]
 \hline
-max population \(N\) & \textbf{256} (siehe Kapitel~\ref{sec:max_population_parameter}) & [so, dass kein \emph{covering} nötig]\\
+max population \(N\) & \textbf{256} (siehe Kapitel~\ref{sec:max_population_parameter}) & [\emph{je nach Szenario}]\\
 max value \(\rho\) & \textbf{1,0} (siehe Kapitel~\ref{epsilon0:sec}) & [10000]\\
 fraction mean fitness \(\delta\) & 0,1 & [0,1]\\
 deletion threshold \(\theta_{\mathrm{del}}\) & 20,0 & [\(\sim\) 20,0]\\
@@ -206,7 +207,7 @@ fitness reduction & \(0,1\) & [0,1]\\
 reward prediction init \(p_{i}\) & 0,01 & [\(\sim\) 0]\\
 prediction error init \(\epsilon_{i}\) & 0,0 & [0,0]\\
 fitness init \(F_{i}\) & \(0,01\) &  [0,01]\\
-condition vector & \textbf{leer} (siehe Kapitel~\ref{sec:random_init}) &  [zufällig oder leer]\\
+condition vector & \textbf{leer} (siehe Kapitel~\ref{sec:random_init}) &  [\emph{zufällig oder leer}]\\
 numerosity & 1 & [1]\\
 experience & 0 & [0]\\
 
