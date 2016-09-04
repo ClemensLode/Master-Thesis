@@ -14,19 +14,25 @@ Im Folgenden sollen nun allgemeine Eigenschaften der Simulation erläutert werden
 
 \subsection{Definition einer Probleminstanz}\label{definition_probleminstanz:sec}
 
-Eine einzelne Probleminstanz entspricht hier einem Torus mit einer bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit, auf dem über die erwähnte Anzahl von Schritten die Simulation abläuft. Die Anfangsbelegung ist über einen \emph{random seed} Wert bestimmt, wobei bei jeder Probleminstanz mit einem neuen Wert initialisiert wird, der sich aus der Nummer des Experiments und der Nummer des Problems berechnet. Die Probleminstanzen sind also untereinander unterschiedlich, jedoch vergleichbar mit anderen Testdurchläufen mit einer anderen Konfiguration. Soweit nicht anders angegeben, sollen hier Probleminstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall. Die in den Tabellen jeweils angegebenen Werte sind auf zwei Stellen nach dem Komma gerundet.\\
+Eine einzelne Probleminstanz entspricht hier einem Torus mit einer bestimmten Anfangsbelegung mit bestimmten Objekten und bestimmten Parametern zur Sichtbarkeit, auf dem über die erwähnte Anzahl von Schritten die Simulation abläuft. Die Anfangsbelegung des Torus ist über einen \emph{random seed} Wert bestimmt, wobei bei jeder Probleminstanz mit einem neuen Wert initialisiert wird, der sich aus der Nummer des Experiments und der Nummer des Problems berechnet. Die Probleminstanzen sind also untereinander unterschiedlich, jedoch  mit anderen Testdurchläufen mit einer anderen Konfiguration vergleichbar. Soweit nicht anders angegeben, sollen hier Probleminstanzen der Größe 16x16 Felder betrachtet werden, insbesondere beziehen sich die Ergebnisse der Tests auf diesen Fall. In den jeweiligen Tabellen angegebenen Werte sind auf zwei Stellen gerundet.\\
 
-Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfasst. Wesentliches Merkmal zum Vergleich der Algorithmen ist der Wert der Qualität (siehe Kapitel~\ref{qualitaet:sec}), weitere Merkmale dienen zur Erklärung, warum z.B. ein Algorithmus bei einem Durchlauf schlechte Ergebnisse lieferte, bzw. dienten zum Testen und Finden von Fehlern oder Schwächen des Simulationsprogramms. Im Einzelnen sind hier zu nennen:
+Während eines Testlaufs werden eine ganze Reihe von statistischen Merkmalen erfasst. Wesentliches Merkmal zum Vergleich der Algorithmen ist der Wert der Qualität (siehe Kapitel~\ref{qualitaet:sec}), weitere Merkmale dienen zur Erklärung, warum z.B. ein Algorithmus bei einem Durchlauf schlechte Ergebnisse lieferte, bzw. dienten zum Testen und Finden von Fehlern oder Schwächen des Simulationsprogramms.\\
 
+\begin{figure}[H]
+\setbox0\vbox{\small
+Im Einzelnen sind hier zu nennen:
 \begin{enumerate}
 
-\item Anteil Sprünge des Zielobjekts (siehe Kapitel~\ref{zielobjekt:sec}), Durchläufe mit hohen Werte müssten verworfen werden
-\item Anteil blockierter Bewegungen der Agenten
-\item Halbzeitqualität (siehe Kapitel~\ref{qualitaet:sec}), größere Unterschiede zur ermittelten Qualität deuten darauf hin, dass sich der Algorithmus noch nicht stabilisiert hat und das Szenario mit höherer Schrittzahl erneut durchgeführt werden sollte
-\item Abdeckung
-\item Varianz der individuellen Punkte, ungefähres Maß, inwieweit einzelne Agenten an der Gesamtqualität beteiligt waren 
+\item Anteil Sprünge des Zielobjekts (siehe Kapitel~\ref{zielobjekt:sec}), Durchläufe mit hohen Werte müssten verworfen werden,
+\item Anteil blockierter Bewegungen der Agenten,
+\item Halbzeitqualität (siehe Kapitel~\ref{qualitaet:sec}), größere Unterschiede zur ermittelten Qualität deuten darauf hin, dass sich der Algorithmus noch nicht stabilisiert hat und das Szenario mit höherer Schrittzahl erneut durchgeführt werden sollte,
+\item Abdeckung sowie
+\item Varianz der individuellen Punkte, ungefähres Maß, inwieweit einzelne Agenten an der Gesamtqualität beteiligt waren.
 
 \end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
 
 
 \subsection{Abdeckung}
@@ -101,19 +107,26 @@ Werden die \emph{base reward} Werte sofort ermittelt (Punkt 1), dann bezieht sic
 
 \subsection{Zusammenfassung des Simulationsablaufs}
 
-Im Folgenden ist der Ablauf aller Agenten (inklusive des Zielobjekts) dargestellt. Anzumerken ist, dass für das Zielobjekt zu Beginn in Schritt 2 und 3 nur der erste Schritt berechnet wird. Falls die Geschwindigkeit des Zielobjekts größer als 1 ist, werden (wie am Ende in Kapitel~\ref{reihenfolge:sec} angemerkt) in Schritt 5 nach der Ausführung der Aktion direkt neue Sensordaten erfasst und eine neue Aktion berechnet. Insgesamt ergibt sich also folgender Ablauf:
+Im Folgenden ist der Ablauf aller Agenten (inklusive des Zielobjekts) dargestellt. Anzumerken ist, dass für das Zielobjekt zu Beginn in Schritt 2 und 3 nur der erste Schritt berechnet wird. Falls die Geschwindigkeit des Zielobjekts größer als 1 ist, werden (wie am Ende in Kapitel~\ref{reihenfolge:sec} angemerkt) in Schritt 5 nach der Ausführung der Aktion direkt neue Sensordaten erfasst und eine neue Aktion berechnet. 
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Insgesamt ergibt sich also folgender Ablauf:
 
 \begin{enumerate}
-\item Bestimmen der aktuellen \textbf{Qualität}
+\item Bestimmen der aktuellen \textbf{Qualität},
 
-\item Erfassung der \textbf{Sensordaten} aller Agenten und des Zielobjekts
+\item Erfassung der \textbf{Sensordaten} aller Agenten und des Zielobjekts,
 
-\item Bestimmung der jeweiligen {\bfseries {\em base reward} Werte} für die einzelnen Objekte für den letzten Schritt (für lernende Agenten)
+\item Bestimmung der jeweiligen {\bfseries {\em base reward} Werte} für die einzelnen Objekte für den letzten Schritt (für lernende Agenten),
 
-\item Aktualisierung der Regeln anhand des \emph{base reward} Werts (für lernende Agenten)
+\item Aktualisierung der Regeln anhand des \emph{base reward} Werts (für lernende Agenten),
 
-\item \textbf{Wahl der Aktion} anhand der Regeln des jeweiligen Agenten bzw. Zielobjekts
+\item \textbf{Wahl der Aktion} anhand der Regeln des jeweiligen Agenten bzw. Zielobjekts sowie
 
-\item \textbf{Ausführung der Aktion} aller (in zufälliger Reihenfolge, Zielobjekt wiederholt u.U. Schritte 2 und 3 zwischen zwei eigenen Bewegungen)
+\item \textbf{Ausführung der Aktion} aller (in zufälliger Reihenfolge, Zielobjekt wiederholt u.U. Schritte 2 und 3 zwischen zwei eigenen Bewegungen).
 
 \end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}

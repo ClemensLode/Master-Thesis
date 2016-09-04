@@ -4,8 +4,11 @@ TODO die ausführliche DIskussion der Parameter ist notwendig, da der Unterschied
 
 
 Jeder Agent besitzt ein unabhängiges, sogenanntes \emph{eXtended Classifier System} (XCS), welches einem speziellen \emph{learning classifier system} (LCS) entspricht. Ein LCS ist ein evolutionäres Lernsystem, das aus einer Reihe von \emph{classifier} Regeln besteht, die zusammen ein sogenanntes \emph{classifier set} bilden (siehe Kapitel~\ref{classifier:sec}). Eine allgemeine Einführung in LCS findet sich z.B. in~\cite{Butz2006a}.\\
-Im Folgenden soll sich also auf den Teil konzentriert werden, der relevant für das Verständnis der in Kapitel~\ref{lcs_variants:cha} vorgestellten XCS Varianten ist (für eine umfassende Beschreibung von XCS soll auf \cite{Butz2006} verwiesen werden). Im Wesentlichen besteht ein XCS aus folgenden Elementen:
+Im Folgenden soll sich also auf den Teil konzentriert werden, der relevant für das Verständnis der in Kapitel~\ref{lcs_variants:cha} vorgestellten XCS Varianten ist (für eine umfassende Beschreibung von XCS soll auf \cite{Butz2006} verwiesen werden). 
 
+\begin{figure}[H]
+\setbox0\vbox{\small
+Im Wesentlichen besteht ein XCS aus folgenden Elementen:
 \begin{enumerate}
 
 \item Einer Menge an Regeln, sogenannte \emph{classifier} (siehe Kapitel~\ref{classifier:sec}), die zusammen ein \emph{classifier set} bilden
@@ -19,6 +22,9 @@ Im Folgenden soll sich also auf den Teil konzentriert werden, der relevant für d
 \item Eine Mechanismus zur Bewertung der \emph{classifier} (mittels \emph{reinforcement learning}, siehe Kapitel~\ref{bewertung:sec})
 
 \end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
 
 Während die ersten drei Punkte bei allen hier vorgestellten XCS Varianten identisch sind, gibt es wesentliche Unterschiede bei der Bewertung der \emph{classifier}. Diese werden gesondert in Kapitel~\ref{lcs_variants:cha} im Einzelnen besprochen. Im Folgenden sollen nun die ersten drei der vorgestellten Punkte näher betrachtet werden und das Kapitel mit einer Diskussion und Analyse der XCS Parameter in Kapitel~\ref{cha:parameter} abgerundet werden.
 
@@ -120,13 +126,21 @@ Besitzt ein \emph{classifier} sowohl einen genügend großen \emph{experience} Wer
 
 \section{Ablauf eines XCS}\label{ablauf_lcs:sec}
 
-\begin{enumerate}
+TODO Schreiben
 
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Ein XCS läuft wie folgt ab:
+\begin{enumerate}
 \item Vervollständigung der \emph{classifier} Liste (\emph{covering}, siehe Kapitel~\ref{covering:sec})
 \item Auswahl auf die Sensordaten passender \emph{classifier} (\emph{match set} Liste, siehe Kapitel~\ref{matching:sec})
 \item Bestimmung der Auswahlart und Auswahl der Aktion (\emph{explore/exploit}, siehe Kapitel~\ref{auswahlart:sec})
 \item Erstellung der zur Aktion zugehörigen Liste von \emph{classifier} (\emph{action set} Liste, siehe Kapitel~\ref{actionSet:sec})
 \end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
 
 \subsection{Abdeckung aller Aktionen durch \emph{covering}}\label{covering:sec}
 

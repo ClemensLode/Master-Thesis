@@ -58,8 +58,11 @@ Bei dem hier vorgestellten Überwachungsszenario kann dagegen nicht neugestartet 
 
 Desweiteren greift auch die Idee einer reinen \emph{explore} Phase beim Überwachungsszenario nicht, da das Szenario nicht statisch, sondern dynamisch ist. Ein zufälliges Herumlaufen kann, im Vergleich zur gewichteten Auswahl der Aktionen, dazu führen, dass der Agent mit bestimmten Situationen mit deutlich niedrigerer Wahrscheinlichkeit konfrontiert wird, da der Agent sich in Hindernissen verfängt oder das Zielobjekt (z.B. mit "`Intelligentem Verhalten"' aus Kapitel~\ref{zielobjekt_intelligentes_verhalten:sec}) ihm andauernd ausweicht. Aus diesen Gründen erscheint es sinnvoll, weitere Formen des Wechsels zwischen diesen Phasen zu untersuchen.\\
 
-Bei der Standardimplementierung für den statischen Fall ist allerdings das Erreichen eines positiven \emph{base reward} äquivalent mit einem Neustart des Problems. Während dort beim Neustart des Problems das gesamte Szenario (alle Agenten, Hindernisse und das Zielobjekt) auf den Startzustand zurückgesetzt werden, läuft das Überwachungsszenario weiter. Als erweiterten Ansatz soll nun deshalb eine neue Problemdefinition gelten, dass nicht das Erreichen eines positiven \emph{base rewards} (also ein Neustart des Problems) einen Phasenwechsel auslöst, sondern eine \emph{Änderung} des \emph{base rewards}, so dass mit anfänglicher \emph{explore} Phase immer dann in die \emph{exploit} Phase gewechselt wird, wenn das Zielobjekt in Sicht ist (bzw. umgekehrt, wenn mit der \emph{exploit} Phase begonnen wird). Als Vergleich soll der andauernde, zufällige Wechsel zwischen der \emph{explore} und \emph{exploit} Phase, eine andauernde \emph{exploit} und andauernde \emph{explore} Phase dienen. Es sollen nun also folgende Arten des Wechsel zwischen den Phasen untersucht werden:
+Bei der Standardimplementierung für den statischen Fall ist allerdings das Erreichen eines positiven \emph{base reward} äquivalent mit einem Neustart des Problems. Während dort beim Neustart des Problems das gesamte Szenario (alle Agenten, Hindernisse und das Zielobjekt) auf den Startzustand zurückgesetzt werden, läuft das Überwachungsszenario weiter. Als erweiterten Ansatz soll nun deshalb eine neue Problemdefinition gelten, dass nicht das Erreichen eines positiven \emph{base rewards} (also ein Neustart des Problems) einen Phasenwechsel auslöst, sondern eine \emph{Änderung} des \emph{base rewards}, so dass mit anfänglicher \emph{explore} Phase immer dann in die \emph{exploit} Phase gewechselt wird, wenn das Zielobjekt in Sicht ist (bzw. umgekehrt, wenn mit der \emph{exploit} Phase begonnen wird). Als Vergleich soll der andauernde, zufällige Wechsel zwischen der \emph{explore} und \emph{exploit} Phase, eine andauernde \emph{exploit} und andauernde \emph{explore} Phase dienen. 
 
+\begin{figure}[H]
+\setbox0\vbox{\small
+Es sollen nun also folgende Arten des Wechsel zwischen den Phasen untersucht werden:
 \begin{enumerate}
 \item Andauernde \emph{explore} Phase
 \item Andauernde \emph{exploit} Phase
@@ -67,5 +70,8 @@ Bei der Standardimplementierung für den statischen Fall ist allerdings das Errei
 \item Abwechselnd \emph{explore} und \emph{exploit} Phase (bei Änderung des \emph{base reward}, beginnend mit \emph{exploit})
 \item In jedem Schritt zufällig entweder \emph{explore} oder \emph{exploit} Phase (50\% Wahrscheinlichkeit jeweils)
 \end{enumerate}
+}
+\centerline{\fbox{\box0}}
+\end{figure}
 
 Anzumerken sei hier, dass Punkt (3.), (4.) und (5.) in der Standardimplementierung praktisch äquivalent sind, da dort die Phasen separat betrachtet werden können und nur nach jedem Problem vertauscht werden. Dabei wird bei jedem Erreichen eines positiven \emph{reward} zwischen \emph{explore} und \emph{exploit} hin und hergeschaltet, was in der Standardimplementierung dem Beginn eines neuen Problems entspricht.

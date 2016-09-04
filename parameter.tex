@@ -150,7 +150,7 @@ Bei SXCS ist deutlich zu sehen, dass eine andauernde \emph{exploit} Phase bei be
 \label{test_tournament_selection_direction_2:fig}
 \end{figure}
 
-Im Falle eines Zielobjekts mit intelligenter Bewegung (Abbildung~\ref{test_tournament_selection_intelligent_1:fig} mit Geschwindigkeit 1 und Abbildung~\ref{test_tournament_selection_intelligent_2:fig} mit Geschwindigkeit 2) fällt direkt ins Auge, dass eine abwechselnde \emph{explore}/\emph{exploit} Phase nicht vorteilhaft für einen SXCS Agenten ist. XCS erreicht ein ziemlich konstantes Ergebnis im Bereich von \(0,76\) bis \(0,92\), während SXCS mit andauernder \emph{exploit} Phase bei einem Wert von um die \(0,80\) den Maximalwert besitzt.\\
+Im Falle eines Zielobjekts mit intelligenter Bewegung (Abbildung~\ref{test_tournament_selection_intelligent_1:fig} mit Geschwindigkeit 1 und Abbildung~\ref{test_tournament_selection_intelligent_2:fig} mit Geschwindigkeit 2) fällt direkt ins Auge, dass eine abwechselnde \emph{explore}/\emph{exploit} Phase nicht vorteilhaft für einen SXCS Agenten ist. XCS erreicht ein ziemlich konstantes Ergebnis im Bereich von \(0,76\) bis \(0,92\), während SXCS mit andauernder \emph{exploit} Phase bei einem Wert von um die \(0,80\) den Maximalwert besitzt. Dass beim XCS Algorithmus im Fall mit Geschwindigkeit 2 bei einem Wert von \(p = 1.0\), also der \emph{best selection} Auswahlart, ein etwas besseres Ergebnis erzielt wird, erstaunt. Da der Wert während des Laufs aber nicht angepasst wird, besteht keine Möglichkeit, dies auszunutzen und gleichzeitig bei allen anderen Tests gut abzuschneiden.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -162,13 +162,13 @@ Im Falle eines Zielobjekts mit intelligenter Bewegung (Abbildung~\ref{test_tourn
 
 \begin{figure}[htbp]
 \centerline{	
-\includegraphics{test_tournament_selection_intelligent_1.eps}
+\includegraphics{test_tournament_selection_intelligent_2.eps}
 }
 \caption[Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (intelligentes Zielobjekt, Geschwindigkeit 2)]{Vergleich verschiedener Werte $p$ für Auswahlart \emph{tournament selection} (intelligentes Zielobjekt, Geschwindigkeit 2, Säulenszenario, 2000 Schritte)}
 \label{test_tournament_selection_intelligent_2:fig}
 \end{figure}
 
-Insgesamt bestätigt die Untersuchung also, dass \(p = 0,84\) für diese Szenarien sinnvoll ist und somit die beste Aktion also mit \(p = 84\%\) Wahrscheinlichkeit, die zweitbeste mit ca. \((1,0-p)p \approx 13\%\) Wahrscheinlichkeit, die drittbeste mit ca. \((1,0-p)^{2}p \approx 2\%\) Wahrscheinlichkeit und die schlechteste Aktion mit ca. \((1,0-p)^{3}p \approx 1\%\) Wahrscheinlichkeit gewählt werden.\\
+Insgesamt bestätigt die Untersuchung also, dass \(p = 0,84\) für diese Szenarien sinnvoll ist und somit die beste Aktion also mit \(84\%\) Wahrscheinlichkeit, die zweitbeste mit ca. \((1,0-p)p \approx 13\%\) Wahrscheinlichkeit, die drittbeste mit ca. \((1,0-p)^{2}p \approx 2\%\) Wahrscheinlichkeit und die schlechteste Aktion mit ca. \((1,0-p)^{3}p \approx 1\%\) Wahrscheinlichkeit gewählt werden.\\
 Außerdem kann man erkennen, dass bei einem sich intelligent verhaltenden Zielobjekt eine andauernde \emph{exploit} Phase die beste Wahl ist. Dies wird in Kapitel~\ref{test_auswahlarten:sec} relevant und dort auch näher diskutiert.\\
 
 

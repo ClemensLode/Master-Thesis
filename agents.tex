@@ -13,23 +13,28 @@ Der Parameter \emph{sight range} bzw. \emph{reward range} bestimmt, bis zu welch
 
 Ein Datenpaar besteht aus zwei Sensoren, die den selben Typ von Objekt erkennen, in dieselbe Richtung ausgerichtet sind und sich nur in ihrer Sichtweite unterscheiden, wodurch der Agent rudimentär die Entfernung zu anderen Objekten feststellen kann. Die Sichtweite des ersten Sensors eines Paares wird über den Parameter \emph{sight range} bestimmt, die Sichtweite des zweiten Sensors über den Parameter \emph{reward range} (siehe auch Kapitel~\ref{sichtbarkeit:sec}). Da \emph{sight range} \( > \) \emph{reward range} gilt, ist der überwachte Bereich also eine Teilmenge des sichtbaren Bereichs. In Abbildung~\ref{sight_directions:fig} sind alle Sichtreichweiten (heller und dunkler Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt.\\
 
-Anzumerken sei hier, dass wegen der gewählten Werte für beide Reichweiten ein Sensordatenpaar (0\/1) nicht auftreten kann, da ein Objekt nicht gleichzeitig näher als \(2,0\) und weiter als \(5,0\) entfernt sein kann.\\
-
-Sei \(r(O1, O2)\) die Distanz zwischen dem Objekt, das die Sensordaten erfasst und dem nächstliegenden Objekt des Typs, den der Sensor wahrnehmen kann, dann ergeben sich folgende Fälle:
-
-\begin{enumerate}
-\item (0/0) : \(r(O_1, O_2) > \) \emph{sight range} (kein passendes Objekt in Sichtweite)
-\item (1/0) : \emph{reward range} \( < r(O_1, O_2) \le \) \emph{sight range} (Objekt in Sichtweite)
-\item (1/1) : \(r(O_1, O_2) \le \) \emph{reward range} (Objekt in Sicht- und Überwachungsreichweite)
-\item (0/1) : \emph{reward range} \(\ge r(O_1, O_2) > \) \emph{sight range} (Fall kann nicht auftreten, da \emph{reward range} \( < \) \emph{sight range})
-\end{enumerate}
-
 \begin{figure}[htbp]
 \centerline{	
 \includegraphics{sight_directions.eps}
 }
 \caption[Sicht- und Überwachungsreichweite eines Agenten]{Sicht- ($5,0$, dunkler Bereich) und Überwachungsreichweite ($2,0$, heller Bereich) eines Agenten, jeweils für die einzelnen Richtungen}
 \label{sight_directions:fig}
+\end{figure}
+
+Anzumerken sei hier, dass wegen der gewählten Werte für beide Reichweiten ein Sensordatenpaar (0\/1) nicht auftreten kann, da ein Objekt nicht gleichzeitig näher als \(2,0\) und weiter als \(5,0\) entfernt sein kann.\\
+
+
+\begin{figure}[H]
+\setbox0\vbox{\small
+Sei \(r(O1, O2)\) die Distanz zwischen dem Objekt, das die Sensordaten erfasst und dem nächstliegenden Objekt des Typs, den der Sensor wahrnehmen kann, dann ergeben sich folgende Fälle:
+\begin{enumerate}
+\item (0/0) : \(r(O_1, O_2) > \) \emph{sight range} (kein passendes Objekt in Sichtweite)
+\item (1/0) : \emph{reward range} \( < r(O_1, O_2) \le \) \emph{sight range} (Objekt in Sichtweite)
+\item (1/1) : \(r(O_1, O_2) \le \) \emph{reward range} (Objekt in Sicht- und Überwachungsreichweite)
+\item (0/1) : \emph{reward range} \(\ge r(O_1, O_2) > \) \emph{sight range} (Fall kann nicht auftreten, da \emph{reward range} \( < \) \emph{sight range})
+\end{enumerate}
+}
+\centerline{\fbox{\box0}}
 \end{figure}
 
 
