@@ -15,7 +15,7 @@ John Galt\\
 
 In diesem Kapitel werden Tests der in Kapitel~\ref{lcs_variants:cha} und Kapitel~\ref{base_agent_types:sec} vorgestellten Algorithmen gesammelt dargestellt und analysiert. Ziel des Kapitels ist es, die bisher gemachten Aussagen, die nicht durch die Literatur abgedeckt sind, anhand empirischer Tests zu beweisen.\\
 
-Zu Beginn werden in Kapitel~\ref{analysis_sans_lcs:sec} anfängliche Tests durchgeführt, bei denen ausschließlich die grundsätzlichen Algorithmen (Agent mit zufälliger Bewegung, Agent mit einfacher Heuristik und Agent mit intelligenter Heuristik) aus Kapitel~\ref{base_agent_types:sec} betrachtet werden. Außerdem werden dort die in Kapitel~\ref{torus_konfigurationen:sec} vorgestellten Szenarien beleuchtet.\\
+Zu Beginn werden in Kapitel~\ref{analysis_sans_lcs:cha} anfängliche Tests durchgeführt, bei denen ausschließlich die grundsätzlichen Algorithmen (Agent mit zufälliger Bewegung, Agent mit einfacher Heuristik und Agent mit intelligenter Heuristik) aus Kapitel~\ref{base_agent_types:sec} betrachtet werden. Außerdem werden dort die in Kapitel~\ref{torus_konfigurationen:sec} vorgestellten Szenarien beleuchtet.\\
 
 Alle drei Punkte werden zusammen mit Kapitel~\ref{cha:parameter}, in dem die XCS Parameter beschrieben und analysiert werden, als Vorbereitung für eine Analyse der XCS Varianten in Kapitel~\ref{lcs_analysis:cha} dienen. Damit können gezielt die erfolgversprechenden Konfigurationen getestet werden. Insbesondere werden die drei Heuristiken auch dazu dienen, untere und obere Grenzen zu setzen. Erreicht eine XCS Variante nicht die Qualität des Algorithmus mit zufälliger Bewegung dann ist jegliche "`Optimierung"' an den Parametern wenig hilfreich, denn man kann nicht unterscheiden, ob die Verbesserung von z.B. Lernen oder von zufälligerem Verhalten rührt.\\
 
@@ -24,7 +24,7 @@ Anzumerken ist außerdem, dass mit "`XCS"' die XCS Variante aus Kapitel~\ref{stan
 Insgesamt kann dieses Kapitel allerdings nur einen kleinen Einblick geben. Die Anzahl der Parameterkombinationen sind sehr groß und können hier nur auszugsweise dargestellt werden.\\
 
 
-\section{Erste Analyse der Agenten ohne XCS}\label{analysis_sans_lcs:sec}
+\section{Erste Analyse der Agenten ohne XCS}\label{analysis_sans_lcs:cha}
 
 In diesem Abschnitt werden erste Analysen bezüglich der verwendeten Szenarien anhand des Algorithmus zufälliger Bewegung (siehe Kapitel~\ref{randomized_movement:sec}), des Algorithmus mit einfacher Heuristik (siehe Kapitel~\ref{simple_heuristik:sec}) und des Algorithmus mit intelligenter Heuristik (siehe Kapitel~\ref{intelligent_heuristik:sec}) angefertigt. Insbesondere sollen hier aus den vorgestellten Szenarien solche gewählt werden, in welchen
 

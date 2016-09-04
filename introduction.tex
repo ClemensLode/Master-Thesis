@@ -72,7 +72,7 @@ Ein klassisches Beispiel für \emph{multi step} Verfahren ist das \emph{Maze \(N\
 \end{figure}
 
 
-Die zum Agenten zugehörigen \emph{classifier} (das sogenannte \emph{classifier set}) sind in Abbildung~\ref{simple_scenario_multistep_classifier:fig} dargestellt, wobei die vier angrenzenden Felder für jeden \emph{classifier} jeweils die Konfiguration der Kondition darstellen und der Pfeil die Aktion.\\
+Die zum Agenten zugehörigen \emph{classifer} (das sogenannte \emph{classifier set}) sind in Abbildung~\ref{simple_scenario_multistep_classifier:fig} dargestellt, wobei die vier angrenzenden Felder für jeden \emph{classifier} jeweils die Konfiguration der Kondition darstellen und der Pfeil die Aktion.\\
 
 \begin{figure}[H]
 \setbox0\vbox{\small
@@ -190,7 +190,7 @@ Angesprochen wird in der Arbeit der Verweis auf die LCS Varianten mit Speicher, 
 
 \subsection{Implementierungen von XCS}
 
-Die wesentlichen zwei Implementierungen zu XCS sind zum einen XCSlib~\cite{xcslib}, welche eine XCS Funktionsbibliothek in C++ zur Verfügung stellt, und zum anderen die ursprüngliche Implementierung  \cite{Butz_xcsclassifier} welche eine kompakte Umsetzung in Java zur Verfügung stellt. Zur Simulation wurden keine der beiden Implementierungen verwendet, sondern eine eigene Java Umsetzung des XCS Algorithmus programmiert. Dies geschah zum einen, um die Funktionsweise von XCS voll zu verstehen und zum anderen, weil von Anfang an klar war, dass Modifikationen am Algorithmus vorgenommen werden sollen. Im Wesentlichen sind die Implementierungen identisch, die Unterschiede sind in den jeweiligen Kapiteln, insbesondere in Kapitel~\ref{lcs_variants:cha} erklärt und teilweise im Anhang (siehe Kapitel~\ref{implementation:cha}) als Quelltext dargestellt.\\
+Die wesentlichen zwei Implementierungen zu XCS sind zum einen XCSlib~\cite{xcslib}, welche eine XCS Funktionsbibliothek in C++ zur Verfügung stellt, und zum anderen die ursprüngliche Implementierung  \cite{Butz_xcsclassifier} welche eine kompakte Umsetzung in Java zur Verfügung stellt. Zur Simulation wurden keine der beiden Implementierungen verwendet, sondern eine eigene Java Umsetzung des XCS Algorithmus programmiert. Dies geschah zum einen, um die Funktionsweise von XCS voll zu verstehen und zum anderen, weil von Anfang an klar war, dass Modifikationen am Algorithmus vorgenommen werden sollen. Im Wesentlichen sind die Implementatierungen identisch, die Unterschiede sind in den jeweiligen Kapiteln, insbesondere in Kapitel~\ref{lcs_variants:cha} erklärt und teilweise im Anhang (siehe Kapitel~\ref{implementation:cha}) als Quelltext dargestellt.\\
 
 
 \section{Aufbau der Arbeit}\label{aufbau_arbeit:sec}
@@ -200,25 +200,29 @@ Kapitel~\ref{stand_wissenschaft:cha} stellt den gegenwärtigen Stand der Forschun
 Der Schwerpunkt der Arbeit beschreibt Kapitel~\ref{lcs_analysis:cha}: Hier werden alle diskutierten Algorithmen in den vorgestellten Szenarien getestet und analysiert. Abschluss bildet die Zusammenfassung und der Ausblick in Kapitel~\ref{conclusion:cha}. Im Anhang~\ref{implementation:cha} findet sich dann noch eine Anzahl der wichtigsten Quelltexte der Algorithmen, die in dieser Arbeit vorgestellt wurden.\\
 
 
-\section{Wesentliche Erkenntnisse der Arbeit}\label{wesentliche_erkenntnisse_int:sec}
+\section{Wesentliche Erkenntnisse aus dieser Arbeit}\label{wesentliche_erkenntnisse_int:sec}
 
-Wesentliche Erkenntnisse aus dieser Arbeit werden sein:
+Wesentliche Erkenntnisse aus dieser Arbeit sind:
 \begin{itemize}
 
-\item Die Bewertungsfunktion kann anhand einer Nachbildung einer gut funktionierenden Heuristik konstruiert werden (siehe Kapitel~\ref{bewertung_ueberwachungszenario:sec}).
+\item Die Bewertungsfunktion kann anhand einer Nachbildung einer gut funktionierenden Heuristik konstruiert werden.
 
-\item Durch Hinzufügen einer Form von Speicher (siehe Kapitel~\ref{sxcs_variant:sec}) kann SXCS die betrachtete Aufgabe wesentlich besser als XCS lösen (siehe Kapitel~\ref{lcs_analysis:cha}).
+\item Ein Überwachungsszenario unterscheidet sich aufgrund fehlender Markow-Eigenschaft deutlich von den in der Literatur normalerweise betrachteten Szenarien.
 
-\item Eine Variation der Lernrate kann je nach Szenario sinnvoll sein (siehe Kapitel~\ref{sec:learnrate_parameter} und Kapitel~\ref{xcs_difficult_scenario:sec}).
+\item Durch Hinzufügen einer Form von Speicher kann XCS die betrachtete Aufgabe wesentlich besser lösen.
 
-\item Die Agenten mit XCS und SXCS haben deutliche Probleme mit Szenarien mit vielen Hindernissen (siehe Kapitel~\ref{tournament_factor_test:sec}).
+\item Der hier vorgestellte Algorithmus SXCS erreicht in den betrachteten Szenarien ein deutlich besseres Ergebnis als die Standardimplementierung von XCS.
 
-\item Ein dynamischer Wechsel der Auswahlart für Aktionen während eines Laufs kann sinnvoll sein, um die Zahl der blockierten Bewegungen zu verringern und das Zielobjekt besser verfolgen zu können (siehe Kapitel~\ref{analysis_random_scenario_xcs:sec}).
+\item Eine Variation der Lernrate kann je nach Szenario sinnvoll sein.
 
-\item Sowohl XCS als auch SXCS können (für sich zufällig bewegende Agenten) schwierige Szenarien (siehe Kapitel~\ref{difficult_scenario:sec}) mit markanten Hindernispunkten meistern (siehe Kapitel~\ref{xcs_difficult_scenario:sec}) und SXCS kann diese sogar besser als die intelligente Heuristik lösen (siehe Kapitel~\ref{sxcs_intelligent_difficult_test:sec}).
+\item Die Agenten haben deutliche Probleme mit Szenarien mit vielen Hindernissen.
 
-\item Die vorgestellte Variante des verzögerten SXCS Algorithmus DSXCS bietet Raum für Verbesserung (siehe Kapitel~\ref{verzoegerter_reward:sec}).
+\item Ein dynamischer Wechsel der Auswahlart für Aktionen während eines Laufs kann sinnvoll sein, um die Zahl der blockierten Bewegungen zu verringern und das Zielobjekt besser verfolgen zu können.
 
-\item Die versuchte Implementierung von Kommunikation führte nicht zum Erfolg, zum einen wegen geringer Möglichkeiten zur Kooperation, zum anderen wegen zu einfach umgesetztem Algorithmus (siehe Kapitel~\ref{dsxcs_analysis:sec} und \ref{bewertung_komm:sec}).
+\item In einem Szenario, in dem markante Hindernispunkte gelernt werden müssen, behält SXCS seine Eigenschaften und kann womöglich auch für XCS Standardprobleme eingesetzt werden.
+
+\item Die vorgestellte Variante des verzögerten SXCS Algorithmus DSXCS bietet Raum für Verbesserung.
+
+\item Die versuchte Implementierung von Kommunikation führte nicht zum Erfolg, zum einen wegen geringer Möglichkeiten zur Kooperation, zum anderen wegen zu einfach umgesetztem Algorithmus.
 
 \end{itemize}

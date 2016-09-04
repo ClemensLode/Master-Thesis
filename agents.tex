@@ -97,7 +97,7 @@ Bei diesem Algorithmus wird in jedem Schritt eine zufällige Aktion ausgeführt. J
 
 \subsection{Algorithmus mit einfacher Heuristik}\label{simple_heuristik:sec}
 
-Bei diesem Algorithmus wird in jedem Schritt geprüft, ob sich das Zielobjekt in Sicht befindet. Ist dies der Fall, dann bewegt sich ein Agent mit dieser Heuristik auf das Zielobjekt zu, andernfalls führt er eine zufällige Aktion aus. Abbildung~\ref{simple_agent_to_goal:fig} zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel bewegen möchte. Programm~\ref{calculateNextMove_SimpleHeuristic:pro} zeigt den zugehörigen Quelltext.\\
+Bei diesem Algorithmus wird in jedem Schritt geprüft, ob sich das Zielobjekt in Sicht befindet. Ist dies der Fall, dann bewegt sich ein Agent mit dieser Heuristik auf das Zielobjekt zu, andernfalls führt er eine zufällige Aktion aus. Abbildung~\ref{simple_agent_to_goal:fig} zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte. Programm~\ref{calculateNextMove_SimpleHeuristic:pro} zeigt den zugehörigen Quelltext.\\
 
 \begin{figure}[htbp]
 \centerline{	
@@ -145,7 +145,7 @@ Ein Zielobjekt dieses Typs verhält sich so wie ein Agent mit dem Algorithmus mit
 
 \subsection{Typ "`Einfache Richtungsänderung"'}\label{direction_change:sec}
 
-Dieser Typ eines Zielobjekts zieht zunächst nur diejenigen Richtungen in Betracht, in denen sich direkt angrenzend kein Hindernis befindet. Diese Erweiterung der Fähigkeiten der Sensoren wird gewählt, damit das Zielobjekt nicht längere Zeit an Hindernissen hängen bleibt. Anschließend verwirft er die Richtung, die der im letzten Schritt gewählten entgegengesetzt ist. Von den verbleibenden maximal drei Richtungen wird schließlich eine zufällig ausgewählt. Sind alle drei Richtungen versperrt, wird in die entgegengesetzte Richtung zurückgegangen, sind alle vier Richtungen versperrt, wird, wie oben beschrieben, auf ein zufälliges Feld gesprungen.\\
+Dieser Typ eines Zielobjekts zieht zunächst nur diejenigen Richtungen in Betracht, in denen sich direkt angrenzend kein Hindernis befindet. Diese Erweiterung der Fähigkeiten der Sensoren wird gewählt, damit das Zielobjekt nicht längere Zeit an Hindernissen hängenbleibt. Anschließend verwirft er die Richtung, die der im letzten Schritt gewählten entgegengesetzt ist. Von den verbleibenden maximal drei Richtungen wird schließlich eine zufällig ausgewählt. Sind alle drei Richtungen versperrt, wird in die entgegengesetzte Richtung zurückgegangen, sind alle vier Richtungen versperrt, wird, wie oben beschrieben, auf ein zufälliges Feld gesprungen.\\
 
 In Abbildung~\ref{goal_agent_one_direction_change:fig} sind alle Felder grau markiert, die das Zielobjekt innerhalb von zwei Schritten erreichen kann, nachdem es sich einmal nach Norden bewegt hat.\\
 

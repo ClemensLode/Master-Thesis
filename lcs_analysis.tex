@@ -31,9 +31,9 @@ Setzt man in der \emph{explore} Phase die Auswahlart \emph{roulette wheel select
 \label{vergleich_tournament_factor_roulette:fig}
 \end{figure}
 
-Von den blockierten Bewegungen her konnte mit dieser Auswahlart einerseits die Zahl der blockierten Bewegungen reduziert (auf etwa 34\%) bei XCS  und andererseits weiterhin die Möglichkeit offen gelassen, das Ziel zu verfolgen, wenn es in Sicht ist.\\
+Von den blockierten Bewegungen her konnte mit dieser Auswahlart einerseits die Zahl der blockierten Bewegungen reduziert (auf etwa 34\%) bei XCS  und andererseits weiterhin die Möglichkeit offengelassen, das Ziel zu verfolgen, wenn es in Sicht ist.\\
 
-Insgesamt ist also zusammenzufassen, dass für ein Szenario mit wenigen Hindernissen die Auswahlart \emph{best selection} die beste Wahl ist und in Szenarien mit vielen Hindernissen ein Wechsel der \emph{roulette wheel selection} und \emph{best selection} Auswahlart die beste Wahl ist.\\
+Insgesamt ist also zuammenzufassen, dass für ein Szenario mit wenigen Hindernissen die Auswahlart \emph{best selection} die beste Wahl ist und in Szenarien mit vielen Hindernissen ein Wechsel der \emph{roulette wheel selection} und \emph{best selection} Auswahlart die beste Wahl ist.\\
 
 Desweiteren war zu sehen, dass hier eindeutig das Szenario mit einem Zielobjekt mit einfacher Richtungsänderung zu schwierig für die betrachteten Agenten. Zwar erreichen die Agenten höhere Werte als im Fall mit intelligenter Heuristik, jedoch ist auch die Qualität des zufälligen Algorithmus deutlich höher. Insbesondere besitzen beide Zielobjekttypen die Fähigkeit, Hindernisse zu erkennen, d.h. sie bleiben deutlich weniger oft stehen und können somit schneller aus der Reichweite der Agenten fliehen.\\
 
@@ -49,7 +49,7 @@ Auch wird sich hier wieder das Zielobjekt nur in einer Linie bewegen (siehe Kapi
 Zuerst wird mit der einfachen Auswahlart \emph{roulette wheel selection} die Lernrate in Abbildung~\ref{difficult_roulette_learn:fig} getestet. Hier sieht man mehrere Eigenschaften: 
 
 \begin{itemize}
-\item SXCS und DSXCS haben in etwa denselben Verlauf.
+\item SXCS und DSXCS haben in etwa den selben Verlauf.
 \item XCS liegt unter der Qualität von SXCS.
 \item XCS erreicht etwas stabilere Ergebnisse, sichtbar an der glatteren Kurve.
 \item Für SXCS und DSXCS ändert sich im betrachteten Bereich für etwa \(\beta > 0,2\) nichts mehr, für XCS für etwa \(\beta > 0,7\).
@@ -67,7 +67,7 @@ Zwar erreicht XCS ähnliche Ergebnisse wie SXCS, allerdings nur durch über eine h
 
 
 
-\subsection{SXCS mit intelligenter Heuristik im schwierigen Szenario}\label{sxcs_intelligent_difficult_test:sec}
+\subsection{Vergleich von SXCS mit intelligenter Heuristik im schwierigen Szenario}
 
 Betrachtet man die Ergebnisse der Heuristiken im schwierigen Szenario (siehe Kapitel~\ref{test_schwieriges_szenario:sec}), stellt man fest, dass diese etwas niedriger sind. SXCS hat im betrachteten Szenario in Kapitel~\ref{xcs_difficult_scenario:sec} etwa \(29,24\%\), während die intelligente Heuristik dort einen Wert von etwa \(40,63\%\) erreicht. Im Folgenden wird nun geprüft werden, ob anhand der besprochenen Methoden eine Verbesserung erzielt werden kann.\\
 
@@ -100,7 +100,7 @@ In Abbildung~\ref{difficult_intelligent_sxcs:fig} ist ein Vergleich mit der inte
 
 \section{Vergleich SXCS mit DSXCS}\label{dsxcs_analysis:sec}
 
-Wie in Tabelle~\ref{table:dsxcs_comp} zu sehen, erreicht DSXCS im Säulenszenario mit und ohne Kommunikation nicht die Qualität von SXCS. Anzumerken ist allerdings, dass die egoistische Kommunikationsgruppe einen etwas höheren Wert als die einzelne Kommunikationsgruppe erreicht, was vielleicht bedeutet, dass die Annahme, dass die indiskriminierende Verteilung des \emph{reward} Werts an alle Agenten nachteilig sein könnte. Desweiteren fällt deutlich der Unterschied in der Varianz der Punkte auf, d.h. im Gegensatz zu SXCS ähnelt sich der Anteil, den jeder Agent am Gesamtergebnis beiträgt, bei den Varianten mit Kommunikation stärker. Dies wiederum könnte auf eine Form kollaborativer Zusammenarbeit deuten. Der geringe Anteil der Varianz von XCS lässt sich durch das niedrige Ergebnis erklären.\\
+Wie in Tabelle~\ref{table:dsxcs_comp} zu sehen, erreicht DSXCS im Säulenszenario mit und ohne Kommunikation nicht die Qualität von SXCS. Anzumerken ist allerdings, dass die egoistische Kommunikationsgruppe einen etwas höheren Wert als die einzelne Kommunikationsgruppe erreicht, was vielleicht bedeutet, dass die Annahme, dass die indiskriminierende Verteilung des \emph{reward} Werts an alle Agenten nachteilig sein könnte. Desweiteren fällt deutlich der Unterschied in der Varianz der Punkte auf, d.h. im Gegesatz zu SXCS ähnelt sich der Anteil, den jeder Agent am Gesamtergebnis beiträgt, bei den Varianten mit Kommunikation stärker. Dies wiederum könnte auf eine Form kollaborativer Zusammenarbeit deuten. Der geringe Anteil der Varianz von XCS lässt sich durch das niedrige Ergebnis erklären.\\
 
 \begin{table}[ht]
 \caption{Vergleich von SXCS mit den DSXCS Varianten (Säulenszenario, \emph{best selection})}
@@ -141,7 +141,7 @@ Die Untersuchung in Kapitel~\ref{dsxcs_analysis:sec} konnte nicht klären, wo das
 
 \begin{itemize}
 
-\item Die Weitergabe des \emph{reward} Werts basierte auf der Idee, nicht beteiligte Agenten an einem positiven \emph{base reward} zu beteiligen, da sie trotzdem ein Gebiet überwachen.
+\item Die Weitergabe des \emph{reward} Werts basierte auf der Idee, nichtbeteiligte Agenten an einem posiiven \emph{base reward} zu beteiligen, da sie trotzdem ein Gebiet überwachen.
 
 \item Die Implementierung über den separaten Faktor war nicht zielführend. Möglicherweise muss eine bessere Funktion bei der Auswertung der gespeicherten \emph{action set} Listen gefunden werden (siehe Kapitel~\ref{verzoegerter_reward:sec}).
 

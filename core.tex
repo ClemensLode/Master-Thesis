@@ -1,0 +1,104 @@
+\chapter{Erste Analyse der Agenten ohne LCS}
+
+In diesem Kapitel sollen erste Analysen bezüglich der verwendeten Szenarien anhand des ``zufälligen Algorithmus'', des Algorithmus mit ``einfacher Heuristik'' und des Algorithmus mit ``intelligenter Heuristik'' angefertigt werden. Die Ergebnisse aus der Analyse werden eine Grundlage für die vergleichende Betrachtung der Agenten mit LCS Algorithmen in Kapitel~\ref{lcs_analysis:cha} dienen, insbesondere werden sie Anhaltspunkte dafür geben, welche Szenarien welche Eigenschaften der Algorithmen testen.\\
+Da keiner der hier vorgestellten Algorithmen lernt und somit statische Regeln besitzt, ist es nicht notwendig die Qualitäten der Algorithmen bei verschiedener Anzahl von Zeitschritten zu betrachten.
+
+TODO, schwerere Probleme
+
+\section{``Total Random'' Zielobjekt}
+
+In allen Szenarien mit dieser Form der Bewegung des Zielobjekts kommt es nur darauf an, dass die Agenten einen möglichst großen Bereich des Torus abdecken.  Wie die folgenden Abschnitte zeigen werden, unterscheidet sich der ``Simple AI Agent'' nicht wesentlich vom zufälligen Agenten. Der intelligente Agent erreicht hier dagegen in den meisten Fällen deutlich bessere Ergebnisse.
+
+\subsection{Ohne Hindernisse}
+
+Ohne Hindernisse gibt sich ein klares Bild~(\ref{table:nonlin}). Das Ergebnis der einfachen KI ist etwas schlechter als der des zufälligen Agenten, da sich immer, wenn mehrere Agenten das Zielobjekt in der selben Richtung in Sichtweite haben, mehrere Agenten in die selbe Richtung bewegen. Dies beeinträchtigt die zufällige Verteilung der Agenten auf dem Spielfeld und führt somit auch zu einer niedrigeren Abdeckung des Torus.\\
+Der intelligente Agent liegt hier sehr deutlich vorne, ein möglichst weiträumiges Verteilen auf dem Torus führt zum Erfolg, was sich auch in einem hohen Abdeckungswert zeigt, denn genau das wird mit dem völlig zufällig springenden Agenten getestet.
+\ref{empty_total_random_ai:fig}
+\ref{empty_total_random_ai_coverage:fig}
+\ref{table:empty_total_random}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{empty_total_random_ai.eps}
+}
+\caption[Auswirkung des Parameters \emph{max population N} auf Laufzeit (leeres Szenario)] {Darstellung Auswirkung des Parameters \emph{max population N} auf die Laufzeit im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus und über 10 Probleme, gemittelt über 10 Experimente}
+\label{empty_total_random_ai:fig}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{empty_total_random_ai_coverage.eps}
+}
+\caption[Auswirkung des Parameters \emph{max population N} auf Laufzeit (leeres Szenario)] {Darstellung Auswirkung des Parameters \emph{max population N} auf die Laufzeit im leeren Szenario, zufälliger Bewegung des Zielobjekts, 8 Agenten mit LCS Algorithmus und über 10 Probleme, gemittelt über 10 Experimente}
+\label{empty_total_random_ai_coverage:fig}
+\end{figure}
+
+\begin{table}[ht]
+\caption{``Total Random'' ohne Hindernisse}
+\centering
+\begin{tabular}{c c c c}
+\hline\hline
+Algorithmus & Agentenzahl & Abdeckung & Qualität \\ [0.5ex]
+\hline
+Zufällige Bewegung & 8 & 68.73\% & 32.09\% \\
+Einfache Heuristik & 8 & 68.47\% & 33.01\% \\
+Intelligente Heuristik & 8 & 75.83\% & 35.84\% \\ [1ex]
+\hline
+Zufällige Bewegung & 12 & 64.38\% & 43.90\% \\
+Einfache Heuristik & 12 & 63.94\% & 44.48\% \\
+Intelligente Heuristik & 12 & 72.21\% & 50.56\% \\ [1ex]
+\hline
+Zufällige Bewegung & 16 & 59.55\% & 54.37\% \\
+Einfache Heuristik & 16 & 59.14\% & 55.31\% \\
+Intelligente Heuristik & 16 & 66.47\% & 62.39\% \\ [1ex]
+\hline
+\end{tabular}
+\label{table:empty_total_random}
+\end{table}
+
+\subsection{Säulenszenario}
+
+
+\subsection{Zufällig verteilte Hindernisse}
+
+Hier ergeben sich bei allen Einstellungen für \(\lambda_{h}\) und \(\lambda_{p}\) (siehe Kapitel~\ref{random_scenario_definition:sec}) ebenfalls ein klares Bild, der intelligente Agent liegt wieder vorne, dann kommt allerdings schon der einfache Agent mit bis zu 10\% zum zufälligen Agenten. Der wesentliche zweite Faktor ist hier, dass der einfache Agent, wenn er das Zielobjekt in Sicht hat, davon ausgehen kann, dass sich in dieser Richtung wahrscheinlich kein Hindernis befindet, während der zufällige Agent Hindernisse überhaupt nicht beachtet, somit öfters gegen ein Hindernis läuft und letztlich öfters stehen bleibt. Der Unterschied zwischen beiden Agenten ist besonders hoch in Szenarien mit größerem Anteil an Hindernissen.\\
+
+Ansonsten liegt der intelligente Agent wieder eindeutig vorne, beherrscht aber besonders gut Szenarien mit hohem ``Verknüpfungsfaktor'' (\(1.0\)) der geringem Anteil an Hindernissen (\(0.1\)), bei denen er bis zu etwa 15\% über dem Ergebnis des einfachen Agenten liegt.\\
+Dies liegt daran, dass Szenarien mit hohem ``Verknüpfungsfaktors'' bedeuten, dass alle Hindernisse zusammenhängend einen großen Block bilden und somit dem Szenario ohne Hindernissen ähnlich sind, auf dem dieser Agent ja besonders gut abschneidet. In zerklüftete Szenarien hat der Algorithmus dagegen Schwierigkeiten um andere Agenten überhaupt zu Gesicht bekommen, der Vorteil der Verteilung fällt also zu einem Teil weg. 
+
+Dies bestätigt auch ein Durchlauf bei dem Behinderungen der Sicht durch Hindernisse deaktiviert sind. Hierbei erreicht der intelligente Agent im Szenario (\(0.4\), \(0.1\)) statt TODO evtl weg
+
+
+
+\section{Random Neighbor und One Direction Change}
+
+Wesentlicher Punkt bei beiden Szenarien ist, dass der jetzige Ort des Zielobjekts maximal zwei Felder (die Standardgeschwindigkeit des Zielobjekts in den Tests) vom Ort in der vorangegangenen Zeiteinheit entfernt ist. Somit ist ein lokales Einfangen eher von Relevanz, wenn auch das Zielobjekt grundsätzlich schneller als andere Agenten ist.\\
+
+Dementsprechend ist der einfache Agent bei einem Hindernis-Anteil von \(0.0\) bis \(0.1\) besser als alle anderen Agenten und dementsprechend ist bei allen Tests der zufällige Agent weit abgeschlagen.
+Ab einem Anteil von \(0.2\) liegt jedoch der intelligente Agent vorne. Dies liegt schlicht an der Zahl der Agenten relativ zur hindernisfreien Fläche, da sich die Agenten in möglichst großem Abstand zueinander positionieren.
+
+Im Falle des ``One Direction Change'' bewegt sich der Agent im Grunde nur etwas schneller, da er es vermeidet, auf das ursprüngliche Feld zurückzukehren.
+TODO? Vielleicht sogar Random Neighbor raus...
+
+\section{Intelligent Open}
+
+\section{Intelligent Hide}
+
+TODO:Beide gleiche Ergebnisse?Source prüfen
+
+
+\section{Always Same Direction}
+
+TODO
+
+\section{LCS}
+
+Wird weiter unten besprochen.
+
+
+
+
+
+\section{Zusammenfassung}
+
+Wie wir gesehen haben gibt es also Szenarien in denen Abdeckung kaum eine Rolle spielt und lokale Entscheidungen eine wesentliche Rolle spielen. Dies wird es erleichtern, geeignete Szenarien im Kapitel~\ref{communication:cha} ``Kommunikation'' zu finden.
