@@ -1,4 +1,4 @@
-\chapter{Ablauf der Simulation}
+\chapter{Ablauf der Simulation}\
 
 \section{Hauptschleife}
 
@@ -62,7 +62,7 @@ Eine weitere Frage ist, wie das Zielobjekt diese weiteren Schritte festlegen sol
 \section{Messung der Qualität}\label{qualitaetsmessung:sec}
 
 Eine konkrete Antwort kann man auf diese zwei Fragen nicht geben, sie hängt  davon ab, was man denn nun eigentlich erreichen möchte, also auf welche Weise die Qualität des Algorithmus bewertet wird. Der naheliegendste Messzeitpunkt ist, nachdem sich alle Agenten bewegt haben. Da wir die Agenten und das Zielobjekt in einem Durchlauf gemeinsam nacheinander bewegen, stellt sich die Frage nicht, ob wir womöglich vor der Bewegung des Zielobjekts die Qualität messen sollen. Eine Messung nach der Bewegung des Zielobjekts würde diesem erlauben, sich vor jeder Messung optimal zu positionieren, was in einer geringeren Qualität für den Algorithmus resultiert, da sich das Zielobjekt aus der Überwachungsreichweite anderer Agenten hinausbewegen kann. Letztlich ist es eine Frage der Problemstellung, denn eine Messung nach Bewegung des Zielobjekts bedeutet letztlich, dass ein Agent einen gerade aus seiner Überwachungsreichweite heraus laufenden Zielobjekts in diesem Schritt nicht mehr überwachen kann.\\
-Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Grids anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn man vom realistischen Fall ausgeht, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
+Da ein wesentlicher Bestandteil die Kooperation (und somit die Abdeckung des Torus anstatt dem Verfolgen des Zielobjekts) sein soll, soll ein Bewertungskriterium sein, inwieweit der Einfluss des Zielobjekts minimiert werden soll. Auch findet, wenn man vom realistischen Fall ausgeht, die Bewegung des Zielobjekts gleichzeitig mit allen anderen Agenten statt. Die Qualität wird somit nach der Bewegung des Zielobjekts gemessen. Die Überlegung unterstreicht auch nochmal, dass es besser ist, das Zielobjekt insgesamt wie einen normalen (aber sich mehrmals bewegenden) Agenten zu behandeln.\\
 
 \section{Reihenfolge der Ermittlung des \emph{reward}}
 
@@ -97,11 +97,9 @@ Zusammenfassend sieht der Ablauf aller Agenten (inklusive des Zielobjekts) also 
 \centerline{\fbox{\box0}}
 \end{figure}
 
-\section{Implementierung eines Problemablaufs}
+\section{Implementierung eines Problemablaufs}\label{implementierung_ablauf:sec}
 
-Wie in den vorangegangenen Abschnitten beschrieben wird in einer großen Schleife (Programm~\ref{mainProblem:fig}) die Qualität bestimmt (``\emph{updateStatistics()}'') und dann die Sensordaten und die nächste Aktion ermittelt (``\emph{calculateAgents()}'', Programm~\ref{mainCalculate:fig}).
-
-Die Implementierung der Berechnung eines Problems (Programm~\ref{mainCalculate:fig}) wird in einer Schleife von  aufgerufen, welches wiederum von der oben erwähnten Schleife~\ref{mainExperiment:fig} aufgerufen wird.
+In der Schleife der Funktion zur Berechnung eines Experiments (Programm~\ref{mainExperiment:fig}) wird die Funktion zur Berechnung des Problems (\emph{doOneMultiStepProblem()}, Programm~\ref{mainProblem:fig}) aufgerufen. Dort wird, in einer weiteren Schleife über die Anzahl der maximalen Schritte, die Sicht aktualisiert (\emph{updateSight()}), die Qualität bestimmt (\emph{updateStatistics()}), die neuen Sensordaten und die nächste Aktion ermittelt (\emph{calculateAgents()}, siehe Programm~\ref{mainCalculate:fig}), der \emph{reward} Wert ermittelt (\emph{rewardAgents()}, siehe Programm~\ref{mainReward:fig}) und schließlich die Objekte bewegt (\emph{moveAgents()}, siehe Programm~\ref{mainMove:fig}). Die konkrete Umsetzung der dort aufgerufenen Funktionen (insbesondere \emph{calculateNextMove()} und \emph{calculateReward()}) wird im Kapitel~\ref{lcs_variants:cha} erläutert (bzw. in Kapitel~\ref{agents:cha} was die Heuristiken betrifft, wobei \emph{calculateReward()} dort keine Rolle spielt und eine leere Funktion aufgerufen wird).
 
 \begin{program}
   \begin{verbatim}
@@ -171,11 +169,29 @@ Die Implementierung der Berechnung eines Problems (Programm~\ref{mainCalculate:f
       a.aquireNewSensorData();
       a.calculateNextMove(gaTimestep);
     }
-
   }
+
 \end{verbatim}
  \label{mainCalculate:fig}
   \caption{Zentrale Bearbeitung (Sensordaten und Berechnung der neuen Aktion) aller Agenten und des Zielobjekts innerhalb eines Problems}
+\end{program}
+
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Rewards all agents
+ */
+  private void rewardAgents(final long gaTimestep) {
+    for(BaseAgent a : agentList) {
+      a.calculateReward(gaTimestep);
+    }
+    BaseAgent.goalAgent.calculateReward(gaTimestep);
+  }
+
+\end{verbatim}
+ \label{mainReward:fig}
+  \caption{Zentrale Bearbeitung (Verteilung des Rewards) aller Agenten und des Zielobjekts innerhalb eines Problems}
 \end{program}
 
 \begin{program}

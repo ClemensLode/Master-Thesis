@@ -1,4 +1,4 @@
-\chapter{Agenten}
+\chapter{Agenten}\label{agents:cha}
 
 \section{Sensoren}\label{sensoren:sec}
 
@@ -24,8 +24,6 @@ d) 00 00 00 00 . 00 00 00 00 . 00 00 00 00
 e) 00 00 00 00 . 00 00 00 00 . 00 00 00 00
 \end{verbatim}
 
-
-
 Die Sichtweite des ersten Sensors eines Paares wird über den Parameter \emph{sight range} bestimmt, die Sichtweite des zweiten Sensors über den Parameter \emph{reward range} (siehe auch Kapitel~\ref{sichtbarket:sec}). Allgemein soll \emph{sight range = 5.0} und \emph{reward range = 2.0} betragen, der überwachte Bereich ist also eine Teilmenge des sichtbaren Bereichs. Anzumerken sei hier, dass deshalb ein Sensorenpaar (0\/1) nicht auftreten kann.\\
 Sei \(r(O1, O2)\) die Distanz zwischen dem Objekt, das die Sensordaten erfasst und dem nächstliegenden Objekt des Typs, den der Sensor wahrnehmen kann, dann gibt es folgende Fälle:
 
@@ -36,7 +34,7 @@ Sei \(r(O1, O2)\) die Distanz zwischen dem Objekt, das die Sensordaten erfasst u
 \item (0/1) : \emph{reward range} \(\ge r(O_1, O_2) > \) \emph{sight range} (Fall kann nicht auftreten, da \emph{reward range} \( < \) \emph{sight range})
 \end{enumerate}
 
-In Abbildung ~\ref{sight_directions:fig} sind alle Sichtkegel (dunkler und heller Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt. 
+In Abbildung~\ref{sight_directions:fig} sind alle Sichtkegel (dunkler und heller Bereich) und Überwachungsreichweiten (heller Bereich) für die einzelnen Richtungen dargestellt. 
 
 TODO von 3-5 auf 2-5 umändern
 
@@ -57,10 +55,10 @@ Alle Agenten werden nacheinander in der Art abgearbeitet, dass der jeweilige Age
 
 \section{Grundsätzliche Algorithmen der Agenten}
 
-Neben denjenigen Algorithmen, die auf LCS basieren und in Kapitel~\ref{lcs:cha} besprochen werden, gibt es folgende Grundtypen, die dazu dienen, die Qualität der anderen Algorithmen einzuordnen. Wesentliches Merkmal im Vergleich zu auf LCS basierenden Algorithmen ist, dass sie statische, handgeschriebene Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren, d.h. ihre Regeln nicht anpassen.
+Neben denjenigen Algorithmen, die auf LCS basieren und in Kapitel~\ref{lcs:cha} besprochen werden, gibt es folgende Grundtypen, die dazu dienen, die Qualität der anderen Algorithmen einzuordnen. Wesentliches Merkmal im Vergleich zu auf LCS basierenden Algorithmen ist, dass sie statische, handgeschriebene Regeln benutzen und den Erfolg oder Misserfolg ihrer Aktionen ignorieren, d.h. ihre Regeln nicht anpassen. Die in Kapitel~\ref{implementierung_ablauf:sec} erwähnte, im Programm aufgerufenen Funktion \emph{calculateReward()} soll für die hier aufgelisteten Algorithmen also einer leeren Funktion entsprechen, während hier jeweils die Implementierung der \emph{calculateNextMove()} Funktion aufgeführt werden soll.
 
 \subsection{``Zufälliger Algorithmus''}\label{randomized_movement:sec}
-Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung ~(\ref{agent_random:fig}) zeigt eine Beispielsituation bei der der Agent jegliche Sensordaten ignoriert und eine Aktion zufällig auswählen wird.
+Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgeführt. Abbildung~(\ref{agent_random:fig}) zeigt eine Beispielsituation, bei der der Agent jegliche Sensordaten ignoriert und eine Aktion zufällig auswählen wird. Programm~\ref{calculateNextMove_RandomAlgorithm:fig} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -70,8 +68,24 @@ Bei diesem Algorithmus wird in jedem Schritt wird eine zufällige Aktion ausgefüh
 \label{agent_random:fig}
 \end{figure}
 
+\begin{program}
+  \begin{verbatim}
+/**
+ * Berechne nächste Aktion (zufälliger Algorithmus)
+ */
+  private void calculateNextMove() {
+  /**
+   * Wähle zufällige Richtung als nächste Aktion
+   */
+    calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+  }
+\end{verbatim}
+ \label{calculateNextMove_RandomAlgorithm:fig}
+  \caption{Berechnung der nächsten Bewegung beim zufälligen Algorithmus}
+\end{program}
+
 \subsection{Einfache Heuristik}\label{simple_heuristik:sec}
-Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  auf das Zielobjekt zu, ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung ~(\ref{simple_agent_to_goal:fig}) zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte. 
+Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  auf das Zielobjekt zu, ist es nicht in Sichtweite, führt er eine zufällige Aktion aus. Abbildung ~(\ref{simple_agent_to_goal:fig}) zeigt eine Beispielsituation bei der sich das Zielobjekt (Stern) im Süden befindet, der Agent mit einfacher Heuristik die anderen Agenten ignoriert und sich auf das Ziel zubewegen möchte. Programm~\ref{calculateNextMove_SimpleHeuristic:fig} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -81,8 +95,43 @@ Ist das Zielobjekt in Sichtweite, bewegt sich ein Agent mit dieser Heuristik  au
 \label{simple_agent_to_goal:fig}
 \end{figure}
 
+\begin{program}
+  \begin{verbatim}
+/**
+ * Berechne nächste Aktion (einfache Heuristik)
+ */
+  private void calculateNextMove() {
+  /**
+   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
+   * das Zielobjekt ausgerichtet sind
+   */
+    boolean[] goal_sensor = lastState.getSensorGoal();
+    calculatedAction = -1;
+    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+    /**
+     * Zielagent in Sicht in dieser Richtung?
+     */
+      if(goal_sensor[2*i]) {
+        calculatedAction = i;
+        break;
+      }
+    }
+
+  /**
+   * Sonst wähle zufällige Richtung als nächste Aktion
+   */
+    if(calculatedAction == -1) {
+      calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+    }      
+
+  }
+\end{verbatim}
+ \label{calculateNextMove_SimpleHeuristic:fig}
+  \caption{Berechnung der nächsten Bewegung im Fall der einfachen Heuristik}
+\end{program}
+
 \subsection{Intelligente Heuristik}\label{intelligent_heuristik:sec}
-Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~(\ref{intelligent_agent:fig}) sieht der Agent das Zielobjekt nicht und wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigt, in diesem Fall Norden.
+Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuristik. Ist das Zielobjekt dagegen nicht in Sicht, wird versucht, anderen Agenten auszuweichen, um ein möglichst breit gestreutes Netz aus Agenten aufzubauen. In der Implementation heißt das, dass unter allen Richtungen, in denen kein anderer Agent gesichtet wurde, eine Richtung zufällig ausgewählt wird und falls alle Richtungen belegt (oder alle frei) sind, wird aus allen Richtungen eine zufällig ausgewählt wird. In Abbildung~(\ref{intelligent_agent:fig}) sieht der Agent das Zielobjekt nicht und wählt deswegen eine Richtung, in der die Sensoren keine Agenten anzeigt, in diesem Fall Norden. Programm~\ref{calculateNextMove_IntelligentHeuristic:fig} zeigt den zugehörigen Quelltext.
 
 \begin{figure}[htbp]
 \centerline{	
@@ -91,3 +140,53 @@ Ist der Zielobjekt in Sicht, verhält sich diese Heuristik wie die einfache Heuri
 \caption[Agent mit intelligenter Heuristik]{Agent mit intelligenter Heuristik: Falls das Zielobjekt nicht sichtbar ist bewegt sich der Agent von anderen Agenten weg.}
 \label{intelligent_agent:fig}
 \end{figure}
+
+\begin{program}
+  \begin{verbatim}
+/**
+ * Berechne nächste Aktion (intelligente Heuristik)
+ */
+private void calculateNextMove() {
+  /**
+   * Holt sich die Informationen der Gruppe der Sensoren, die auf 
+   * das Zielobjekt ausgerichtet sind
+   */
+    boolean[] goal_sensor = lastState.getSensorGoal();
+
+    calculatedAction = -1;
+    for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+    /**
+     * Zielagent in Sicht in dieser Richtung?
+     */
+      if(goal_sensor[2*i]) {
+        calculatedAction = i;
+        break;
+      }
+    }
+
+  /**
+   * Zielobjekt nicht in Sicht? Dann bewege von Agenten weg
+   */
+    if(calculatedAction == -1) {
+      calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+
+      boolean[] agent_sensors = lastState.getSensorAgent();
+      boolean one_free = false;
+      for(int i = 0; i < Action.MAX_DIRECTIONS; i++) {
+        if(!agent_sensors[2*i]) {
+          one_free = true;
+          break;
+        }
+      }
+
+      if(one_free) {
+        while(agent_sensors[2*calculatedAction]) {
+          calculatedAction = Misc.nextInt(Action.MAX_DIRECTIONS);
+        }
+      }
+    } 
+  }
+\end{verbatim}
+ \label{calculateNextMove_IntelligentHeuristic:fig}
+  \caption{Berechnung der nächsten Bewegung im Fall der intelligenten Heuristik}
+\end{program}
