@@ -1,5 +1,16 @@
 \chapter{Analyse SXCS}\label{lcs_analysis:cha}
 
+
+- pillar, 1 direction change, speed 1, max pred + GA, 0.01 prediction init, prediction init adaption
+
+nur gering gg random
+
+GA immer an, nicht testen
+
+pillar, intelligent, low speed, maxpred aus, GA, SWITCH EXPLOIT, SEHR GUT!
+
+dann bei Bewertung weitermachen!
+
 \begin{table}[ht]
 \caption{Vergleich ``Intelligent (Open)'' und ``Intelligent (Hide)'' (8 Agenten, Säulenszenario)}
 \centering
@@ -79,6 +90,10 @@ Bester Agent nach 20000 Schritten (Zielgeschwindigkeit 2.0, SXCS, 2000 Schritte)
 TODO
 \end{verbatim}
 
+\section{Zielobjekt mit XCS und SXCS}\label{goal_agent_with_xcs:sec}
+
+Der in Kapitel~\ref{variant_zielobjekt_xcs_sxcs:sec} besprochene Ansatz, einen Zielobjekt mit einem XCS bzw. SXCS auszustatten, soll hier nun getestet werden. Dabei sollen zuerst Agenten mit den besprochenen statischen Heuristiken gegen diesen Zielobjekt antreten, abschließend soll - hauptsächlich aus Neugier - ein solches Zielobjekt gegen ebenfalls mit SXCS ausgestatteten Agenten antreten, hier soll insbesondere der Verlauf über die Zeit interessieren, da die Qualität TODO
+
 
 \section{Zusammenfassung der bisherigen Erkenntnisse}
 
@@ -92,8 +107,6 @@ nicht geschafft: Pillar, one direction change, speed 2, XCS ...besser... weil zu
 
 \section{Standard XCS Multistepverfahren}
 
-
-\section{XCS und SXCS im schwierigen Szenario}
 
 
 
@@ -109,8 +122,6 @@ Insbesondere der Vergleich mit dem intelligenten Agenten, der anderen Agenten au
 
 der Abstand zu anderen Agenten nicht Teil der Berechnung des Rewards ist, noch gibt keine eingebaute Heuristik. Man könnte zwar 
 
-
-TODO statistical value:Error in predictions!
 
 \subsection{Vergleich Multistep / LCS}
 

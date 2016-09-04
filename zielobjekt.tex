@@ -1,8 +1,7 @@
 \chapter{Das Zielobjekt}\label{zielobjekt:cha}
 
-Die Typen von Zielobjekten werden zum einen über ihre Geschwindigkeit und zum anderen über ihre Bewegungsart definiert. Neben der Größe des Torus und den Hindernissen trägt der Typ des Zielobjekts wesentlich zur Schwierigkeit eines Szenarios bei, da dieser die Aufenthaltswahrscheinlichkeiten des Zielobjekts unter Einbeziehung des Zustands des letzten Zeitschritts bestimmt. Die Schwierigkeit bestimmt sich über die Summe der erwarteten Aufenthaltswahrscheinlichkeiten in nicht überwachten Feldern geteilt durch die Summe der Aufenthaltswahrscheinlichkeiten in überwachten Feldern.
+Auf dem Torus bewegt sich neben den Agenten auch das Zielobjekt. Es kann, wie die Agenten auch, unterschiedlichen Bewegungsarten folgen, besitzt aber außerdem noch eine bestimmte Geschwindigkeit (Kapitel~\ref{base_properties_goal:sec}). Neben der Größe des Torus und den Hindernissen tragen diese Eigenschaften des Zielobjekts wesentlich zur Schwierigkeit eines Szenarios bei, da dieser die Aufenthaltswahrscheinlichkeiten des Zielobjekts unter Einbeziehung des Zustands des letzten Zeitschritts bestimmt. Springt das Zielobjekt beispielsweise auf zufällige auf dem Torus (siehe Kapitel~\ref{goal_zufaelliger_sprung:sec}), dann gibt es keine Verbindung zwischen den Positionen des Zielobjekts zweier aufeinanderfolgender Zeiteinheiten und Lernen wird sehr schwierig, was später in Kapitel~\ref{zielobjekt_analyse_zufall_sprung:sec} gezeigt wird. Primär soll diese Form der Bewegung auch nur zur allgemeinen, vorbereitenden Analyse dienen, während einfache Bewegungen, wie die zufällige Bewegung (Kapitel~\ref{random_neighbor:sec}) bzw. die Bewegung mit einfacher Richtungsänderung (Kapitel~\ref{direction_change:sec}) die später tiefer untersuchten Bewegungsarten darstellen. Danach soll noch das sich intelligent verhaltende Zielobjekt besprochen werden, was ebenfalls ein zentraler Punkt der späteren Analyse (in Kapitel~\ref{zielagent_analyse_intelligent:sec}) sein soll. Am Ende sollen dann zwei Sonderfälle erwähnt werden, zum einen ein Zielobjekt, das nur in die selbe Richtung läuft (Kapitel~\ref{no_direction_change:sec}), welches in Kapitel~\ref{communication:cha} zur Untersuchung des schwierigen Szenarios benutzt werden soll.
 
-TODO Aufenthaltswahrscheinlichkeiten raus
 
 \section{Basiseigenschaften}\label{base_properties_goal:sec}
 
@@ -17,7 +16,7 @@ TODO weiss schon dass blockiert
 
 TODO EInleitung
 
-\subsection{Typ "`Zufälliger Sprung"'}
+\subsection{Typ "`Zufälliger Sprung"'}\label{goal_zufaelliger_sprung:sec}
 
 Ein Zielobjekt dieses Typs springt zu einem zufälligen Feld auf dem Torus. Ist das Feld besetzt wird wiederholt bis ein freies Feld gefunden wurde. Mit dieser Einstellung kann die Abdeckung des Algorithmus geprüft werden, d.h. inwieweit die Agenten jeweils außerhalb der Überwachungsreichweite anderer Agenten bleiben.\\
 Jegliche Anpassung an die Bewegung des Zielobjekts ist hier wenig hilfreich, ein Agent kann nicht einmal davon ausgehen, dass sich das Zielobjekt in der Nähe seiner Position der letzten Zeiteinheit befindet.\\
@@ -43,6 +42,20 @@ In Abbildung~\ref{goal_agent_one_direction_change:fig} sind alle Felder grau mar
 \end{figure}
 
 
+\subsection{Typ "`Intelligentes Verhalten"'}
+
+Ein Zielobjekt dieses Typs versucht bei der Auswahl der Aktion möglichst die Aktion zu wählen, bei der es außerhalb der Sichtweite der Agenten bleibt. Dazu werden alle Richtungen gestrichen, in denen ein Agent sich innerhalb der Überwachungsreichweite befindet. Außerdem werden von den verbleibenden Richtungen mit 50\% diejenigen Richtungen gestrichen, in denen sich ein Agent in Sichtweite befindet. Sind alle Richtungen gestrichen worden, bewegt sich das Zielobjekt zufällig. Sind alle Richtungen blockiert, springt es wie in den anderen Varianten auch auf ein zufälliges Feld in der Nähe.\\
+
+In Abbildung~\ref{goal_agent_intelligent:fig} wird die Richtung Süden gestrichen, da sich dort ein Agent in Überwachungsreichweite befindet. Die Richtungen Westen und Norden werden jeweils mit Wahrscheinlichkeit 50\% gestrichen, da sich dort Agenten in Sichtweite befinden. Nur Richtung Osten wird als Möglichkeit sicher übrigbleiben.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{goal_intelligent.eps}
+}
+\caption[Sich intelligent verhaltendes Zielobjekt der Agenten und Hindernissen ausweicht]{Zielobjekt bewegt sich mit bestimmter Wahrscheinlichkeit von Agenten und größerer Wahrscheinlichkeit von Hindernissen weg}
+\label{goal_agent_intelligent:fig}
+\end{figure}
+
 \subsection{Typ "`Beibehaltung der Richtung"'}\label{no_direction_change:sec}
 
 Der Zielobjekt versucht, immer Richtung Norden zu gehen. Ist das Zielfeld blockiert, wählt es ein zufälliges, angrenzendes, freies Feld im Westen oder Osten. Anzumerken ist, dass dies zusätzliche Fähigkeiten darstellen, d.h. das Zielobjekt kann feststellen, ob sich direkt angrenzend ein Hindernis im Norden befindet, während normale Agenten, was die Distanz betrifft, keine Informationen darüber besitzen können.\\ TODO
@@ -57,20 +70,6 @@ In Abbildung~\ref{goal_agent_always_same_direction:fig} sind drei Situationen da
 }
 \caption[Bewegungsform "`Beibehaltung der Richtung"': Zielobjekt das sich, wenn möglich, immer nach Norden bewegt]{Bewegungsform "`Beibehaltung der Richtung"': Zielobjekt bewegt sich, wenn möglich, immer nach Norden}
 \label{goal_agent_always_same_direction:fig}
-\end{figure}
-
-\subsection{Typ "`Intelligentes Verhalten"'}
-
-Ein Zielobjekt dieses Typs versucht bei der Auswahl der Aktion möglichst die Aktion zu wählen, bei der es außerhalb der Sichtweite der Agenten bleibt. Dazu werden alle Richtungen gestrichen, in denen ein Agent sich innerhalb der Überwachungsreichweite befindet. Außerdem werden von den verbleibenden Richtungen mit 50\% diejenigen Richtungen gestrichen, in denen sich ein Agent in Sichtweite befindet. Sind alle Richtungen gestrichen worden, bewegt sich das Zielobjekt zufällig. Sind alle Richtungen blockiert, springt es wie in den anderen Varianten auch auf ein zufälliges Feld in der Nähe.\\
-
-In Abbildung~\ref{goal_agent_intelligent:fig} wird die Richtung Süden gestrichen, da sich dort ein Agent in Überwachungsreichweite befindet. Die Richtungen Westen und Norden werden jeweils mit Wahrscheinlichkeit 50\% gestrichen, da sich dort Agenten in Sichtweite befinden. Nur Richtung Osten wird als Möglichkeit sicher übrigbleiben.
-
-\begin{figure}[htbp]
-\centerline{	
-\includegraphics{goal_intelligent.eps}
-}
-\caption[Sich intelligent verhaltendes Zielobjekt der Agenten und Hindernissen ausweicht]{Zielobjekt bewegt sich mit bestimmter Wahrscheinlichkeit von Agenten und größerer Wahrscheinlichkeit von Hindernissen weg}
-\label{goal_agent_intelligent:fig}
 \end{figure}
 
 \subsection{Typ "`SXCS"'}\label{zielobjekt_sxcs_einfuehrung:sec}

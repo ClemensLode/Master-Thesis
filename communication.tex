@@ -1,5 +1,6 @@
 \chapter{Kommunikation}\label{communication:cha}
 
+
 Einführung, Kommunikationsbeschränkungen (nur Reward weitergeben)
 
 Vergleich Agentenzahl (1, 2, 3, 4, 5, 6, 7, 8)
@@ -13,7 +14,7 @@ Unterscheidung interner und externer reward
 
 Bisher wurde der Fall betrachtet, dass Kommunikation mit beliebiger Reichweite stattfinden kann. Dies ist natürlich kein realistisches Szenario. Geht man jedoch davon aus, dass die Kommunikationsreichweite zumindest ausreichend groß ist um nahe Agenten zu kontaktieren, so kann man argumentieren, dass man dadurch ein Kommunikationsnetzwerk aufbauen kann, in dem jeder Agent jeden anderen Agenten - mit einer gewissen Zeitverzögerung - erreichen kann. Bei ausreichender Agentenzahl relativ zur freien Fläche fallen dadurch nur vereinzelte Agenten aus dem Netz, was der Effektivität der Agentengruppe erwartungsgemäß nur geringfügig schadet (TODO zeigen?)
 Stehen die Agenten nicht indirekt andauernd miteinander in Kontakt (mit anderen Agenten als Proxy), sondern muss die Information zum Teil durch aktive Bewegungen der Agenten transportiert werden, tritt eine Zeitverzögerung auf. Auch kann die benötigte Bandbreite die verfügbare übersteigen, was ebenfalls Zeit benötigt.
-Im realistischen Fall ist also davon auszugehen, dass jede Kommunikation erst mit einer gewissen Verzögerung ausgeführt wird, weshalb für Kommunikation nur der zuvor besprochene verzögerte LCS Algorithmus in Frage kommt.
+Im realistischen Fall ist also davon auszugehen, dass jede Kommunikation erst mit einer gewissen Verzögerung ausgeführt wird, weshalb für Kommunikation nur der zuvor besprochene verzögerte SXCS Algorithmus (DSXCS) in Frage kommt.
 
 pg. 286 Zentralisierung der Daten
 
@@ -62,12 +63,12 @@ In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} un
 \newlisting{Zweites Kernstück des verzögerten SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}{collect_reward_dsxcs:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
- * zugehörigen ActionSets weiter. Wesentlicher Unterschied zum LCS ohne 
- * Verzögerung ist, dass maxPrediction erst bei der endgültigen 
+ * zugehörigen action sets weiter. Wesentlicher Unterschied zum SXCS 
+ * Algorithmus ist, dass der maxPrediction Wert erst bei der endgültigen 
  * Verarbeitung des historicActionSets ermittelt wird.
  *
  * @param reward Wahr wenn der Zielagent in Sicht war.
- * @param best_value Bester Wert des vorangegangenen actionSets
+ * @param best_value Bester Wert des vorangegangenen action sets
  * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
  *        einem positiven Reward, aufgerufen wurde
  */
@@ -82,7 +83,7 @@ In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} un
      for(int i = 0; i < action_set_size; i++) {
 
   /**
-   * Benutze aufsteigenden bzw. absteigenden Reward bei einem positiven 
+   * Benutze aufsteigenden bzw. absteigenden reward bei einem positiven 
    * bzw. negativen Ereignis
    */
        if(is_event) {
@@ -109,7 +110,7 @@ In der Funktion \emph{processReward()} werden die gespeicherten \emph{reward} un
 
 TODO Programm~\ref{dsxcs_calc_move:pro}
 
-\newlisting{Auszug aus dem dritten Kernstück des verzögerten SXCS-Algorithmus (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
+\newlisting{Auszug aus dem dritten Kernstück des verzögerten SXCS-Algorithmus DSXCS (\emph{calculateNextMove()})}{dsxcs_calc_move:pro}
 
 /**
  * Der erste Teil der Funktion ist identisch mit dem calculateNextMove
@@ -134,7 +135,7 @@ TODO Programm~\ref{dsxcs_calc_move:pro}
 
 TODO Programm~\ref{process_reward_dsxcs1:pro}
 
-\newlisting{Viertes Kernstück des verzögerten SXCS-Algorithmus (DSXCS, Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs1:pro}
+\newlisting{Viertes Kernstück des verzögerten SXCS-Algorithmus DSXCS  (Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs1:pro}
 /**
  * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
  * eingegangenen Rewards bis zu diesem Punkt.
@@ -163,7 +164,7 @@ TODO Programm~\ref{process_reward_dsxcs1:pro}
 
 TODO Programm~\ref{process_reward_dsxcs2:pro}
 
-\newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS-Algorithmus (DXCS, Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs2:pro}
+\newlisting{Verbesserte Variante des vierten Kernstück des verzögerten SXCS-Algorithmus DSXCS (Verarbeitung des Rewards, \emph{processReward()})}{process_reward_dsxcs2:pro}
 /**
  * Zentrale Routine des HistoryActionSets zur Verarbeitung aller 
  * eingegangenen Rewards bis zu diesem Punkt.
@@ -369,6 +370,8 @@ LCS Agenten schneiden auch ohne Kommunikation (bei ausreichender Anzahl von Schr
 
 TODOGrafiken
 
+TODO Problemzahl und Schrittzahl mit
+Kapitel~\ref{test_schwieriges_szenario:sec} vergleichen
 
 
 \begin{figure}[htbp]

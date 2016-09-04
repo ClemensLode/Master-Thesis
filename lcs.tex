@@ -5,9 +5,21 @@ Jeder Agent besitzt ein unabhängiges, sogennantes \emph{eXtended Classifier Syst
 Eine wesentliche Erweiterung des LCS ist das sogenannte \emph{accuracy-based} XCS, zuerst beschrieben in \cite{wilson:95}. Neben neuer Mechanismen zur Generierung neuer \emph{classifier} (insbesondere im Bereich bei der Anwendung des genetischen Operators) ist im Vergleich zum LCS gibt es vor allem in der Berechnung der \emph{fitness} Werte der \emph{classifier} Unterschiede. Während der \emph{fitness} Wert beim einfachen LCS lediglich auf dem \emph{reward prediction error} Wert basierte, basiert bei XCS der \emph{fitness} Wert auf der Genauigkeit der jeweiligen Regel. Eine ausführliche Beschreibung findet sich in~\cite{Butz2006}.\\
 
 Im einfachsten Fall, im sogenannten \emph{single step} Verfahren erfolgt die Bewertung einzelner \emph{classifier}, also der Bestimmung eines jeweils neuen \emph{fitness} Werts, sofort nach Aufruf jeder einzelnen Regel, während im sogenannten \emph{multi step} Verfahren mehrere aufeinanderfolgende Regeln erst dann bewertet werden, sobald ein Ziel erreicht wurde.\\
-Ein klassisches Beispiel für den Test \emph{single step} Verfahren ist das 6-Multiplexer Problem (z.B. in~\cite{Butz2006}), bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"', so soll das dritte Datenbit, also "`0"' zurückgeben. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden.\\
 
-Ein klassisches Beispiel für \emph{multi step} Verfahren ist das "`Maze~\(N\)"' Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neugestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifier}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind. 
+TODO evtl teilweise in Scenario!
+TODO zusammentun evtl mit Bewertung, s.u.
+
+Ein klassisches Beispiel für den Test \emph{single step} Verfahren ist das 6-Multiplexer Problem~\cite{Butz2006}, bei dem das XCS einen Multiplexer simulieren soll, der bei der Eingabe von 2 Adressbits und 4 Datenbits das korrekte Datenbit liefert. Sind beispielsweise die 2 Adressbits auf "`10"' und die 4 Datenbits auf "`1101"', so soll das dritte Datenbit, also "`0"' zurückgeben. Im Gegensatz zum Überwachungsszenario kann also über die Qualität eines XCS direkt bei jedem Schritt entschieden werden. In Abbildung~\ref{6multiplexer:fig} findet sich eine schematische Darstellung des Problems.
+
+\begin{figure}[htbp]
+\centerline{	
+\includegraphics{6multiplexer.eps}
+}
+\caption[Schematische Darstellung des 6-Multiplexer Problems] {Schematische Darstellung des Das 6-Multiplexer Problems}
+\label{6multiplexer:fig}
+\end{figure}
+
+Ein klassisches Beispiel für \emph{multi step} Verfahren ist das \emph{Maze \(N\)} Problem, bei dem durch ein Labyrinth mit dem kürzesten Weg von \(N\) Schritten gegangen werden muss. Am Ziel angekommen wird der zuletzt aktivierte \emph{classifier} positiv bewertet und das Problem neugestartet. Bei den Wiederholungen erhält jede Regel einen Teil der Bewertung des folgenden \emph{classifier}. Somit wird eine ganze Kette von \emph{classifier} bewertet und sich der optimalen Wahrscheinlichkeitsverteilung angenähert, welche repräsentiert, welche der Regeln in welchem Maß am Lösungsweg beteiligt sind. 
 
 
 Als Demonstration soll das in Abbildung~\ref{simple_scenario_multistep:fig} dargestellte (sehr einfache) Szenario dienen. Die zum Agenten zugehörigen \emph{classifer} sind in Abbildung~\ref{simple_scenario_multistep_classifier:fig} dargestellt, wobei die 4 angrenzenden Felder für jeden \emph{classifier} jeweils die Konfiguration der Kondition darstellt und der Pfeil die Aktion (für eine genauere Beschreibung eines \emph{classifier} siehe Kapitel~\emph{classifier:sec}). Im ersten Durchlauf werden alle \emph{classifier} in jedem Schritt zufällig gewählt, dann erhält \emph{classifier} e) eine positive Bewertung. Im zweiten Durchlauf erhält dann \emph{classifer} c) einen von \emph{classifier} e) weitergegebene positive Bewertung und \emph{classifier} e) auf Position 3 wird mit höherer Wahrscheinlichkeit als \emph{classifier} f) gewählt. Das geht so lange weiter bis sich für \emph{classifier} \(b, c, e, g\) ein ausreichend großer Wert eingestellt hat und keine wesentlichen Veränderungen mehr auftreten.
@@ -43,11 +55,13 @@ Arbeiten bezüglich Multiagentensysteme in Verbindung mit LCS im Allgemeinen find
 
 Vielversprechend war der Titel der Arbeit~\cite{Lujan2008}, ``Generation of Rule-based Adaptive Strategies for a Collaborative Virtual Simulation Environment''. Leider wird in der Arbeit nicht diskutiert, auf was sich der kollaborative Anteil bezog, da nicht mehrere Agenten benutzt worden sind. Auch konnte dort jeder einzelne Schritt mittels einer \emph{reward} Funktion bewertet werden, da es globale Information gab. Dies vereinfacht ein solches Problem deutlich und macht einen Vergleich schwierig.\\
 
-Eine weitere Arbeit in dieser Richtung (\cite{Hercog02socialsimulation}) beschreibt das "`El Farol"' Bar Problem (EFBP), welches dort mit Hilfe eines Multiagenten XCS System erfolgreich gelöst wurde. Die Vergleichbarkeit ist hier auch eingeschränkt, da es sich bei dem EFBP um ein \emph{single step} Problem handelt.\\
+Eine weitere Arbeit in dieser Richtung~\cite{Hercog02socialsimulation} beschreibt das "`El Farol"' Bar Problem (EFBP), welches dort mit Hilfe eines Multiagenten XCS System erfolgreich gelöst wurde. Die Vergleichbarkeit ist hier auch eingeschränkt, da es sich bei dem EFBP um ein \emph{single step} Problem handelt.\\
 
-Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{1102281} vorgestellt. Dort wurde der \emph{base reward} (TODO) unter den (zwei) Agenten aufgeteilt, es fand also eine Kommunikation des \emph{reward} Werts statt. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in Kapitel~\ref{communication:cha} diskutiert.\\
+TODO Comm!
 
-In \cite{Miyazaki} wurde gezeigt, dass bei der Weitergabe des \emph{base reward} Gruppenbildung von entscheidender Wichtigkeit ist. Nach bestimmten Kriterien werden Agenten in Gruppen zusammengefasst und der \emph{base reward} anstatt an alle, jeweils nur an die jeweiligen Gruppenmitgliedern weitergegeben.
+Eine der dieser Arbeit (bezüglich Multiagentensysteme) am nächsten kommende Problemstellung wurde in \cite{1102281} vorgestellt. Dort wurde die jeweilige Bewertung unter den (zwei) Agenten aufgeteilt, es fand also eine Kommunikation des \emph{reward} Werts statt. Wie das Ergebnis in Verbindung mit den Ergebnissen dieser Arbeit interpretiert werden kann, wird in Kapitel~\ref{communication:cha} diskutiert.\\
+
+In \cite{Miyazaki} wurde gezeigt, dass bei der Weitergabe der Bewertung Gruppenbildung von entscheidender Wichtigkeit ist. Nach bestimmten Kriterien werden Agenten in Gruppen zusammengefasst und die Bewertung anstatt an alle, jeweils nur an die jeweiligen Gruppenmitgliedern weitergegeben.
 Dies bestätigen auch Tests in Kapitel~\ref{communication:cha}, bei der sich Agenten mit ähnelnden (was das Verhalten gegenüber anderen Agenten betrifft) \emph{classifier set} Listen in Gruppen zusammengefasst wurden und zum Teil bessere Ergebnisse erzielt werden konnten als ohne Kommunikation.
 
 
@@ -222,15 +236,53 @@ Bezeichne \((z_1, a_1, h_1)\) bzw. \((z_2, a_2, h_2)\) jeweils die drei Gruppen 
 
 \section{Bewertung der Aktionen (\emph{base reward})}\label{bewertung:sec}
 
-6 unterschiedliche Möglichkeiten,
-goal in reward range
-goal in sight range
-goal in reward range, kein agent in reward range
-goal in sight range, kein agent in sight range
-goal in reward range, kein agent in sight range
-goal in sight range, kein agent in reward range
+XCS ist darauf ausgelegt, dass es eine komplette, genaue und möglichst allgemeine Darstellung einer \emph{reward} Funktion darstellt. Bei einer Problemstellung, die mit dem \emph{single step} Verfahren gelöst werden kann, entspricht die optimale Darstellung der \emph{reward} Funktion durch das XCS gleichzeitig auch der Lösung des eigentlichen Problems. Beispielsweise beim oben erwähnten 6-Multiplexer Problem prüft die \emph{reward} Funktion, ob das XCS aus den 4 Datenbits anhand der 2 Steuerbits das richtige Datenbit gewählt hat, also ob das XCS so wie ein 6-Multiplexer funktioniert. Wesentliche Voraussetzung für das \emph{single step} Verfahren ist, dass der Agent globale Information besitzt, also in einem Schritt alle Informationen zur Lösung des Problems zur Verfügung hat.\\
+Bei komplexeren Problemen, bei denen ein Agent nur lokale Informationen zur Verfügung hat (beispielsweise bei \emph{Maze~\(N\)} die angrenzenden Felder), liefert die \emph{reward} Funktion nur eine Teilinformation, beispielsweise "`1"' beim letzten Schritt auf das Ziel und "`0"' sonst. Diese Art von Bewertung, die der Agent direkt aus den Sensordaten berechnet, soll im folgenden \emph{base reward} genannt werden.\\
+Die optimale Darstellung der \emph{reward} Funktion, die XCS zum \emph{base reward} in dem Beispiel liefern würde, wäre bis auf den letzten Schritt nicht besser als ein sich zufällig bewegender Agent, weshalb bei XCS der ermittelte \emph{base reward} an am Gesamtweg beteiligten Schritten in der Art weitergibt, dass Aktionen, die an einem kürzeren Weg beteiligt sind, höher bewertet wird.\\
+Die in der Standardimplementation von XCS verwendete Weitergabe bezieht sich, wie in der Einführung zu diesem Kapitel erläutert wurde, auf schrittweise Weitergabe der Bewertungen an das vergangene \emph{action set}. 
 
-TODO base reward und reward unterscheiden
+TODO
+Ergebnis: bringt nichts Agenten miteinzubeziehen, da nicht sichergestellt ist, dass der andere Agent den Agenten in Sicht hat mmh... Naja
+
+Die Erweiterung beim Überwachungszenario im Vergleich zu TODO!
+
+, wird die gemessene Qualität des Algorithmus davon abhängen, 
+lokaler Reward!!!
+
+Die Bewertung von Aktionen bzw. deren zugehörigen \emph{classifier} erfolgt in zwei Schritten. Zuerst soll anhand einer Heuristik (der \emph{reward} Funktion) bestimmt werden, ob die momentane Situation "`gut"' oder "`schlecht"' ist. Dies stellt den in dieser Arbeit genannten \emph{base reward} dar. Da 
+
+
+Die Heuristik sollte so gestaltet sein, dass sie 
+
+Foundations of Learning Classifier Systems By Larry Bull, Tim Kovacs
+Evolutionary pressures in XCS
+
+
+
+TODO Quelle?
+
+
+Wie diese Heuristik, die im Allgemeinen genannte \emph{reward} Funktion, gestaltet wird, davon hängt sehr stark die Qualität des Systems ab. 
+
+
+
+Würde man beispielsweise nur die Position von Hindernissen 
+
+Der \emph{base reward} 
+
+
+Getestet wurde
+
+goal in sight range
+goal in reward range
+
+goal in sight range, kein agent in reward range (selbe Richtung)
+goal in sight range, kein agent in sight range (selbe Richtung)
+
+BESTES von oben + kein Agent in Sicht
+
+
+base reward
 
 Programm~\ref{agent_check_reward:pro}
 
@@ -254,3 +306,4 @@ Programm~\ref{agent_check_reward:pro}
   }
 \end{lstlisting}
 
+TODO raus

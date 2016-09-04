@@ -1,5 +1,7 @@
 \chapter{XCS Varianten}\label{lcs_variants:cha}
 
+TODO, evtl maxprediction komplett raus bei SXCS, testen!
+
 TODO!!
 
 Ziel der Arbeit war es, wie man den XCS Algorithmus auf ein Überwachungsszenario anwenden kann. Notwendig dafür war es, die XCS Implementierung vollständig nachzuvollziehen, um für jeden Bestandteil entscheiden zu können, welche Rolle es bezüglich eines solchen Szenarios spielt. Für die Tests wurde nicht auf bestehende Pakete (z.B. XCSlib~\cite{xcslib}) zurückgegriffen, wenn auch der Quelltext von \cite{Butz_xcsclassifier} Modell stand. 
@@ -69,25 +71,25 @@ TODO wenig Unterschied sensoragent, evtl wieder raus
 
 \section{Standard XCS Multistepverfahren}\label{standardxcs:sec}
 
-Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. das jeweils zugehörige \emph{actionSet} und die dortigen \emph{classifier}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängt. Somit wird, rückführend vom letzten Schritt auf das Ziel, der \emph{reward} Wert schrittweise an vorgehende Aktionen verteilt, mit der Annahme, dass dann, durch mehrfache Wiederholung des Lernprozesses, mit dem sich dadurch ergebenen Regelsatz mit höherer Wahrscheinlichkeit das Ziel gefunden wird.\\
+Idee dieses Verfahrens ist, dass der \emph{reward} Wert, den eine Aktion (bzw. der jeweils zugehörigen \emph{action set} Liste und die dortigen \emph{classifier}) erhält, vom erwarteten \emph{reward} Wert der folgenden Aktion abhängt. Somit wird, rückführend vom letzten Schritt auf das Ziel, der \emph{reward} Wert schrittweise an vorgehende Aktionen verteilt, mit der Annahme, dass dann, durch mehrfache Wiederholung des Lernprozesses, mit dem sich dadurch ergebenen Regelsatz mit höherer Wahrscheinlichkeit das Ziel gefunden wird.\\
 
-Kern des Verfahrens ist die Vergabe des \emph{base rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an das letzte \emph{actionSet} gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an das letzte \emph{actionSet} gegeben.\\
+Kern des Verfahrens ist die Vergabe des \emph{base rewards}. Wird das Ziel erreicht, d.h. erhält der Algorithmus einen positiven \emph{base reward} Wert, so wird der \emph{reward} \(1.0\) an die letzte \emph{action set} Liste gegeben. Liegt kein positiver \emph{base reward} Wert vor, so wird lediglich der für diesen Schritt erwartete \emph{reward} Wert (nämlich der \emph{maxPrediction} Wert) an die letzte \emph{action set} Liste gegeben.\\
 
 Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverändert übernommen. Der wesentliche Unterschied ist, dass das Szenario bei einem positiven \emph{base reward} nicht neugestartet wird, algorithmisch ist die Implementierung ansonsten identisch. Außerdem, wie schon in Kapitel~\ref{exploreexploit:sec} erwähnt, soll die Qualität des Algorithmus nicht nur in der \emph{exploit} Phase gemessen werden, da ein fortlaufendes Problem und kein statisches Szenario betrachtet wird. Schließlich gibt es, neben den Parametereinstellungen im Kapitel~\ref{cha:parameter}, feste Schnittpunkte für das \emph{two point crossover} beim genetischen Operator (siehe Kapitel~\ref{genetische_operatoren:sec}).\\
 
 \newlisting{Erstes Kernstück des Standard XCS Multistepverfahrens (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_reward:pro}
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
- * Reward zu bestimmen, den besten Wert des ermittelten MatchSets 
- * weiterzugeben und, bei aktuell positivem Reward, das aktuelle
- * ActionSet zu belohnen.
+ * reward zu bestimmen, den besten Wert der ermittelten match set Liste
+ * weiterzugeben und, bei aktuell positivem reward, die aktuelle
+ * action set Liste zu belohnen.
  *
  * @param gaTimestep Der aktuelle Zeitschritt
  */
 
   public void calculateReward(final long gaTimestep) {
   /**
-   * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
+   * checkRewardPoints liefert "wahr" wenn sich das Zielobjekt in
    * Überwachungsreichweite befindet
    */
     boolean reward = checkRewardPoints();
@@ -110,13 +112,13 @@ Als Vergleich wurde das bekannte Verfahren \cite{butz01algorithmic} fast unverän
 
 TODO Programm~\ref{multistep_collect_reward:pro}
 
-\newlisting{Zweites Kernstück des Multistepverfahrens (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets), angepasst an ein dynamisches Überwachungsszenario}{multistep_collect_reward:pro}
+\newlisting{Zweites Kernstück des Multistepverfahrens (\emph{collectReward()} - Verteilung des Rewards auf die \emph{action set} Listen), angepasst an ein dynamisches Überwachungsszenario}{multistep_collect_reward:pro}
 /**
  * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
- * zugehörigen ActionSets weiter.
+ * zugehörigen action set Listen weiter.
  *
- * @param reward Wahr wenn der Zielagent in Sicht war.
- * @param best_value Bester Wert des vorangegangenen ActionSets
+ * @param reward Wahr wenn das Zielobjekt in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen action set Listen
  * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
  *        einem positiven Reward, aufgerufen wurde
  */
@@ -126,8 +128,8 @@ TODO Programm~\ref{multistep_collect_reward:pro}
     double corrected_reward = reward ? 1.0 : 0.0;
 
   /**
-   * Falls der Reward von einem Ereignis rührt, aktualisiere das 
-   * aktuelle ActionSet und lösche das vorherige
+   * Falls der Reward von einem Ereignis rührt, aktualisiere die 
+   * aktuelle action set Liste und lösche das vorherige
    */
     if(is_event) {
       if(lastActionSet != null) {
@@ -137,7 +139,7 @@ TODO Programm~\ref{multistep_collect_reward:pro}
     } 
 
   /**
-   * Kein Ereignis, also nur das letzte ActionSet aktualisieren
+   * Kein Ereignis, also nur die letzte action set Liste aktualisieren
    */
     else 
     {
@@ -150,7 +152,7 @@ TODO Programm~\ref{multistep_collect_reward:pro}
 
 TODO Programm~\ref{multistep_calc_move:pro}
 
-\newlisting{Drittes Kernstück des Multistepverfahrens (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung des zugehörigen ActionSets), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_move:pro}
+\newlisting{Drittes Kernstück des Multistepverfahrens (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung der zugehörigen action set Liste), angepasst an ein dynamisches Überwachungsszenario}{multistep_calc_move:pro}
 /**
  * Bestimmt die zum letzten bekannten Status passenden Classifier und
  * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
@@ -180,7 +182,7 @@ TODO Programm~\ref{multistep_calc_move:pro}
                                            lastExplore, gaTimestep);
 
  /**
-  * Wähle Aktion und bestimme zugehöriges ActionSet
+  * Wähle Aktion und bestimme zugehörige action set Liste
   */
     calculatedAction = lastMatchSet.chooseAbsoluteDirection(lastExplore);
     lastActionSet = new ActionClassifierSet(lastState, lastMatchSet,
@@ -192,15 +194,15 @@ TODO Programm~\ref{multistep_calc_move:pro}
 
 \section{XCS Variante für Überwachungsszenarien (SXCS)}
 
-Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde dieselbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{actionSet} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{actionSets} über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{reward prediction} Wert) für die \emph{classifier} gefunden werden.\\
-Bei der veränderten XCS Variante SXCS soll die Verbindung zwischen den \emph{actionSets} zusätzlich direkt durch die zeitliche Nähe zum Ziel gegeben sein. Es wird in jedem Schritt das jeweilige \emph{actionSet} gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
-\(r(a)\) bezeichnet den \emph{reward} Wert für das \emph{actionSet} mit Alter \(a\).
+Die Hypothese bei der Aufstellung dieser Variante des XCS-Algorithmus ist im Grunde dieselbe wie beim XCS-Multistepverfahren, nämlich dass die Kombination mehrerer Aktionen zum Ziel führt. Beim Multistepverfahren besteht die wesentliche Verbindung zwischen den \emph{action set} Listen jeweils nur zwischen zwei direkt aufeinanderfolgenden \emph{action set} Listen über den \emph{maxPrediction} Wert. In einer statischen Umgebung kann dadurch über mehrere (identische) Probleme hinweg eine optimale Einstellung (der \emph{fitness} und der \emph{reward prediction} Wert) für die \emph{classifier} gefunden werden.\\
+Bei der veränderten XCS Variante SXCS soll die Verbindung zwischen den \emph{action set} Listen zusätzlich direkt durch die zeitliche Nähe zum Ziel gegeben sein. Es wird in jedem Schritt die jeweilige \emph{action set} Liste gespeichert und aufgehoben, bis ein neues Ereignis (siehe Kapitel~\ref{sec:events}) eintritt und dann in Abhängigkeit des Alters mit einem entsprechenden \emph{reward} Wert aktualisiert.\\
+\(r(a)\) bezeichnet den \emph{reward} Wert für die \emph{action set} Liste mit Alter \(a\).
 
 Bei linearer Vergabe des \emph{reward}:
 $$
 r(a) = \left\{ \begin{array}{rl}
-  \frac{a}{\mathrm{size(ActionSet)}} &\mbox{, falls reward = $1$} \\
-  \frac{1 - a}{\mathrm{size(ActionSet)}} &\mbox{, falls reward = $0$}
+  \frac{a}{\mathrm{size(actionSet)}} &\mbox{, falls reward = $1$} \\
+  \frac{1 - a}{\mathrm{size(actionSet)}} &\mbox{, falls reward = $0$}
        \end{array} \right.
 $$
 
@@ -208,8 +210,8 @@ bzw. bei quadratischer Vergabe des \emph{reward}:
 
 $$
 r(a) = \left\{ \begin{array}{rl}
-  \frac{{a}^{2}}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $1$} \\
-  \frac{{1 - a}^{2}}{\mathrm{size(ActionSet)}} &\mbox{ falls reward = $0$}
+  \frac{{a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls reward = $1$} \\
+  \frac{{1 - a}^{2}}{\mathrm{size(actionSet)}} &\mbox{ falls reward = $0$}
        \end{array} \right.
 $$
 
@@ -219,27 +221,29 @@ In Tests ergab sich für die quadratische Vergabe des \emph{reward} ein minimal b
 \centerline{	
 \includegraphics{positive_negative_reward.eps}
 }
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets] {Schematische Darstellung der (quadratischen) Rewardverteilung an gespeicherte ActionSets bei einem positiven bzw. negativen Ereignis}
+\caption[Schematische Darstellung der Verteilung des \emph{reward} an \emph{action set} Listen] {Schematische Darstellung der (quadratischen) Verteilung des \emph{reward} an gespeicherte \emph{action set} Listen bei einem positiven bzw. negativen Ereignis}
 \label{positive_negative_reward:fig}
 \end{figure}
 
 \subsection{Ereignisse}\label{sec:events}
 
-In XCS wird lediglich das jeweils letzte ActionSet aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zu ``maxStackSize'') von ActionSets gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des Rewards anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von ActionSets und zum anderen die zeitliche Relativierung eines ActionSets zu einem Ereignis. Die Classifier wird dann jeweils rückwirkend anhand des Rewards aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
+TODO
 
-Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn der Zielagent sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).
+In XCS wird lediglich das jeweils letzte \emph{action set} Liste aus dem vorherigen Zeitschritt gespeichert, in der neuen Implementierung werden dagegen eine ganze Anzahl (bis zum Wert \emph{maxStackSize}) von \emph{action set} Listen gespeichert. Die Speicherung erlaubt zum einen eine Vorverarbeitung des \emph{reward} anhand der vergangenen Zeitschritte und auf Basis einer größeren Zahl von \emph{action set} Listen und zum anderen die zeitliche Relativierung einer \emph{action set} Liste zu einem Ereignis. Die \emph{classifier} werden dann jeweils rückwirkend anhand des \emph{reward} Werts aktualisiert sobald bestimmte Bedingungen eingetreten sind. 
 
-Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die Classifier besitzen jeweils Information die bis zu ``maxStackSize'' Schritte zu alt sind. Wählen wir den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählen wir ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also ``maxStackSize'' Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die ActionSets der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe Abbildung~\ref{neutral_reward:fig}). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
+Von einem positiven bzw. negativen Ereignis spricht man, wenn sich der Reward im Vergleich zum vorangegangenen Zeitschritt verändert hat, also wenn das Zielobjekt sich in Übertragungsreichweite bzw. aus ihr heraus bewegt hat (siehe Abbildung~\ref{saved_rewards:fig}).
+
+Bei der Benutzung eines solchen Stacks entsteht eine Zeitverzögerung, d.h. die \emph{classifier} besitzen jeweils Information die bis zu \emph{maxStackSize} Schritte zu alt sind. Wählt man den Stack zu groß, nimmt die Konvergenzgeschwindigkeit und Reaktionsfähigkeit des Systems zu stark ab, wählt man ihn zu klein, kann es sein, dass wir einen Überlauf bekommen, also \emph{maxStackSize} Schritte lang keine Rewardänderung aufgetreten ist. Im letzteren Fall brechen wir deswegen ab,  bewerten die \emph{action set} Listen der ersten Hälfte des Stacks (also die \(\frac{maxStackSize}{2}\) ältesten Einträge) mit dem damals vergebenem konstanten Reward (welcher dem aktuellen Reward entspricht, es ist ja keine Rewardänderung eingetreten) und nehmen sie vom Stack (siehe Abbildung~\ref{neutral_reward:fig}). Anschließend wird normal weiter verfahren bis der Stack wieder voll ist bzw. bis eine Rewardänderung auftritt. 
 Das Szenario mit dem maximalen Fehler wäre das, bei dem ein Schritt nach des Abbruchs eine Rewardänderung auftritt. Der Wert \emph{maxStackSize} stellt also einen Kompromiss zwischen Zeitverzögerung bzw. Reaktionsgeschwindigkeit und Genauigkeit dar.
 
 \begin{figure}[H]
 \setbox0\vbox{\small
 Ein Ereignis tritt auf, wenn:
 \begin{enumerate}
-\item Positive Rewardänderung (Zielagent war im letzten Zeitschritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis (mit reward = \(1\))
-\item Negative Rewardänderung (Zielagent war im letzten Zeitschritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis (mit reward = \(0\))
-\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielagent ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(1\))
-\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielagent ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(0\))
+\item Positive Rewardänderung (Zielobjekt war im letzten Zeitschritt nicht in Überwachungsreichweite) \(\Rightarrow\) positives Ereignis (mit reward = \(1\))
+\item Negative Rewardänderung (Zielobjekt war im letzten Zeitschritt in Überwachungsreichweite) \(\Rightarrow\) negatives Ereignis (mit reward = \(0\))
+\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielobjekt ist in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(1\))
+\item Überlauf des Stacks (keine Rewardänderung in den letzten ``maxStackSize'' Schritten), Zielobjekt ist nicht in Überwachungsreichweite \(\Rightarrow\) neutrales Ereignis (mit reward = \(0\))
 \end{enumerate}
 }
 \centerline{\fbox{\box0}}
@@ -249,7 +253,7 @@ Ein Ereignis tritt auf, wenn:
 \centerline{	
 \includegraphics{saved_rewards.eps}
 }
-\caption[Schematische Darstellung der zeitlichen Rewardverteilung an und der Speicherung von ActionSets] {Schematische Darstellung der zeitlichen Rewardverteilung an ActionSets nach mehreren positiven und negativen Ereignissen und der Speicherung der letzten ActionSets}
+\caption[Schematische Darstellung der zeitlichen Verteilung des \emph{reward} an und der Speicherung von \emph{action set} Listen] {Schematische Darstellung der zeitlichen Verteilung des \emph{reward} an \emph{action set} Listen nach mehreren positiven und negativen Ereignissen und der Speicherung der letzten \emph{action set} Liste}
 \label{saved_rewards:fig}
 \end{figure}
 
@@ -257,7 +261,7 @@ Ein Ereignis tritt auf, wenn:
 \centerline{	
 \includegraphics{neutral_reward.eps}
 }
-\caption[Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis] {Schematische Darstellung der Rewardverteilung an ActionSets bei einem neutralen Ereignis}
+\caption[Schematische Darstellung der Verteilung des \emph{reward} an \emph{action set} Listen bei einem neutralen Ereignis] {Schematische Darstellung der Verteilung des \emph{reward} an \emph{action set} Listen bei einem neutralen Ereignis}
 \label{neutral_reward:fig}
 \end{figure}
 
@@ -270,16 +274,16 @@ TODO Programm~\ref{sxcs_calc_reward:pro}
 \newlisting{Erstes Kernstück des SXCS-Algorithmus (\emph{calculateReward()}, Bestimmung des Rewards anhand der Sensordaten)}{sxcs_calc_reward:pro}
 /**
  * Diese Funktion wird in jedem Schritt aufgerufen um den aktuellen
- * Reward zu bestimmen und positive, negative und neutrale Ereignisse 
- * den besten Wert des ermittelten MatchSets weiterzugeben und, bei 
- * aktuell positivem Reward, das aktuelle ActionSet zu belohnen.
+ * reward zu bestimmen und positive, negative und neutrale Ereignisse 
+ * den besten Wert der ermittelten match set Liste weiterzugeben und, bei 
+ * aktuell positivem reward, die aktuelle action set Liste zu belohnen.
  *
  * @param gaTimestep Der aktuelle Zeitschritt
  */
 
   public void calculateReward(final long gaTimestep) {
   /**
-   * checkRewardPoints liefert "wahr" wenn sich der Zielagent in
+   * checkRewardPoints liefert "wahr" wenn sich der Zielobjekt in
    * Überwachungsreichweite befindet
    */
     boolean reward = checkRewardPoints();
@@ -307,15 +311,15 @@ TODO Programm~\ref{sxcs_calc_reward:pro}
 
 TODO Programm~\ref{sxcs_collect_reward:pro}
 
-\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des Rewards auf die ActionSets)}{sxcs_collect_reward:pro}
+\newlisting{Zweites Kernstück des SXCS-Algorithmus (\emph{collectReward()} - Verteilung des reward auf die action set Listen)}{sxcs_collect_reward:pro}
 /**
- * Diese Funktion verarbeitet den übergebenen Reward und gibt ihn an die
- * zugehörigen ActionSets weiter.
+ * Diese Funktion verarbeitet den übergebenen reward und gibt ihn an die
+ * zugehörigen action set Listen weiter.
  *
- * @param reward Wahr wenn der Zielagent in Sicht war.
- * @param best_value Bester Wert des vorangegangenen ActionSets
+ * @param reward Wahr wenn der Zielobjekt in Sicht war.
+ * @param best_value Bester Wert des vorangegangenen action set Listen
  * @param is_event Wahr wenn diese Funktion wegen eines Ereignisses, d.h.
- *        einem positiven Reward, aufgerufen wurde
+ *        einem positiven reward, aufgerufen wurde
  */
 
   public void collectReward(
@@ -329,7 +333,7 @@ TODO Programm~\ref{sxcs_collect_reward:pro}
       historicActionSet.get(start_index+1).getMatchSet().getBestValue();
 
   /**
-   * Aktualisiere eine ganze Anzahl von ActionSets
+   * Aktualisiere eine ganze Anzahl von action set Listen
    */
     for(int i = 0; i < action_set_size; i++) {
 
@@ -343,8 +347,8 @@ TODO Programm~\ref{sxcs_collect_reward:pro}
           calculateReward(action_set_size - i, action_set_size);
       }
   /**
-   * Aktualisiere das ActionSet mit dem bestimmten Reward und
-   * gebe bei allen anderen ActionSets den Reward weiter wie 
+   * Aktualisiere die action set Liste mit dem bestimmten reward und
+   * gebe bei allen anderen action set Listen den reward weiter wie 
    * beim Multistepverfahren 
    */
       ActionClassifierSet action_classifier_set = 
@@ -361,13 +365,13 @@ TODO Programm~\ref{sxcs_collect_reward:pro}
 
 TODO Programm~\ref{sxcs_calc_move:pro}
 
-\newlisting{Drittes Kernstück des SXCS-Algorithmus (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung des zugehörigen ActionSets)}{sxcs_calc_move:pro}
+\newlisting{Drittes Kernstück des SXCS-Algorithmus (\emph{calculateNextMove()} - Auswahl der nächsten Aktion und Ermittlung und Speicherung der zugehörigen \emph{action set} Liste)}{sxcs_calc_move:pro}
 /**
- * Bestimmt die zum letzten bekannten Status passenden Classifier und
- * wählt aus dieser Menge eine Aktion. Außerdem wird das aktuelle 
- * ActionClassifierSet mithilfe der gewählten Aktion ermittelt.
- * Im Vergleich zur originalen Multistepversion wird am Schluß noch 
- * das ermittelte ActionSet gespeichert.
+ * Bestimmt die zum letzten bekannten Status passenden classifier und
+ * wählt aus dieser Menge eine Aktion. Außerdem wird die aktuelle 
+ * action set Liste mithilfe der gewählten Aktion ermittelt.
+ * Im Vergleich zum originalen multi step Verfahren wird am Schluss noch 
+ * die ermittelte action set Liste gespeichert.
  *
  * @param gaTimestep Der aktuelle Zeitschritt
  */
@@ -382,13 +386,13 @@ TODO Programm~\ref{sxcs_calc_move:pro}
                     lastState, getPosition(), gaTimestep);
 
  /**
-  * Bestimme alle zum Status passenden Classifier.
+  * Bestimme alle zum Status passenden classifier.
   */
     lastMatchSet = new AppliedClassifierSet(lastState, classifierSet);
 
  /**
   * Entscheide auf welche Weise die Aktion ausgewählt werden soll,
-  * wähle Aktion und bestimme zugehöriges ActionSet
+  * wähle Aktion und bestimme zugehöriges action set Liste
   */
     lastExplore = checkIfExplore(lastState.getSensorGoalAgent(),
                                            lastExplore, gaTimestep);
@@ -398,7 +402,7 @@ TODO Programm~\ref{sxcs_calc_move:pro}
                                                       calculatedAction);
 
  /**
-  * Speichere das ActionSet und passe den Stack bei einem Überlauf an
+  * Speichere die action set Liste und passe den Stack bei einem Überlauf an
   */
     actionSetSize++;
     historicActionSet.addLast(lastActionSet);
@@ -410,9 +414,13 @@ TODO Programm~\ref{sxcs_calc_move:pro}
 
 
 
-\subsection{Zielobjekt mit SXCS}
+\subsection{Zielobjekt mit XCS und SXCS}\label{variant_zielobjekt_xcs_sxcs:sec}
 
-Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von SXCS für das Zielobjekt diskutiert werden. Bis auf die Funktion \emph{checkRewardPoints()} (siehe Kapitel~\ref{bewertung:sec}) ist die Implementierung für das Zielobjekt identisch. Die abgeänderte Version ist in Programm~\ref{goal_check_reward:pro} aufgelistet.
+Wie bereits in Kapitel~\ref{zielobjekt_sxcs_einfuehrung:sec} erwähnt, soll hier eine Implementierung von XCS und SXCS für das Zielobjekt diskutiert werden. Der Grund für die Untersuchung liegt mehr darin, eine weitere Anwendungsmöglichkeit aufzuzeigen und XCS und SXCS nochmals zu vergleichen, anstatt konkrete neue Erkenntnisse zu gewinnen. Insbesondere handelt es sich hierbei nicht mehr um ein Multiagentensystem, obwohl auch mit weitere Zielobjekten sich kein kollaboratives Szenario ergeben würde, da die Zielobjekte keinen Vorteil von einer gemeinsamen Flucht haben (im Gegensatz zum gemeinsamen Einfangen seitens der Agenten). Die Ergebnisse der Analyse gibt es in Kapitel~\ref{goal_agent_with_xcs:sec}, auch hier ist der Ansatz von SXCS überlegen.\\
+
+Bis auf die Funktion \emph{checkRewardPoints()} (siehe Programm~\ref{agent_check_reward:pro}) ist die Implementierung für das Zielobjekt fast identisch. Die einzige zweite Änderung ist in der Funktion \emph{calculateNextMove()} (siehe Programm~\ref{multistep_calc_move:pro} (XCS) bzw. Programm~\ref{sxcs_calc_move:pro} (SXCS)), bei der die zusätzliche Sprungeigenschaft des Zielobjekts hinzugefügt ist (siehe Kapitel~\ref{base_properties_goal:sec}).\\
+
+Die abgeänderte Version ist in Programm~\ref{goal_check_reward:pro} aufgelistet, sie unterscheidet sich in den Zeilen 6 und 9, in der Sensordaten über andere Agenten anstatt über das Zielobjekt geholt und geprüft werden, also ein Rollentausch zwischen Zielobjekt und Agenten stattfindet.\\
 
 \newlisting{Bestimmung des \emph{base rewards} für das Zielobjekt}{goal_check_reward:pro}
     /**

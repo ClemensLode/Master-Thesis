@@ -1,8 +1,8 @@
-\chapter{Zusammenfassung, Ergebnis und Ausblick}
-\label{conclusion:cha}
+\chapter{Zusammenfassung, Ergebnis und Ausblick}\label{conclusion:cha}
 
 
 \section{Zusammenfassung}
+
 Zu Beginn wurde auf die Szenariodefinition und die Fähigkeiten der Agenten eingegangen. Anhand von Beispielen heuristischer Agenten wurden einige Grundeigenschaften der präsentierten Szenarien als Vorbereitung für die Analyse der Learning Classifier Systeme bestimmt. Nach der Einführung in LCS, der Beschreibung des Standardverfahren XCS und der angepassten Implementierung für Überwachungsszenarios konnten dann umfangreiche Tests ausgeführt werden. 
 
 
@@ -40,35 +40,14 @@ An Adaptive Approach for the Exploration-Exploitation Dilemma for Learning Agent
 Im Bereich der Kommunikation wurde neben der "`egoistischen Relation"' (siehe Kapitel~\ref{egoistic_relation:sec}) auch weitere Verfahren ausprobiert, mit welchen versucht wurde, gleichartige Gruppen zu finden. Hier wurden ganze \emph{classifier set} Listen unterschiedlicher Agenten miteinander auf Ähnlichkeit geprüft um daraus einen Faktor zu berechnen, der (wie bei der "`egoistischen Relation"') Einfluss auf die Weitergabe des \emph{reward} Werts haben sollte. Der dadurch deutlich erhöhte Kommunikations- und Berechnungsaufwand lag jedoch in keinem Verhältnis zu eventuell beobachteten Qualitätsverbesserungen, im Gegenteil wurden eher Qualitätsverschlechterungen bemerkt. Die Ergebnisse mit dem Test der "`egoistischen Relation"' zeigen jedoch, dass hier zumindest etwas Potential stecken könnte und für bestimmte Szenarien die zwei Grundideen, dass sich die Agenten zum einen an die Größe des Szenarios anpassen und zum anderen der \emph{reward} möglichst nur an sich ähnlich verhaltende Agenten weitergegeben wird, nicht ganz falsch sein können. Genauere, insbesondere theoretische, Untersuchungen sind hier aber nötig.\\
 
 
-\chapter{Verwendete Hilfsmittel und Software}
+\chapter{Vorgehen und verwendete Hilfsmittel und Software}
 
-Zu Beginn stellte sich die Frage, welche Software zu benutzen ist, da es sich um ein recht komplexe Problemstellung handelt. Begonnen habe ich mit der YCS Implementierung~\cite{Bull03asimple}. Sie ist in der Literatur wenig vertreten, die Implementierung bot aber einen guten Einstieg in das Thema, da sie sich auf das Wesentliche eines LCS beschränkte und keine Optimierungen enthielt.\\
-
-Der nächste Schritt war zu entscheiden, auf welchem System die Agenten simuliert werden sollen. Implementierungen wie 
-
-Unter einer Reihe von vorhandenen Implementierungen entschied ich mich für eine eigene Implementation. 
-
-Wesentlicher Grund war die Unerfahrenheit mit den Lösungen (und der damit verbundenen Einarbeitungszeit) wie auch Überlegungen bzgl. der Geschwindigkeit, dem Speicherverbrauch und der Kompatibilität. TODO
-
-Das Programm und die zugehörige Oberfläche zum Erstellen von Test-Jobs wurden in Netbeans 6.5 programmiert.
-
-Grafiken wurden mittels GnuPlot erstellt.
-
-Grafiken der Grid-Konfiguration wurden im Programm mittels GifEncode TODO erste
- * @version 0.90 beta (15-Jul-2000)
- * @author J. M. G. Elliott (tep@jmge.net)
-
-Wesentlicher Bestandteil der Konfigurationsoberfläche war auch eine Automatisierung der Erstellung von Konfigurationsdateien, Batchdateien (für ein Einzelsystem und für JoSchKA) zum Testen einer ganzen Reihe von Szenarien und auch GnuPlot Skripts.
-
-Speicherverbrauch
-
-Speicherung der Agentenpositionen und des Grids verbrauchen fast keinen Speicher TODO
-Wesentlicher Faktor waren die LCS Systeme mit ihren ClassifierSets TODO
-
-OpenOffice
-
-LEd Latex
-
+Zu Beginn stellte sich die Frage, welche Software zu benutzen ist, da es sich um ein recht komplexe Problemstellung handelt. Begonnen wurde mit der YCS Implementierung~\cite{Bull03asimple}. Sie ist in der Literatur wenig vertreten, die Implementierung bot aber einen guten Einstieg in das Thema, da sie sich auf das Wesentliche eines LCS beschränkte und nur wenige Optimierungen enthielt.\\
+Auf Basis des dadurch gewonnenen Wissens war es dann leichter, die XCS Implementierung zu verstehen und nachvollziehen zu können. Insbesondere die Optimierungen und der etwas unsaubere Programmierstil in der Standardimplementierung bereiteten Probleme.\\
+Anhand des Studiums der Literatur war klar, dass in der Richtung der Überwachungsszenarien es wenig Arbeiten, die sich damit beschäftigten, wie die XCS Implementierung umzusetzen sei. Ein Rückgriff auf bestehende Bibliotheken war deshalb nicht möglich, ursprünglich geplante Untersuchungen komplexerer Systeme wie zentrale Steuerung, Austausch von Regeln etc. wurden gestrichen und es wurde sich auf den einfachen Fall, lokale Information ohne zentrale Steuerung mit höchstens minimaler Kommunikation beschränkt. Dies machte die Verwendung komplexerer Simulationssysteme unnötig, die Einarbeitungszeit in Multiagenten Frameworks wie z.B. Repast~\cite{repast} erschien zu hoch, wie auch die Risiken, was Geschwindigkeit, Kompatibilität und Speicherverbrauch betraf, unbekannt waren, weshalb ein eigenes Simulationsprogramm entwickelt wurde.\\
+Das Simulationsprogramm wurde samt zugehöriger Oberfläche zur Erstellung von neuen Test-Jobs in Netbeans 6.5 entwickelt und gestaltet. Für die Verlaufsgraphen wurde GnuPlot benutzt, die Darstellungen der jeweiligen Konfiguration des Torus (insbesondere in Kapitel~\ref{scenario_description:cha}) wurden im Programm mittels Gif89Encoder~\cite{gifencoder} erstellt. Weitere Graphen und Darstellungen wurden OpenOffice.org Impress und OpenOffice.org Calc erstellt.\\
+Wesentlicher Bestandteil der Konfigurationsoberfläche war auch eine Automatisierung der Erstellung von Konfigurationsdateien und Batchdateien für ein Einzelsystem bzw. für JoSchKA~\cite{JoSchKa} zum Testen einer ganzen Reihe von Szenarien und GnuPlot Skripts. Die Automatisierung war aufgrund der tausenden getesteten Szenarien und Parametereinstellungen entscheidend zur Durchführung dieser Arbeit.\\
+Dieses Dokument schließlich wurde mittels dem \LaTeX Editor LEd 0.5263 erstellt und mittels MiKTeX 2.7 kompiliert.
 
 
 

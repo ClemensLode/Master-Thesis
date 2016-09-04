@@ -1,4 +1,4 @@
-\chapter{Beschreibung des Szenarios}
+\chapter{Beschreibung des Szenarios}\label{scenario_description:cha}
 
 Im Wesentlichen sollen die Algorithmen, die in dieser Arbeit besprochen werden, in einem Szenario getestet werden, in dem mehrere Agenten ein sich bewegendes Zielobjekt überwachen sollen. Dies soll im folgenden als Überwachungsszenario bezeichnet werden. Die Qualität eines Algorithmus in einem solchen Überwachungsszenario wird anhand des Anteils der Zeit bewertet, in der er mit Hilfe der Agenten das Zielobjekt überwachen konnte, relativ zur Gesamtzeit (siehe Kapitel~\ref{qualitaet:sec}).\\
 
@@ -75,9 +75,7 @@ TODO warum
 \subsection{Szenario mit zufällig verteilten Hindernissen}\label{random_scenario_definition:sec}
 
 Zwei Parameter bestimmen das Aussehen des Szenarios mit zufällig verteilten Hindernissen, zum einen der Prozentsatz an Hindernissen an der Gesamtzahl der Felder des Torus (Hindernissanteil~\(\lambda_{h}\)), zum anderen der Grad inwieweit die Hindernisse zusammenhängen (Verknüpfungsfaktor~\(\lambda_{p}\)).\\
-Bei der Erstellung des Szenarios bestimmt \(\lambda_{p}\) die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass beim Verteilen der Hindernisse nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. \(\lambda_{p} = 0.0\) ergäbe somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert von \(1.0\) eine oder mehrere stark zusammenhängende Strukturen schafft. Wird der Prozentsatz an Hindernissen \(\lambda_{h}\) auf \(0.0\) gesetzt, dann entspricht diesem dem oben erwähnten leeren Szenario. Ein Wert von \(1.0\) würde eine völlige Abdeckung des Torus bedeuten und wäre für einen Test somit unbrauchbar. Hier sollen nur geringe Werte bis \(0.4\) betrachtet werden, wobei später in Tests sich auf Werte bis \(0.2\) beschränkt wird, da bei großen Hindernissanteil die lokalen Entscheidungen einzelner Agenten zu wichtig werden, da das Zielobjekt sich oft nur in einem kleinen Bereich aufhält
-
-TODO Zielobjektabdeckung! (in 100 Schritten abgedecktes Gebiet o.ä.)
+Bei der Erstellung des Szenarios bestimmt \(\lambda_{p}\) die Wahrscheinlichkeit für jedes einzelne angrenzende freie Feld, dass beim Verteilen der Hindernisse nach dem Setzen eines Hindernisses dort sofort ein weiteres Hindernis gesetzt wird. \(\lambda_{p} = 0.0\) ergäbe somit eine völlig zufällig verteilte Menge an Hindernissen, während ein Wert von \(1.0\) eine oder mehrere stark zusammenhängende Strukturen schafft. Wird der Prozentsatz an Hindernissen \(\lambda_{h}\) auf \(0.0\) gesetzt, dann entspricht diesem dem oben erwähnten leeren Szenario. Ein Wert von \(1.0\) würde eine völlige Abdeckung des Torus bedeuten und wäre für einen Test somit unbrauchbar. Hier sollen nur geringe Werte bis \(0.4\) betrachtet werden, wobei später in Tests sich auf Werte bis \(0.2\) beschränkt wird, da bei großen Hindernissanteil die lokalen Entscheidungen einzelner Agenten zu wichtig werden, da das Zielobjekt sich oft nur in einem kleinen Bereich aufhält TODO
 
 In Abbildung~(\ref{random_grid_005:fig}), Abbildung~(\ref{random_grid_01:fig}), Abbildung~(\ref{random_grid_02:fig}) und Abbildung~(\ref{random_grid_04:fig}) werden Beispiele für zufällige Szenarien gegeben mit \(\lambda_{h} = 0.05\), \(0.1\), \(0.2\) bzw. \(0.4\) und \(\lambda_{p} = 0.01\), \(0.5\) bzw. \(0.99\).
 
@@ -146,7 +144,7 @@ Auf dem Torus wird ein Rechteck der halben Gesamthöhe und -breite des Torus erst
 \end{figure}
 
 
-\subsection{Schwieriges Szenario}
+\subsection{Schwieriges Szenario}\label{difficult_scenario:sec}
 
 Hier wird der Torus an der rechten Seite vollständig durch Hindernisse blockiert, um den Torus zu halbieren. Alle Agenten starten (zufällig verteilt) am linken Rand, der Zielagent startet auf der rechten Seite.\\
 In regelmäßigen Abständen (7 Felder Zwischenraum) befindet sich eine vertikale Reihe von Hindernissen mit Öffnungen von 4 Feldern Breite abwechselnd im oberen Viertel und dem unteren Viertel.\\
